@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('document_edit_requests', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(\App\Models\Employee::class);
+            $table->foreignIdFor(\App\Models\Document::class);
+            $table->string('mime');
+            $table->text('path');
+            $table->string('name');
+            $table->string('type');
+            $table->date('request_date')->nullable();
+            $table->string('approval_status')->default('Pending');
+            $table->date('approval_date')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('document_edit_requests');
+    }
+};

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Tighten\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -37,7 +38,12 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            //
+            'auth' => [
+                'user' => $request->user(),
+            ],
+            'roles'=>$request->user()?->getRoleNames() ?? [],
+            'permissions'=>$request->user()?->getAllPermissions() ?? [],
+            'flash_notification' => session()->get('flash-notification'),
         ];
     }
 }
