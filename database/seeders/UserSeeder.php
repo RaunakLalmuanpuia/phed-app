@@ -1,0 +1,32 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\User;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+
+class UserSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        //
+        User::query()->upsert([
+            ['id'=>1,'name'=>'admin','email'=>'admin@mail.com','password'=>Hash::make('password')],
+            ['id'=>2,'name'=>'manager','email'=>'manager@mail.com','password'=>Hash::make('password')],
+        ], ['id']);
+
+
+        $admin=User::query()->find(1);
+        $admin->assignRole('Admin');
+
+        $manager=User::query()->find(2);
+        $manager->assignRole('Manager');
+
+    }
+}
