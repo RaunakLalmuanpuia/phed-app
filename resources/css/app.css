@@ -1,0 +1,233 @@
+@import "tailwindcss";
+
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+.text-btn-primary {
+    color: #ffffff !important;
+}
+.bg-btn-primary {
+    background: #191c51 !important;
+}
+.sized-btn{
+    min-width: 140px;
+}
+.text-no-underline{
+    text-decoration: none;
+}
+
+@media (max-width: 599px) {
+    .container{
+        padding: 8px;
+    }
+}
+@media (max-width: 1024px) {
+    .container {
+        max-width: 900px;
+        margin-right: auto;
+        margin-left: auto;
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+}
+@media (max-width:1439px) {
+    .container {
+        max-width: 1100px;
+        margin-right: auto;
+        margin-left: auto;
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+}
+
+@media (max-width: 3919px) {
+    .container {
+        max-width: 1250px;
+        margin-right: auto;
+        margin-left: auto;
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+}
+@media print {
+    .container{
+        position: absolute;
+        top: 12px;
+        width: 100%;
+    }
+}
+.q-file::before {
+    border: 2px dotted #1266ed !important;
+    transition: border-color 0.36s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.stitle{
+    font-size: 21px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: left;
+    color: #191c51;
+}
+.subtitle{
+    font-family: Poppins, serif;
+    font-size: 16px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.25;
+    color: #080808;
+}
+.text-label{
+    font-family: Roboto, serif;
+    font-size: 16px;
+    font-weight: normal;
+    font-style: normal;
+    line-height: normal;
+    color: #080808;
+}
+.text-sm{
+    font-size: 12px;
+}
+.text-md{
+    font-size: 14px;
+}
+.text-lg{
+    font-size: 18px;
+}
+.text-xl{
+    font-size: 24px;
+}
+
+.q-item__section--avatar{
+    min-width: 35px !important;
+}
+.q-item{
+    padding: 4px 12px !important;
+    min-height: 42px !important;
+}
+.required .q-field__label:before {
+    content: '* ';
+    color: #f00;
+}
+.q-stepper__dot{
+    border-radius: 1px !important;
+}
+.q-tab__indicator{
+    height: 5px !important;
+    border-radius: 12px 12px 0px 0px;
+}
+
+.my-input.q-field--float .q-field__label {
+    transform: translateY(-120%) translateX(-5px) scale(0.75);
+    background: #fff;
+    right: inherit;
+    padding: 0 5px;
+    z-index: 10;
+    max-height: 72px;
+}
+
+.my-input.q-field--dense.q-field--float .q-field__label {
+    transform: translateY(-85%) translateX(-5px) scale(0.75);
+}
+
+.my-input.q-field--labeled .q-field__native,
+.my-input.q-field--labeled .q-field__prefix,
+.my-input.q-field--labeled .q-field__suffix {
+    padding-top: 8px;
+}
+
+.item-active{
+    background-color: #eff3fb;
+    border-radius: 12px;
+    color: #191C51;
+    font-weight: 500;
+}
+.item-nav{
+    background-color: #d9dbdb;
+    border-radius: 12px;
+    color: #262628;
+    font-weight: 500;
+}
+
+
+.required .q-field__label:before {
+    content: '* ';
+    color: #b84c4c;
+}
+
+.my-input.q-field--float .q-field__label {
+    transform: translateY(-120%) translateX(-5px) scale(0.75);
+    background: #fff;
+    right: inherit;
+    padding: 0 5px;
+    z-index: 10;
+}
+
+.my-input.q-field--dense.q-field--float .q-field__label {
+    transform: translateY(-85%) translateX(-5px) scale(0.75);
+}
+
+.q-field__control {
+    color: var(--q-accent);
+    height: 48px;
+    max-width: 100%;
+    outline: none;
+}
+.q-table th{
+    font-size: 16px !important;
+    font-family: Roboto, serif;
+    color: #4f4f4f;
+    font-weight: 500 !important;
+}
+.q-field
+.q-field__control-container,
+.q-field__native {
+    /*padding-top: 10px !important;*/
+}
+
+.q-field__control {
+    height: 48px !important;
+    min-height: 48px !important;
+}
+
+.q-field__marginal {
+    height: 48px !important;
+}
+
+.q-field__label {
+    top: 16px !important;
+}
+.my-input.q-field--labeled .q-field__native,
+.my-input.q-field--labeled .q-field__prefix,
+.my-input.q-field--labeled .q-field__suffix {
+    padding-top: 8px;
+}
+.q-item__section--avatar{
+    min-width: 45px;
+}
+.nav-item{
+    min-height: 36px !important;
+    font-family: Roboto SansSerif, serif;
+    font-size: 13px;
+}
+.active-item{
+    color: #306ADB;
+    font-weight: 600;
+}
+
+
+.active-menu {
+    font-family: Poppins, serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #306ADB;
+    background-color: #eff3fb;
+    border-right-color: #306ADB;
+    border-right-width: 4px;
+    border-right-style: solid;
+}
+
