@@ -1,0 +1,158 @@
+<template>
+<q-page class="container" padding>
+    <div class="flex items-center justify-between q-pa-md bg-white">
+        <div>
+            <div class="stitle">Create User</div>
+            <q-breadcrumbs class="text-dark">
+                <q-breadcrumbs-el class="cursor-pointer"  icon="dashboard" label="Dashboard" @click="$inertia.get(route('dashboard'))"/>
+                <q-breadcrumbs-el class="cursor-pointer" label="User Accounts" @click="$inertia.get(route('user.index'))"/>
+                <q-breadcrumbs-el label="New User"/>
+            </q-breadcrumbs>
+        </div>
+    </div>
+    <br/>
+    <q-form @submit="submit" class="bg-white q-pa-md">
+        <div style="max-width: 720px" class="row q-col-gutter-sm">
+            <div class="col-xs-12 col-sm-3">
+                <div class="text-label q-mt-md">Name</div>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <q-input v-model="form.name"
+                         :error="!!form.errors?.name"
+                         :error-message="form.errors?.name?.toString()"
+                         outlined
+                         dense
+                         item-aligned
+                         :rules="[
+                         val=>val !=='' || 'Name is required'
+                     ]"/>
+            </div>
+            <div class="col-xs-12 col-sm-3">
+                <div class="text-label q-mt-md">Designation</div>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <q-input v-model="form.designation"
+                         :error="!!form.errors?.designation"
+                         :error-message="form.errors?.designation?.toString()"
+                         outlined
+                         dense
+                         item-aligned
+                         />
+            </div>
+            <div class="col-xs-12 col-sm-3">
+                <div class="text-label q-mt-md">Mobile</div>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <q-input v-model="form.mobile"
+                         mask="##########"
+                         :error="!!form.errors?.mobile"
+                         :error-message="form.errors?.mobile?.toString()"
+                         outlined
+                         dense
+                         item-aligned
+                         :rules="[
+                         val=>val !=='' || 'Mobile is required'
+                     ]"/>
+            </div>
+            <div class="col-xs-12 col-sm-3">
+                <div class="text-label q-mt-md">Email</div>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <q-input v-model="form.email"
+                         type="email"
+                         :error="!!form.errors?.email"
+                         :error-message="form.errors?.email?.toString()"
+                         outlined
+                         dense
+                         item-aligned
+                         :rules="[
+                         val=>val !=='' || 'Email is required'
+                     ]"/>
+            </div>
+            <div class="col-xs-12 col-sm-3">
+                <div class="text-label q-mt-md">Role</div>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <q-select v-model="form.roles"
+                         :error="!!form.errors?.roles"
+                          :options="userRoles"
+                          multiple
+                          use-chips
+                         :error-message="form.errors?.roles?.toString()"
+                         outlined
+                         dense
+                         item-aligned
+                />
+            </div>
+<!--            <div class="col-xs-12 col-sm-3">-->
+<!--                <div class="text-label q-mt-md">Password</div>-->
+<!--            </div>-->
+<!--            <div class="col-xs-12 col-sm-9">-->
+<!--                <q-input v-model="form.password"-->
+<!--                         type="password"-->
+<!--                         :error="!!form.errors?.password"-->
+<!--                         :error-message="form.errors?.password?.toString()"-->
+<!--                         outlined-->
+<!--                         dense-->
+<!--                         item-aligned-->
+<!--                         :rules="[-->
+<!--                         val=>val !=='' || 'Password is required'-->
+<!--                     ]"/>-->
+<!--            </div>-->
+<!--            <div class="col-xs-12 col-sm-3">-->
+<!--                <div class="text-label q-mt-md">Password Confirmation</div>-->
+<!--            </div>-->
+<!--            <div class="col-xs-12 col-sm-9">-->
+<!--                <q-input v-model="form.password_confirmation"-->
+<!--                         type="password"-->
+<!--                         :error="!!form.errors?.password_confirmation"-->
+<!--                         :error-message="form.errors?.password_confirmation?.toString()"-->
+<!--                         outlined-->
+<!--                         dense-->
+<!--                         item-aligned-->
+<!--                         :rules="[-->
+<!--                         val=>val !=='' || 'Password Confirmation is required',-->
+<!--                         val=>val===form.password || 'Password confirmation does not match password'-->
+<!--                     ]"/>-->
+<!--            </div>-->
+            <div class="col-xs-12">
+                <q-separator class="q-my-md"/>
+            </div>
+            <div class="col-xs-12 flex q-gutter-sm">
+                <q-btn class="sized-btn" type="submit" color="btn-primary" label="Save"/>
+                <q-btn class="sized-btn" color="negative" outline label="Cancel" @click="$inertia.get(route('user.index'))"/>
+            </div>
+
+        </div>
+    </q-form>
+
+
+</q-page>
+</template>
+<script setup>
+import BackendLayout from "@/Layouts/BackendLayout.vue";
+import {useForm} from "@inertiajs/vue3";
+import {useQuasar} from "quasar";
+
+defineOptions({layout:BackendLayout})
+const props=defineProps(['userRoles']);
+const q = useQuasar();
+const form=useForm({
+    name:'',
+    email:'',
+    mobile:'',
+    roles: [],
+    designation:'',
+    password:'password123',
+    password_confirmation:'password123',
+
+})
+const submit=e=>{
+    form.transform(data => ({...data,roles:data.roles.map(item=>item.value)}))
+    .post(route('user.store'),{
+        onStart:params => q.loading.show(),
+        onFinish:params => q.loading.hide()
+    })
+}
+
+</script>

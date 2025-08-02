@@ -18,7 +18,6 @@ class AuthController extends Controller
     public function create(Request $request)
     {
         return inertia('Frontend/Auth/Login',[
-
         ]);
     }
 

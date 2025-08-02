@@ -14,10 +14,10 @@
                     </div>
                     <q-btn-dropdown  dropdown-icon="account_circle">
                         <q-list dense>
-                            <q-item clickable v-close-popup>
+                            <q-item clickable v-close-popup  @click.prevent="$inertia.get(route('profile.edit'))">
                                 <q-item-section>Profile</q-item-section>
                             </q-item>
-                            <q-item clickable v-close-popup>
+                            <q-item clickable v-close-popup   @click.prevent="$inertia.get(route('profile.edit-password'))">
                                 <q-item-section>Change Password</q-item-section>
                             </q-item>
                             <q-separator />
@@ -42,12 +42,12 @@
                         <span class="text-sm text-grey-7">(Government of Mizoram)</span>
                     </div>
                 </div>
-                <q-item :active="route().current()==='admin.dashboard'" active
+                <q-item :active="route().current()==='dashboard.admin'" active
                         active-class="active-menu text-accent"
                         clickable
-                        @click="$inertia.get(route('admin.dashboard'))">
+                        @click="$inertia.get(route('dashboard.admin'))">
                     <q-item-section avatar>
-                        <q-icon :active="route().current()==='admin.dashboard'">
+                        <q-icon :active="route().current()==='dashboard.admin'">
                             <svg v-if="active" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke="#306ADB" stroke-width="1.5" d="M3.75 3.75h8.5v5.5h-8.5zM15.75 3.75H21A3.25 3.25 0 0 1 24.25 7v8.25h-8.5V3.75zM15.75 18.75h8.5V21A3.25 3.25 0 0 1 21 24.25h-5.25v-5.5zM3.75 12.75h8.5v11.5h-8.5z"/>
                             </svg>
@@ -329,68 +329,76 @@
 
 
 <!--                <q-separator class="q-my-sm"/>-->
-<!--                <q-expansion-item v-if="checkModules('administration')"-->
-<!--                                  group="menu"-->
-<!--                                  :label="module.admin.label"-->
-<!--                                  :header-class="(-->
-<!--                              route().current()==='user.index'-->
-<!--                             || route().current()==='user.create'-->
-<!--                             || route().current()==='user.edit'-->
-<!--                             || route().current()==='role.index'-->
-<!--                             || route().current()==='role.edit'-->
-<!--                             || route().current()==='information.index'-->
-<!--                             || route().current()==='information.create'-->
-<!--                             || route().current()==='information.edit'-->
-<!--                             || route().current()==='certificate.index'-->
-<!--                             || route().current()==='district.index'-->
-<!--                             || route().current()==='category.index'-->
-<!--                             || route().current()==='migration.index'-->
-<!--                          )-->
+                <q-expansion-item
+                                  group="menu"
+                                  :label="module.admin.label"
+                                  :header-class="(
+                              route().current()==='user.index'
+                             || route().current()==='user.create'
+                             || route().current()==='user.edit'
+                             || route().current()==='role.index'
+                             || route().current()==='role.edit'
+                            
+                          )
 
-<!--                          ?'active-menu text-accent':''"-->
-<!--                                  icon="o_manage_accounts">-->
+                          ?'active-menu text-accent':''"
+                                  icon="o_manage_accounts">
 
-<!--                    <template #header>-->
-<!--                        <q-item-section avatar>-->
-<!--                            <ZAdminIcon :active=" route().current()==='user.index'-->
-<!--                             || route().current()==='user.create'-->
-<!--                             || route().current()==='user.edit'-->
-<!--                             || route().current()==='role.index'-->
-<!--                             || route().current()==='role.edit'-->
-<!--                             || route().current()==='information.index'-->
-<!--                             || route().current()==='information.create'-->
-<!--                             || route().current()==='information.edit'-->
-<!--                             || route().current()==='certificate.index'-->
-<!--                             || route().current()==='district.index'-->
-<!--                             || route().current()==='category.index'-->
-<!--                             || route().current()==='migration.index'-->
-<!--                        "/>-->
-<!--                        </q-item-section>-->
+                    <template #header>
+                        <q-item-section avatar>
 
-<!--                        <q-item-section>-->
-<!--                            Administration-->
-<!--                        </q-item-section>-->
-<!--                    </template>-->
+                            <q-icon :active=" route().current()==='user.index'
+                             || route().current()==='user.create'
+                             || route().current()==='user.edit'
+                             || route().current()==='role.index'
+                             || route().current()==='role.edit'
 
-<!--                    <template v-for="item in module.admin.children"-->
-<!--                              :key="item.route_name">-->
-<!--                        <q-item v-if="$page.props.permissions.find(val=>val.name===item.permission)"-->
-<!--                                class="nav-item"-->
-<!--                                :active="route().current()===item.route_name"-->
-<!--                                active-class="active-item text-accent"-->
-<!--                                clickable-->
-<!--                                @click="$inertia.get(route(item.route_name),{},{preserveState:true})">-->
-<!--                            <q-item-section avatar class="q-ml-sm">-->
-<!--                                <q-icon :size="route().current()===item.route_name ? '12px':'9px'"-->
-<!--                                        name="fiber_manual_record"/>-->
-<!--                            </q-item-section>-->
-<!--                            <q-item-section>-->
-<!--                                <q-item-label>{{ item.label }}</q-item-label>-->
-<!--                            </q-item-section>-->
-<!--                        </q-item>-->
-<!--                    </template>-->
+                        ">
 
-<!--                </q-expansion-item>-->
+                                <svg v-if="active" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M21 17.5H11C10.7239 17.5 10.5 17.7239 10.5 18V23C10.5 23.2761 10.7239 23.5 11 23.5H21C21.2761 23.5 21.5 23.2761 21.5 23V18C21.5 17.7239 21.2761 17.5 21 17.5ZM11 16C9.89543 16 9 16.8954 9 18V23C9 24.1046 9.89543 25 11 25H21C22.1046 25 23 24.1046 23 23V18C23 16.8954 22.1046 16 21 16H11Z" fill="#306ADB"/>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M13.8333 4H6C4.89543 4 4 4.89543 4 6V19C4 20.1046 4.89543 21 6 21H9.5V19.5H6C5.72386 19.5 5.5 19.2761 5.5 19V6C5.5 5.72386 5.72386 5.5 6 5.5H12.8333L13.8333 4ZM14.5 14.6835V17H16V15.4038C15.756 15.3333 15.4226 15.2113 15 15C14.8165 14.9082 14.6498 14.7997 14.5 14.6835Z" fill="#306ADB"/>
+                                    <rect x="8" y="9.5" width="1.5" height="4" transform="rotate(-90 8 9.5)" fill="#306ADB"/>
+                                    <path d="M8 12.5L8 11L12 11L12 12.5L8 12.5Z" fill="#306ADB"/>
+                                    <path d="M12 20.5L12 19L16 19L16 20.5L12 20.5Z" fill="#306ADB"/>
+                                    <path d="M24.8475 8.87916C24.938 8.8636 25.0044 8.78346 24.9998 8.69192C24.9881 8.45644 24.9614 8.21915 24.9204 7.98133C24.8792 7.74222 24.8242 7.5083 24.7565 7.28138C24.7303 7.19372 24.6418 7.14004 24.5516 7.15508C24.2082 7.21214 23.8277 7.27645 23.6236 7.3138C23.5364 7.32962 23.4524 7.2806 23.4197 7.19839C23.1855 6.6097 22.8489 6.11592 22.4165 5.67375L22.4186 5.67219L23.0488 4.77981C23.102 4.7046 23.0919 4.60035 23.0234 4.53888C22.6689 4.22016 22.278 3.94422 21.8594 3.71756C21.7785 3.67373 21.677 3.69915 21.6239 3.77436L20.9944 4.66544L20.9926 4.66803C20.3984 4.39417 19.7424 4.24064 19.0629 4.23157L19.0637 4.22897L18.8785 3.15246C18.8629 3.06195 18.7828 2.99556 18.6912 3.00023C18.4557 3.0119 18.2184 3.03861 17.9806 3.07959C17.7427 3.12056 17.5109 3.17451 17.2852 3.24219C17.1973 3.26865 17.1441 3.35786 17.1597 3.44837L17.3194 4.37706C17.3342 4.4629 17.2857 4.54614 17.2048 4.57882C16.6199 4.81456 16.1074 5.15948 15.6707 5.58635L15.6691 5.58427L14.7774 4.9546C14.7024 4.9017 14.5987 4.91155 14.5372 4.9795C14.218 5.33272 13.9417 5.7238 13.715 6.14341C13.6715 6.22432 13.6966 6.3252 13.7718 6.37837L14.5437 6.92349C14.6148 6.97381 14.6394 7.06665 14.6054 7.14678C14.364 7.71681 14.2312 8.33766 14.2283 8.98082C14.2294 8.96656 14.2281 8.95152 14.2278 8.93621L13.1525 9.12112C13.062 9.13668 12.9956 9.21682 13.0002 9.30836C13.0119 9.54384 13.0386 9.78114 13.0796 10.0189C13.1206 10.257 13.1748 10.4894 13.2425 10.7153C13.2689 10.8032 13.3582 10.8564 13.4487 10.8408L14.3764 10.6813C14.4623 10.6665 14.5455 10.715 14.578 10.7957C14.7935 11.3296 15.0998 11.8105 15.4769 12.222C15.5358 12.2863 15.5436 12.382 15.4935 12.4534L14.9514 13.2205C14.8983 13.2957 14.9084 13.3999 14.9769 13.4614C15.3311 13.7801 15.7223 14.0561 16.1409 14.2827C16.2218 14.3266 16.3232 14.3011 16.3764 14.2259L16.9174 13.4598C16.9677 13.3885 17.0606 13.3641 17.141 13.3981C17.6551 13.616 18.2111 13.7449 18.7877 13.7703C18.8749 13.7742 18.948 13.8361 18.9628 13.922L19.122 14.8476C19.1376 14.9381 19.2177 15.0042 19.3093 14.9998C19.5445 14.9881 19.7808 14.9617 20.0189 14.9207C20.257 14.8797 20.4894 14.8255 20.7153 14.7578C20.8032 14.7314 20.8564 14.6422 20.8408 14.5519L20.6816 13.6266C20.6668 13.5408 20.7153 13.4578 20.796 13.4251C21.329 13.2096 21.8096 12.9025 22.2212 12.5254C22.2855 12.4666 22.3815 12.4585 22.4525 12.5091L23.219 13.0511C23.2942 13.1043 23.3982 13.0944 23.4599 13.026C23.7789 12.6725 24.0557 12.2814 24.2834 11.8626C24.3275 11.7817 24.3021 11.68 24.2266 11.6268L23.4584 11.0851C23.387 11.0348 23.3624 10.9419 23.3964 10.8618C23.6142 10.3468 23.7431 9.79073 23.7686 9.21422C23.7725 9.12709 23.8344 9.05395 23.9203 9.03917L24.848 8.87942L24.8475 8.87916ZM19.564 12.2814C17.7508 12.5934 16.0296 11.3779 15.7176 9.56485C15.4056 7.75182 16.621 6.02956 18.4342 5.71757C20.2474 5.40559 21.9701 6.62214 22.2821 8.43517C22.5942 10.2482 21.3772 11.9694 19.564 12.2814Z" fill="#306ADB"/>
+                                </svg>
+                                <svg v-else width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M21 17.5H11C10.7239 17.5 10.5 17.7239 10.5 18V23C10.5 23.2761 10.7239 23.5 11 23.5H21C21.2761 23.5 21.5 23.2761 21.5 23V18C21.5 17.7239 21.2761 17.5 21 17.5ZM11 16C9.89543 16 9 16.8954 9 18V23C9 24.1046 9.89543 25 11 25H21C22.1046 25 23 24.1046 23 23V18C23 16.8954 22.1046 16 21 16H11Z" fill="#191C51"/>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M13.8333 4H6C4.89543 4 4 4.89543 4 6V19C4 20.1046 4.89543 21 6 21H9.5V19.5H6C5.72386 19.5 5.5 19.2761 5.5 19V6C5.5 5.72386 5.72386 5.5 6 5.5H12.8333L13.8333 4ZM14.5 14.6835V17H16V15.4038C15.756 15.3333 15.4226 15.2113 15 15C14.8165 14.9082 14.6498 14.7997 14.5 14.6835Z" fill="#191C51"/>
+                                    <rect x="8" y="9.5" width="1.5" height="4" transform="rotate(-90 8 9.5)" fill="#191C51"/>
+                                    <path d="M8 12.5L8 11L12 11L12 12.5L8 12.5Z" fill="#191C51"/>
+                                    <path d="M12 20.5L12 19L16 19L16 20.5L12 20.5Z" fill="#191C51"/>
+                                    <path d="M24.8475 8.87916C24.938 8.8636 25.0044 8.78346 24.9998 8.69192C24.9881 8.45644 24.9614 8.21915 24.9204 7.98133C24.8792 7.74222 24.8242 7.5083 24.7565 7.28138C24.7303 7.19372 24.6418 7.14004 24.5516 7.15508C24.2082 7.21214 23.8277 7.27645 23.6236 7.3138C23.5364 7.32962 23.4524 7.2806 23.4197 7.19839C23.1855 6.6097 22.8489 6.11592 22.4165 5.67375L22.4186 5.67219L23.0488 4.77981C23.102 4.7046 23.0919 4.60035 23.0234 4.53888C22.6689 4.22016 22.278 3.94422 21.8594 3.71756C21.7785 3.67373 21.677 3.69915 21.6239 3.77436L20.9944 4.66544L20.9926 4.66803C20.3984 4.39417 19.7424 4.24064 19.0629 4.23157L19.0637 4.22897L18.8785 3.15246C18.8629 3.06195 18.7828 2.99556 18.6912 3.00023C18.4557 3.0119 18.2184 3.03861 17.9806 3.07959C17.7427 3.12056 17.5109 3.17451 17.2852 3.24219C17.1973 3.26865 17.1441 3.35786 17.1597 3.44837L17.3194 4.37706C17.3342 4.4629 17.2857 4.54614 17.2048 4.57882C16.6199 4.81456 16.1074 5.15948 15.6707 5.58635L15.6691 5.58427L14.7774 4.9546C14.7024 4.9017 14.5987 4.91155 14.5372 4.9795C14.218 5.33272 13.9417 5.7238 13.715 6.14341C13.6715 6.22432 13.6966 6.3252 13.7718 6.37837L14.5437 6.92349C14.6148 6.97381 14.6394 7.06665 14.6054 7.14678C14.364 7.71681 14.2312 8.33766 14.2283 8.98082C14.2294 8.96656 14.2281 8.95152 14.2278 8.93621L13.1525 9.12112C13.062 9.13668 12.9956 9.21682 13.0002 9.30836C13.0119 9.54384 13.0386 9.78114 13.0796 10.0189C13.1206 10.257 13.1748 10.4894 13.2425 10.7153C13.2689 10.8032 13.3582 10.8564 13.4487 10.8408L14.3764 10.6813C14.4623 10.6665 14.5455 10.715 14.578 10.7957C14.7935 11.3296 15.0998 11.8105 15.4769 12.222C15.5358 12.2863 15.5436 12.382 15.4935 12.4534L14.9514 13.2205C14.8983 13.2957 14.9084 13.3999 14.9769 13.4614C15.3311 13.7801 15.7223 14.0561 16.1409 14.2827C16.2218 14.3266 16.3232 14.3011 16.3764 14.2259L16.9174 13.4598C16.9677 13.3885 17.0606 13.3641 17.141 13.3981C17.6551 13.616 18.2111 13.7449 18.7877 13.7703C18.8749 13.7742 18.948 13.8361 18.9628 13.922L19.122 14.8476C19.1376 14.9381 19.2177 15.0042 19.3093 14.9998C19.5445 14.9881 19.7808 14.9617 20.0189 14.9207C20.257 14.8797 20.4894 14.8255 20.7153 14.7578C20.8032 14.7314 20.8564 14.6422 20.8408 14.5519L20.6816 13.6266C20.6668 13.5408 20.7153 13.4578 20.796 13.4251C21.329 13.2096 21.8096 12.9025 22.2212 12.5254C22.2855 12.4666 22.3815 12.4585 22.4525 12.5091L23.219 13.0511C23.2942 13.1043 23.3982 13.0944 23.4599 13.026C23.7789 12.6725 24.0557 12.2814 24.2834 11.8626C24.3275 11.7817 24.3021 11.68 24.2266 11.6268L23.4584 11.0851C23.387 11.0348 23.3624 10.9419 23.3964 10.8618C23.6142 10.3468 23.7431 9.79073 23.7686 9.21422C23.7725 9.12709 23.8344 9.05395 23.9203 9.03917L24.848 8.87942L24.8475 8.87916ZM19.564 12.2814C17.7508 12.5934 16.0296 11.3779 15.7176 9.56485C15.4056 7.75182 16.621 6.02956 18.4342 5.71757C20.2474 5.40559 21.9701 6.62214 22.2821 8.43517C22.5942 10.2482 21.3772 11.9694 19.564 12.2814Z" fill="#D81D1D"/>
+                                </svg>
+
+                            </q-icon>
+                        </q-item-section>
+
+                        <q-item-section>
+                            Administration
+                        </q-item-section>
+                    </template>
+
+                    <template v-for="item in module.admin.children"
+                              :key="item.route_name">
+                        <q-item
+                                class="nav-item"
+                                :active="route().current()===item.route_name"
+                                active-class="active-item text-accent"
+                                clickable
+                                @click="$inertia.get(route(item.route_name),{},{preserveState:true})">
+                            <q-item-section avatar class="q-ml-sm">
+                                <q-icon :size="route().current()===item.route_name ? '12px':'9px'"
+                                        name="fiber_manual_record"/>
+                            </q-item-section>
+                            <q-item-section>
+                                <q-item-label>{{ item.label }}</q-item-label>
+                            </q-item-section>
+                        </q-item>
+                    </template>
+
+                </q-expansion-item>
 
 
 
@@ -433,7 +441,31 @@ const toggleLeftDrawer = () => {
 }
 
 
+const module = reactive({
 
+    admin: {
+        label: 'Administration',
+        children: [
+            {route_name: 'role.index', label: 'Permissions', permission: 'view-anyrole'},
+            {route_name: 'user.index', label: 'User Accounts', permission: 'view-anyuser'},
+        ]
+    },
+
+    reports: {
+        label: 'MIS Reports',
+        children: [
+            {route_name: 'society.index', label: 'Society', permission: 'view-society'},
+        ]
+    },
+    requests: {
+        label: 'Requests',
+        children: [
+            {route_name: 'dissolution.submitted', label: 'Submitted', permission: 'view-dissolution'},
+            {route_name: 'dissolution.ongoing', label: 'Ongoing', permission: 'view-dissolution'},
+            {route_name: 'dissolution.archived', label: 'Archived', permission: 'view-dissolution'},
+        ]
+    },
+})
 
 
 
