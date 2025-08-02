@@ -1,0 +1,225 @@
+<script setup>
+import BackendLayout from "../../../Layouts/BackendLayout.vue";
+import { ref, reactive } from 'vue'
+import { BarChart, PieChart } from 'vue-chart-3'
+
+defineOptions({layout:BackendLayout})
+
+
+// Dummy data for employee skill categories
+const skillCategoryData = {
+    labels: ['Skilled', 'Semi-skilled', 'Unskilled'],
+    datasets: [
+        {
+            label: 'Skill Category',
+            data: [50, 30, 20],
+            borderWidth:1,
+            borderColor: '#fff',
+            width:10,
+            backgroundColor: ['#4f5396','#a77f3d','#299894','#64378c','#333'],
+        },
+    ],
+}
+
+// Grouped bar chart: PE vs MR by office
+const employeeByOfficeChartData = {
+    labels: ['Office A', 'Office B', 'Office C', 'Office D'],
+    datasets: [
+
+        {
+            label: 'Muster Roll (MR)',
+            data: [8, 15, 10, 6],
+            backgroundColor: '#29ad3d',
+            barThickness: 16,
+            borderRadius: 4,
+        },
+        {
+            label: 'Provisional (PE)',
+            data: [12, 20, 14, 10],
+            backgroundColor: '#1266ed',
+            barThickness: 16,
+            borderRadius: 4,
+        },
+    ],
+}
+
+const options = ref({
+    responsive: true,
+    plugins: {
+        legend: {
+            position: 'top',
+        },
+        title: {
+            display: true,
+            text: 'PHED Employee Management',
+        },
+    },
+});
+
+const state = reactive({
+    totalEmployees: 100,
+    contractualEmployees: 60,
+    permanentEmployees: 40,
+    offices: ['Office A', 'Office B', 'Office C', 'Office D'],
+})
+
+// Assume we're always showing admin view for now
+const applicant = false
+</script>
+
+<template>
+    <q-page class="container"  padding>
+        <div class="row q-col-gutter-md">
+            <div v-if="!applicant" class="col-xs-12 col-sm-4">
+                <div class="dealing-card q-pa-md count-warning">
+                    <div class="title-warning">Total Employees</div>
+                    <div class="text-caption caption-sm">Current Count</div>
+                    <div class="flex items-center">
+                        <div class="count-dealing">{{ state.totalEmployees }}</div>
+                        <div class="caption q-ml-md">Employees</div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="!applicant" class="col-xs-12 col-sm-4">
+                <div class="verification-card q-pa-md count-green">
+                    <div class="title-green">Muster Roll</div>
+                    <div class="text-caption caption-sm">Employment Type</div>
+                    <div class="flex items-center">
+                        <div class="count-green">{{ state.contractualEmployees }}</div>
+                        <div class="caption q-ml-md">Employees</div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="!applicant" class="col-xs-12 col-sm-4">
+                <div class="approval-card q-pa-md count-blue">
+                    <div class="title-blue">Provisional</div>
+                    <div class="text-caption caption-sm">Employment Type</div>
+                    <div class="flex items-center">
+                        <div class="count-blue">{{ state.permanentEmployees }}</div>
+                        <div class="caption q-ml-md">Employees</div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="!applicant" class="col-xs-12 col-sm-4">
+                <div class="q-pa-md bg-white">
+                    <div class="title">Skill Category Distribution</div>
+                    <br />
+                    <div class="row q-col-gutter-md">
+                        <div class="col-xs-12">
+                            <PieChart style="height: 320px" :chartData="skillCategoryData" :options="options" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="!applicant" class="col-xs-12 col-sm-8">
+                <div class="q-pa-md bg-white">
+                    <div class="text-lg text-primary text-bold">Office-wise PE & MR Count</div>
+                    <br />
+                    <div class="row">
+                        <div class="col-xs-12 text-sm text-bold text-primary">Grouped by Office</div>
+                        <div class="col-xs-12 col-sm-9">
+                            <BarChart
+                                style="height: 320px"
+                                :chartData="employeeByOfficeChartData"
+                                :options="options"
+                            />
+                        </div>
+                        <div class="col-xs-12 col-sm-3">
+                            <div style="max-width: 140px" class="column q-ml-md">
+                                <p
+                                    v-for="(item, index) in state.offices"
+                                    :key="index"
+                                    class="q-ma-xs"
+                                >
+                                    <span>{{ index + 1 }}. &nbsp;</span>{{ item }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </q-page>
+
+</template>
+
+
+<style scoped>
+.title{
+    font-size: 24px;
+    margin: 0;
+    font-weight: bold;
+    color: #191c51;
+}
+.dealing-card{
+    padding: 18px;
+    background-color: #fff8f0;
+    color: #f27001;
+}.verification-card{
+     padding: 18px;
+     background-color: #f0fdf6;
+     color: #191c51;
+ }
+.approval-card{
+    padding: 18px;
+    background-color: #eff7ff;
+}
+.count-green{
+    font-size: 36px;
+    font-weight: 600;
+    line-height: normal;
+    color: #29ad3d;
+}
+.count-warning{
+    font-size: 36px;
+    font-weight: 600;
+    line-height: normal;
+    color: #f27000;
+}
+.count-blue{
+    font-size: 36px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: left;
+    color: #1266ed;
+}
+.caption{
+    font-size: 16px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.31;
+    letter-spacing: normal;
+    color: #080808;
+}
+.title-green{
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+    color: #29ad3d;
+}
+.title-warning{
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+    color: #f27000;
+}
+.title-blue{
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+    color: #1266ed;
+}
+.caption-sm{
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.25;
+
+    color: #9b9b9b;
+}
+</style>
