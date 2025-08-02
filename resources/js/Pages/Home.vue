@@ -157,6 +157,7 @@ defineOptions({layout:FrontendLayout})
     font-weight: bold;
     line-height: 1.2;
     color: #191c51;
+    margin-left: 20px;
 }
 .stat-count{
     font-family: Poppins,serif;
