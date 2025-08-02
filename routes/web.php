@@ -45,8 +45,6 @@ Route::group(['middleware'=>'auth','prefix' => 'profile'], function () {
 
 
 Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
-
-
     Route::group(['prefix' => 'office'], function () {
         Route::get('', [OfficeController::class, 'index'])->middleware('can:view-office')->name('office.index');
         Route::get('json-index', [OfficeController::class, 'jsonAll'])->middleware('can:view-anyoffice')->name('office.json-index');
@@ -69,10 +67,6 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
         Route::delete('{model}', [DocumentTypeController::class, 'destroy'])->middleware('can:delete-document-type')->name('document-type.destroy');
     });
 
-
-
-
-
     Route::group(['prefix' => 'user'], function () {
         Route::get('', [UserController::class, 'index'])->middleware('can:view-user')->name('user.index');
         Route::get('json-index', [UserController::class, 'jsonAll'])->middleware('can:view-anyrole')->name('user.json-index');
@@ -93,3 +87,4 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
 
 
 });
+

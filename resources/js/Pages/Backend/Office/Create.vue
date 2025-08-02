@@ -5,8 +5,8 @@
                 <div class="stitle">Create New office</div>
                 <q-breadcrumbs class="text-dark">
                     <q-breadcrumbs-el class="cursor-pointer"  icon="dashboard" label="Dashboard" @click="$inertia.get(route('dashboard'))"/>
-                    <q-breadcrumbs-el class="cursor-pointer" label="User Accounts" @click="$inertia.get(route('office.index'))"/>
-                    <q-breadcrumbs-el label="New User"/>
+                    <q-breadcrumbs-el class="cursor-pointer" label="Offices" @click="$inertia.get(route('office.index'))"/>
+                    <q-breadcrumbs-el label="New Office"/>
                 </q-breadcrumbs>
             </div>
         </div>

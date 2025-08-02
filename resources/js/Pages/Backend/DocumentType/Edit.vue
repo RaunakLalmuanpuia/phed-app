@@ -5,7 +5,7 @@
                 <div class="stitle">Edit Document Type</div>
                 <q-breadcrumbs class="text-dark">
                     <q-breadcrumbs-el class="cursor-pointer"  icon="dashboard" label="Dashboard" @click="$inertia.get(route('dashboard'))"/>
-                    <q-breadcrumbs-el class="cursor-pointer" label="Offices" @click="$inertia.get(route('document-type.index'))"/>
+                    <q-breadcrumbs-el class="cursor-pointer" label="Document Type" @click="$inertia.get(route('document-type.index'))"/>
                     <q-breadcrumbs-el label="Edit Document Type"/>
                 </q-breadcrumbs>
             </div>
