@@ -19,11 +19,13 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Define permissions
         $permissions = [
-            'Request Edit', 'Request Deletion', 'Request Transfer',
-            'Approve Edit', 'Approve Deletion', 'Approve Transfer',
+            'request-edit', 'request-delete', 'request-transfer',
+            'approve-edit', 'approve-delete', 'approve-transfer',
+            'view-employee','view-allemployee','create-employee','delete-employee','edit-employee',
             'view-anyuser','view-user','create-user','delete-user','edit-user',
             'view-anyoffice','view-office','create-office','delete-office','edit-office',
             'view-anyrole','edit-role',
+            'view-any-document-type','view-document-type','create-document-type','delete-document-type','edit-document-type',
 
         ];
 
@@ -34,11 +36,13 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Define roles and their permissions
         $roles = [
-            'Manager' => ['Request Edit', 'Request Deletion', 'Request Transfer',],
-            'Admin' => ['Approve Edit', 'Approve Deletion', 'Approve Transfer',
+            'Manager' => ['request-edit', 'request-delete', 'request-transfer',],
+            'Admin' => ['approve-edit', 'approve-delete', 'approve-transfer',
+                'view-employee','view-allemployee','create-employee','delete-employee','edit-employee',
                 'view-anyuser','view-user','create-user','delete-user','edit-user',
                 'view-anyoffice','view-office','create-office','delete-office','edit-office',
                 'view-anyrole','edit-role',
+                'view-any-document-type','view-document-type','create-document-type','delete-document-type','edit-document-type',
                 ],
         ];
 

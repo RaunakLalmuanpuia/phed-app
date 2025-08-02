@@ -6,7 +6,7 @@
                     <div class="flex items-center justify-center">
                         <div v-if="!!$page.props.auth?.user" class="column q-gutter-sm">
                             <p class="text-dark">You are logged in</p>
-<!--                            <q-btn @click="$inertia.get(route('dashboard'))" flat label="Go to dashboard"/>-->
+                            <q-btn @click="$inertia.get(route('dashboard'))" flat label="Go to dashboard"/>
                         </div>
                         <q-form style="max-width: 450px" v-else class="column q-gutter-sm q-my-lg" @submit="handleSubmit">
 

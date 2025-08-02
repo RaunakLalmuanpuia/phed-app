@@ -8,6 +8,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\OfficeController;
+use App\Http\Controllers\DocumentTypeController;
+
 
 
 Route::get('/', function () {
@@ -55,6 +57,20 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
         Route::get('{model}/show', [OfficeController::class, 'show'])->middleware('can:view-office')->name('office.show');
         Route::delete('{model}', [OfficeController::class, 'destroy'])->middleware('can:delete-office')->name('office.destroy');
     });
+
+    Route::group(['prefix' => 'document-type'], function () {
+        Route::get('', [DocumentTypeController::class, 'index'])->middleware('can:view-document-type')->name('document-type.index');
+        Route::get('json-index', [DocumentTypeController::class, 'jsonAll'])->middleware('can:view-any-document-type')->name('document-type.json-index');
+        Route::get('create', [DocumentTypeController::class, 'create'])->middleware('can:create-document-type')->name('document-type.create');
+        Route::post('store', [DocumentTypeController::class, 'store'])->middleware('can:create-document-type')->name('document-type.store');
+        Route::get('edit/{model}', [DocumentTypeController::class, 'edit'])->middleware('can:edit-document-type')->name('document-type.edit');
+        Route::put('update/{model}', [DocumentTypeController::class, 'update'])->middleware('can:edit-document-type')->name('document-type.update');
+        Route::get('{model}/show', [DocumentTypeController::class, 'show'])->middleware('can:view-document-type')->name('document-type.show');
+        Route::delete('{model}', [DocumentTypeController::class, 'destroy'])->middleware('can:delete-document-type')->name('document-type.destroy');
+    });
+
+
+
 
 
     Route::group(['prefix' => 'user'], function () {

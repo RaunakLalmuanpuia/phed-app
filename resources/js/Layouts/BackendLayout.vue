@@ -450,8 +450,10 @@ const module = reactive({
         label: 'Administration',
         children: [
             {route_name: 'office.index', label: 'Offices', permission: 'view-office'},
+            {route_name: 'document-type.index', label: 'Document Type', permission: 'view-any-document-type'},
             {route_name: 'role.index', label: 'Permissions', permission: 'view-anyrole'},
             {route_name: 'user.index', label: 'User Accounts', permission: 'view-anyuser'},
+
 
         ]
     },

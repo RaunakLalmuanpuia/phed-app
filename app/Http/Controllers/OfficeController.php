@@ -104,6 +104,7 @@ class OfficeController extends Controller
         $user = auth()->user();
         abort_if(!$user->hasPermissionTo('delete-office'),403,'Access Denied');
 
+        // Check if deleting is going to cause data loss!!
         $model->delete();
         return to_route('office.index');
     }
