@@ -338,7 +338,7 @@
                              || route().current()==='user.edit'
                              || route().current()==='role.index'
                              || route().current()==='role.edit'
-                            
+
                           )
 
                           ?'active-menu text-accent':''"
@@ -352,6 +352,9 @@
                              || route().current()==='user.edit'
                              || route().current()==='role.index'
                              || route().current()==='role.edit'
+                             || route().current()==='office.index'
+                             || route().current()==='office.create'
+                             || route().current()==='office.edit'
 
                         ">
 
@@ -446,8 +449,10 @@ const module = reactive({
     admin: {
         label: 'Administration',
         children: [
+            {route_name: 'office.index', label: 'Offices', permission: 'view-office'},
             {route_name: 'role.index', label: 'Permissions', permission: 'view-anyrole'},
             {route_name: 'user.index', label: 'User Accounts', permission: 'view-anyuser'},
+
         ]
     },
 

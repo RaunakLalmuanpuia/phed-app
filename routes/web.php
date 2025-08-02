@@ -7,6 +7,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\OfficeController;
+
 
 Route::get('/', function () {
     return Inertia::render('Home');
@@ -42,21 +44,36 @@ Route::group(['middleware'=>'auth','prefix' => 'profile'], function () {
 
 Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
 
+
+    Route::group(['prefix' => 'office'], function () {
+        Route::get('', [OfficeController::class, 'index'])->middleware('can:view-office')->name('office.index');
+        Route::get('json-index', [OfficeController::class, 'jsonAll'])->middleware('can:view-anyoffice')->name('office.json-index');
+        Route::get('create', [OfficeController::class, 'create'])->middleware('can:create-office')->name('office.create');
+        Route::post('store', [OfficeController::class, 'store'])->middleware('can:create-office')->name('office.store');
+        Route::get('edit/{model}', [OfficeController::class, 'edit'])->middleware('can:edit-office')->name('office.edit');
+        Route::put('update/{model}', [OfficeController::class, 'update'])->middleware('can:edit-office')->name('office.update');
+        Route::get('{model}/show', [OfficeController::class, 'show'])->middleware('can:view-office')->name('office.show');
+        Route::delete('{model}', [OfficeController::class, 'destroy'])->middleware('can:delete-office')->name('office.destroy');
+    });
+
+
     Route::group(['prefix' => 'user'], function () {
-        Route::get('', [UserController::class, 'index'])->name('user.index');
-        Route::get('json-index', [UserController::class, 'jsonAll'])->name('user.json-index');
-        Route::get('create', [UserController::class, 'create'])->name('user.create');
-        Route::post('store', [UserController::class, 'store'])->name('user.store');
-        Route::get('edit/{model}', [UserController::class, 'edit'])->name('user.edit');
-        Route::put('update/{model}', [UserController::class, 'update'])->name('user.update');
-        Route::get('{model}/show', [UserController::class, 'show'])->name('user.show');
-        Route::delete('{model}', [UserController::class, 'destroy'])->name('user.destroy');
+        Route::get('', [UserController::class, 'index'])->middleware('can:view-user')->name('user.index');
+        Route::get('json-index', [UserController::class, 'jsonAll'])->middleware('can:view-anyrole')->name('user.json-index');
+        Route::get('create', [UserController::class, 'create'])->middleware('can:create-user')->name('user.create');
+        Route::post('store', [UserController::class, 'store'])->middleware('can:create-user')->name('user.store');
+        Route::get('edit/{model}', [UserController::class, 'edit'])->middleware('can:edit-user')->name('user.edit');
+        Route::put('update/{model}', [UserController::class, 'update'])->middleware('can:edit-user')->name('user.update');
+        Route::get('{model}/show', [UserController::class, 'show'])->middleware('can:view-user')->name('user.show');
+        Route::delete('{model}', [UserController::class, 'destroy'])->middleware('can:delete-user')->name('user.destroy');
     });
 
     Route::group(['prefix' => 'role'], function () {
-        Route::get('', [RoleController::class, 'index'])->name('role.index');
-        Route::get('{model}', [RoleController::class, 'show'])->name('role.show');
-        Route::put('{model}', [RoleController::class, 'update'])->name('role.update');
+        Route::get('', [RoleController::class, 'index'])->middleware('can:view-anyrole')->name('role.index');
+        Route::get('{model}', [RoleController::class, 'show'])->middleware('can:edit-role')->name('role.show');
+        Route::put('{model}', [RoleController::class, 'update'])->middleware('can:edit-role')->name('role.update');
     });
+
+
 
 });

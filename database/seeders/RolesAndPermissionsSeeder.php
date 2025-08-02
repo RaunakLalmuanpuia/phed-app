@@ -19,12 +19,11 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Define permissions
         $permissions = [
-            'Request Edit',
-            'Reject Deletion',
-            'Request Transfer',
-            'Approve Edit',
-            'Approve Deletion',
-            'Approve Transfer',
+            'Request Edit', 'Request Deletion', 'Request Transfer',
+            'Approve Edit', 'Approve Deletion', 'Approve Transfer',
+            'view-anyuser','view-user','create-user','delete-user','edit-user',
+            'view-anyoffice','view-office','create-office','delete-office','edit-office',
+            'view-anyrole','edit-role',
 
         ];
 
@@ -35,8 +34,12 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Define roles and their permissions
         $roles = [
-            'Manager' => ['Request Edit', 'Reject Deletion', 'Request Transfer',],
-            'Admin' => ['Approve Edit', 'Approve Deletion', 'Approve Transfer',],
+            'Manager' => ['Request Edit', 'Request Deletion', 'Request Transfer',],
+            'Admin' => ['Approve Edit', 'Approve Deletion', 'Approve Transfer',
+                'view-anyuser','view-user','create-user','delete-user','edit-user',
+                'view-anyoffice','view-office','create-office','delete-office','edit-office',
+                'view-anyrole','edit-role',
+                ],
         ];
 
         // Create roles and assign permissions

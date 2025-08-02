@@ -2,22 +2,22 @@
     <q-page class="container" padding>
         <div class="flex items-center justify-between q-pa-md bg-white">
             <div>
-                <div class="stitle">User Accounts</div>
+                <div class="stitle">Offices</div>
                 <q-breadcrumbs  class="text-dark">
                     <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
-                    <q-breadcrumbs-el label="User Accounts" :to="route('user.index')"/>
+                    <q-breadcrumbs-el label="Offices" :to="route('office.index')"/>
                 </q-breadcrumbs>
             </div>
 
             <div class="flex q-gutter-sm">
-                <q-btn @click="$inertia.get(route('user.create'))" color="btn-primary" label="New User"/>
+                <q-btn @click="$inertia.get(route('office.create'))" color="btn-primary" label="New Office"/>
             </div>
         </div>
         <br/>
         <q-table
             flat
             ref="tableRef"
-            title="List of User"
+            title="List of Offices"
             :rows="rows"
             :columns="columns"
             row-key="id"
@@ -39,19 +39,14 @@
                     </template>
                 </q-input>
             </template>
-            <template v-slot:body-cell-role="props">
-                <q-td>
-                    <q-chip v-for="item in props.row?.roles" :label="item.name" square/>
-                </q-td>
-            </template>
             <template v-slot:body-cell-action="props">
                 <q-td>
                     <q-btn round icon="more_vert">
                         <q-menu>
-                            <q-item clickable @click="$inertia.get(route('user.show',props.row.id))">
+                            <q-item clickable @click="$inertia.get(route('office.show',props.row.id))">
                                 <q-item-section>View Detail</q-item-section>
                             </q-item>
-                            <q-item clickable @click="$inertia.get(route('user.edit',props.row.id))">
+                            <q-item clickable @click="$inertia.get(route('office.edit',props.row.id))">
                                 <q-item-section>Edit</q-item-section>
                             </q-item>
                             <q-item @click="handleDelete(props.row)" :disable="!canDelete">
@@ -74,13 +69,12 @@ import {useQuasar} from "quasar";
 import {router} from "@inertiajs/vue3";
 defineOptions({layout:BackendLayout})
 const props=defineProps(['canCreate','canEdit','canDelete'])
+
 const columns = [
     { name: 'name', align: 'left', label: 'Name', field: 'name', sortable: false },
-    { name: 'designation', align: 'left', label: 'Designation', field: 'designation', sortable: false },
-    { name: 'mobile', align:'left', label: 'Mobile', field: 'mobile', sortable: true },
-    { name: 'email',align:'left', label: 'Email', field: 'email', sortable: true },
-    { name: 'role', align:'left',label: 'Role', field: 'role', sortable: true },
-    { name: 'action',align:'left', label: 'Action', field: 'action', sortable: true },
+    { name: 'type', align: 'left', label: 'Type', field: 'type', sortable: false },
+    { name: 'location', align:'left', label: 'Location', field: 'location', sortable: false },
+    { name: 'action',align:'left', label: 'Action', field: 'action', sortable: false },
 ]
 
 const q = useQuasar();
@@ -102,13 +96,13 @@ const handleDelete=item=>{
         ok:'Yes',
         cancel:'No'
     })
-    .onOk(()=>{
-        router.delete(route('user.destroy',item.id),{
-            onStart:params => q.loading.show(),
-            onFinish:params => q.loading.hide(),
-            preserveState: false
+        .onOk(()=>{
+            router.delete(route('office.destroy',item.id),{
+                onStart:params => q.loading.show(),
+                onFinish:params => q.loading.hide(),
+                preserveState: false
+            })
         })
-    })
 }
 const handleSearch=val=>{
     onRequest({pagination:pagination.value,filter:val})
@@ -118,27 +112,27 @@ function onRequest (props) {
     const filter = props.filter
 
     loading.value = true
-    axios.get(route('user.json-index'),{
+    axios.get(route('office.json-index'),{
         params:{
             filter,
             page,
             rowsPerPage,
         }
     })
-    .then(res=>{
-        console.log(res.data);
-        const {list} = res.data;
-        const {data,per_page,current_page,total,to,from} = list;
-        rows.value = data;
-        pagination.value.page = current_page;
-        pagination.value.rowsNumber = total;
-        pagination.value.rowsPerPage = per_page;
+        .then(res=>{
+            console.log(res.data);
+            const {list} = res.data;
+            const {data,per_page,current_page,total,to,from} = list;
+            rows.value = data;
+            pagination.value.page = current_page;
+            pagination.value.rowsNumber = total;
+            pagination.value.rowsPerPage = per_page;
 
-    })
-    .catch(err=>{
-        q.notify({type:'negative',message:err?.response?.data?.message})
-    })
-    .finally(()=>loading.value=false)
+        })
+        .catch(err=>{
+            q.notify({type:'negative',message:err?.response?.data?.message})
+        })
+        .finally(()=>loading.value=false)
 }
 
 onMounted(() => {

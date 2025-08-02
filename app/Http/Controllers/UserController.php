@@ -17,7 +17,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-//        abort_if(!$user->hasPermissionTo('view-anyuser'),403,'Access Denied');
+        abort_if(!$user->hasPermissionTo('view-anyuser'),403,'Access Denied');
 
         return inertia('Backend/User/Index',[
             'canDelete'=>$user->can('delete-user'),
@@ -29,7 +29,7 @@ class UserController extends Controller
     public function jsonAll(Request $request)
     {
         $user = auth()->user();
-//        abort_if(!$user->hasPermissionTo('view-anyuser'),403,'Access Denied');
+        abort_if(!$user->hasPermissionTo('view-anyuser'),403,'Access Denied');
 
         $perPage = $request->get('rowsPerPage') ?? 15;
         $filter = $request->get('filter');
@@ -44,7 +44,7 @@ class UserController extends Controller
     public function create(Request $request)
     {
         $user = auth()->user();
-//        abort_if(!$user->hasPermissionTo('create-user'),403,'Access Denied');
+        abort_if(!$user->hasPermissionTo('create-user'),403,'Access Denied');
 
         return inertia('Backend/User/Create',[
             'userRoles'=>Role::query()->get(['name as value','name as label'])
@@ -54,7 +54,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $user = auth()->user();
-//        abort_if(!$user->hasPermissionTo('create-user'),403,'Access Denied');
+        abort_if(!$user->hasPermissionTo('create-user'),403,'Access Denied');
 
 
         $data=$this->validate($request, [
@@ -73,14 +73,14 @@ class UserController extends Controller
             }
         });
 
-//        $this->flashMessage('User Created Successfully','positive');
+
         return to_route('user.index');
     }
 
     public function edit(Request $request,User $model)
     {
         $user = auth()->user();
-//        abort_if(!$user->hasPermissionTo('edit-user'),403,'Access Denied');
+        abort_if(!$user->hasPermissionTo('edit-user'),403,'Access Denied');
 
         return inertia('Backend/User/Edit', [
             'userRoles' => Role::query()->get(['name as value', 'name as label']),
@@ -93,7 +93,7 @@ class UserController extends Controller
     public function update(Request $request, User $model)
     {
         $user = auth()->user();
-//        abort_if(!$user->hasPermissionTo('edit-user'),403,'Access Denied');
+        abort_if(!$user->hasPermissionTo('edit-user'),403,'Access Denied');
 
         $data=$this->validate($request, [
             'name'=>'required',
@@ -123,14 +123,13 @@ class UserController extends Controller
     {
         return inertia('Backend/User/Show', [
             'data'=>$model,
-            'audits'=>$model->audits()->with(['user'])->get()
         ]);
     }
 
     public function destroy(Request $request,User $model)
     {
         $user = auth()->user();
-//        abort_if(!$user->hasPermissionTo('delete-user'),403,'Access Denied');
+        abort_if(!$user->hasPermissionTo('delete-user'),403,'Access Denied');
 
         $model->delete();
         return to_route('user.index');
