@@ -35,7 +35,9 @@ class EmployeeController extends Controller
                 $builder->where(function ($query) use ($search) {
                     $query->where('name', 'LIKE', "%$search%")
                         ->orWhere('mobile', 'LIKE', "%$search%")
-                        ->orWhere('designation', 'LIKE', "%$search%");
+                        ->orWhere('designation', 'LIKE', "%$search%")
+                        ->orWhere('date_of_birth', 'LIKE', "%$search%")
+                        ->orWhere('name_of_workplace', 'LIKE', "%$search%");
                 });
             })
             ->when($filter['office'] ?? null, function (Builder $query, $officeId) {
@@ -74,6 +76,12 @@ class EmployeeController extends Controller
 
         return Inertia::render('Employees/Backend/PeEmployees', [
             'employees' => $employees,
+        ]);
+    }
+    public function show(Request $request, Employee $model)
+    {
+        return inertia('Backend/Employees/Show', [
+            'data'=>$model->load('office'),
         ]);
     }
 }

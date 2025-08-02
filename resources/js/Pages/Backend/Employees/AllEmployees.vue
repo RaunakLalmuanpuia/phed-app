@@ -141,6 +141,7 @@
                             <div>
                                 <div class="text-body1">{{ props.row.name }}</div>
                                 <div class="text-caption text-grey">{{ props.row.mobile }}</div>
+                                <div class="text-caption text-grey">{{ props.row.date_of_birth }}</div>
                             </div>
                         </div>
                     </q-td>
@@ -162,7 +163,7 @@
                             round
                             color="primary"
                             icon="visibility"
-                            @click="editUser(props.row.id)"
+                            @click="$inertia.get(route('employee.show',props.row.id))"
                             aria-label="Show user"
                         />
                         <q-btn
@@ -206,12 +207,11 @@ const filter = ref('');
 
 const columns = [
     { name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true },
-    { name: 'date_of_birth', label: 'DOB', align: 'left', field: 'date_of_birth', sortable: true },
-    { name: 'parent_name', label: 'Parent Name', align: 'left', field: 'parent_name', sortable: false },
     { name: 'employment_type', label: 'Employment Type', align: 'left', field: 'employment_type', sortable: false },
     { name: 'designation', label: 'Designation', align: 'left', field: 'designation', sortable: false },
     { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: true },
-    { name: 'actions', label: 'Actions', align: 'right' },
+    { name: 'name_of_workplace', label: 'Workplace', align: 'left', field: 'name_of_workplace', sortable: false },
+    { name: 'actions', label: 'Actions', align: 'center' },
 ];
 
 const cards = [
