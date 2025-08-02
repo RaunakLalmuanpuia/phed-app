@@ -63,7 +63,7 @@ class EmployeeSeeder extends Seeder
                 'post_per_qualification' => 'Junior Assistant',
                 'date_of_engagement' => fake()->date(),
                 'skill_category' => 'Category A',
-                'skill_at_present' => 'Intermediate',
+                'skill_at_present' => 'Skill',
             ]);
         });
 

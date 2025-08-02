@@ -9,6 +9,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\DocumentTypeController;
+use App\Http\Controllers\EmployeeController;
+
 
 
 
@@ -88,3 +90,11 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
 
 });
 
+
+//Profile Controller
+Route::group(['middleware'=>'auth','prefix' => 'employee'], function () {
+    Route::get('', [EmployeeController::class, 'indexAllEmployees'])->middleware('can:view-allemployee')->name('employees.all');
+    Route::get('json-index-all', [EmployeeController::class, 'jsonAllEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-all');
+    Route::get('/mr', [EmployeeController::class, 'indexMrEmployees'])->name('employees.mr');
+    Route::get('/pe', [EmployeeController::class, 'indexPeEmployees'])->name('employees.pe');
+});

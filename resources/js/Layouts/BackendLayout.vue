@@ -523,8 +523,9 @@ const module = reactive({
     employee: {
         label: 'Employees',
         children: [
-            {route_name: 'office.index', label: 'Muster Roll', permission: 'view-any-employee'},
-            {route_name: 'document-type.index', label: 'Provisional', permission: 'view-any-employee'},
+            {route_name: 'employees.all', label: 'All Employee', permission: 'view-any-employee'},
+            {route_name: 'employees.mr', label: 'Muster Roll', permission: 'view-any-employee'},
+            {route_name: 'employees.pr', label: 'Provisional', permission: 'view-any-employee'},
             // {route_name: 'role.index', label: 'Permissions', permission: 'view-anyrole'},
             // {route_name: 'user.index', label: 'User Accounts', permission: 'view-anyuser'},
 
