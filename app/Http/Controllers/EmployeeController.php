@@ -26,7 +26,7 @@ class EmployeeController extends Controller
         $user = auth()->user();
         abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
 
-        $perPage = $request->get('rowsPerPage') ?? 15;
+        $perPage = $request->get('rowsPerPage') ?? 5;
         $filter = $request->get('filter', []);
         $search = $request->get('search');
         $employees = Employee::query()
@@ -81,7 +81,7 @@ class EmployeeController extends Controller
     public function show(Request $request, Employee $model)
     {
         return inertia('Backend/Employees/Show', [
-            'data'=>$model->load('office'),
+            'data' => $model->load(['office', 'documents.type']),
         ]);
     }
 }

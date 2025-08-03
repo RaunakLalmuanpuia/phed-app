@@ -2,7 +2,7 @@
     <q-page class="container" padding>
         <div class="row q-col-gutter-md">
             <!-- Left Panel -->
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-5">
                 <q-card class="q-pa-md">
                     <div class="column items-center q-gutter-sm">
                         <q-avatar size="96px">
@@ -11,18 +11,7 @@
                         <div class="text-h6">{{ data.name }}</div>
                         <q-badge color="grey-4" text-color="dark" label="Admin" />
 
-                        <div class="row q-col-gutter-sm q-mt-md gap-5">
-                            <q-card class="col bg-indigo-2 text-indigo-10 text-center q-pa-sm">
-                                <q-icon name="check_square" size="20px" />
-                                <div class="text-subtitle2">1,230</div>
-                                <div class="text-caption">Task Done</div>
-                            </q-card>
-                            <q-card class="col bg-indigo-2 text-indigo-10 text-center q-pa-sm">
-                                <q-icon name="work" size="20px" />
-                                <div class="text-subtitle2">568</div>
-                                <div class="text-caption">Project Done</div>
-                            </q-card>
-                        </div>
+
 
                         <div class="q-mt-lg full-width">
                             <div class="text-caption text-grey-7 q-mb-sm">Details</div>
@@ -79,6 +68,11 @@
                                 </q-item>
 
                                 <q-item>
+                                    <q-item-section side class="text-black">Office Type:</q-item-section>
+                                    <q-item-section  class="text-grey">{{data?.office?.type}}</q-item-section>
+                                </q-item>
+
+                                <q-item>
                                     <q-item-section side class="text-black">Workplace:</q-item-section>
                                     <q-item-section  class="text-grey">{{data?.name_of_workplace}}</q-item-section>
                                 </q-item>
@@ -109,39 +103,30 @@
             </div>
 
             <!-- Right Panel -->
-            <div class="col-12 col-md-8">
+            <div class="col-12 col-md-7">
                 <!-- Tabs -->
                 <q-tabs
                     v-model="tab"
                     class="text-primary bg-white shadow-1 q-pa-sm"
                     dense
-                    align="left"
+                    align="center"
                 >
-                    <q-tab name="account" label="Account" icon="account_circle" />
-                    <q-tab name="security" label="Security" icon="lock" />
-                    <q-tab name="billing" label="Billing & Plan" icon="attach_money" />
-                    <q-tab name="notification" label="Notification" icon="notifications" />
-                    <q-tab name="connections" label="Connections" icon="link" />
+                    <q-tab name="document" label="Documents" icon="drive_folder_upload" />
+                    <q-tab name="edit" label="Edit Request" icon="edit"/>
+                    <q-tab name="transfer" label="Transfer Request" icon="input" />
+                    <q-tab name="deletion" label="Deletion Request" icon="delete_sweep" />
                 </q-tabs>
 
-                <!-- Projects Table -->
                 <q-card class="q-mt-md">
                     <q-card-section>
-                        <div class="text-h6">User's Projects List</div>
+                        <div class="text-h6">Uploaded Documents</div>
+
                         <div class="row q-col-gutter-md q-mt-sm">
-                            <q-select
-                                dense
-                                outlined
-                                v-model="rowsPerPage"
-                                :options="[5, 10, 15]"
-                                label="Rows per page"
-                                class="col-12 col-sm-3"
-                            />
                             <q-input
                                 v-model="search"
                                 dense
                                 outlined
-                                label="Search..."
+                                label="Search by document name or type..."
                                 class="col-12 col-sm-6"
                             />
                         </div>
@@ -149,40 +134,47 @@
 
                     <q-markup-table flat dense class="q-ma-sm">
                         <thead>
-                        <tr>
-                            <th>Project</th>
-                            <th>Total Tasks</th>
-                            <th>Progress</th>
-                            <th>Hours</th>
+                        <tr class="text-left">
+                            <th>Document Name</th>
+                            <th>Type</th>
+                            <th>Mime Type</th>
+                            <th>Upload Date</th>
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="project in filteredProjects" :key="project.name">
+                        <tr
+                            v-for="doc in filteredDocuments"
+                            :key="doc.id"
+                            class="text-left"
+                        >
+                            <td class="q-pa-sm">{{ doc.name }}</td>
+                            <td class="q-pa-sm">{{ doc.type?.name || '—' }}</td>
+                            <td class="q-pa-sm">{{ doc.mime }}</td>
+                            <td class="q-pa-sm">{{ formatDate(doc.upload_date) }}</td>
                             <td class="q-pa-sm">
-                                <div class="row items-center q-gutter-sm">
-                                    <q-avatar :style="`background-color: ${project.bg}`">
-                                        <img :src="project.icon" />
-                                    </q-avatar>
-                                    <div>
-                                        <div class="text-subtitle2">{{ project.name }}</div>
-                                        <div class="text-caption text-grey">{{ project.type }}</div>
-                                    </div>
-                                </div>
+                                <q-btn
+                                    icon="visibility"
+                                    flat
+                                    dense
+                                    round
+                                    :href="`/storage/${doc.path}`"
+                                    target="_blank"
+                                    title="View Document"
+                                />
+                                <q-btn
+                                    icon="download"
+                                    flat
+                                    dense
+                                    round
+                                    :href="`/storage/${doc.path}`"
+                                    download
+                                    title="Download Document"
+                                />
                             </td>
-                            <td>{{ project.tasks }}</td>
-                            <td class="q-pa-sm">
-                                <div class="row items-center q-gutter-sm">
-                                    <span>{{ project.progress }}%</span>
-                                    <q-linear-progress
-                                        :value="project.progress / 100"
-                                        color="primary"
-                                        size="8px"
-                                        rounded
-                                        style="flex: 1"
-                                    />
-                                </div>
-                            </td>
-                            <td>{{ project.hours }}</td>
+                        </tr>
+                        <tr v-if="filteredDocuments.length === 0">
+                            <td colspan="5" class="text-center text-grey">No documents found</td>
                         </tr>
                         </tbody>
                     </q-markup-table>
@@ -205,67 +197,21 @@ const tab = ref('account')
 const rowsPerPage = ref(10)
 const search = ref('')
 
-const projects = ref([
-    {
-        name: 'BGC ECommerce App',
-        type: 'React Project',
-        tasks: '122/240',
-        progress: 78,
-        hours: '18:42',
-        bg: '#dff6fc',
-        icon: 'https://storage.googleapis.com/a1aa/image/cdc5ed3a-4964-4e37-57e3-d0531289231c.jpg'
-    },
-    {
-        name: 'Falcon Logo Design',
-        type: 'Figma Project',
-        tasks: '09/56',
-        progress: 18,
-        hours: '20:42',
-        bg: '#ffe3e0',
-        icon: 'https://storage.googleapis.com/a1aa/image/b38b03f3-4d9f-42f3-bb39-91756b138acc.jpg'
-    },
-    {
-        name: 'Dashboard Design',
-        type: 'Vuejs Project',
-        tasks: '290/320',
-        progress: 62,
-        hours: '120:87',
-        bg: '#d6f9e6',
-        icon: 'https://storage.googleapis.com/a1aa/image/d810dc81-ecda-48f5-7ceb-25d71926e515.jpg'
-    },
-    {
-        name: 'Foodista Mobile App',
-        type: 'Xamarin Project',
-        tasks: '290/320',
-        progress: 8,
-        hours: '120:87',
-        bg: '#1e90ff',
-        icon: 'https://storage.googleapis.com/a1aa/image/d1d3866c-8c92-4472-6939-8053f6696b50.jpg'
-    },
-    {
-        name: 'Dojo Email App',
-        type: 'Python Project',
-        tasks: '120/186',
-        progress: 49,
-        hours: '230:10',
-        bg: '#2a6f9e',
-        icon: 'https://storage.googleapis.com/a1aa/image/9150d703-bada-444f-9503-3eaf593ab2ac.jpg'
-    },
-    {
-        name: 'Blockchain Website',
-        type: 'Sketch Project',
-        tasks: '99/109',
-        progress: 92,
-        hours: '342:12',
-        bg: '#fff3b0',
-        icon: 'https://storage.googleapis.com/a1aa/image/84fa9edd-2e26-4e8b-096c-204f22063d19.jpg'
-    }
-])
 
-const filteredProjects = computed(() => {
-    if (!search.value) return projects.value
-    return projects.value.filter(p =>
-        p.name.toLowerCase().includes(search.value.toLowerCase())
-    )
-})
+const filteredDocuments = computed(() => {
+    if (!props.data?.documents) return [];
+
+    return props.data.documents.filter((doc) => {
+        const searchText = search.value.toLowerCase();
+        return (
+            doc.name?.toLowerCase().includes(searchText) ||
+            doc.type?.name?.toLowerCase().includes(searchText)
+        );
+    });
+});
+
+function formatDate(date) {
+    if (!date) return '';
+    return new Date(date).toLocaleDateString();
+}
 </script>

@@ -2,7 +2,7 @@
     <q-page class="container" padding>
         <q-card flat bordered>
             <q-card-section>
-                <div class="q-pa-md bg-grey-2">
+                <div class="q-pa-md">
                     <!-- Dashboard Cards -->
                     <div class="q-gutter-md row q-col-gutter-md">
                         <q-card
@@ -54,19 +54,21 @@
                             </div>
 
                             <div class="row q-col-gutter-md">
+
+
                                 <q-select
-                                    filled
                                     label="Select Employment Type"
                                     class="col-12 col-sm-4"
                                     v-model="filters.type"
                                     :options="type"
                                     emit-value
                                     map-options
+                                    outlined
+                                    dense
                                     clearable
                                     @update:model-value="handleSearch"
                                 />
                                 <q-select
-                                    filled
                                     label="Select Office"
                                     class="col-12 col-sm-4"
                                     v-model="filters.office"
@@ -75,17 +77,20 @@
                                     option-value="id"
                                     emit-value
                                     map-options
+                                    outlined
+                                    dense
                                     clearable
                                     @update:model-value="handleSearch"
                                 />
                                 <q-select
-                                    filled
                                     label="Select Skill"
                                     class="col-12 col-sm-4"
                                     v-model="filters.skill"
                                     :options="skills"
                                     emit-value
                                     map-options
+                                    outlined
+                                    dense
                                     clearable
                                     @update:model-value="handleSearch"
                                 />
@@ -128,8 +133,14 @@
                 :columns="columns"
                 row-key="id"
                 flat
-                :filter="filter"
                 class="q-pa-md"
+                ref="tableRef"
+                title="List of Employees"
+                v-model:pagination="pagination"
+                :loading="loading"
+                binary-state-sort
+                :rows-per-page-options="[5,10,15,30,50]"
+                @request="onRequest"
             >
                 <!-- User Cell -->
                 <template v-slot:body-cell-employee="props">
@@ -203,7 +214,6 @@ defineOptions({layout:BackendLayout})
 
 const props=defineProps(['office','canCreate','canEdit','canDelete'])
 
-const filter = ref('');
 
 const columns = [
     { name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true },
@@ -261,12 +271,10 @@ const type = [
     { label: 'PE', value: 'PE' },
 ]
 
-
 const skills = [
     { label: 'Skilled', value: 'skilled' },
     { label: 'Unskilled', value: 'unskilled' },
 ]
-
 
 
 const search = ref('')
@@ -279,7 +287,7 @@ const pagination = ref({
     sortBy: 'desc',
     descending: false,
     page: 1,
-    rowsPerPage: 15,
+    rowsPerPage: 5,
     rowsNumber: 0
 })
 
@@ -325,7 +333,7 @@ onMounted(() => {
     // get initial data from server (1st page)
     // tableRef.value.requestServerInteraction()
     onRequest({pagination:pagination.value,
-        filter:filter.value,
+        filter:filters.value,
         search:search.value,
     })
 })
