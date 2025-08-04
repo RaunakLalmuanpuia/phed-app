@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Office;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\EmployeesImport;
 class MISController extends Controller
 {
 
@@ -20,5 +21,21 @@ class MISController extends Controller
             'office' => $office,
             'canImport'=>$user->can('import-employee'),
         ]);
+    }
+
+    public function importEmployee(Request $request){
+
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('import-employee'),403,'Access Denied');
+
+        $request->validate([
+            'document' => 'required|file|mimes:xlsx,csv,xls',
+            'office' => 'required|integer|exists:offices,id',
+            'type' => 'required|string|in:MR,PE',
+        ]);
+        Excel::import(new EmployeesImport($request->office, $request->type), $request->file('document'));
+
+        return redirect()->back()->with('message','Employee data imported successfully');
+
     }
 }
