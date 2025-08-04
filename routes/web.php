@@ -96,7 +96,7 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
 });
 
 
-//Profile Controller
+//Employee Controller
 Route::group(['middleware'=>'auth','prefix' => 'employee'], function () {
     Route::get('', [EmployeeController::class, 'indexAllEmployees'])->middleware('can:view-allemployee')->name('employees.all');
     Route::get('json-index-all', [EmployeeController::class, 'jsonAllEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-all');
@@ -105,4 +105,6 @@ Route::group(['middleware'=>'auth','prefix' => 'employee'], function () {
     Route::get('/pe', [EmployeeController::class, 'indexPeEmployees'])->middleware('can:view-allemployee')->name('employees.pe');
     Route::get('json-index-pe', [EmployeeController::class, 'jsonPeEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-pe');
     Route::get('{model}/show', [EmployeeController::class, 'show'])->middleware('can:view-employee')->name('employee.show');
+    Route::get('create', [EmployeeController::class, 'create'])->middleware('can:create-employee')->name('employee.create');
+    Route::post('store', [EmployeeController::class, 'store'])->middleware('can:create-employee')->name('employee.store');
 });

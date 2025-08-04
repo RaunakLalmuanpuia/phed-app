@@ -117,10 +117,10 @@
 
                                 <q-btn label="Export" icon="desktop_windows" color="grey-4" disable />
                                 <q-btn
-                                    label="Add New User"
+                                    label="Add New Employee"
                                     icon="add"
                                     color="primary"
-                                    disable
+                                    @click="$inertia.get(route('employee.create'))"
                                 />
                             </div>
                         </q-card-section>
