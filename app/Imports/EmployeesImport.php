@@ -25,25 +25,26 @@ class EmployeesImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         return Employee::updateOrCreate(
-            ['mobile' => $row['mobile']], // match by mobile
+            ['mobile' => $row['Contact No'] ?? null],
             [
-                'office_id'            => $this->office_id,
-                'employee_code'        =>  $this->generateEmployeeCode(), // generate unique code
-                'name'                 => $row['name'],
-                'date_of_birth'        => $this->transformDate($row['date_of_birth'] ?? null),
-                'parent_name'          => $row['parent_name'],
-                'employment_type'      => $this->employment_type,
-                'educational_qln'      => $row['educational_qln'],
-                'technical_qln'        => $row['technical_qln'],
-                'designation'          => $row['designation'],
-                'name_of_workplace'    => $row['name_of_workplace'],
-                'post_per_qualification' => $row['post_per_qualification'],
-                'date_of_engagement'   => $this->transformDate($row['date_of_engagement'] ?? null),
-                'skill_category'       => $row['skill_category'],
-                'skill_at_present'     => $row['skill_at_present'],
+                'office_id'              => $this->office_id,
+                'employee_code'          => $this->generateEmployeeCode(),
+                'name'                   => $row['Name'] ?? null,
+                'date_of_birth'          => $this->transformDate($row['Date of Birth'] ?? null),
+                'parent_name'            => $row['Fathers/Mothers Name'] ?? null,
+                'employment_type'        => $this->employment_type,
+                'educational_qln'        => $row['Educational Qln'] ?? null,
+                'technical_qln'          => $row['Technical Qln'] ?? null,
+                'designation'            => $row['Designation'] ?? null,
+                'name_of_workplace'      => $row['Name of Office Workplace'] ?? null,
+                'post_per_qualification' => $row['Qualification mil a post thlan'] ?? null,
+                'date_of_engagement'     => $this->transformDate($row['Date of Initial Engagement'] ?? null),
+                'skill_category'         => $row['Skilled Category'] ?? null,
+                'skill_at_present'       => $row['Skilled at present'] ?? null,
             ]
         );
     }
+
     protected function generateEmployeeCode()
     {
         do {
@@ -55,13 +56,17 @@ class EmployeesImport implements ToModel, WithHeadingRow
     protected function transformDate($value)
     {
         try {
+            if (empty($value)) {
+                return null;
+            }
+
             if (is_numeric($value)) {
                 return \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($value)->format('Y-m-d');
-            } else {
-                return \Carbon\Carbon::parse($value)->format('Y-m-d');
             }
+
+            return \Carbon\Carbon::parse($value)->format('Y-m-d');
         } catch (\Exception $e) {
-            return null; // or handle/log the error
+            return null; // optionally log the error
         }
     }
 }
