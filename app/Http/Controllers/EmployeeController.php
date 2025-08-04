@@ -20,10 +20,7 @@ class EmployeeController extends Controller
     //
     public function indexAllEmployees() // shows all employees
     {
-
-
         $office = Office::all();
-
         return Inertia::render('Backend/Employees/AllEmployees', [
             'office' => $office,
         ]);
@@ -36,7 +33,8 @@ class EmployeeController extends Controller
 
         $perPage = $request->get('rowsPerPage') ?? 5;
         $filter = $request->get('filter', []);
-        $search = $request->get('search');
+        $search = $filter['search'] ?? null; // ✅ extract from filter array
+
         $employees = Employee::query()
             ->with('office')
             ->when($search, function (Builder $builder) use ($search) {
@@ -48,6 +46,7 @@ class EmployeeController extends Controller
                         ->orWhere('name_of_workplace', 'LIKE', "%$search%");
                 });
             })
+
             ->when($filter['office'] ?? null, function (Builder $query, $officeId) {
                 $query->whereHas('office', function (Builder $q) use ($officeId) {
                     $q->where('id', $officeId);
@@ -81,7 +80,7 @@ class EmployeeController extends Controller
 
         $perPage = $request->get('rowsPerPage') ?? 5;
         $filter = $request->get('filter', []);
-        $search = $request->get('search');
+        $search = $filter['search'] ?? null; // ✅ extract from filter array
         $employees = Employee::query()
             ->where('employment_type', 'MR')
             ->with('office')
@@ -123,7 +122,7 @@ class EmployeeController extends Controller
 
         $perPage = $request->get('rowsPerPage') ?? 5;
         $filter = $request->get('filter', []);
-        $search = $request->get('search');
+        $search = $filter['search'] ?? null; // ✅ extract from filter array
         $employees = Employee::query()
             ->where('employment_type', 'PE')
             ->with('office')

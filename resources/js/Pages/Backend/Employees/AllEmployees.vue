@@ -105,9 +105,10 @@
                                     dense
                                     outlined
                                     debounce="300"
-                                    v-model="search"
+                                    v-model="filters.search"
                                     placeholder="Search"
                                     class="col-12 col-sm-auto"
+                                    clearable
                                     @update:model-value="handleSearch"
                                 >
                                     <template #append>
@@ -129,17 +130,17 @@
             </q-card-section>
 
             <q-table
+                flat
+                ref="tableRef"
+                title="List of All Employees"
                 :rows="rows"
                 :columns="columns"
                 row-key="id"
-                flat
-                class="q-pa-md"
-                ref="tableRef"
-                title="List of Employees"
                 v-model:pagination="pagination"
                 :loading="loading"
+                :filter="filters"
                 binary-state-sort
-                :rows-per-page-options="[5,10,15,30,50]"
+                :rows-per-page-options="[1,7,15,30,50]"
                 @request="onRequest"
             >
                 <!-- User Cell -->
@@ -265,6 +266,7 @@ const filters = ref({
     type: null,
     office: null,
     skill: null,
+    search:null,
 })
 
 const type = [
@@ -297,9 +299,10 @@ const handleSearch = () => {
     onRequest({
         pagination: pagination.value,
         filter: filters.value,
-        search: search.value
-    })
-}
+        search: filters.value.search // ✅ FIXED
+    });
+};
+
 function onRequest (props) {
     const { page, rowsPerPage, sortBy, descending } = props.pagination
     const filter = props.filter
@@ -331,13 +334,12 @@ function onRequest (props) {
 }
 
 onMounted(() => {
-    // get initial data from server (1st page)
-    // tableRef.value.requestServerInteraction()
-    onRequest({pagination:pagination.value,
-        filter:filters.value,
-        search:search.value,
-    })
-})
+    onRequest({
+        pagination: pagination.value,
+        filter: filters.value,
+        search: filters.value.search
+    });
+});
 
 
 </script>

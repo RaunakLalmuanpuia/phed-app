@@ -92,7 +92,7 @@
                                     dense
                                     outlined
                                     debounce="300"
-                                    v-model="search"
+                                    v-model="filters.search"
                                     placeholder="Search"
                                     class="col-12 col-sm-auto"
                                     @update:model-value="handleSearch"
@@ -116,17 +116,17 @@
             </q-card-section>
 
             <q-table
+                flat
+                ref="tableRef"
+                title="List of Muster Roll Employees"
                 :rows="rows"
                 :columns="columns"
                 row-key="id"
-                flat
-                class="q-pa-md"
-                ref="tableRef"
-                title="List of Muster Roll Employees"
                 v-model:pagination="pagination"
                 :loading="loading"
+                :filter="filters"
                 binary-state-sort
-                :rows-per-page-options="[5,10,15,30,50]"
+                :rows-per-page-options="[1,7,15,30,50]"
                 @request="onRequest"
             >
                 <!-- User Cell -->
@@ -250,6 +250,7 @@ const cards = [
 const filters = ref({
     office: null,
     skill: null,
+    search:null,
 })
 
 
@@ -279,7 +280,7 @@ const handleSearch = () => {
     onRequest({
         pagination: pagination.value,
         filter: filters.value,
-        search: search.value
+        search: filters.value.search
     })
 }
 function onRequest (props) {
@@ -317,7 +318,7 @@ onMounted(() => {
     // tableRef.value.requestServerInteraction()
     onRequest({pagination:pagination.value,
         filter:filters.value,
-        search:search.value,
+        search: filters.value.search
     })
 })
 
