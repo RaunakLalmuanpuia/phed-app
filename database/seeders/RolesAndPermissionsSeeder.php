@@ -26,7 +26,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'view-anyoffice','view-office','create-office','delete-office','edit-office',
             'view-anyrole','edit-role',
             'view-any-document-type','view-document-type','create-document-type','delete-document-type','edit-document-type',
-
+            'import-employee', 'export-employee'
         ];
 
         // Create permissions
@@ -43,6 +43,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'view-anyoffice','view-office','create-office','delete-office','edit-office',
                 'view-anyrole','edit-role',
                 'view-any-document-type','view-document-type','create-document-type','delete-document-type','edit-document-type',
+                'import-employee', 'export-employee'
                 ],
         ];
 

@@ -10,7 +10,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\EmployeeController;
-
+use App\Http\Controllers\MISController;
 
 
 
@@ -84,6 +84,10 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
         Route::get('', [RoleController::class, 'index'])->middleware('can:view-anyrole')->name('role.index');
         Route::get('{model}', [RoleController::class, 'show'])->middleware('can:edit-role')->name('role.show');
         Route::put('{model}', [RoleController::class, 'update'])->middleware('can:edit-role')->name('role.update');
+    });
+
+    Route::group(['prefix' => 'mis'], function () {
+        Route::get('import', [MISController::class, 'import'])->middleware('can:import-employee')->name('mis.import');
     });
 
 
