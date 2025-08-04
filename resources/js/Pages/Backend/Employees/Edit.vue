@@ -2,11 +2,11 @@
     <q-page class="container" padding>
         <div class="flex items-center justify-between q-pa-md bg-white">
             <div>
-                <div class="stitle">Create Employee</div>
+                <div class="stitle">Edit Employee</div>
                 <q-breadcrumbs class="text-dark">
                     <q-breadcrumbs-el class="cursor-pointer"  icon="dashboard" label="Dashboard" @click="$inertia.get(route('dashboard'))"/>
                     <q-breadcrumbs-el class="cursor-pointer" label="All Employees" @click="$inertia.get(route('employees.all'))"/>
-                    <q-breadcrumbs-el label="New Employee"/>
+                    <q-breadcrumbs-el label="Edit Employee"/>
                 </q-breadcrumbs>
             </div>
         </div>
@@ -111,7 +111,7 @@
                     </q-stepper-navigation>
                 </q-step>
 
-<!--                Step 3: Document upload-->
+                <!--                Step 3: Document upload-->
                 <q-step
                     name="3"
                     title="Upload Documents"
@@ -127,13 +127,26 @@
                             <div class="text-subtitle2 q-mb-xs">{{ type.name }}</div>
                             <q-file
                                 filled
-                                v-model="form.documents[type.id]"
+                                :model-value="form.documents[type.id]?.file || null"
+                                @update:model-value="val => updateDocument(type.id, val)"
                                 label="Upload File"
                                 accept=".pdf,.jpg,.jpeg,.png"
-                                :counter="true"
                                 clearable
                                 class="full-width"
-                            />
+                            >
+                                <template v-if="form.documents[type.id]?.url" v-slot:append>
+                                    <q-btn
+                                        round
+                                        dense
+                                        flat
+                                        icon="visibility"
+                                        @click="viewDocument(form.documents[type.id].url)"
+                                        class="q-ml-sm"
+                                    />
+                                </template>
+                            </q-file>
+
+
                         </div>
                     </div>
 
@@ -170,7 +183,7 @@
                         <div class="col-12 col-sm-6"> <strong>Designation:</strong> {{ form.designation }} </div>
                         <div class="col-12 col-sm-6"> <strong>Date of Engagement:</strong> {{ form.date_of_engagement }} </div>
                         <div class="col-12 col-sm-6"> <strong>Workplace:</strong> {{ form.name_of_workplace }} </div>
-                        <div class="col-12 col-sm-6"> <strong>Office:</strong> {{ offices[form.office].name }} </div>
+<!--                        <div class="col-12 col-sm-6"> <strong>Office:</strong> {{ offices[form.office].name }} </div>-->
                         <div class="col-12 col-sm-6"> <strong>Post per Qualification:</strong> {{ form.post_per_qualification }} </div>
                         <div class="col-12 col-sm-6"> <strong>Skill Category:</strong> {{ form.skill_category }} </div>
                         <div class="col-12 col-sm-6"> <strong>Skill at Present:</strong> {{ form.skill_at_present }} </div>
@@ -186,19 +199,18 @@
                             <div class="row items-center justify-between">
                                 <div class="text-subtitle2"><strong>{{ type.name }}</strong></div>
 
-                                <div v-if="form.documents[type.id]">
-                                    <div class="row items-center no-wrap">
-
-                                        <a
-                                            :href="getFileUrl(form.documents[type.id])"
-                                            target="_blank"
-                                            class="text-primary text-weight-medium"
-                                        >
-                                            <q-icon name="visibility" class="q-mr-xs" />
-                                        </a>
-                                    </div>
+                                <div v-if="form.documents[type.id]?.file || form.documents[type.id]?.url">
+                                    <a
+                                        :href="getFileUrl(form.documents[type.id]?.file || form.documents[type.id]?.url)"
+                                        target="_blank"
+                                        class="text-primary text-weight-medium"
+                                    >
+                                        <q-icon name="visibility" class="q-mr-xs" />
+                                        View File
+                                    </a>
                                 </div>
                                 <div v-else class="text-grey">No document uploaded</div>
+
                             </div>
                         </div>
                     </div>
@@ -212,16 +224,18 @@
             </q-stepper>
         </q-form>
 
+        {{data.documents}}
     </q-page>
 </template>
 <script setup>
 import BackendLayout from "@/Layouts/BackendLayout.vue";
 import {useForm,router} from "@inertiajs/vue3";
 import {useQuasar} from "quasar";
-import {ref} from 'vue'
+import {ref, onMounted} from 'vue'
+import {data} from "autoprefixer";
 
 defineOptions({layout:BackendLayout})
-const props=defineProps(['documentTypes','offices']);
+const props=defineProps(['documentTypes','offices','data']);
 const $q = useQuasar();
 
 
@@ -230,25 +244,44 @@ const step = ref('1')
 
 
 const form=useForm({
-    name:'',
-    email:'',
-    mobile:'',
-    parent_name:'',
-    date_of_birth:'',
-    designation:'',
-    employment_type:'',
-    office:'',
-    educational_qln:'',
-    technical_qln:'',
-    name_of_workplace:'',
-    post_per_qualification:'',
-    date_of_engagement:'',
-    skill_category:'',
-    skill_at_present:'',
+    name:props.data?.name,
+    email:props.data?.email,
+    mobile:props.data?.mobile,
+    parent_name:props.data?.parent_name,
+    date_of_birth:props.data?.date_of_birth,
+    designation:props.data?.designation,
+    employment_type:props.data?.employment_type,
+    office:props.data?.office,
+    educational_qln:props.data?.educational_qln,
+    technical_qln:props.data?.technical_qln,
+    name_of_workplace:props.data?.name_of_workplace,
+    post_per_qualification:props.data?.post_per_qualification,
+    date_of_engagement:props.data?.date_of_engagement,
+    skill_category:props.data?.skill_category,
+    skill_at_present:props.data?.skill_at_present,
     documents:[],
 })
 
+const updateDocument = (typeId, file) => {
+    form.documents[typeId] = {
+        ...form.documents[typeId],
+        file // replace or add new
+    }
+}
 
+const viewDocument = (url) => {
+    window.open(url, '_blank')
+}
+const getDocumentLink = (typeId) => {
+    const doc = form.documents[typeId]
+    if (!doc) return '#'
+
+    if (doc.file) {
+        return URL.createObjectURL(doc.file)
+    }
+
+    return doc.url
+}
 const nextStep = () => {
     if (step.value === '1') {
         if (
@@ -298,12 +331,6 @@ const skills = [
     { label: 'Skilled-II', value: 'Skilled-II' },
 
 ]
-// const submit=e=>{
-//     form.post(route('employee.store'),{
-//             onStart:params => q.loading.show(),
-//             onFinish:params => q.loading.hide()
-//         })
-// }
 
 const submit = () => {
 
@@ -332,13 +359,13 @@ const submit = () => {
 
 
         // Append documents (assuming object with id as key and File as value)
-        for (const id in form.documents) {
-            if (form.documents[id]) {
-                formData.append(`documents[${id}]`, form.documents[id])
+        Object.entries(form.documents).forEach(([typeId, doc]) => {
+            if (doc?.file) {
+                formData.append(`documents[${typeId}]`, doc.file)
             }
-        }
+        })
 
-        axios.post(route('employee.store'), formData, {
+        axios.post(route('employee.update', props.data), formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         })
             .then(response => {
@@ -418,5 +445,16 @@ const submit = () => {
             })
     })
 }
+onMounted(() => {
+    if (props.data.documents?.length) {
+        props.data.documents.forEach(doc => {
+            // Use document_type_id as key, store full path or file object
+            form.documents[doc.document_type_id] = {
+                name: doc.name,
+                url: `/storage/${doc.path}`
+            }
+        })
+    }
+})
 
 </script>

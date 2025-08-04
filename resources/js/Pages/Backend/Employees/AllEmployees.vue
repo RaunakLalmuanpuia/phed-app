@@ -184,7 +184,7 @@
                             round
                             color="primary"
                             icon="edit"
-                            @click="editUser(props.row.id)"
+                            @click="$inertia.get(route('employee.edit',props.row.id))"
                             aria-label="Edit user"
                         />
                         <q-btn

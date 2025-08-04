@@ -107,4 +107,6 @@ Route::group(['middleware'=>'auth','prefix' => 'employee'], function () {
     Route::get('{model}/show', [EmployeeController::class, 'show'])->middleware('can:view-employee')->name('employee.show');
     Route::get('create', [EmployeeController::class, 'create'])->middleware('can:create-employee')->name('employee.create');
     Route::post('store', [EmployeeController::class, 'store'])->middleware('can:create-employee')->name('employee.store');
+    Route::get('edit/{model}', [EmployeeController::class, 'edit'])->middleware('can:edit-employee')->name('employee.edit');
+    Route::post('update/{model}', [EmployeeController::class, 'update'])->middleware('can:edit-employee')->name('employee.update');
 });
