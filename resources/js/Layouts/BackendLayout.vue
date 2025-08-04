@@ -332,28 +332,24 @@
                     group="menu"
                     :label="module.employee.label"
                     :header-class="(
-                              route().current()==='user.index'
-                             || route().current()==='user.create'
-                             || route().current()==='user.edit'
-                             || route().current()==='role.index'
-                             || route().current()==='role.edit'
+                              route().current()==='employees.all'
+                             || route().current()==='employees.mr'
+                             || route().current()==='employees.pe'
+                             || route().current()==='employee.show'
 
                           )
 
                           ?'active-menu text-accent':''"
-                    icon="o_manage_accounts">
+                    icon="manage_accounts">
 
                     <template #header>
                         <q-item-section avatar>
 
-                            <q-icon :active=" route().current()==='user.index'
-                             || route().current()==='user.create'
-                             || route().current()==='user.edit'
-                             || route().current()==='role.index'
-                             || route().current()==='role.edit'
-                             || route().current()==='office.index'
-                             || route().current()==='office.create'
-                             || route().current()==='office.edit'
+                            <q-icon :active="
+                              route().current()==='employees.all'
+                             || route().current()==='employees.mr'
+                             || route().current()==='employees.pe'
+                             || route().current()==='employee.show'
 
                         ">
 
@@ -525,7 +521,7 @@ const module = reactive({
         children: [
             {route_name: 'employees.all', label: 'All Employee', permission: 'view-any-employee'},
             {route_name: 'employees.mr', label: 'Muster Roll', permission: 'view-any-employee'},
-            {route_name: 'employees.pr', label: 'Provisional', permission: 'view-any-employee'},
+            {route_name: 'employees.pe', label: 'Provisional', permission: 'view-any-employee'},
             // {route_name: 'role.index', label: 'Permissions', permission: 'view-anyrole'},
             // {route_name: 'user.index', label: 'User Accounts', permission: 'view-anyuser'},
 
