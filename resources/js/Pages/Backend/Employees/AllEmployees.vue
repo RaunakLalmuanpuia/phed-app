@@ -116,7 +116,7 @@
                                     </template>
                                 </q-input>
 
-                                <q-btn label="Export" icon="desktop_windows" color="grey-4" disable />
+<!--                                <q-btn label="Export" icon="desktop_windows" color="grey-4" disable />-->
                                 <q-btn
                                     label="Add New Employee"
                                     icon="add"
@@ -148,7 +148,8 @@
                     <q-td :props="props">
                         <div class="flex items-center gap-3">
                             <q-avatar>
-                                <img src="https://storage.googleapis.com/a1aa/image/ce4ce84e-7065-465f-056e-505939d6ea1d.jpg" />
+
+                                <q-img :src="`/storage/${props.row.avatar}`" />
 <!--                                <img :src="props.row.avatar" />-->
                             </q-avatar>
                             <div>
@@ -221,8 +222,8 @@ const columns = [
     { name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true },
     { name: 'employment_type', label: 'Employment Type', align: 'left', field: 'employment_type', sortable: false },
     { name: 'designation', label: 'Designation', align: 'left', field: 'designation', sortable: false },
-    { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: true },
     { name: 'name_of_workplace', label: 'Workplace', align: 'left', field: 'name_of_workplace', sortable: false },
+    { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: true },
     { name: 'actions', label: 'Actions', align: 'center' },
 ];
 

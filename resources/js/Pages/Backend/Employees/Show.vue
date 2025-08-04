@@ -6,8 +6,9 @@
                 <q-card class="q-pa-md">
                     <div class="column items-center q-gutter-sm">
                         <q-avatar size="96px">
-                            <img src="https://storage.googleapis.com/a1aa/image/ce4ce84e-7065-465f-056e-505939d6ea1d.jpg" />
+                            <q-img :src="`/storage/${data.avatar}`" />
                         </q-avatar>
+
                         <div class="text-h6">{{ data.name }}</div>
                         <q-badge color="grey-4" text-color="dark" label="Admin" />
 

@@ -176,6 +176,7 @@ class EmployeeController extends Controller
         abort_if(!$user->hasPermissionTo('create-employee'), 403, 'Access Denied');
 
         $validated = $request->validate([
+            'avatar' => 'required|image|mimes:jpg,jpeg,png|max:800', // 800KB limit
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255|unique:employees,email',
             'mobile' => 'required|string|max:20|unique:employees,mobile',
@@ -214,6 +215,22 @@ class EmployeeController extends Controller
                 'skill_category' => $validated['skill_category'],
                 'skill_at_present' => $validated['skill_at_present'],
             ]);
+            if ($request->hasFile('avatar')) {
+                $file = $request->file('avatar');
+
+                $randomString = \Str::random(8);
+                $extension = $file->getClientOriginalExtension();
+                $generatedName = 'avatar_' . $randomString . '.' . $extension;
+
+                // Store the avatar in the 'pictures' directory (public disk)
+                $avatarPath = $file->storeAs('pictures', $generatedName, 'public');
+
+                // Update the employee with avatar path
+                $employee->update([
+                    'avatar' => $avatarPath
+                ]);
+            }
+
             if ($request->hasFile('documents')) {
                 foreach ($request->file('documents') as $typeId => $file) {
                     if ($file) {
@@ -273,6 +290,7 @@ class EmployeeController extends Controller
         abort_if(!$user->hasPermissionTo('edit-employee'),403,'Access Denied');
 
         $validated = $request->validate([
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:800', // 800KB limit
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'mobile' => ['required', 'string', 'max:20', Rule::unique('employees', 'mobile')->ignore($model->id)],
@@ -293,6 +311,19 @@ class EmployeeController extends Controller
         ]);
 
         $employee = DB::transaction(function () use ($validated, $request,$model) {
+            if ($request->hasFile('avatar')) {
+                $file = $request->file('avatar');
+
+                $randomString = \Str::random(8);
+                $extension = $file->getClientOriginalExtension();
+                $generatedName = 'avatar_' . $randomString . '.' . $extension;
+
+                // Store the avatar in the 'pictures' directory (public disk)
+                $avatarPath = $file->storeAs('pictures', $generatedName, 'public');
+                // Store path relative to 'storage' (e.g., for public URL access)
+                $model->avatar = $avatarPath;
+            }
+
             $model->update([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
@@ -309,7 +340,10 @@ class EmployeeController extends Controller
                 'date_of_engagement' => $validated['date_of_engagement'],
                 'skill_category' => $validated['skill_category'],
                 'skill_at_present' => $validated['skill_at_present'],
+                'avatar' => $model->avatar ?? $model->avatar,
             ]);
+
+
 
             // Save documents
             if ($request->hasFile('documents')) {

@@ -15,6 +15,56 @@
             <q-stepper v-model="step" ref="stepper" animated color="secondary">
                 <!-- Step 1: Personal Info -->
                 <q-step name="1" title="Personal Info" icon="person" :done="step > 1">
+
+                    <div class="q-pa-md">
+                        <div class="row items-center q-gutter-md">
+                            <!-- Profile Image Preview -->
+                            <div class="rounded-borders overflow-hidden" style="background-color: #8a82f7;">
+                                <q-img
+                                    :src="previewUrl || defaultUrl"
+                                    alt="Profile Photo"
+                                    style="width: 120px; height: 120px"
+                                    img-class="object-cover"
+                                />
+                            </div>
+
+                            <!-- Buttons & Info -->
+                            <div class="column q-gutter-sm">
+                                <div class="row q-gutter-md">
+                                    <q-btn
+                                        label="Upload new Photo"
+                                        color="primary"
+                                        @click="triggerFileInput"
+                                        class="text-weight-medium"
+                                        rounded
+                                        unelevated
+                                    />
+                                    <q-btn
+                                        label="Reset"
+                                        color="grey-4"
+                                        text-color="dark"
+                                        @click="resetPhoto"
+                                        class="text-weight-medium"
+                                        rounded
+                                        unelevated
+                                    />
+                                </div>
+                                <p class="text-subtitle2 text-grey-7">
+                                    Allowed JPG, GIF or PNG. Max size of 800K
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Hidden file input -->
+                        <input
+                            ref="fileInput"
+                            type="file"
+                            accept="image/*"
+                            class="hidden"
+                            @change="handleFileChange"
+                        />
+                    </div>
+
                     <div class="row q-col-gutter-sm">
                         <div class="col-12 col-sm-6">
                             <q-input v-model="form.name" label="Name" outlined dense :error="!!form.errors?.name"
@@ -153,6 +203,15 @@
                     :done="step > 4"
                 >
 
+                    <div class="rounded-borders overflow-hidden">
+                        <q-img
+                            :src="previewUrl || defaultUrl"
+                            alt="Profile Photo"
+                            style="width: 120px; height: 120px"
+                            img-class="object-cover"
+                        />
+                    </div>
+
                     <div class="q-mb-md text-h6">Personal Info</div>
                     <div class="row q-col-gutter-sm q-mb-md">
                         <div class="col-12 col-sm-6"> <strong>Name:</strong> {{ form.name }} </div>
@@ -230,6 +289,7 @@ const step = ref('1')
 
 
 const form=useForm({
+    avatar:null,
     name:'',
     email:'',
     mobile:'',
@@ -248,7 +308,35 @@ const form=useForm({
     documents:[],
 })
 
+// Default profile image
+const defaultUrl = 'https://storage.googleapis.com/a1aa/image/089155c9-d1c1-4945-5728-c9bdb3576171.jpg'
 
+const previewUrl = ref(null)
+const fileInput = ref(null)
+
+function triggerFileInput() {
+    fileInput.value?.click()
+}
+
+function handleFileChange(event) {
+    const file = event.target.files[0]
+    if (file && file.size <= 800 * 1024) {
+        const reader = new FileReader()
+        reader.onload = () => {
+            previewUrl.value = reader.result
+        }
+        form.avatar = file
+        reader.readAsDataURL(file)
+    } else {
+        alert('File too large or invalid type. Max size: 800KB.')
+    }
+}
+
+function resetPhoto() {
+    previewUrl.value = null
+    fileInput.value.value = null
+    form.avatar = null
+}
 const nextStep = () => {
     if (step.value === '1') {
         if (
@@ -314,6 +402,7 @@ const submit = () => {
         persistent: true
     }).onOk(() => {
         const formData = new FormData()
+        formData.append('avatar', form.avatar)
         formData.append('name', form.name)
         formData.append('email', form.email)
         formData.append('mobile', form.mobile)
@@ -420,3 +509,6 @@ const submit = () => {
 }
 
 </script>
+
+
+

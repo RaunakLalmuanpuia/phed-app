@@ -81,36 +81,22 @@
                                     clearable
                                     @update:model-value="handleSearch"
                                 />
-                            </div>
-                        </q-card-section>
-
-                        <q-separator />
-
-                        <q-card-section class="row items-center justify-between q-gutter-md">
-                            <div class="row q-gutter-sm col-12 col-sm justify-end">
                                 <q-input
                                     dense
                                     outlined
                                     debounce="300"
                                     v-model="filters.search"
                                     placeholder="Search"
-                                    class="col-12 col-sm-auto"
+                                    class="col-12 col-sm-4"
                                     @update:model-value="handleSearch"
                                 >
                                     <template #append>
                                         <q-icon name="search" />
                                     </template>
                                 </q-input>
-
-                                <q-btn label="Export" icon="desktop_windows" color="grey-4" disable />
-                                <q-btn
-                                    label="Add New User"
-                                    icon="add"
-                                    color="primary"
-                                    disable
-                                />
                             </div>
                         </q-card-section>
+
                     </q-card>
                 </div>
             </q-card-section>
@@ -165,24 +151,24 @@
                             @click="$inertia.get(route('employee.show',props.row.id))"
                             aria-label="Show user"
                         />
-                        <q-btn
-                            dense
-                            flat
-                            round
-                            color="primary"
-                            icon="edit"
-                            @click="editUser(props.row.id)"
-                            aria-label="Edit user"
-                        />
-                        <q-btn
-                            dense
-                            flat
-                            round
-                            color="red"
-                            icon="delete"
-                            @click="deleteUser(props.row.id)"
-                            aria-label="Delete user"
-                        />
+<!--                        <q-btn-->
+<!--                            dense-->
+<!--                            flat-->
+<!--                            round-->
+<!--                            color="primary"-->
+<!--                            icon="edit"-->
+<!--                            @click="$inertia.get(route('employee.edit',props.row.id))"-->
+<!--                            aria-label="Edit user"-->
+<!--                        />-->
+<!--                        <q-btn-->
+<!--                            dense-->
+<!--                            flat-->
+<!--                            round-->
+<!--                            color="red"-->
+<!--                            icon="delete"-->
+<!--                            @click="deleteUser(props.row.id)"-->
+<!--                            aria-label="Delete user"-->
+<!--                        />-->
                     </q-td>
                 </template>
             </q-table>
@@ -206,8 +192,8 @@ const props=defineProps(['office','canCreate','canEdit','canDelete'])
 const columns = [
     { name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true },
     { name: 'designation', label: 'Designation', align: 'left', field: 'designation', sortable: false },
-    { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: true },
     { name: 'name_of_workplace', label: 'Workplace', align: 'left', field: 'name_of_workplace', sortable: false },
+    { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: true },
     { name: 'actions', label: 'Actions', align: 'center' },
 ];
 

@@ -15,6 +15,55 @@
             <q-stepper v-model="step" ref="stepper" animated color="secondary">
                 <!-- Step 1: Personal Info -->
                 <q-step name="1" title="Personal Info" icon="person" :done="step > 1">
+                    <div class="q-pa-md">
+                        <div class="row items-center q-gutter-md">
+                            <!-- Profile Image Preview -->
+                            <div class="rounded-borders overflow-hidden" style="background-color: #8a82f7;">
+                                <q-img
+                                    :src="previewUrl"
+                                    alt="Profile Photo"
+                                    style="width: 120px; height: 120px"
+                                    img-class="object-cover"
+                                />
+                            </div>
+
+                            <!-- Buttons & Info -->
+                            <div class="column q-gutter-sm">
+                                <div class="row q-gutter-md">
+                                    <q-btn
+                                        label="Upload new Photo"
+                                        color="primary"
+                                        @click="triggerFileInput"
+                                        class="text-weight-medium"
+                                        rounded
+                                        unelevated
+                                    />
+                                    <q-btn
+                                        label="Reset"
+                                        color="grey-4"
+                                        text-color="dark"
+                                        @click="resetPhoto"
+                                        class="text-weight-medium"
+                                        rounded
+                                        unelevated
+                                    />
+                                </div>
+                                <p class="text-subtitle2 text-grey-7">
+                                    Allowed JPG, GIF or PNG. Max size of 800K
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Hidden file input -->
+                        <input
+                            ref="fileInput"
+                            type="file"
+                            accept="image/*"
+                            class="hidden"
+                            @change="handleFileChange"
+                        />
+                    </div>
+
                     <div class="row q-col-gutter-sm">
                         <div class="col-12 col-sm-6">
                             <q-input v-model="form.name" label="Name" outlined dense :error="!!form.errors?.name"
@@ -166,6 +215,15 @@
                     :done="step > 4"
                 >
 
+                    <div class="rounded-borders">
+                        <q-img
+                            :src="previewUrl || defaultUrl"
+                            alt="Profile Photo"
+                            style="width: 120px; height: 120px"
+                            img-class="object-cover"
+                        />
+                    </div>
+
                     <div class="q-mb-md text-h6">Personal Info</div>
                     <div class="row q-col-gutter-sm q-mb-md">
                         <div class="col-12 col-sm-6"> <strong>Name:</strong> {{ form.name }} </div>
@@ -260,8 +318,41 @@ const form=useForm({
     skill_category:props.data?.skill_category,
     skill_at_present:props.data?.skill_at_present,
     documents:[],
+    avatar:null,
 })
+const fileInput = ref(null)
+const defaultUrl = 'https://storage.googleapis.com/a1aa/image/089155c9-d1c1-4945-5728-c9bdb3576171.jpg'
 
+
+
+function triggerFileInput() {
+    fileInput.value?.click()
+}
+
+function handleFileChange(event) {
+    const file = event.target.files[0]
+    if (file && file.size <= 800 * 1024) {
+        const reader = new FileReader()
+        reader.onload = () => {
+            previewUrl.value = reader.result
+        }
+        form.avatar = file
+        reader.readAsDataURL(file)
+    } else {
+        alert('File too large or invalid type. Max size: 800KB.')
+    }
+}
+
+function resetPhoto() {
+    previewUrl.value = props.data?.avatar
+        ? `/storage/${props.data.avatar}`
+        : defaultUrl
+    form.avatar = null
+    fileInput.value.value = null
+}
+
+// ✅ Use reactive URL that changes on edit or file upload
+const previewUrl = ref('')
 const updateDocument = (typeId, file) => {
     form.documents[typeId] = {
         ...form.documents[typeId],
@@ -272,16 +363,7 @@ const updateDocument = (typeId, file) => {
 const viewDocument = (url) => {
     window.open(url, '_blank')
 }
-const getDocumentLink = (typeId) => {
-    const doc = form.documents[typeId]
-    if (!doc) return '#'
 
-    if (doc.file) {
-        return URL.createObjectURL(doc.file)
-    }
-
-    return doc.url
-}
 const nextStep = () => {
     if (step.value === '1') {
         if (
@@ -356,7 +438,7 @@ const submit = () => {
         formData.append('date_of_engagement', form.date_of_engagement)
         formData.append('skill_category', form.skill_category)
         formData.append('skill_at_present', form.skill_at_present)
-
+        formData.append('avatar',form.avatar)
 
         // Append documents (assuming object with id as key and File as value)
         Object.entries(form.documents).forEach(([typeId, doc]) => {
@@ -454,6 +536,12 @@ onMounted(() => {
                 url: `/storage/${doc.path}`
             }
         })
+    }
+
+    if (props.data?.avatar) {
+        previewUrl.value = `/storage/${props.data.avatar}` // Laravel public storage path
+    } else {
+        previewUrl.value = defaultUrl
     }
 })
 

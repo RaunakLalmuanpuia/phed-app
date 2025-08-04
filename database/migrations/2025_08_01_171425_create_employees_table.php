@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Office::class);
+            $table->string('avatar')->nullable();
             $table->string('employee_code')->unique();
             $table->string('name');
             $table->string('mobile')->unique();

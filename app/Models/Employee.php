@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Employee extends Model
 {
     //
-    protected $fillable = ['office_id','employee_code','name','mobile','email','date_of_birth','parent_name','employment_type',
+    protected $fillable = ['office_id','avatar','employee_code','name','mobile','email','date_of_birth','parent_name','employment_type',
         'educational_qln','technical_qln', 'designation','name_of_workplace','post_per_qualification','date_of_engagement','skill_category','skill_at_present'];
     public function office(): BelongsTo
     {
