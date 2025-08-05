@@ -21,8 +21,14 @@ class EmployeeController extends Controller
     public function indexAllEmployees() // shows all employees
     {
         $office = Office::all();
+        $totalEmployees = Employee::count();
+        $peCount = Employee::where('employment_type', 'PE')->count();
+        $mrCount = Employee::where('employment_type', 'MR')->count();
         return Inertia::render('Backend/Employees/AllEmployees', [
             'office' => $office,
+            'totalEmployees' => $totalEmployees,
+            'peCount' => $peCount,
+            'mrCount' => $mrCount,
         ]);
     }
 
@@ -69,7 +75,7 @@ class EmployeeController extends Controller
         $office = Office::all();
 
         return Inertia::render('Backend/Employees/MrEmployees', [
-
+            'office' => $office,
         ]);
     }
 
@@ -286,6 +292,7 @@ class EmployeeController extends Controller
 
     public function update(Request $request, Employee $model)
     {
+//        dd($request->all());
         $user = auth()->user();
         abort_if(!$user->hasPermissionTo('edit-employee'),403,'Access Denied');
 
@@ -300,12 +307,12 @@ class EmployeeController extends Controller
             'employment_type' => ['required', Rule::in(['MR', 'PE'])],
             'office' => 'required|exists:offices,id',
             'educational_qln' => 'required|string|max:255',
-            'technical_qln' => 'required|string|max:255',
+            'technical_qln' => 'nullable|string|max:255',
             'name_of_workplace' => 'required|string|max:255',
-            'post_per_qualification' => 'required|string|max:255',
-            'date_of_engagement' => 'required|date',
-            'skill_category' => 'required|string|max:255',
-            'skill_at_present' => 'required|string|max:255',
+            'post_per_qualification' => 'nullable|string|max:255',
+            'date_of_engagement' => 'nullable|date',
+            'skill_category' => 'nullable|string|max:255',
+            'skill_at_present' => 'nullable|string|max:255',
             'documents' => 'nullable|array',
             'documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);

@@ -17,19 +17,6 @@
                                     <div class="text-grey-6 text-subtitle1">{{ card.title }}</div>
                                     <div class="text-h5 text-weight-bold">
                                         {{ card.value }}
-                                        <span
-                                            :class="[
-                                          'text-caption',
-                                          'text-weight-regular',
-                                          card.trend > 0 ? 'text-green' : 'text-red'
-                                        ]"
-                                        >
-                                        (
-                                        <span class="text-weight-bold">
-                                          {{ card.trend > 0 ? '+ ' : '- ' }}{{ Math.abs(card.trend) }}%
-                                        </span>
-                                        )
-                                      </span>
                                     </div>
                                     <div class="text-caption text-grey-6 q-mt-xs">
                                         Employees
@@ -147,11 +134,11 @@
                 <template v-slot:body-cell-employee="props">
                     <q-td :props="props">
                         <div class="flex items-center gap-3">
-                            <q-avatar>
+<!--                            <q-avatar>-->
 
-                                <q-img :src="`/storage/${props.row.avatar}`" />
-<!--                                <img :src="props.row.avatar" />-->
-                            </q-avatar>
+<!--                                <q-img :src="`/storage/${props.row.avatar}`" />-->
+<!--&lt;!&ndash;                                <img :src="props.row.avatar" />&ndash;&gt;-->
+<!--                            </q-avatar>-->
                             <div>
                                 <div class="text-body1">{{ props.row.name }}</div>
                                 <div class="text-caption text-grey">{{ props.row.mobile }}</div>
@@ -215,7 +202,7 @@ import {useQuasar} from "quasar";
 
 defineOptions({layout:BackendLayout})
 
-const props=defineProps(['office','canCreate','canEdit','canDelete'])
+const props=defineProps(['office','canCreate','canEdit','canDelete','totalEmployees','peCount','mrCount'])
 
 
 const columns = [
@@ -230,32 +217,28 @@ const columns = [
 const cards = [
     {
         title: 'Total',
-        value: '237',
-        trend: 42,
+        value: props.totalEmployees,
         icon: 'person_search',
         iconColor: 'light-blue-5',
         bgColor: '#d6f3ff',
     },
     {
         title: 'Muster Roll',
-        value: '21,459',
-        trend: 29,
+        value: props.mrCount,
         icon: 'person',
         iconColor: 'indigo-6',
         bgColor: '#d7d9ff',
     },
     {
         title: 'Provisional',
-        value: '2,137',
-        trend: 23,
+        value: props.peCount,
         icon: 'person_add',
         iconColor: 'red-6',
         bgColor: '#ffe1e1',
     },
     {
-        title: 'Skilled',
+        title: 'Deleted',
         value: '9,632',
-        trend: -19,
         icon: 'how_to_reg',
         iconColor: 'orange-5',
         bgColor: '#ffe9d6',

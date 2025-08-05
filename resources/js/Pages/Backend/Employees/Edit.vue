@@ -281,8 +281,6 @@
                 </q-step>
             </q-stepper>
         </q-form>
-
-        {{data.documents}}
     </q-page>
 </template>
 <script setup>
@@ -368,7 +366,7 @@ const nextStep = () => {
     if (step.value === '1') {
         if (
             !form.name || !form.mobile || !form.parent_name ||
-            !form.date_of_birth || !form.educational_qln || !form.technical_qln
+            !form.date_of_birth || !form.educational_qln
         ) {
             $q.notify({ type: 'negative', message: 'Please fill all required Personal Info fields.' })
             return
@@ -376,9 +374,8 @@ const nextStep = () => {
         step.value = '2'
     } else if (step.value === '2') {
         if (
-            !form.employment_type || !form.designation || !form.date_of_engagement ||
-            !form.name_of_workplace || !form.office || !form.post_per_qualification
-            || !form.skill_category || !form.skill_at_present
+            !form.employment_type || !form.designation ||
+            !form.name_of_workplace || !form.office
         ) {
             $q.notify({ type: 'negative', message: 'Please fill all required Job Info fields.' })
             return
@@ -424,21 +421,23 @@ const submit = () => {
     }).onOk(() => {
         const formData = new FormData()
         formData.append('name', form.name)
-        formData.append('email', form.email)
+        formData.append('email', form.email || '')
         formData.append('mobile', form.mobile)
         formData.append('parent_name', form.parent_name)
         formData.append('date_of_birth', form.date_of_birth)
         formData.append('designation', form.designation)
         formData.append('employment_type', form.employment_type)
-        formData.append('office', form.office)
+        formData.append('office', form.office?.id || form.office)
         formData.append('educational_qln', form.educational_qln)
         formData.append('technical_qln', form.technical_qln)
         formData.append('name_of_workplace', form.name_of_workplace)
         formData.append('post_per_qualification', form.post_per_qualification)
-        formData.append('date_of_engagement', form.date_of_engagement)
+        formData.append('date_of_engagement', form.date_of_engagement || '')
         formData.append('skill_category', form.skill_category)
         formData.append('skill_at_present', form.skill_at_present)
-        formData.append('avatar',form.avatar)
+        if (form.avatar && typeof form.avatar !== 'string') {
+            formData.append('avatar', form.avatar)
+        }
 
         // Append documents (assuming object with id as key and File as value)
         Object.entries(form.documents).forEach(([typeId, doc]) => {

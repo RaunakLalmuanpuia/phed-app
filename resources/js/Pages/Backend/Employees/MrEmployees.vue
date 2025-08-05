@@ -122,10 +122,10 @@
                 <template v-slot:body-cell-employee="props">
                     <q-td :props="props">
                         <div class="flex items-center gap-3">
-                            <q-avatar>
-                                <img src="https://storage.googleapis.com/a1aa/image/ce4ce84e-7065-465f-056e-505939d6ea1d.jpg" />
-                                <!--                                <img :src="props.row.avatar" />-->
-                            </q-avatar>
+<!--                            <q-avatar>-->
+<!--                                <img src="https://storage.googleapis.com/a1aa/image/ce4ce84e-7065-465f-056e-505939d6ea1d.jpg" />-->
+<!--                                &lt;!&ndash;                                <img :src="props.row.avatar" />&ndash;&gt;-->
+<!--                            </q-avatar>-->
                             <div>
                                 <div class="text-body1">{{ props.row.name }}</div>
                                 <div class="text-caption text-grey">{{ props.row.mobile }}</div>
@@ -197,6 +197,7 @@ const columns = [
     { name: 'designation', label: 'Designation', align: 'left', field: 'designation', sortable: false },
     { name: 'name_of_workplace', label: 'Workplace', align: 'left', field: 'name_of_workplace', sortable: false },
     { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: true },
+    { name: 'date_of_engagement', label: 'Date of Engagement', align: 'left', field: 'date_of_engagement', sortable: true },
     { name: 'actions', label: 'Actions', align: 'center' },
 ];
 
