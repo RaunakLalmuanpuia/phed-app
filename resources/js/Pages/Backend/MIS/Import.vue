@@ -1,12 +1,23 @@
 <template>
     <q-page class="container" padding>
-        <q-card flat bordered>
+
+        <div class="flex items-center justify-between q-pa-md bg-white">
+            <div>
+                <div class="stitle">Import Data</div>
+                <q-breadcrumbs  class="text-dark">
+                    <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
+                    <q-breadcrumbs-el label="Import" :to="route('mis.import')"/>
+                </q-breadcrumbs>
+            </div>
+        </div>
+        <br/>
+
+
+        <q-card flat>
             <q-card-section>
                 <div class="q-pa-md">
-                    <!-- Dashboard Cards -->
-                    <div class="stitle">Import Data</div>
                     <!-- Filter + Toolbar -->
-                    <q-card flat bordered class="q-mt-md bg-white shadow-1">
+                    <q-card flat class="q-mt-md bg-white shadow-1">
                         <q-card-section>
                             <div class="text-subtitle1 text-weight-medium text-grey-8 q-mb-md">
                                 Import Filter
@@ -62,7 +73,7 @@
                             <div class="row q-gutter-sm col-12 col-sm justify-end">
                                 <q-btn
                                     v-if="canImport"
-                                    label="Import"
+                                    label="Import Data"
                                     icon="add"
                                     color="primary"
                                     @click="submitImport"
