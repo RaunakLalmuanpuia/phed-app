@@ -17,18 +17,18 @@ class EmployeeSeeder extends Seeder
      */
     public function run(): void
     {
-        // Seed Offices
-        $offices = collect([
-            'Head Office',
-            'Regional Office North',
-            'Regional Office South',
-            'Field Office East',
-            'Field Office West'
-        ])->map(fn($name) => Office::create([
-            'name' => $name,
-            'type' => 'Regional',
-            'location' => fake()->city(),
-        ]));
+//        // Seed Offices
+//        $offices = collect([
+//            'Head Office',
+//            'Regional Office North',
+//            'Regional Office South',
+//            'Field Office East',
+//            'Field Office West'
+//        ])->map(fn($name) => Office::create([
+//            'name' => $name,
+//            'type' => 'Regional',
+//            'location' => fake()->city(),
+//        ]));
 
         // Seed Document Types
         $docTypes = collect([
