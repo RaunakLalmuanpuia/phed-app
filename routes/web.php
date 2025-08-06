@@ -11,6 +11,7 @@ use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\MISController;
+use App\Http\Controllers\TransferController;
 
 
 
@@ -93,6 +94,7 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
 
 
 
+
 });
 
 
@@ -110,3 +112,10 @@ Route::group(['middleware'=>'auth','prefix' => 'employee'], function () {
     Route::get('edit/{model}', [EmployeeController::class, 'edit'])->middleware('can:edit-employee')->name('employee.edit');
     Route::post('update/{model}', [EmployeeController::class, 'update'])->middleware('can:edit-employee')->name('employee.update');
 });
+
+//Transfer
+Route::group(['middleware'=>'auth','prefix' => 'transfer'], function () {
+    Route::post('store/{model}', [TransferController::class, 'store'])->middleware('can:transfer-employee')->name('transfer.store');
+    Route::delete('{model}', [TransferController::class, 'destroy'])->middleware('can:delete-transfer')->name('transfer.destroy');
+});
+

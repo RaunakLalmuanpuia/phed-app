@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+
 class RolesAndPermissionsSeeder extends Seeder
 {
     /**
@@ -20,7 +21,7 @@ class RolesAndPermissionsSeeder extends Seeder
         // Define permissions
         $permissions = [
             'request-edit', 'request-delete', 'request-transfer',
-            'approve-edit', 'approve-delete', 'approve-transfer',
+            'approve-edit', 'approve-delete', 'approve-transfer','transfer-employee','delete-transfer',
             'view-employee','view-allemployee','create-employee','delete-employee','edit-employee',
             'view-anyuser','view-user','create-user','delete-user','edit-user',
             'view-anyoffice','view-office','create-office','delete-office','edit-office',
@@ -37,7 +38,7 @@ class RolesAndPermissionsSeeder extends Seeder
         // Define roles and their permissions
         $roles = [
             'Manager' => ['request-edit', 'request-delete', 'request-transfer',],
-            'Admin' => ['approve-edit', 'approve-delete', 'approve-transfer',
+            'Admin' => ['approve-edit', 'approve-delete', 'approve-transfer','transfer-employee','delete-transfer',
                 'view-employee','view-allemployee','create-employee','delete-employee','edit-employee',
                 'view-anyuser','view-user','create-user','delete-user','edit-user',
                 'view-anyoffice','view-office','create-office','delete-office','edit-office',

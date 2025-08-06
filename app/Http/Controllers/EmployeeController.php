@@ -158,8 +158,10 @@ class EmployeeController extends Controller
     {
         $user = auth()->user();
         abort_if(!$user->hasPermissionTo('view-employee'), 403, 'Access Denied');
+        $office = Office::all();
         return inertia('Backend/Employees/Show', [
-            'data' => $model->load(['office', 'documents.type']),
+            'data' => $model->load(['office', 'documents.type','transfers.oldOffice','transfers.newOffice']),
+            'office' => $office,
         ]);
     }
     public function create(Request $request)
