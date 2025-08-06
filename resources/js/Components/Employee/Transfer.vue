@@ -11,8 +11,6 @@
             </div>
         </div>
 
-        <q-separator />
-
         <q-card-section>
             <div v-if="sortedTransfers.length > 0">
                 <q-timeline color="primary" class="q-pa-md">
@@ -155,7 +153,10 @@ function formatDate(dateStr) {
 const submit = (e) => {
     form.is_present_transfer = isPresentTransfer.value // add this line
     form.post(route('transfer.store', props.data), {
-        onStart: () => $q.loading.show(),
+        onStart: () => {
+            $q.loading.show()
+            form.reset();
+        },
         onFinish: () => {
             $q.loading.hide()
             showDialog.value = false

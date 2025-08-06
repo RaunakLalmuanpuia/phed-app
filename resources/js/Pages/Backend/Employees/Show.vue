@@ -12,8 +12,11 @@
                         <div class="stitle">{{ data.name }}</div>
                         <q-badge color="grey-4" text-color="dark" class="stitle" :label="data?.employment_type" />
                         <div class="q-mt-lg full-width">
-                            <div class="subtitle text-grey-7 q-mb-sm">Details</div>
-                            <q-list bordered class="rounded-borders">
+
+                            <q-list  class="rounded-borders">
+                                <q-item>
+                                    <q-item-section  class="text-label">Details</q-item-section>
+                                </q-item>
                                 <q-item>
                                     <q-item-section side class="subtitle">Employee Code:</q-item-section>
                                     <q-item-section  class="text-label">{{ data?.employee_code }}</q-item-section>
@@ -95,6 +98,22 @@
                                     <q-item-section class="text-label">{{data?.skill_at_present}}</q-item-section>
                                 </q-item>
                             </q-list>
+
+                            <div class=" q-mt-lg flex items-center justify-center">
+                                <q-btn
+                                    label="Edit"
+                                    @click="$inertia.get(route('employee.edit',data))"
+                                    class="q-mr-md"
+                                    color="primary"
+                                />
+
+                                <q-btn
+                                    label="Delete"
+                                    color="negative"
+                                    unelevated
+                                />
+                            </div>
+
                         </div>
                     </div>
                 </q-card>
