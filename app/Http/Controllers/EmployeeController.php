@@ -350,7 +350,7 @@ class EmployeeController extends Controller
             'parent_name' => 'required|string|max:255',
             'date_of_birth' => 'required|date',
             'designation' => 'required|string|max:255',
-            'employment_type' => ['required', Rule::in(['MR', 'PE'])],
+            'employment_type' => ['required', Rule::in(['MR', 'PE', 'Deleted'])],
             'office' => 'required|exists:offices,id',
             'educational_qln' => 'required|string|max:255',
             'technical_qln' => 'nullable|string|max:255',
