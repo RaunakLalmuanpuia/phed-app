@@ -12,6 +12,7 @@ use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\MISController;
 use App\Http\Controllers\TransferController;
+use App\Http\Controllers\DeletionController;
 
 
 
@@ -117,5 +118,11 @@ Route::group(['middleware'=>'auth','prefix' => 'employee'], function () {
 Route::group(['middleware'=>'auth','prefix' => 'transfer'], function () {
     Route::post('store/{model}', [TransferController::class, 'store'])->middleware('can:transfer-employee')->name('transfer.store');
     Route::delete('{model}', [TransferController::class, 'destroy'])->middleware('can:delete-transfer')->name('transfer.destroy');
+});
+
+//Delete Employee
+Route::group(['middleware'=>'auth','prefix' => 'deletion'], function () {
+    Route::post('store/{model}', [DeletionController::class, 'store'])->middleware('can:delete-employee')->name('deletion.store');
+    Route::post('update/{model}', [DeletionController::class, 'update'])->middleware('can:edit-delete')->name('deletion.update');
 });
 

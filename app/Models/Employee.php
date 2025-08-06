@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Employee extends Model
 {
@@ -33,6 +34,11 @@ class Employee extends Model
 
     public function editRequests(): HasMany {
         return $this->hasMany(EditRequest::class);
+    }
+
+    public function deletionDetail(): HasOne
+    {
+        return $this->hasOne(DeletionDetail::class);
     }
 
 }

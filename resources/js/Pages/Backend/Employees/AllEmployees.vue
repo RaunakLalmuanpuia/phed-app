@@ -202,7 +202,7 @@ import {useQuasar} from "quasar";
 
 defineOptions({layout:BackendLayout})
 
-const props=defineProps(['office','canCreate','canEdit','canDelete','totalEmployees','peCount','mrCount'])
+const props=defineProps(['office','canCreate','canEdit','canDelete','totalEmployees','peCount','mrCount','deletedCount'])
 
 
 const columns = [
@@ -238,7 +238,7 @@ const cards = [
     },
     {
         title: 'Deleted',
-        value: '9,632',
+        value: props.deletedCount,
         icon: 'how_to_reg',
         iconColor: 'orange-5',
         bgColor: '#ffe9d6',

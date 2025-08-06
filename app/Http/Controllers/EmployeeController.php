@@ -24,11 +24,13 @@ class EmployeeController extends Controller
         $totalEmployees = Employee::count();
         $peCount = Employee::where('employment_type', 'PE')->count();
         $mrCount = Employee::where('employment_type', 'MR')->count();
+        $deletedCount = Employee::where('employment_type', 'Deleted')->count();
         return Inertia::render('Backend/Employees/AllEmployees', [
             'office' => $office,
             'totalEmployees' => $totalEmployees,
             'peCount' => $peCount,
             'mrCount' => $mrCount,
+            'deletedCount' => $deletedCount,
         ]);
     }
 
@@ -160,7 +162,7 @@ class EmployeeController extends Controller
         abort_if(!$user->hasPermissionTo('view-employee'), 403, 'Access Denied');
         $office = Office::all();
         return inertia('Backend/Employees/Show', [
-            'data' => $model->load(['office', 'documents.type','transfers.oldOffice','transfers.newOffice']),
+            'data' => $model->load(['office', 'documents.type','transfers.oldOffice','transfers.newOffice', 'deletionDetail']),
             'office' => $office,
         ]);
     }

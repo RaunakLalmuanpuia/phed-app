@@ -2,7 +2,7 @@
     <q-page class="container" padding>
         <div class="row q-col-gutter-md">
             <!-- Left Panel -->
-            <div class="col-12 col-md-5">
+            <div class="col-12 col-md-4">
                 <q-card class="q-pa-md">
                     <div class="column items-center q-gutter-sm">
                         <q-avatar size="96px">
@@ -10,7 +10,14 @@
                         </q-avatar>
 
                         <div class="stitle">{{ data.name }}</div>
-                        <q-badge color="grey-4" text-color="dark" class="stitle" :label="data?.employment_type" />
+                        <q-badge
+                            :color="data?.employment_type?.trim() === 'Deleted' ? 'red-6' : 'grey-6'"
+                            text-color="white"
+                            class="stitle"
+                            :label="data?.employment_type"
+                            style="padding: 8px;"
+                            rounded
+                        />
                         <div class="q-mt-lg full-width">
 
                             <q-list  class="rounded-borders">
@@ -108,9 +115,11 @@
                                 />
 
                                 <q-btn
+                                    v-if="data.employment_type !== 'Deleted'"
                                     label="Delete"
                                     color="negative"
                                     unelevated
+                                    @click="showDeleteDialog = true"
                                 />
                             </div>
 
@@ -119,8 +128,14 @@
                 </q-card>
             </div>
 
+            <DeletionDialog
+                v-model="showDeleteDialog"
+                :employee="data"
+            />
+
             <!-- Right Panel -->
-            <div class="col-12 col-md-7">
+            <div class="col-12 col-md-8">
+
                 <!-- Tabs -->
                 <q-tabs
                     v-model="tab"
@@ -141,9 +156,18 @@
                 <DeletionRequest v-if="tab === 'deletion'" :data="data" />
 
 
+                <div class="row q-col-gutter-md">
+                    <div class="col-12 col-md-7">
+                        <Transfer :data="data" :office="office"/>
+                    </div>
+
+                    <div class="col-12 col-md-5">
+                        <Deletion v-if="data.employment_type === 'Deleted'" :deletion="data.deletion_detail"/>
+                    </div>
+
+                </div>
 
 
-                <Transfer :data="data" :office="office"/>
 
             </div>
 
@@ -161,6 +185,11 @@ import DeletionRequest from "@/Components/Employee/DeletionRequest.vue";
 
 import Transfer from "@/Components/Employee/Transfer.vue";
 
+import DeletionDialog from "@/Components/Employee/DeletionDialog.vue";
+
+import Deletion from "@/Components/Employee/Deletion.vue";
+
+
 import { ref, computed } from 'vue'
 
 defineOptions({layout:BackendLayout})
@@ -168,6 +197,9 @@ defineOptions({layout:BackendLayout})
 const props=defineProps(['data','office']);
 
 const tab = ref('document')
+
+const showDeleteDialog = ref(false)
+
 
 
 </script>
