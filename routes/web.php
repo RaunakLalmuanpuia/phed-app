@@ -107,6 +107,8 @@ Route::group(['middleware'=>'auth','prefix' => 'employee'], function () {
     Route::get('json-index-mr', [EmployeeController::class, 'jsonMrEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-mr');
     Route::get('/pe', [EmployeeController::class, 'indexPeEmployees'])->middleware('can:view-allemployee')->name('employees.pe');
     Route::get('json-index-pe', [EmployeeController::class, 'jsonPeEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-pe');
+    Route::get('/deleted', [EmployeeController::class, 'indexDeletedEmployees'])->middleware('can:view-allemployee')->name('employees.deleted');
+    Route::get('json-index-deleted', [EmployeeController::class, 'jsonDeletedEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-deleted');
     Route::get('{model}/show', [EmployeeController::class, 'show'])->middleware('can:view-employee')->name('employee.show');
     Route::get('create', [EmployeeController::class, 'create'])->middleware('can:create-employee')->name('employee.create');
     Route::post('store', [EmployeeController::class, 'store'])->middleware('can:create-employee')->name('employee.store');

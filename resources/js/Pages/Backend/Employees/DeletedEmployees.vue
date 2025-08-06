@@ -17,6 +17,19 @@
                                     <div class="text-grey-6 text-subtitle1">{{ card.title }}</div>
                                     <div class="text-h5 text-weight-bold">
                                         {{ card.value }}
+                                        <span
+                                            :class="[
+                                          'text-caption',
+                                          'text-weight-regular',
+                                          card.trend > 0 ? 'text-green' : 'text-red'
+                                        ]"
+                                        >
+                                        (
+                                        <span class="text-weight-bold">
+                                          {{ card.trend > 0 ? '+ ' : '- ' }}{{ Math.abs(card.trend) }}%
+                                        </span>
+                                        )
+                                      </span>
                                     </div>
                                     <div class="text-caption text-grey-6 q-mt-xs">
                                         Employees
@@ -42,19 +55,6 @@
 
                             <div class="row q-col-gutter-md">
 
-
-                                <q-select
-                                    label="Select Employment Type"
-                                    class="col-12 col-sm-4"
-                                    v-model="filters.type"
-                                    :options="type"
-                                    emit-value
-                                    map-options
-                                    outlined
-                                    dense
-                                    clearable
-                                    @update:model-value="handleSearch"
-                                />
                                 <q-select
                                     label="Select Office"
                                     class="col-12 col-sm-4"
@@ -81,37 +81,22 @@
                                     clearable
                                     @update:model-value="handleSearch"
                                 />
-                            </div>
-                        </q-card-section>
-
-                        <q-separator />
-
-                        <q-card-section class="row items-center justify-between q-gutter-md">
-                            <div class="row q-gutter-sm col-12 col-sm justify-end">
                                 <q-input
                                     dense
                                     outlined
                                     debounce="300"
                                     v-model="filters.search"
                                     placeholder="Search"
-                                    class="col-12 col-sm-auto"
-                                    clearable
+                                    class="col-12 col-sm-4"
                                     @update:model-value="handleSearch"
                                 >
                                     <template #append>
                                         <q-icon name="search" />
                                     </template>
                                 </q-input>
-
-<!--                                <q-btn label="Export" icon="desktop_windows" color="grey-4" disable />-->
-                                <q-btn
-                                    label="Add New Employee"
-                                    icon="add"
-                                    color="primary"
-                                    @click="$inertia.get(route('employee.create'))"
-                                />
                             </div>
                         </q-card-section>
+
                     </q-card>
                 </div>
             </q-card-section>
@@ -119,7 +104,7 @@
             <q-table
                 flat
                 ref="tableRef"
-                title="List of All Employees"
+                title="List of Deleted Employees"
                 :rows="rows"
                 :columns="columns"
                 row-key="id"
@@ -134,11 +119,10 @@
                 <template v-slot:body-cell-employee="props">
                     <q-td :props="props">
                         <div class="flex items-center gap-3">
-<!--                            <q-avatar>-->
-
-<!--                                <q-img :src="`/storage/${props.row.avatar}`" />-->
-<!--&lt;!&ndash;                                <img :src="props.row.avatar" />&ndash;&gt;-->
-<!--                            </q-avatar>-->
+                            <!--                            <q-avatar>-->
+                            <!--                                <img src="https://storage.googleapis.com/a1aa/image/ce4ce84e-7065-465f-056e-505939d6ea1d.jpg" />-->
+                            <!--                                &lt;!&ndash;                                <img :src="props.row.avatar" />&ndash;&gt;-->
+                            <!--                            </q-avatar>-->
                             <div>
                                 <div class="text-body1">{{ props.row.name }}</div>
                                 <div class="text-caption text-grey">{{ props.row.mobile }}</div>
@@ -155,6 +139,18 @@
                     </q-td>
                 </template>
 
+                <template v-slot:body-cell-reason="props">
+                    <q-td :props="props">
+                        {{ props.row.deletion_detail?.reason }}
+                    </q-td>
+                </template>
+
+                <template v-slot:body-cell-year="props">
+                    <q-td :props="props">
+                        {{ props.row.deletion_detail?.year }}
+                    </q-td>
+                </template>
+
                 <!-- Actions Cell -->
                 <template v-slot:body-cell-actions="props">
                     <q-td :props="props">
@@ -167,24 +163,24 @@
                             @click="$inertia.get(route('employee.show',props.row.id))"
                             aria-label="Show user"
                         />
-                        <q-btn
-                            dense
-                            flat
-                            round
-                            color="primary"
-                            icon="edit"
-                            @click="$inertia.get(route('employee.edit',props.row.id))"
-                            aria-label="Edit user"
-                        />
-                        <q-btn
-                            dense
-                            flat
-                            round
-                            color="red"
-                            icon="delete"
-                            @click="deleteUser(props.row.id)"
-                            aria-label="Delete user"
-                        />
+                        <!--                        <q-btn-->
+                        <!--                            dense-->
+                        <!--                            flat-->
+                        <!--                            round-->
+                        <!--                            color="primary"-->
+                        <!--                            icon="edit"-->
+                        <!--                            @click="$inertia.get(route('employee.edit',props.row.id))"-->
+                        <!--                            aria-label="Edit user"-->
+                        <!--                        />-->
+                        <!--                        <q-btn-->
+                        <!--                            dense-->
+                        <!--                            flat-->
+                        <!--                            round-->
+                        <!--                            color="red"-->
+                        <!--                            icon="delete"-->
+                        <!--                            @click="deleteUser(props.row.id)"-->
+                        <!--                            aria-label="Delete user"-->
+                        <!--                        />-->
                     </q-td>
                 </template>
             </q-table>
@@ -202,43 +198,46 @@ import {useQuasar} from "quasar";
 
 defineOptions({layout:BackendLayout})
 
-const props=defineProps(['office','canCreate','canEdit','canDelete','totalEmployees','peCount','mrCount','deletedCount'])
+const props=defineProps(['office','canCreate','canEdit','canDelete'])
 
 
 const columns = [
     { name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true },
-    { name: 'employment_type', label: 'Employment Type', align: 'left', field: 'employment_type', sortable: false },
-    { name: 'designation', label: 'Designation', align: 'left', field: 'designation', sortable: false },
-    { name: 'name_of_workplace', label: 'Workplace', align: 'left', field: 'name_of_workplace', sortable: false },
     { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: true },
+    { name: 'reason', label: 'Reason', align: 'left', field: 'reason', sortable: false },
+    { name: 'year', label: 'Year', align: 'left', field: 'year', sortable: false },
     { name: 'actions', label: 'Actions', align: 'center' },
 ];
 
 const cards = [
     {
         title: 'Total',
-        value: props.totalEmployees,
+        value: '237',
+        trend: 42,
         icon: 'person_search',
         iconColor: 'light-blue-5',
         bgColor: '#d6f3ff',
     },
     {
         title: 'Muster Roll',
-        value: props.mrCount,
+        value: '21,459',
+        trend: 29,
         icon: 'person',
         iconColor: 'indigo-6',
         bgColor: '#d7d9ff',
     },
     {
         title: 'Provisional',
-        value: props.peCount,
+        value: '2,137',
+        trend: 23,
         icon: 'person_add',
         iconColor: 'red-6',
         bgColor: '#ffe1e1',
     },
     {
-        title: 'Deleted',
-        value: props.deletedCount,
+        title: 'Skilled',
+        value: '9,632',
+        trend: -19,
         icon: 'how_to_reg',
         iconColor: 'orange-5',
         bgColor: '#ffe9d6',
@@ -247,17 +246,12 @@ const cards = [
 ]
 
 const filters = ref({
-    type: null,
     office: null,
     skill: null,
     search:null,
 })
 
-const type = [
-    { label: 'MR', value: 'MR' },
-    { label: 'PE', value: 'PE' },
-    { label: 'Deleted', value: 'Deleted' },
-]
+
 
 const skills = [
     { label: 'Skilled', value: 'skilled' },
@@ -284,17 +278,16 @@ const handleSearch = () => {
     onRequest({
         pagination: pagination.value,
         filter: filters.value,
-        search: filters.value.search // ✅ FIXED
-    });
-};
-
+        search: filters.value.search
+    })
+}
 function onRequest (props) {
     const { page, rowsPerPage, sortBy, descending } = props.pagination
     const filter = props.filter
     const search = props.search
 
     loading.value = true
-    axios.get(route('employees.json-index-all'),{
+    axios.get(route('employees.json-index-deleted'),{
         params:{
             filter,
             page,
@@ -319,12 +312,11 @@ function onRequest (props) {
 }
 
 onMounted(() => {
-    onRequest({
-        pagination: pagination.value,
-        filter: filters.value,
+    onRequest({pagination:pagination.value,
+        filter:filters.value,
         search: filters.value.search
-    });
-});
+    })
+})
 
 
 </script>

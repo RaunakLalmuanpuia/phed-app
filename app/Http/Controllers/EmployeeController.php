@@ -156,6 +156,48 @@ class EmployeeController extends Controller
             'list' => $employees->paginate($perPage),
         ], 200);
     }
+
+    public function indexDeletedEmployees() // shows PE type
+    {
+        $office = Office::all();
+
+        return Inertia::render('Backend/Employees/DeletedEmployees', [
+            'office' => $office,
+        ]);
+    }
+    public function jsonDeletedEmployees(Request $request)
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
+
+        $perPage = $request->get('rowsPerPage') ?? 5;
+        $filter = $request->get('filter', []);
+        $search = $filter['search'] ?? null; // ✅ extract from filter array
+        $employees = Employee::query()
+            ->where('employment_type', 'Deleted')
+            ->with(['office','deletionDetail'])
+            ->when($search, function (Builder $builder) use ($search) {
+                $builder->where(function ($query) use ($search) {
+                    $query->where('name', 'LIKE', "%$search%")
+                        ->orWhere('mobile', 'LIKE', "%$search%")
+                        ->orWhere('designation', 'LIKE', "%$search%")
+                        ->orWhere('date_of_birth', 'LIKE', "%$search%")
+                        ->orWhere('name_of_workplace', 'LIKE', "%$search%");
+                });
+            })
+            ->when($filter['office'] ?? null, function (Builder $query, $officeId) {
+                $query->whereHas('office', function (Builder $q) use ($officeId) {
+                    $q->where('id', $officeId);
+                });
+            })
+            ->when($filter['skill'] ?? null, function (Builder $query, $skill) {
+                $query->where('skill_at_present', $skill);
+            });
+
+        return response()->json([
+            'list' => $employees->paginate($perPage),
+        ], 200);
+    }
     public function show(Request $request, Employee $model)
     {
         $user = auth()->user();
