@@ -1,177 +1,195 @@
 <template>
     <q-page class="container" padding>
-        <div class="row q-col-gutter-md">
-            <!-- Left Panel -->
-            <div class="col-12 col-md-4">
-                <q-card class="q-pa-md">
-                    <div class="column items-center q-gutter-sm">
-                        <q-avatar size="96px">
-                            <q-img :src="`/storage/${data.avatar}`" />
-                        </q-avatar>
 
-                        <div class="stitle">{{ data.name }}</div>
-                        <q-badge
-                            :color="data?.employment_type?.trim() === 'Deleted' ? 'red-6' : 'grey-6'"
-                            text-color="white"
-                            class="stitle"
-                            :label="data?.employment_type"
-                            style="padding: 8px;"
-                            rounded
-                        />
-                        <div class="q-mt-lg full-width">
+        <div class="flex items-center justify-between q-pa-md bg-white">
+            <div>
+                <div class="stitle">Employee Detail</div>
+                <q-breadcrumbs  class="text-dark">
+                    <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
+                    <q-breadcrumbs-el label="All Employees" :to="route('mis.import')"/>
+                </q-breadcrumbs>
+            </div>
+        </div>
+        <br>
 
-                            <q-list  class="rounded-borders">
-                                <q-item>
-                                    <q-item-section  class="text-label">Details</q-item-section>
-                                </q-item>
-                                <q-item>
-                                    <q-item-section side class="subtitle">Employee Code:</q-item-section>
-                                    <q-item-section  class="text-label">{{ data?.employee_code }}</q-item-section>
-                                </q-item>
-                                <q-item>
-                                    <q-item-section side class="subtitle">Name:</q-item-section>
-                                    <q-item-section  class="text-label">{{ data?.name }}</q-item-section>
-                                </q-item>
-                                <q-item>
-                                    <q-item-section side class="subtitle">Email:</q-item-section>
-                                    <q-item-section  class="text-label">{{data.email}}</q-item-section>
-                                </q-item>
-                                <q-item>
-                                    <q-item-section side class="subtitle">Contact:</q-item-section>
-                                    <q-item-section  class="text-label">{{data?.mobile}}</q-item-section>
-                                </q-item>
-                                <q-item>
-                                    <q-item-section side class="subtitle">Parent Name:</q-item-section>
-                                    <q-item-section  class="text-label">{{data?.parent_name}}</q-item-section>
-                                </q-item>
+        <q-card flat >
+            <q-card-section>
+                <div class="row q-col-gutter-md">
+                    <!-- Left Panel -->
+                    <div class="col-12 col-md-4">
+                        <q-card class="q-pa-md">
+                            <div class="column items-center q-gutter-sm">
+                                <q-avatar size="96px">
+                                    <q-img :src="`/storage/${data.avatar}`" />
+                                </q-avatar>
 
-                                <q-item>
-                                    <q-item-section side class="subtitle">Date of Birth:</q-item-section>
-                                    <q-item-section  class="text-label">{{data.date_of_birth}}</q-item-section>
-                                </q-item>
-
-                                <q-item>
-                                    <q-item-section side class="subtitle">Education Qln.:</q-item-section>
-                                    <q-item-section  class="text-label">{{data?.educational_qln}}</q-item-section>
-                                </q-item>
-
-                                <q-item>
-                                    <q-item-section side class="subtitle">Technical Qln.:</q-item-section>
-                                    <q-item-section  class="text-label">{{data?.technical_qln}}</q-item-section>
-                                </q-item>
-
-                                <q-item>
-                                    <q-item-section side class="subtitle">Employment Type:</q-item-section>
-                                    <q-item-section  class="text-label">{{data?.employment_type}}</q-item-section>
-                                </q-item>
-
-                                <q-item>
-                                    <q-item-section side class="subtitle" >Designation:</q-item-section>
-                                    <q-item-section  class="text-label">{{data?.designation}}</q-item-section>
-                                </q-item>
-
-                                <q-item>
-                                    <q-item-section side class="subtitle">Office:</q-item-section>
-                                    <q-item-section  class="text-label">{{data?.office?.name}}</q-item-section>
-                                </q-item>
-
-                                <q-item>
-                                    <q-item-section side class="subtitle">Office Type:</q-item-section>
-                                    <q-item-section  class="text-label">{{data?.office?.type}}</q-item-section>
-                                </q-item>
-
-                                <q-item>
-                                    <q-item-section side class="subtitle">Workplace:</q-item-section>
-                                    <q-item-section  class="text-label">{{data?.name_of_workplace}}</q-item-section>
-                                </q-item>
-
-                                <q-item>
-                                    <q-item-section side class="subtitle">Post Per Qualification:</q-item-section>
-                                    <q-item-section  class="text-label">{{data?.post_per_qualification}}</q-item-section>
-                                </q-item>
-
-                                <q-item>
-                                    <q-item-section side class="subtitle">Date of Engagement:</q-item-section>
-                                    <q-item-section  class="text-label">{{data?.date_of_engagement ?? 'N/A'}}</q-item-section>
-                                </q-item>
-
-                                <q-item>
-                                    <q-item-section side class="subtitle">Skill Category:</q-item-section>
-                                    <q-item-section  class="text-label">{{data?.skill_category}}</q-item-section>
-                                </q-item>
-
-                                <q-item>
-                                    <q-item-section side class="subtitle">Skill at Present:</q-item-section>
-                                    <q-item-section class="text-label">{{data?.skill_at_present}}</q-item-section>
-                                </q-item>
-                            </q-list>
-
-                            <div class=" q-mt-lg flex items-center justify-center">
-                                <q-btn
-                                    label="Edit"
-                                    @click="$inertia.get(route('employee.edit',data))"
-                                    class="q-mr-md"
-                                    color="primary"
+                                <div class="stitle">{{ data.name }}</div>
+                                <q-badge
+                                    :color="data?.employment_type?.trim() === 'Deleted' ? 'red-6' : 'grey-6'"
+                                    text-color="white"
+                                    class="stitle"
+                                    :label="data?.employment_type"
+                                    style="padding: 8px;"
+                                    rounded
                                 />
+                                <div class="q-mt-lg full-width">
 
-                                <q-btn
-                                    v-if="data.employment_type !== 'Deleted'"
-                                    label="Delete"
-                                    color="negative"
-                                    unelevated
-                                    @click="showDeleteDialog = true"
-                                />
+                                    <q-list  class="rounded-borders">
+                                        <q-item>
+                                            <q-item-section  class="text-label">Details</q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section side class="subtitle">Employee Code:</q-item-section>
+                                            <q-item-section  class="text-label">{{ data?.employee_code }}</q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section side class="subtitle">Name:</q-item-section>
+                                            <q-item-section  class="text-label">{{ data?.name }}</q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section side class="subtitle">Email:</q-item-section>
+                                            <q-item-section  class="text-label">{{data.email}}</q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section side class="subtitle">Contact:</q-item-section>
+                                            <q-item-section  class="text-label">{{data?.mobile}}</q-item-section>
+                                        </q-item>
+                                        <q-item>
+                                            <q-item-section side class="subtitle">Parent Name:</q-item-section>
+                                            <q-item-section  class="text-label">{{data?.parent_name}}</q-item-section>
+                                        </q-item>
+
+                                        <q-item>
+                                            <q-item-section side class="subtitle">Date of Birth:</q-item-section>
+                                            <q-item-section  class="text-label">{{data.date_of_birth}}</q-item-section>
+                                        </q-item>
+
+                                        <q-item>
+                                            <q-item-section side class="subtitle">Education Qln.:</q-item-section>
+                                            <q-item-section  class="text-label">{{data?.educational_qln}}</q-item-section>
+                                        </q-item>
+
+                                        <q-item>
+                                            <q-item-section side class="subtitle">Technical Qln.:</q-item-section>
+                                            <q-item-section  class="text-label">{{data?.technical_qln}}</q-item-section>
+                                        </q-item>
+
+                                        <q-item>
+                                            <q-item-section side class="subtitle">Employment Type:</q-item-section>
+                                            <q-item-section  class="text-label">{{data?.employment_type}}</q-item-section>
+                                        </q-item>
+
+                                        <q-item>
+                                            <q-item-section side class="subtitle" >Designation:</q-item-section>
+                                            <q-item-section  class="text-label">{{data?.designation}}</q-item-section>
+                                        </q-item>
+
+                                        <q-item>
+                                            <q-item-section side class="subtitle">Office:</q-item-section>
+                                            <q-item-section  class="text-label">{{data?.office?.name}}</q-item-section>
+                                        </q-item>
+
+                                        <q-item>
+                                            <q-item-section side class="subtitle">Office Type:</q-item-section>
+                                            <q-item-section  class="text-label">{{data?.office?.type}}</q-item-section>
+                                        </q-item>
+
+                                        <q-item>
+                                            <q-item-section side class="subtitle">Workplace:</q-item-section>
+                                            <q-item-section  class="text-label">{{data?.name_of_workplace}}</q-item-section>
+                                        </q-item>
+
+                                        <q-item>
+                                            <q-item-section side class="subtitle">Post Per Qualification:</q-item-section>
+                                            <q-item-section  class="text-label">{{data?.post_per_qualification}}</q-item-section>
+                                        </q-item>
+
+                                        <q-item>
+                                            <q-item-section side class="subtitle">Date of Engagement:</q-item-section>
+                                            <q-item-section  class="text-label">{{data?.date_of_engagement ?? 'N/A'}}</q-item-section>
+                                        </q-item>
+
+                                        <q-item>
+                                            <q-item-section side class="subtitle">Skill Category:</q-item-section>
+                                            <q-item-section  class="text-label">{{data?.skill_category}}</q-item-section>
+                                        </q-item>
+
+                                        <q-item>
+                                            <q-item-section side class="subtitle">Skill at Present:</q-item-section>
+                                            <q-item-section class="text-label">{{data?.skill_at_present}}</q-item-section>
+                                        </q-item>
+                                    </q-list>
+
+                                    <div class=" q-mt-lg flex items-center justify-center">
+                                        <q-btn
+                                            label="Edit"
+                                            @click="$inertia.get(route('employee.edit',data))"
+                                            class="q-mr-md"
+                                            color="primary"
+                                        />
+
+                                        <q-btn
+                                            v-if="data.employment_type !== 'Deleted'"
+                                            label="Delete"
+                                            color="negative"
+                                            unelevated
+                                            @click="showDeleteDialog = true"
+                                        />
+                                    </div>
+
+                                </div>
+                            </div>
+                        </q-card>
+                    </div>
+
+                    <DeletionDialog
+                        v-model="showDeleteDialog"
+                        :employee="data"
+                    />
+
+                    <!-- Right Panel -->
+                    <div class="col-12 col-md-8">
+
+                        <!-- Tabs -->
+                        <q-tabs
+                            v-model="tab"
+                            class="text-primary bg-white shadow-1 q-pa-sm"
+                            dense
+                            align="center"
+                        >
+                            <q-tab name="document" label="Documents" icon="drive_folder_upload" />
+                            <q-tab name="edit" label="Edit Request" icon="edit"/>
+                            <q-tab name="transfer_request" label="Transfer Request" icon="input" />
+                            <q-tab name="deletion" label="Deletion Request" icon="delete_sweep" />
+                        </q-tabs>
+
+                        <Document v-if="tab === 'document'" :data="data" />
+
+                        <EditRequest v-if="tab === 'edit'" :data="data" />
+                        <TransferRequest v-if="tab === 'transfer_request'" :data="data" />
+                        <DeletionRequest v-if="tab === 'deletion'" :data="data" />
+
+
+                        <div class="row q-col-gutter-md">
+                            <div class="col-12 col-md-7">
+                                <Transfer :data="data" :office="office"/>
+                            </div>
+
+                            <div class="col-12 col-md-5">
+                                <Deletion v-if="data.employment_type === 'Deleted'" :deletion="data.deletion_detail"/>
                             </div>
 
                         </div>
-                    </div>
-                </q-card>
-            </div>
-
-            <DeletionDialog
-                v-model="showDeleteDialog"
-                :employee="data"
-            />
-
-            <!-- Right Panel -->
-            <div class="col-12 col-md-8">
-
-                <!-- Tabs -->
-                <q-tabs
-                    v-model="tab"
-                    class="text-primary bg-white shadow-1 q-pa-sm"
-                    dense
-                    align="center"
-                >
-                    <q-tab name="document" label="Documents" icon="drive_folder_upload" />
-                    <q-tab name="edit" label="Edit Request" icon="edit"/>
-                    <q-tab name="transfer_request" label="Transfer Request" icon="input" />
-                    <q-tab name="deletion" label="Deletion Request" icon="delete_sweep" />
-                </q-tabs>
-
-                <Document v-if="tab === 'document'" :data="data" />
-
-                <EditRequest v-if="tab === 'edit'" :data="data" />
-                <TransferRequest v-if="tab === 'transfer_request'" :data="data" />
-                <DeletionRequest v-if="tab === 'deletion'" :data="data" />
 
 
-                <div class="row q-col-gutter-md">
-                    <div class="col-12 col-md-7">
-                        <Transfer :data="data" :office="office"/>
-                    </div>
 
-                    <div class="col-12 col-md-5">
-                        <Deletion v-if="data.employment_type === 'Deleted'" :deletion="data.deletion_detail"/>
                     </div>
 
                 </div>
+            </q-card-section>
+        </q-card>
 
 
-
-            </div>
-
-        </div>
     </q-page>
 </template>
 

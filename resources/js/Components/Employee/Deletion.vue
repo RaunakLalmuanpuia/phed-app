@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
-
+import {useQuasar} from "quasar";
+const $q = useQuasar()
 const props = defineProps({
   deletion: Object,
 })
@@ -21,6 +22,10 @@ const submit = () => {
     preserveScroll: true,
     onSuccess: () => {
       showDialog.value = false
+        $q.notify({
+            type: 'positive',
+            message:  'Employee Deleted successfully.'
+        })
     }
   })
 }
@@ -36,7 +41,7 @@ const viewDocument = (url) => {
   <q-card class="q-mt-md">
     <div class="flex items-center justify-between q-pa-md bg-white">
       <div>
-        <div class="stitle">Deletion Detail</div>
+        <div class="stitle text-red">Deletion Detail</div>
       </div>
 
       <div class="flex q-gutter-sm">
@@ -87,7 +92,7 @@ const viewDocument = (url) => {
 
   <q-dialog v-model="showDialog">
     <q-card style="min-width: 500px; max-width: 90vw;">
-      <q-card-section class="bg-primary text-white">
+      <q-card-section class="bg-negative text-white">
         <div class="text-h6">Edit Deletion Detail</div>
       </q-card-section>
 

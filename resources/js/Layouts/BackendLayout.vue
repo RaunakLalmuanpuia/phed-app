@@ -569,8 +569,8 @@ const module = reactive({
     reports: {
         label: 'MIS Reports',
         children: [
+            {route_name: 'mis.export', label: 'Export', permission: 'export-employee'},
             {route_name: 'mis.import', label: 'Import', permission: 'import-employee'},
-            {route_name: 'office.index', label: 'Export', permission: 'view-office'},
         ]
     },
     requests: {

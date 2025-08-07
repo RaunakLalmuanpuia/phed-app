@@ -1,6 +1,18 @@
 <template>
     <q-page class="container" padding>
-        <q-card flat bordered>
+
+        <div class="flex items-center justify-between q-pa-md bg-white">
+            <div>
+                <div class="stitle">Muster Roll Employee List</div>
+                <q-breadcrumbs  class="text-dark">
+                    <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
+                    <q-breadcrumbs-el label="All Employees" :to="route('mis.import')"/>
+                </q-breadcrumbs>
+            </div>
+        </div>
+        <br>
+
+        <q-card flat>
             <q-card-section>
                 <div class="q-pa-md">
                     <!-- Dashboard Cards -->
@@ -122,10 +134,13 @@
                 <template v-slot:body-cell-employee="props">
                     <q-td :props="props">
                         <div class="flex items-center gap-3">
-<!--                            <q-avatar>-->
-<!--                                <img src="https://storage.googleapis.com/a1aa/image/ce4ce84e-7065-465f-056e-505939d6ea1d.jpg" />-->
-<!--                                &lt;!&ndash;                                <img :src="props.row.avatar" />&ndash;&gt;-->
-<!--                            </q-avatar>-->
+                            <q-avatar>
+                                <q-img
+                                    v-if="props.row.avatar"
+                                    :src="`/storage/${props.row.avatar}`"
+                                />
+                                <q-icon v-else name="person" size="md" color="primary" />
+                            </q-avatar>
                             <div>
                                 <div class="text-body1">{{ props.row.name }}</div>
                                 <div class="text-caption text-grey">{{ props.row.mobile }}</div>

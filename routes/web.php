@@ -91,6 +91,8 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
     Route::group(['prefix' => 'mis'], function () {
         Route::get('import', [MISController::class, 'import'])->middleware('can:import-employee')->name('mis.import');
         Route::post('import-employee', [MISController::class, 'importEmployee'])->middleware('can:import-employee')->name('mis.import-employee');
+        Route::get('export', [MISController::class, 'export'])->middleware('can:export-employee')->name('mis.export');
+        Route::post('export-employee', [MISController::class, 'exportEmployee'])->middleware('can:export-employee')->name('mis.export-employee');
     });
 
 

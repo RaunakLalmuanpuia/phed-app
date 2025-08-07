@@ -38,4 +38,32 @@ class MISController extends Controller
         return redirect()->back()->with('message','Employee data imported successfully');
 
     }
+
+    public function export(Request $request){
+
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('export-employee'),403,'Access Denied');
+
+        $office = Office::all();
+
+        return Inertia::render('Backend/MIS/Export', [
+            'office' => $office,
+            'canExport'=>$user->can('export-employee'),
+        ]);
+    }
+
+    public function exportEmployee(Request $request){
+
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('export-employee'),403,'Access Denied');
+
+        $request->validate([
+
+            'office' => 'required|integer|exists:offices,id',
+            'type' => 'required|string|in:MR,PE',
+        ]);
+
+        return redirect()->back()->with('message','Employee data imported successfully');
+
+    }
 }

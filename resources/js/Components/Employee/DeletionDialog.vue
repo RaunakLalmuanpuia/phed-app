@@ -31,6 +31,8 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useForm } from '@inertiajs/vue3'
+import {useQuasar} from "quasar";
+const $q = useQuasar()
 
 const props = defineProps({
   modelValue: Boolean,
@@ -58,6 +60,10 @@ function submitForm() {
     onSuccess: () => {
       show.value = false
       form.reset()
+        $q.notify({
+            type: 'positive',
+            message: 'Employee Deleted successfully.'
+        })
     }
   })
 }

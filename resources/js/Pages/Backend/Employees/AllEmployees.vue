@@ -1,6 +1,18 @@
 <template>
     <q-page class="container" padding>
-        <q-card flat bordered>
+
+        <div class="flex items-center justify-between q-pa-md bg-white">
+            <div>
+                <div class="stitle">All Employee List</div>
+                <q-breadcrumbs  class="text-dark">
+                    <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
+
+                </q-breadcrumbs>
+            </div>
+        </div>
+        <br/>
+
+        <q-card flat>
             <q-card-section>
                 <div class="q-pa-md">
                     <!-- Dashboard Cards -->
@@ -115,7 +127,6 @@
                     </q-card>
                 </div>
             </q-card-section>
-
             <q-table
                 flat
                 ref="tableRef"
@@ -134,11 +145,13 @@
                 <template v-slot:body-cell-employee="props">
                     <q-td :props="props">
                         <div class="flex items-center gap-3">
-<!--                            <q-avatar>-->
-
-<!--                                <q-img :src="`/storage/${props.row.avatar}`" />-->
-<!--&lt;!&ndash;                                <img :src="props.row.avatar" />&ndash;&gt;-->
-<!--                            </q-avatar>-->
+                            <q-avatar>
+                                <q-img
+                                    v-if="props.row.avatar"
+                                    :src="`/storage/${props.row.avatar}`"
+                                />
+                                <q-icon v-else name="person" size="md" color="primary" />
+                            </q-avatar>
                             <div>
                                 <div class="text-body1">{{ props.row.name }}</div>
                                 <div class="text-caption text-grey">{{ props.row.mobile }}</div>
@@ -158,33 +171,37 @@
                 <!-- Actions Cell -->
                 <template v-slot:body-cell-actions="props">
                     <q-td :props="props">
-                        <q-btn
+                        <q-btn-dropdown
                             dense
                             flat
                             round
                             color="primary"
-                            icon="visibility"
-                            @click="$inertia.get(route('employee.show',props.row.id))"
-                            aria-label="Show user"
-                        />
-                        <q-btn
-                            dense
-                            flat
-                            round
-                            color="primary"
-                            icon="edit"
-                            @click="$inertia.get(route('employee.edit',props.row.id))"
-                            aria-label="Edit user"
-                        />
-                        <q-btn
-                            dense
-                            flat
-                            round
-                            color="red"
-                            icon="delete"
-                            @click="deleteUser(props.row.id)"
-                            aria-label="Delete user"
-                        />
+                            dropdown-icon="more_vert"
+                            aria-label="Actions"
+                        >
+                            <q-list style="min-width: 100px">
+                                <q-item clickable v-ripple @click="$inertia.get(route('employee.show', props.row.id))">
+                                    <q-item-section avatar>
+                                        <q-icon name="visibility" />
+                                    </q-item-section>
+                                    <q-item-section>View</q-item-section>
+                                </q-item>
+
+                                <q-item clickable v-ripple @click="$inertia.get(route('employee.edit', props.row.id))">
+                                    <q-item-section avatar>
+                                        <q-icon name="edit" />
+                                    </q-item-section>
+                                    <q-item-section>Edit</q-item-section>
+                                </q-item>
+
+                                <q-item clickable v-ripple @click="deleteUser(props.row.id)">
+                                    <q-item-section avatar>
+                                        <q-icon name="delete" color="red" />
+                                    </q-item-section>
+                                    <q-item-section class="text-red">Delete</q-item-section>
+                                </q-item>
+                            </q-list>
+                        </q-btn-dropdown>
                     </q-td>
                 </template>
             </q-table>
