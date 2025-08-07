@@ -115,7 +115,7 @@
 
                 </div>
                 <div class="col-xs-12 col-sm-6">
-                    <q-img height="480" width="580" src="images/login-img.png"/>
+                    <q-img height="480" width="580" src="images/20944201.jpg"/>
                 </div>
             </div>
 

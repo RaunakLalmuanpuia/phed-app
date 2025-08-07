@@ -366,15 +366,18 @@
                     group="menu"
                     :label="module.reports.label"
                     :header-class="(
-                           route().current()==='office.index'
-                                )?'active-menu text-accent':''"
+                              route().current()==='mis.export'
+                             || route().current()==='mis.import'
+                          )
+
+                          ?'active-menu text-accent':''"
                     icon="o_credit_card">
                     <template  #header>
                         <q-item-section avatar>
 
                             <q-icon>
-                                <svg v-if=" route().current()==='office.index' ||
-                                           route().current()==='office.show'" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <svg v-if=" route().current()==='mis.export' ||
+                                           route().current()==='mis.import'" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect x="14" y="7" width="1.5" height="7" fill="#306ADB"/>
                                     <rect x="18" y="8" width="1.5" height="6" fill="#306ADB"/>
                                     <rect x="22" y="4" width="1.5" height="10" fill="#306ADB"/>
@@ -422,6 +425,7 @@
                 </q-expansion-item>
 
                 <q-separator class="q-my-sm"/>
+                <!--                Administration-->
                 <q-expansion-item
                                   group="menu"
                                   :label="module.admin.label"
@@ -429,6 +433,15 @@
                               route().current()==='user.index'
                              || route().current()==='user.create'
                              || route().current()==='user.edit'
+
+                              || route().current()==='office.index'
+                               || route().current()==='office.create'
+                                 || route().current()==='office.edit'
+
+                               || route().current()==='document-type.index'
+                              || route().current()==='document-type.create'
+                             || route().current()==='document-type.store'
+
                              || route().current()==='role.index'
                              || route().current()==='role.edit'
 
@@ -443,12 +456,17 @@
                             <q-icon :active=" route().current()==='user.index'
                              || route().current()==='user.create'
                              || route().current()==='user.edit'
+
+                              || route().current()==='office.index'
+                               || route().current()==='office.create'
+                                 || route().current()==='office.edit'
+
+                               || route().current()==='document-type.index'
+                              || route().current()==='document-type.create'
+                             || route().current()==='document-type.store'
+
                              || route().current()==='role.index'
                              || route().current()==='role.edit'
-                             || route().current()==='office.index'
-                             || route().current()==='office.create'
-                             || route().current()==='office.edit'
-
                         ">
 
                                 <svg v-if="active" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">

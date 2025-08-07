@@ -54,7 +54,7 @@
 
                 </div>
                 <div v-if="$q.screen.gt.sm" class="col-xs-12 col-sm-6">
-                    <q-img height="480" width="580" src="images/login-img.png"/>
+                    <q-img height="480" width="580" src="images/20943394.jpg"/>
                 </div>
             </div>
 
