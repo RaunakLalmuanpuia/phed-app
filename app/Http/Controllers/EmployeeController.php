@@ -20,7 +20,7 @@ class EmployeeController extends Controller
     //
     public function indexAllEmployees() // shows all employees
     {
-        $office = Office::all();
+        $office = Office::whereHas('employees')->get(); // ⬅️ Only offices with employees
         $totalEmployees = Employee::where('employment_type', '!=', 'Deleted')->count();
         $peCount = Employee::where('employment_type', 'PE')->count();
         $mrCount = Employee::where('employment_type', 'MR')->count();
@@ -74,7 +74,7 @@ class EmployeeController extends Controller
 
     public function indexMrEmployees() // shows MR type
     {
-        $office = Office::all();
+        $office = Office::whereHas('employees')->get(); // ⬅️ Only offices with employees
 
         return Inertia::render('Backend/Employees/MrEmployees', [
             'office' => $office,
@@ -117,7 +117,7 @@ class EmployeeController extends Controller
 
     public function indexPeEmployees() // shows PE type
     {
-        $office = Office::all();
+        $office = Office::whereHas('employees')->get(); // ⬅️ Only offices with employees
 
         return Inertia::render('Backend/Employees/PeEmployees', [
             'office' => $office,
@@ -159,7 +159,7 @@ class EmployeeController extends Controller
 
     public function indexDeletedEmployees() // shows PE type
     {
-        $office = Office::all();
+        $office = Office::whereHas('employees')->get(); // ⬅️ Only offices with employees
 
         return Inertia::render('Backend/Employees/DeletedEmployees', [
             'office' => $office,
