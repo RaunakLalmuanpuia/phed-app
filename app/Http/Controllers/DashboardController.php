@@ -31,7 +31,7 @@ class DashboardController extends Controller
 
     public function manager(Request $request)
     {
-        return inertia('Dashboard/Manager', [
+        return inertia('Backend/Dashboard/Manager', [
         ]);
     }
 }

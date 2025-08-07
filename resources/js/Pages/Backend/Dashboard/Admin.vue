@@ -1,3 +1,95 @@
+<template>
+    <q-page class="container"  padding>
+        <div class="row q-col-gutter-md">
+
+            <div v-if="!applicant" class="col-xs-12 col-sm-3">
+                <div class="dealing-card q-pa-md count-warning">
+                    <div class="title-warning">Total Employees</div>
+                    <div class="text-caption caption-sm">Current Count</div>
+                    <div class="flex items-center">
+                        <div class="count-dealing">{{ state.totalEmployees }}</div>
+                        <div class="caption q-ml-md">Employees</div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="!applicant" class="col-xs-12 col-sm-3">
+                <div class="verification-card q-pa-md count-green">
+                    <div class="title-green">Muster Roll</div>
+                    <div class="text-caption caption-sm">Employment Type</div>
+                    <div class="flex items-center">
+                        <div class="count-green">{{ state.contractualEmployees }}</div>
+                        <div class="caption q-ml-md">Employees</div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="!applicant" class="col-xs-12 col-sm-3">
+                <div class="approval-card q-pa-md count-blue">
+                    <div class="title-blue">Provisional</div>
+                    <div class="text-caption caption-sm">Employment Type</div>
+                    <div class="flex items-center">
+                        <div class="count-blue">{{ state.permanentEmployees }}</div>
+                        <div class="caption q-ml-md">Employees</div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="!applicant" class="col-xs-12 col-sm-3">
+                <div class="deletion-card q-pa-md count-red">
+                    <div class="title-red">Deleted</div>
+                    <div class="text-caption caption-sm">Employment Type</div>
+                    <div class="flex items-center">
+                        <div class="count-red">{{ state.permanentEmployees }}</div>
+                        <div class="caption q-ml-md">Employees</div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div v-if="!applicant" class="col-xs-12 col-sm-4">
+                <div class="q-pa-md bg-white">
+                    <div class="title">Skill Category Distribution</div>
+                    <br />
+                    <div class="row q-col-gutter-md">
+                        <div class="col-xs-12">
+                            <PieChart style="height: 320px" :chartData="skillCategoryData" :options="options" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="!applicant" class="col-xs-12 col-sm-8">
+                <div class="q-pa-md bg-white">
+                    <div class="text-lg text-primary text-bold">Office-wise PE & MR Count</div>
+                    <br />
+                    <div class="row">
+                        <div class="col-xs-12 text-sm text-bold text-primary">Grouped by Office</div>
+                        <div class="col-xs-12 col-sm-9">
+                            <BarChart
+                                style="height: 320px"
+                                :chartData="employeeByOfficeChartData"
+                                :options="options"
+                            />
+                        </div>
+                        <div class="col-xs-12 col-sm-3">
+                            <div style="max-width: 140px" class="column q-ml-md">
+                                <p
+                                    v-for="(item, index) in state.offices"
+                                    :key="index"
+                                    class="q-ma-xs"
+                                >
+                                    <span>{{ index + 1 }}. &nbsp;</span>{{ item }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </q-page>
+
+</template>
+
 <script setup>
 import BackendLayout from "../../../Layouts/BackendLayout.vue";
 import { ref, reactive } from 'vue'
@@ -66,86 +158,6 @@ const state = reactive({
 // Assume we're always showing admin view for now
 const applicant = false
 </script>
-
-<template>
-    <q-page class="container"  padding>
-        <div class="row q-col-gutter-md">
-            <div v-if="!applicant" class="col-xs-12 col-sm-4">
-                <div class="dealing-card q-pa-md count-warning">
-                    <div class="title-warning">Total Employees</div>
-                    <div class="text-caption caption-sm">Current Count</div>
-                    <div class="flex items-center">
-                        <div class="count-dealing">{{ state.totalEmployees }}</div>
-                        <div class="caption q-ml-md">Employees</div>
-                    </div>
-                </div>
-            </div>
-            <div v-if="!applicant" class="col-xs-12 col-sm-4">
-                <div class="verification-card q-pa-md count-green">
-                    <div class="title-green">Muster Roll</div>
-                    <div class="text-caption caption-sm">Employment Type</div>
-                    <div class="flex items-center">
-                        <div class="count-green">{{ state.contractualEmployees }}</div>
-                        <div class="caption q-ml-md">Employees</div>
-                    </div>
-                </div>
-            </div>
-            <div v-if="!applicant" class="col-xs-12 col-sm-4">
-                <div class="approval-card q-pa-md count-blue">
-                    <div class="title-blue">Provisional</div>
-                    <div class="text-caption caption-sm">Employment Type</div>
-                    <div class="flex items-center">
-                        <div class="count-blue">{{ state.permanentEmployees }}</div>
-                        <div class="caption q-ml-md">Employees</div>
-                    </div>
-                </div>
-            </div>
-
-            <div v-if="!applicant" class="col-xs-12 col-sm-4">
-                <div class="q-pa-md bg-white">
-                    <div class="title">Skill Category Distribution</div>
-                    <br />
-                    <div class="row q-col-gutter-md">
-                        <div class="col-xs-12">
-                            <PieChart style="height: 320px" :chartData="skillCategoryData" :options="options" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div v-if="!applicant" class="col-xs-12 col-sm-8">
-                <div class="q-pa-md bg-white">
-                    <div class="text-lg text-primary text-bold">Office-wise PE & MR Count</div>
-                    <br />
-                    <div class="row">
-                        <div class="col-xs-12 text-sm text-bold text-primary">Grouped by Office</div>
-                        <div class="col-xs-12 col-sm-9">
-                            <BarChart
-                                style="height: 320px"
-                                :chartData="employeeByOfficeChartData"
-                                :options="options"
-                            />
-                        </div>
-                        <div class="col-xs-12 col-sm-3">
-                            <div style="max-width: 140px" class="column q-ml-md">
-                                <p
-                                    v-for="(item, index) in state.offices"
-                                    :key="index"
-                                    class="q-ma-xs"
-                                >
-                                    <span>{{ index + 1 }}. &nbsp;</span>{{ item }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </q-page>
-
-</template>
-
-
 <style scoped>
 .title{
     font-size: 24px;
@@ -165,6 +177,11 @@ const applicant = false
 .approval-card{
     padding: 18px;
     background-color: #eff7ff;
+}
+
+.deletion-card{
+    padding: 18px;
+    background-color: #fae1e1;
 }
 .count-green{
     font-size: 36px;
@@ -187,6 +204,16 @@ const applicant = false
     letter-spacing: normal;
     text-align: left;
     color: #1266ed;
+}
+.count-red{
+    font-size: 36px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: left;
+    color: #ed1224;
 }
 .caption{
     font-size: 16px;
@@ -214,6 +241,13 @@ const applicant = false
     font-weight: bold;
     text-align: left;
     color: #1266ed;
+}
+
+.title-red{
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+    color: #ed1224;
 }
 .caption-sm{
     font-size: 12px;

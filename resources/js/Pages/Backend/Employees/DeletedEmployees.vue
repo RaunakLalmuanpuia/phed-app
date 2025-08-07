@@ -15,47 +15,47 @@
             <q-card-section>
                 <div class="q-pa-md">
                     <!-- Dashboard Cards -->
-                    <div class="q-gutter-md row q-col-gutter-md">
-                        <q-card
-                            flat
-                            bordered
-                            class="col-12 col-sm bg-white q-px-md q-py-lg shadow-1"
-                            v-for="card in cards"
-                            :key="card.title"
-                        >
-                            <div class="row justify-between items-center">
-                                <div>
-                                    <div class="text-grey-6 text-subtitle1">{{ card.title }}</div>
-                                    <div class="text-h5 text-weight-bold">
-                                        {{ card.value }}
-                                        <span
-                                            :class="[
-                                          'text-caption',
-                                          'text-weight-regular',
-                                          card.trend > 0 ? 'text-green' : 'text-red'
-                                        ]"
-                                        >
-                                        (
-                                        <span class="text-weight-bold">
-                                          {{ card.trend > 0 ? '+ ' : '- ' }}{{ Math.abs(card.trend) }}%
-                                        </span>
-                                        )
-                                      </span>
-                                    </div>
-                                    <div class="text-caption text-grey-6 q-mt-xs">
-                                        Employees
-                                    </div>
-                                </div>
-                                <q-avatar
-                                    size="48px"
-                                    :style="{ backgroundColor: card.bgColor }"
-                                    text-color="white"
-                                >
-                                    <q-icon :name="card.icon" :color="card.iconColor" size="20px" />
-                                </q-avatar>
-                            </div>
-                        </q-card>
-                    </div>
+<!--                    <div class="q-gutter-md row q-col-gutter-md">-->
+<!--                        <q-card-->
+<!--                            flat-->
+<!--                            bordered-->
+<!--                            class="col-12 col-sm bg-white q-px-md q-py-lg shadow-1"-->
+<!--                            v-for="card in cards"-->
+<!--                            :key="card.title"-->
+<!--                        >-->
+<!--                            <div class="row justify-between items-center">-->
+<!--                                <div>-->
+<!--                                    <div class="text-grey-6 text-subtitle1">{{ card.title }}</div>-->
+<!--                                    <div class="text-h5 text-weight-bold">-->
+<!--                                        {{ card.value }}-->
+<!--                                        <span-->
+<!--                                            :class="[-->
+<!--                                          'text-caption',-->
+<!--                                          'text-weight-regular',-->
+<!--                                          card.trend > 0 ? 'text-green' : 'text-red'-->
+<!--                                        ]"-->
+<!--                                        >-->
+<!--                                        (-->
+<!--                                        <span class="text-weight-bold">-->
+<!--                                          {{ card.trend > 0 ? '+ ' : '- ' }}{{ Math.abs(card.trend) }}%-->
+<!--                                        </span>-->
+<!--                                        )-->
+<!--                                      </span>-->
+<!--                                    </div>-->
+<!--                                    <div class="text-caption text-grey-6 q-mt-xs">-->
+<!--                                        Employees-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <q-avatar-->
+<!--                                    size="48px"-->
+<!--                                    :style="{ backgroundColor: card.bgColor }"-->
+<!--                                    text-color="white"-->
+<!--                                >-->
+<!--                                    <q-icon :name="card.icon" :color="card.iconColor" size="20px" />-->
+<!--                                </q-avatar>-->
+<!--                            </div>-->
+<!--                        </q-card>-->
+<!--                    </div>-->
 
                     <!-- Filter + Toolbar -->
                     <q-card flat bordered class="q-mt-md bg-white shadow-1">
