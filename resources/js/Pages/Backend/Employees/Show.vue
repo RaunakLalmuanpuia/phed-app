@@ -19,8 +19,14 @@
                     <div class="col-12 col-md-4">
                         <q-card class="q-pa-md">
                             <div class="column items-center q-gutter-sm">
+
+
                                 <q-avatar size="96px">
-                                    <q-img :src="`/storage/${data.avatar}`" />
+                                    <q-img
+                                        v-if="data?.avatar"
+                                        :src="`/storage/${data?.avatar}`"
+                                    />
+                                    <q-icon v-else name="person"  color="primary" />
                                 </q-avatar>
 
                                 <div class="stitle">{{ data.name }}</div>
@@ -28,7 +34,11 @@
                                     :color="data?.employment_type?.trim() === 'Deleted' ? 'red-6' : 'grey-6'"
                                     text-color="white"
                                     class="stitle"
-                                    :label="data?.employment_type"
+                                    :label="data?.employment_type?.trim() === 'MR'
+                                        ? 'Muster Roll'
+                                        : data?.employment_type?.trim() === 'PE'
+                                          ? 'Provisional'
+                                          : 'Deleted'"
                                     style="padding: 8px;"
                                     rounded
                                 />

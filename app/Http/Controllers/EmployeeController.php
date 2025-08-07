@@ -21,7 +21,7 @@ class EmployeeController extends Controller
     public function indexAllEmployees() // shows all employees
     {
         $office = Office::all();
-        $totalEmployees = Employee::count();
+        $totalEmployees = Employee::where('employment_type', '!=', 'Deleted')->count();
         $peCount = Employee::where('employment_type', 'PE')->count();
         $mrCount = Employee::where('employment_type', 'MR')->count();
         $deletedCount = Employee::where('employment_type', 'Deleted')->count();

@@ -242,7 +242,7 @@ const cards = [
     {
         title: 'Muster Roll',
         value: props.mrCount,
-        icon: 'person',
+        icon: 'how_to_reg',
         iconColor: 'indigo-6',
         bgColor: '#d7d9ff',
     },
@@ -250,15 +250,16 @@ const cards = [
         title: 'Provisional',
         value: props.peCount,
         icon: 'person_add',
-        iconColor: 'red-6',
-        bgColor: '#ffe1e1',
+        iconColor: 'orange-5',
+        bgColor: '#ffe9d6',
     },
     {
         title: 'Deleted',
         value: props.deletedCount,
-        icon: 'how_to_reg',
-        iconColor: 'orange-5',
-        bgColor: '#ffe9d6',
+        icon: 'person',
+
+        iconColor: 'red-6',
+        bgColor: '#ffe1e1',
     },
 
 ]

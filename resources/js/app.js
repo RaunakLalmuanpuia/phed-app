@@ -17,8 +17,8 @@ import {ZiggyVue} from "../../vendor/tightenco/ziggy/dist"
 import { Dialog, Loading, Notify, Quasar } from "quasar";
 
 
-import { Chart, BarController,BarElement,CategoryScale,LinearScale,LineController,PointElement,LineElement, ArcElement, Tooltip,PieController } from 'chart.js';
-Chart.register(PointElement,LineElement,BarController,LineController,CategoryScale,LinearScale,BarElement, ArcElement, Tooltip,PieController);
+import { Chart, BarController,BarElement,CategoryScale,LinearScale,LineController,PointElement,LineElement, ArcElement, Tooltip,PieController,Legend } from 'chart.js';
+Chart.register(PointElement,LineElement,BarController,LineController,CategoryScale,LinearScale,BarElement, ArcElement, Tooltip,PieController,Legend);
 
 const appName = import.meta.env.VITE_APP_NAME || 'PHED';
 
