@@ -35,7 +35,7 @@
         <q-drawer width="250"  class="print-hide bg-transparent"  v-model="leftDrawerOpen" side="left">
             <q-list class="bg-transparent full-height">
 
-                <div class="column items-center q-gutter-md q-pa-lg bg-secondary text-white">
+                <div @click="$inertia.get(route('home'))"  class="column items-center q-gutter-md q-pa-lg bg-secondary text-white">
                     <q-img src="/images/phed_logo.png" width="46px"/>
                     <div style="line-height: 1" class="text-lg text-grey-7 text-black-medium text-center">
                         PHED Department
@@ -48,7 +48,7 @@
                         @click="$inertia.get(route('dashboard.admin'))">
                     <q-item-section avatar>
                         <q-icon :active="route().current()==='dashboard.admin'">
-                            <svg v-if="active" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg v-if="route().current()==='dashboard.admin'" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke="#306ADB" stroke-width="1.5" d="M3.75 3.75h8.5v5.5h-8.5zM15.75 3.75H21A3.25 3.25 0 0 1 24.25 7v8.25h-8.5V3.75zM15.75 18.75h8.5V21A3.25 3.25 0 0 1 21 24.25h-5.25v-5.5zM3.75 12.75h8.5v11.5h-8.5z"/>
                             </svg>
                             <svg v-else width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -66,229 +66,6 @@
                 <q-separator class="q-my-sm"/>
 
 
-<!--                <q-expansion-item v-if="checkModules('registration')"-->
-<!--                                  group="menu"-->
-<!--                                  :label="module.registration.label"-->
-<!--                                  :header-class="(-->
-<!--                               route().current()==='apply.step-one'-->
-<!--                             || route().current()==='apply.step-two'-->
-<!--                             || route().current()==='apply.step-last'-->
-<!--                             || route().current()==='apply.verify-payment'-->
-<!--                             || route().current()==='new-application.index'-->
-<!--                             || route().current()==='my-application.index'-->
-<!--                             || route().current()==='application.show'-->
-<!--                             || route().current()==='certificate.due'-->
-<!--                             || route().current()==='certificate.completed'-->
-<!--                             || route().current()==='pendency.index'-->
-<!--                             || route().current()==='archived-application.index'-->
-<!--                             || route().current()==='user-application.certificate'-->
-<!--                             || route().current()==='dissolution.create'-->
-<!--                          )?'active-menu text-accent':''"-->
-<!--                                  icon="how_to_reg">-->
-<!--                    <template #header>-->
-<!--                        <q-item-section avatar>-->
-<!--                            <ZRegistration :active="(-->
-<!--                         route().current()==='apply.step-one'-->
-<!--                             || route().current()==='apply.step-two'-->
-<!--                             || route().current()==='apply.step-last'-->
-<!--                             || route().current()==='apply.verify-payment'-->
-<!--                             || route().current()==='new-application.index'-->
-<!--                             || route().current()==='my-application.index'-->
-<!--                             || route().current()==='application.show'-->
-<!--                             || route().current()==='certificate.due'-->
-<!--                             || route().current()==='certificate.completed'-->
-<!--                             || route().current()==='pendency.index'-->
-<!--                             || route().current()==='archived-application.index'-->
-<!--                             || route().current()==='user-application.certificate'-->
-<!--                             || route().current()==='dissolution.create'-->
-<!--                    )"/>-->
-<!--                        </q-item-section>-->
-
-<!--                        <q-item-section >-->
-<!--                            Registration-->
-<!--                        </q-item-section>-->
-
-<!--                    </template>-->
-<!--                    <template v-for="item in module.registration.children"-->
-<!--                              :key="item.route_name">-->
-<!--                        <q-item v-if="$page.props.permissions.find(val=>val.name===item.permission)"-->
-<!--                                :active="route().current()===item.route_name"-->
-<!--                                active-class="active-item text-accent"-->
-<!--                                class="nav-item"-->
-<!--                                clickable-->
-<!--                                @click="$inertia.get(route(item.route_name))">-->
-<!--                            <q-item-section avatar class="q-ml-sm">-->
-<!--                                <q-icon :size="route().current()===item.route_name ? '12px':'9px'"-->
-<!--                                        name="fiber_manual_record"/>-->
-<!--                            </q-item-section>-->
-<!--                            <q-item-section>-->
-<!--                                <q-item-label>{{ item.label }}</q-item-label>-->
-<!--                            </q-item-section>-->
-<!--                        </q-item>-->
-<!--                    </template>-->
-
-<!--                </q-expansion-item>-->
-<!--                <q-expansion-item v-if="checkModules('yearly-report')"-->
-<!--                                  group="menu"-->
-<!--                                  :label="module.yearlyReport.label"-->
-<!--                                  :header-class="(-->
-<!--                              route().current()==='activity-report.create'-->
-<!--                             || route().current()==='activity-report.apply'-->
-<!--                             || route().current()==='activity-report.submitted'-->
-<!--                             || route().current()==='activity-report.ongoing'-->
-<!--                             || route().current()==='activity-report.archived'-->
-
-<!--                             || route().current()==='expenditure-report.create'-->
-<!--                             || route().current()==='expenditure-report.apply'-->
-<!--                             || route().current()==='expenditure-report.submitted'-->
-<!--                             || route().current()==='expenditure-report.ongoing'-->
-<!--                             || route().current()==='expenditure-report.archived'-->
-
-<!--                             || route().current()==='member-list.create'-->
-<!--                             || route().current()==='member-list.apply'-->
-<!--                             || route().current()==='member-list.submitted'-->
-<!--                             || route().current()==='member-list.ongoing'-->
-<!--                             || route().current()==='member-list.archived'-->
-<!--                          )-->
-
-<!--                          ?'active-menu text-accent':''"-->
-<!--                                  icon="o_manage_accounts">-->
-
-<!--                    <template #header>-->
-<!--                        <q-item-section avatar>-->
-<!--                            <ZYearlyReportIcon :active="-->
-<!--                             route().current()==='activity-report.create'-->
-<!--                             || route().current()==='activity-report.apply'-->
-<!--                             || route().current()==='activity-report.submitted'-->
-<!--                             || route().current()==='activity-report.ongoing'-->
-<!--                             || route().current()==='activity-report.archived'-->
-
-<!--                             || route().current()==='expenditure-report.create'-->
-<!--                             || route().current()==='expenditure-report.apply'-->
-<!--                             || route().current()==='expenditure-report.submitted'-->
-<!--                             || route().current()==='expenditure-report.ongoing'-->
-<!--                             || route().current()==='expenditure-report.archived'-->
-
-<!--                             || route().current()==='member-list.create'-->
-<!--                             || route().current()==='member-list.apply'-->
-<!--                             || route().current()==='member-list.submitted'-->
-<!--                             || route().current()==='member-list.ongoing'-->
-<!--                             || route().current()==='member-list.archived'-->
-<!--                    "/>-->
-<!--                        </q-item-section>-->
-
-<!--                        <q-item-section>-->
-<!--                            Yearly Report-->
-<!--                        </q-item-section>-->
-<!--                    </template>-->
-
-<!--                    <template v-for="item in module.yearlyReport.children"-->
-<!--                              :key="item.route_name">-->
-<!--                        <q-item v-if="$page.props.permissions.find(val=>val.name===item.permission)"-->
-<!--                                class="nav-item"-->
-<!--                                :active="item.activeRoutes.includes(route().current())"-->
-<!--                                active-class="active-item text-accent"-->
-<!--                                clickable-->
-<!--                                @click="$inertia.get(route(item.route_name))">-->
-<!--                            <q-item-section avatar class="q-ml-sm">-->
-<!--                                <q-icon :size="item.activeRoutes.includes(route().current()) ? '12px':'9px'"-->
-<!--                                        name="fiber_manual_record"/>-->
-<!--                            </q-item-section>-->
-<!--                            <q-item-section>-->
-<!--                                <q-item-label>{{ item.label }}</q-item-label>-->
-<!--                            </q-item-section>-->
-<!--                        </q-item>-->
-<!--                    </template>-->
-
-<!--                </q-expansion-item>-->
-
-<!--                <q-expansion-item v-if="checkModules('payment')"-->
-<!--                                  group="menu"-->
-<!--                                  :label="module.payment.label"-->
-<!--                                  :header-class="(-->
-<!--                              route().current()==='payment.verified'-->
-<!--                            || route().current()==='payment.unverified'-->
-<!--                          )-->
-<!--                          ?'active-menu text-accent':''"-->
-<!--                                  icon="o_credit_card">-->
-<!--                    <template  #header>-->
-
-<!--                        <q-item-section avatar>-->
-<!--                            <ZPaymentIcon :active="(-->
-<!--                           route().current()==='payment.verified'-->
-<!--                            || route().current()==='payment.unverified'-->
-<!--                    )"/>-->
-<!--                        </q-item-section>-->
-
-<!--                        <q-item-section>-->
-<!--                            Payments-->
-<!--                        </q-item-section>-->
-<!--                    </template>-->
-<!--                    <template v-for="item in module.payment.children"-->
-<!--                              :key="item.route_name">-->
-
-<!--                        <q-item v-if="$page.props.permissions.find(val=>val.name===item.permission)"-->
-<!--                                :active="route().current()===item.route_name"-->
-<!--                                active-class="active-item text-accent"-->
-<!--                                class="nav-item"-->
-<!--                                clickable-->
-<!--                                @click="$inertia.get(route(item.route_name))">-->
-<!--                            <q-item-section avatar class="q-ml-sm">-->
-<!--                                <q-icon :size="route().current()===item.route_name ? '12px':'9px'"-->
-<!--                                        name="fiber_manual_record"/>-->
-<!--                            </q-item-section>-->
-<!--                            <q-item-section>-->
-<!--                                <q-item-label>{{ item.label }}</q-item-label>-->
-<!--                            </q-item-section>-->
-<!--                        </q-item>-->
-<!--                    </template>-->
-<!--                </q-expansion-item>-->
-
-<!--                <q-expansion-item v-if="checkModules('mis')"-->
-<!--                                  group="menu"-->
-<!--                                  :label="module.requests.label"-->
-<!--                                  :header-class="(-->
-<!--                              route().current()==='dissolution.submitted' ||-->
-<!--                              route().current()==='dissolution.ongoing' ||-->
-<!--                              route().current()==='dissolution.archived' ||-->
-<!--                              route().current()==='dissolution.show'-->
-<!--                          )-->
-<!--                          ?'active-menu text-accent':''"-->
-<!--                                  icon="o_credit_card">-->
-<!--                    <template  #header>-->
-<!--                        <q-item-section avatar>-->
-<!--                            <ZRequestIcon :active="(-->
-<!--                           route().current()==='dissolution.submitted' ||-->
-<!--                           route().current()==='dissolution.ongoing' ||-->
-<!--                           route().current()==='dissolution.archived' ||-->
-<!--                           route().current()==='dissolution.show'-->
-<!--                    )"/>-->
-<!--                        </q-item-section>-->
-
-<!--                        <q-item-section>-->
-<!--                            Requests-->
-<!--                        </q-item-section>-->
-<!--                    </template>-->
-<!--                    <template v-for="item in module.requests.children"-->
-<!--                              :key="item.route_name">-->
-
-<!--                        <q-item v-if="$page.props.permissions.find(val=>val.name===item.permission)"-->
-<!--                                :active="route().current()===item.route_name"-->
-<!--                                active-class="active-item text-accent"-->
-<!--                                class="nav-item"-->
-<!--                                clickable-->
-<!--                                @click="$inertia.get(route(item.route_name))">-->
-<!--                            <q-item-section avatar class="q-ml-sm">-->
-<!--                                <q-icon :size="route().current()===item.route_name ? '12px':'9px'"-->
-<!--                                        name="fiber_manual_record"/>-->
-<!--                            </q-item-section>-->
-<!--                            <q-item-section>-->
-<!--                                <q-item-label>{{ item.label }}</q-item-label>-->
-<!--                            </q-item-section>-->
-<!--                        </q-item>-->
-<!--                    </template>-->
-<!--                </q-expansion-item>-->
-
 <!--                Employees-->
                 <q-expansion-item
                     group="menu"
@@ -297,7 +74,10 @@
                               route().current()==='employees.all'
                              || route().current()==='employees.mr'
                              || route().current()==='employees.pe'
+                              || route().current()==='employees.deleted'
                              || route().current()==='employee.show'
+                              || route().current()==='employee.create'
+                              || route().current()==='employee.edit'
 
                           )
 
@@ -311,11 +91,22 @@
                               route().current()==='employees.all'
                              || route().current()==='employees.mr'
                              || route().current()==='employees.pe'
+                              || route().current()==='employee.deleted'
                              || route().current()==='employee.show'
+                              || route().current()==='employee.create'
+                              || route().current()==='employee.edit'
 
                         ">
 
-                                <svg v-if="active" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <svg
+                                    v-if="route().current()==='employees.all'
+                             || route().current()==='employees.mr'
+                             || route().current()==='employees.pe'
+                              || route().current()==='employees.deleted'
+                             || route().current()==='employee.show'
+                              || route().current()==='employee.create'
+                              || route().current()==='employee.edit'"
+                                    width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M6 4.5h13.5a.5.5 0 0 1 .5.5v6.938l1.5-1.52V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a8 8 0 0 0 8 8h7.5a2 2 0 0 0 2-2v-3.038l-1.5 1.52V23a.5.5 0 0 1-.5.5H12A6.5 6.5 0 0 1 5.5 17V5a.5.5 0 0 1 .5-.5z" fill="#306ADB"/>
                                     <path fill="#306ADB" d="M5 18h7v1.5H5z"/>
                                     <path fill="#306ADB" d="M11 24v-6h1.5v6z"/>
@@ -469,7 +260,20 @@
                              || route().current()==='role.edit'
                         ">
 
-                                <svg v-if="active" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <svg v-if="route().current()==='user.index'
+                             || route().current()==='user.create'
+                             || route().current()==='user.edit'
+
+                              || route().current()==='office.index'
+                               || route().current()==='office.create'
+                                 || route().current()==='office.edit'
+
+                               || route().current()==='document-type.index'
+                              || route().current()==='document-type.create'
+                             || route().current()==='document-type.store'
+
+                             || route().current()==='role.index'
+                             || route().current()==='role.edit'" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M21 17.5H11C10.7239 17.5 10.5 17.7239 10.5 18V23C10.5 23.2761 10.7239 23.5 11 23.5H21C21.2761 23.5 21.5 23.2761 21.5 23V18C21.5 17.7239 21.2761 17.5 21 17.5ZM11 16C9.89543 16 9 16.8954 9 18V23C9 24.1046 9.89543 25 11 25H21C22.1046 25 23 24.1046 23 23V18C23 16.8954 22.1046 16 21 16H11Z" fill="#306ADB"/>
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M13.8333 4H6C4.89543 4 4 4.89543 4 6V19C4 20.1046 4.89543 21 6 21H9.5V19.5H6C5.72386 19.5 5.5 19.2761 5.5 19V6C5.5 5.72386 5.72386 5.5 6 5.5H12.8333L13.8333 4ZM14.5 14.6835V17H16V15.4038C15.756 15.3333 15.4226 15.2113 15 15C14.8165 14.9082 14.6498 14.7997 14.5 14.6835Z" fill="#306ADB"/>
                                     <rect x="8" y="9.5" width="1.5" height="4" transform="rotate(-90 8 9.5)" fill="#306ADB"/>

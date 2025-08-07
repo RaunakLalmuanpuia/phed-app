@@ -18,7 +18,7 @@ use App\Http\Controllers\DeletionController;
 
 Route::get('/', function () {
     return Inertia::render('Home');
-});
+})->name('home');
 
 //Auth Controller
 Route::get('login', [AuthController::class, 'create'])->name('login');
