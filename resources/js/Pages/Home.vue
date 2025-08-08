@@ -11,7 +11,9 @@ defineOptions({layout:FrontendLayout})
             <div class="container row q-col-gutter-md q-py-lg">
                 <div class="col-xs-12 col-sm-7 flex items-center">
                     <div class="column q-gutter-md">
-                        <h1 class="hero-title">Manage <span class="text-primary">PHED Employees</span> Efficiently</h1>
+
+                        <div class="hero-title">Employees Database Management System</div>
+<!--                        <h1 class="hero-title">Manage <span class="text-primary">PHED Employees</span> Efficiently</h1>-->
                         <p class="home-caption">
                             Access employee records, departmental roles, and workplace for the PHED department. Built for speed and simplicity.
                         </p>

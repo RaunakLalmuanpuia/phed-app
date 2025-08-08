@@ -17,6 +17,38 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 class EmployeeController extends Controller
 {
+
+    public function allEmployees(){
+        // Offices with at least one employee, plus MR & PE counts
+        $offices = Office::withCount([
+            'employees as mr_count' => function ($query) {
+                $query->where('employment_type', 'MR');
+            },
+            'employees as pe_count' => function ($query) {
+                $query->where('employment_type', 'PE');
+            },
+        ])->get();
+
+        $totalEmployees = Employee::where('employment_type', '!=', 'Deleted')->count();
+        $peCount = Employee::where('employment_type', 'PE')->count();
+        $mrCount = Employee::where('employment_type', 'MR')->count();
+        $deletedCount = Employee::where('employment_type', 'Deleted')->count();
+        return Inertia::render('Backend/Employees/AllEmployees', [
+            'offices' => $offices,
+            'totalEmployees' => $totalEmployees,
+            'peCount' => $peCount,
+            'mrCount' => $mrCount,
+            'deletedCount' => $deletedCount,
+        ]);
+    }
+
+    public function peEmployees(){
+
+    }
+
+    public function mrEmployees(){
+
+    }
     //
     public function indexAllEmployees() // shows all employees
     {
@@ -25,7 +57,7 @@ class EmployeeController extends Controller
         $peCount = Employee::where('employment_type', 'PE')->count();
         $mrCount = Employee::where('employment_type', 'MR')->count();
         $deletedCount = Employee::where('employment_type', 'Deleted')->count();
-        return Inertia::render('Backend/Employees/AllEmployees', [
+        return Inertia::render('Backend/Employees/Index/AllEmployees', [
             'office' => $office,
             'totalEmployees' => $totalEmployees,
             'peCount' => $peCount,
@@ -76,7 +108,7 @@ class EmployeeController extends Controller
     {
         $office = Office::whereHas('employees')->get(); // ⬅️ Only offices with employees
 
-        return Inertia::render('Backend/Employees/MrEmployees', [
+        return Inertia::render('Backend/Employees/Index/MrEmployees', [
             'office' => $office,
         ]);
     }
@@ -119,7 +151,7 @@ class EmployeeController extends Controller
     {
         $office = Office::whereHas('employees')->get(); // ⬅️ Only offices with employees
 
-        return Inertia::render('Backend/Employees/PeEmployees', [
+        return Inertia::render('Backend/Employees/Index/PeEmployees', [
             'office' => $office,
         ]);
     }
@@ -161,7 +193,7 @@ class EmployeeController extends Controller
     {
         $office = Office::whereHas('employees')->get(); // ⬅️ Only offices with employees
 
-        return Inertia::render('Backend/Employees/DeletedEmployees', [
+        return Inertia::render('Backend/Employees/Index/DeletedEmployees', [
             'office' => $office,
         ]);
     }

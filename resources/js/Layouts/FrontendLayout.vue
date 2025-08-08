@@ -5,7 +5,7 @@
             <q-toolbar  class="container flex justify-between items-center" style="height: 80px">
                 <div class="flex items-center q-gutter-sm">
                     <q-img width="60px" src="/images/phed_logo.png" />
-
+                    <p v-if="$q.screen.gt.sm" class="text-primary">PUBLIC HEALTH ENGINEERING DEPARTMENT : MIZORAM</p>
                 </div>
 
                 <div class="flex items-center q-gutter-md">
