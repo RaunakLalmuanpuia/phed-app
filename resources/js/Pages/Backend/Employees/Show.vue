@@ -84,10 +84,6 @@
                                             <q-item-section  class="text-label">{{data?.technical_qln}}</q-item-section>
                                         </q-item>
 
-                                        <q-item>
-                                            <q-item-section side class="subtitle">Employment Type:</q-item-section>
-                                            <q-item-section  class="text-label">{{data?.employment_type}}</q-item-section>
-                                        </q-item>
 
                                         <q-item>
                                             <q-item-section side class="subtitle" >Designation:</q-item-section>
@@ -110,21 +106,21 @@
                                         </q-item>
 
                                         <q-item>
-                                            <q-item-section side class="subtitle">Post Per Qualification:</q-item-section>
-                                            <q-item-section  class="text-label">{{data?.post_per_qualification}}</q-item-section>
-                                        </q-item>
-
-                                        <q-item>
                                             <q-item-section side class="subtitle">Date of Engagement:</q-item-section>
                                             <q-item-section  class="text-label">{{data?.date_of_engagement ?? 'N/A'}}</q-item-section>
                                         </q-item>
 
-                                        <q-item>
+                                        <q-item v-if=" data?.employment_type?.trim() === 'MR'">
+                                            <q-item-section side class="subtitle">Post Per Qualification:</q-item-section>
+                                            <q-item-section  class="text-label">{{data?.post_per_qualification}}</q-item-section>
+                                        </q-item>
+
+                                        <q-item v-if=" data?.employment_type?.trim() === 'MR'">
                                             <q-item-section side class="subtitle">Skill Category:</q-item-section>
                                             <q-item-section  class="text-label">{{data?.skill_category}}</q-item-section>
                                         </q-item>
 
-                                        <q-item>
+                                        <q-item v-if=" data?.employment_type?.trim() === 'MR'">
                                             <q-item-section side class="subtitle">Skill at Present:</q-item-section>
                                             <q-item-section class="text-label">{{data?.skill_at_present}}</q-item-section>
                                         </q-item>
@@ -200,8 +196,6 @@
                 </div>
             </q-card-section>
         </q-card>
-
-        {{data.remuneration_detail}}
     </q-page>
 </template>
 

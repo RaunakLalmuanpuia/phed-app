@@ -30,11 +30,12 @@ class RemunerationDetail extends Model
 
             $model->medical_percentage = $medicalPercentage;
 
-            // Calculate medical amount
-            $model->medical_amount = ($model->remuneration * $medicalPercentage) / 100;
+             // Calculate medical amount (rounded to nearest integer)
+            $model->medical_amount = round(($model->remuneration * $medicalPercentage) / 100);
 
-            // Calculate total
-            $model->total = $model->remuneration + $model->medical_amount;
+            // Calculate total (rounded to nearest integer)
+            $model->total = round($model->remuneration + $model->medical_amount);
+
 
             // Rounding rule: nearest 10 (below 5 → down, else → up)
             $lastDigit = $model->total % 10;

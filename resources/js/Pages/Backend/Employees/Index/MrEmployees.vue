@@ -75,11 +75,7 @@
                 </template>
 
                 <!-- Role Cell -->
-                <template v-slot:body-cell-office="props">
-                    <q-td :props="props">
-                        <q-chip color="primary" text-color="white" dense>{{ props.row.office?.name }}</q-chip>
-                    </q-td>
-                </template>
+
 
                 <!-- Actions Cell -->
                 <template v-slot:body-cell-actions="props">
@@ -135,8 +131,8 @@ const columns = [
     { name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true },
     { name: 'designation', label: 'Designation', align: 'left', field: 'designation', sortable: false },
     { name: 'name_of_workplace', label: 'Workplace', align: 'left', field: 'name_of_workplace', sortable: false },
-    { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: true },
-    { name: 'date_of_engagement', label: 'Date of Engagement', align: 'left', field: 'date_of_engagement', sortable: true },
+    { name: 'post_per_qualification', label: 'Post Per Qualification', align: 'left', field: 'post_per_qualification', sortable: true },
+    { name: 'skill_at_present', label: 'Skill At Present', align: 'left', field: 'skill_at_present', sortable: true },
     { name: 'actions', label: 'Actions', align: 'center' },
 ];
 

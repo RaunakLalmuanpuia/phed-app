@@ -74,12 +74,30 @@
                     </q-td>
                 </template>
 
-                <!-- Role Cell -->
-                <template v-slot:body-cell-office="props">
+                <!-- Remuneration Cell -->
+                <template v-slot:body-cell-remuneration="props">
                     <q-td :props="props">
-                        <q-chip color="primary" text-color="white" dense>{{ props.row.office?.name }}</q-chip>
+                        {{
+                            props.row.remuneration_detail?.round_total != null
+                                ? `₹ ${props.row.remuneration_detail.round_total.toLocaleString()}`
+                                : '—'
+                        }}
                     </q-td>
                 </template>
+
+
+                <!-- Date of Next Increment Cell -->
+                <template v-slot:body-cell-date_of_next_increment="props">
+                    <q-td :props="props">
+                        {{
+                            props.row.remuneration_detail?.next_increment_date
+                                ? new Date(props.row.remuneration_detail.next_increment_date).toLocaleDateString()
+                                : '—'
+                        }}
+                    </q-td>
+                </template>
+
+
 
                 <!-- Actions Cell -->
                 <template v-slot:body-cell-actions="props">
@@ -135,7 +153,8 @@ const columns = [
     { name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true },
     { name: 'designation', label: 'Designation', align: 'left', field: 'designation', sortable: false },
     { name: 'name_of_workplace', label: 'Workplace', align: 'left', field: 'name_of_workplace', sortable: false },
-    { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: true },
+    { name: 'remuneration', label: 'Remuneration', align: 'left', field: 'remuneration', sortable: true },
+    { name: 'date_of_next_increment', label: 'Next Increment', align: 'left', field: 'date_of_next_increment', sortable: true },
     { name: 'actions', label: 'Actions', align: 'center' },
 ];
 

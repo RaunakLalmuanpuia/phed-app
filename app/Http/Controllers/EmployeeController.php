@@ -141,7 +141,7 @@ class EmployeeController extends Controller
 
 
         $employees = $model->employees() // ✅ Only employees of this office
-        ->with('office')
+        ->with(['office','remunerationDetail'])
             ->where('employment_type', 'PE')
             ->when($search, function ($builder) use ($search) {
                 $builder->where(function ($query) use ($search) {
