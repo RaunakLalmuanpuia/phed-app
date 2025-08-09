@@ -26,6 +26,8 @@ class EmployeesImport implements ToModel, WithStartRow
         'educational_qln'      => 10,
         'technical_qln'        => 11,
         'post_per_qln'         => 12,
+        'remuneration'         => 13, // new
+        'next_increment_date'  => 14  // new
 
     ];
 
@@ -42,7 +44,7 @@ class EmployeesImport implements ToModel, WithStartRow
 
     public function model(array $row)
     {
-        return Employee::updateOrCreate(
+        $employee = Employee::updateOrCreate(
             ['mobile' => $row[$this->columns['mobile']] ?? null],
             [
                 'office_id'              => $this->office_id,
@@ -61,7 +63,26 @@ class EmployeesImport implements ToModel, WithStartRow
                 'skill_at_present'       => $row[$this->columns['present_skill']] ?? null,
             ]
         );
+
+        // ✅ If employment type is PE, create remuneration detail
+        if ($this->employment_type === 'PE') {
+            $remuneration = $row[$this->columns['remuneration']] ?? null;
+            $nextIncrementDate = $this->transformDate($row[$this->columns['next_increment_date']] ?? null);
+
+            if (!empty($remuneration) && !empty($nextIncrementDate)) {
+                $employee->remunerationDetail()->updateOrCreate(
+                    [],
+                    [
+                        'remuneration'        => $remuneration,
+                        'next_increment_date' => $nextIncrementDate
+                    ]
+                );
+            }
+        }
+
+        return $employee;
     }
+
 
     protected function generateEmployeeCode()
     {
