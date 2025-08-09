@@ -52,20 +52,40 @@
         </q-card>
         <br/>
 
-
-
-
         <br/>
         <q-card flat>
             <q-card-section>
-                <div class="q-pa-md">
 
-                    <!-- Dashboard Cards -->
-                    <div class="q-gutter-md row q-col-gutter-md q-mb-md">
+                <div class="flex items-center justify-between q-pa-md bg-white">
+                    <div>
+                        <div class="stitle">Offices</div>
+                    </div>
+
+                    <div class="flex q-gutter-sm">
+                        <q-input
+                            borderless
+                            dense
+                            outlined
+                            clearable
+                            debounce="800"
+                            v-model="state.search"
+                            placeholder="Search Office"
+                            @update:model-value="handleSearch"
+                        >
+                            <template v-slot:append>
+                                <q-icon name="search" />
+                            </template>
+                        </q-input>
+                    </div>
+                </div>
+
+                <div class="q-pa-md">
+                    <!-- Office Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 q-mb-md">
                         <q-card
                             flat
                             bordered
-                            class="bg-white q-px-md q-py-lg shadow-1 col-12 col-sm-6 col-md-3 q-mr-sm"
+                            class="bg-white q-px-md q-py-lg shadow-1 cursor-pointer"
                             v-for="office in offices"
                             @click="$inertia.get(route('employees.index-all', office))"
                             :key="office.title"
@@ -73,25 +93,25 @@
                             <div>
                                 <div class="stitle">{{ office.name }}</div>
                                 <div class="text-caption text-grey-6 q-mt-xs">{{ office.type }}</div>
-                                <div class="row q-mt-sm">
-                                    <div class="col-auto">
-                                        <div class="text-caption text-grey-7">Muster Roll</div>
-                                        <div class="text-h6 text-weight-bold">{{ office.mr_count }}</div>
-                                    </div>
-                                    <div class="col-auto q-ml-md">
-                                        <div class="text-caption text-grey-7">Provisional</div>
+                                <div class="grid grid-cols-2 gap-4 q-mt-sm">
+                                    <div>
+
                                         <div class="text-h6 text-weight-bold">{{ office.pe_count }}</div>
+                                        <div class="text-caption text-grey-7">Provisional</div>
                                     </div>
+                                    <div>
+
+                                        <div class="text-h6 text-weight-bold">{{ office.mr_count }}</div>
+                                        <div class="text-caption text-grey-7">Muster Roll</div>
+                                    </div>
+
                                 </div>
                             </div>
                         </q-card>
                     </div>
-
-
                 </div>
             </q-card-section>
         </q-card>
-
 
     </q-page>
 </template>
@@ -99,14 +119,14 @@
 
 
 <script setup>
-import {onMounted, ref, watch} from 'vue';
+import {onMounted, ref, watch,reactive} from 'vue';
 
 import BackendLayout from "@/Layouts/BackendLayout.vue";
 import {useQuasar} from "quasar";
-
+import {router} from '@inertiajs/vue3'
 defineOptions({layout:BackendLayout})
 
-const props=defineProps(['offices','totalEmployees','peCount','mrCount','deletedCount'])
+const props=defineProps(['offices','search','totalEmployees','peCount','mrCount','deletedCount'])
 
 const cards = [
     {
@@ -141,36 +161,17 @@ const cards = [
 
 ]
 
-const cards2 = [
-    {
-        officeName: 'Head Office',
-        officeType: 'Government',
-        mrCount: props.mrCount,
-        peCount: props.peCount,
-        icon: 'business',
-        iconColor: 'blue-6',
-        bgColor: '#d6f3ff',
-    },
-    {
-        officeName: 'Regional Office',
-        officeType: 'Public Sector',
-        mrCount: 50,
-        peCount: 20,
-        icon: 'domain',
-        iconColor: 'indigo-6',
-        bgColor: '#d7d9ff',
-    },
-    {
-        officeName: 'Branch Office',
-        officeType: 'Private',
-        mrCount: 30,
-        peCount: 15,
-        icon: 'apartment',
-        iconColor: 'orange-5',
-        bgColor: '#ffe9d6',
-    },
-];
 
+const state=reactive({
+    search:props?.search,
+
+})
+
+const handleSearch=e=>{
+    router.get(route('employees.all'), {
+        search: state.search
+    });
+}
 
 
 

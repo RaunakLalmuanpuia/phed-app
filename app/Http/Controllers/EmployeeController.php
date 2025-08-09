@@ -18,7 +18,9 @@ use Illuminate\Validation\Rule;
 class EmployeeController extends Controller
 {
 
-    public function allEmployees(){
+    public function allEmployees(Request $request){
+
+        $search = $request->get('search');
         // Offices with at least one employee, plus MR & PE counts
         $offices = Office::withCount([
             'employees as mr_count' => function ($query) {
@@ -27,7 +29,9 @@ class EmployeeController extends Controller
             'employees as pe_count' => function ($query) {
                 $query->where('employment_type', 'PE');
             },
-        ])->get();
+         ])->when($search, function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%"); // ✅ search by office name
+         })->get();
 
         $totalEmployees = Employee::where('employment_type', '!=', 'Deleted')->count();
         $peCount = Employee::where('employment_type', 'PE')->count();
@@ -35,6 +39,7 @@ class EmployeeController extends Controller
         $deletedCount = Employee::where('employment_type', 'Deleted')->count();
         return Inertia::render('Backend/Employees/AllEmployees', [
             'offices' => $offices,
+            'search' => $search,
             'totalEmployees' => $totalEmployees,
             'peCount' => $peCount,
             'mrCount' => $mrCount,
@@ -101,18 +106,20 @@ class EmployeeController extends Controller
 
 
 
-    public function peEmployees(){
-
+    public function peEmployees(Request $request){
+        $search = $request->get('search');
         $offices = Office::whereHas('employees', function ($query) {
             $query->where('employment_type', 'PE'); // ✅ Only PE employees
         })
             ->withCount(['employees as pe_count' => function ($query) {
                 $query->where('employment_type', 'PE'); // ✅ Count PE employees
-            }])
-            ->get();
+            }])->when($search, function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%"); // ✅ search by office name
+            })->get();
 
         return Inertia::render('Backend/Employees/PeEmployees', [
             'offices' => $offices,
+            'search' => $search,
         ]);
     }
     public function indexPeEmployees(Office $model) // shows PE type
@@ -156,17 +163,20 @@ class EmployeeController extends Controller
         ], 200);
     }
 
-    public function mrEmployees(){
+    public function mrEmployees(Request $request){
+        $search = $request->get('search');
         $offices = Office::whereHas('employees', function ($query) {
             $query->where('employment_type', 'MR'); // ✅ Only PE employees
         })
             ->withCount(['employees as mr_count' => function ($query) {
                 $query->where('employment_type', 'MR'); // ✅ Count PE employees
-            }])
-            ->get();
+            }])->when($search, function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%"); // ✅ search by office name
+            })->get();
 
         return Inertia::render('Backend/Employees/MrEmployees', [
             'offices' => $offices,
+            'search' => $search,
         ]);
     }
     public function indexMrEmployees(Office $model) // shows MR type

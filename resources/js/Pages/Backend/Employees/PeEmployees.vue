@@ -13,14 +13,38 @@
         <br/>
         <q-card flat>
             <q-card-section>
+
+                <div class="flex items-center justify-between q-pa-md bg-white">
+
+                    <div>
+                        <div class="stitle">Offices</div>
+                    </div>
+
+                    <div class="flex q-gutter-sm">
+                        <q-input
+                            borderless
+                            dense
+                            outlined
+                            clearable
+                            debounce="800"
+                            v-model="state.search"
+                            placeholder="Search Office"
+                            @update:model-value="handleSearch"
+                        >
+                            <template v-slot:append>
+                                <q-icon name="search" />
+                            </template>
+                        </q-input>
+                    </div>
+                </div>
+
                 <div class="q-pa-md">
-                    <div class="q-pa-md">
-                        <!-- Dashboard Cards -->
-                        <div class="q-gutter-md row q-col-gutter-md q-mb-md">
-                            <q-card
+                        <!-- Office Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 q-mb-md">
+                        <q-card
                                 flat
                                 bordered
-                                class="bg-white q-px-md q-py-lg shadow-1 col-12 col-sm-6 col-md-3 q-mr-sm"
+                                class="bg-white q-px-md q-py-lg shadow-1 cursor-pointer"
                                 v-for="office in offices"
                                 @click="$inertia.get(route('employees.index-pe', office))"
                                 :key="office.title"
@@ -32,15 +56,11 @@
                                     <div class="text-caption text-grey-7">Employees</div>
                                 </div>
                             </q-card>
-                        </div>
-
-
                     </div>
+
                 </div>
+
             </q-card-section>
-
-
-
 
 
         </q-card>
@@ -50,15 +70,30 @@
 
 
 <script setup>
-import {onMounted, ref, watch} from 'vue';
+import {onMounted, reactive, ref, watch} from 'vue';
 
 import BackendLayout from "@/Layouts/BackendLayout.vue";
 import {useQuasar} from "quasar";
+import {router} from "@inertiajs/vue3";
 
 defineOptions({layout:BackendLayout})
 
-const props=defineProps(['offices'])
 
+
+const props=defineProps(['offices','search'])
+
+
+
+const state=reactive({
+    search:props?.search,
+
+})
+
+const handleSearch=e=>{
+    router.get(route('employees.pe'), {
+        search: state.search
+    });
+}
 
 
 
