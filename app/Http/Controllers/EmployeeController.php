@@ -42,11 +42,6 @@ class EmployeeController extends Controller
         ]);
     }
 
-
-
-    public function mrEmployees(){
-
-    }
     //
     public function indexAllEmployees(Office $model) // shows all employees
     {
@@ -161,16 +156,27 @@ class EmployeeController extends Controller
         ], 200);
     }
 
-    public function indexMrEmployees() // shows MR type
-    {
-        $office = Office::whereHas('employees')->get(); // ⬅️ Only offices with employees
+    public function mrEmployees(){
+        $offices = Office::whereHas('employees', function ($query) {
+            $query->where('employment_type', 'MR'); // ✅ Only PE employees
+        })
+            ->withCount(['employees as mr_count' => function ($query) {
+                $query->where('employment_type', 'MR'); // ✅ Count PE employees
+            }])
+            ->get();
 
+        return Inertia::render('Backend/Employees/MrEmployees', [
+            'offices' => $offices,
+        ]);
+    }
+    public function indexMrEmployees(Office $model) // shows MR type
+    {
         return Inertia::render('Backend/Employees/Index/MrEmployees', [
-            'office' => $office,
+            'office'=>$model,
         ]);
     }
 
-    public function jsonMrEmployees(Request $request)
+    public function jsonMrEmployees(Request $request, Office $model)
     {
         $user = auth()->user();
         abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
@@ -178,10 +184,10 @@ class EmployeeController extends Controller
         $perPage = $request->get('rowsPerPage') ?? 5;
         $filter = $request->get('filter', []);
         $search = $filter['search'] ?? null; // ✅ extract from filter array
-        $employees = Employee::query()
+        $employees = $model->employees() // ✅ Only employees of this office
+        ->with('office')
             ->where('employment_type', 'MR')
-            ->with('office')
-            ->when($search, function (Builder $builder) use ($search) {
+            ->when($search, function ($builder) use ($search) {
                 $builder->where(function ($query) use ($search) {
                     $query->where('name', 'LIKE', "%$search%")
                         ->orWhere('mobile', 'LIKE', "%$search%")
@@ -190,12 +196,7 @@ class EmployeeController extends Controller
                         ->orWhere('name_of_workplace', 'LIKE', "%$search%");
                 });
             })
-            ->when($filter['office'] ?? null, function (Builder $query, $officeId) {
-                $query->whereHas('office', function (Builder $q) use ($officeId) {
-                    $q->where('id', $officeId);
-                });
-            })
-            ->when($filter['skill'] ?? null, function (Builder $query, $skill) {
+            ->when($filter['skill'] ?? null, function ($query, $skill) {
                 $query->where('skill_at_present', $skill);
             });
 
