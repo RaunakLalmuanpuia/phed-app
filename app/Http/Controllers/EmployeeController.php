@@ -50,23 +50,29 @@ class EmployeeController extends Controller
 
     }
     //
-    public function indexAllEmployees() // shows all employees
+    public function indexAllEmployees(Office $model) // shows all employees
     {
-        $office = Office::whereHas('employees')->get(); // ⬅️ Only offices with employees
-        $totalEmployees = Employee::where('employment_type', '!=', 'Deleted')->count();
-        $peCount = Employee::where('employment_type', 'PE')->count();
-        $mrCount = Employee::where('employment_type', 'MR')->count();
-        $deletedCount = Employee::where('employment_type', 'Deleted')->count();
+        $totalEmployees = $model->employees()
+            ->where('employment_type', '!=', 'Deleted')
+            ->count();
+
+        $peCount = $model->employees()
+            ->where('employment_type', 'PE')
+            ->count();
+
+        $mrCount = $model->employees()
+            ->where('employment_type', 'MR')
+            ->count();
+
         return Inertia::render('Backend/Employees/Index/AllEmployees', [
-            'office' => $office,
+            'office'=>$model,
             'totalEmployees' => $totalEmployees,
             'peCount' => $peCount,
             'mrCount' => $mrCount,
-            'deletedCount' => $deletedCount,
         ]);
     }
 
-    public function jsonAllEmployees(Request $request)
+    public function jsonAllEmployees(Request $request, Office $model)
     {
         $user = auth()->user();
         abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
@@ -75,9 +81,10 @@ class EmployeeController extends Controller
         $filter = $request->get('filter', []);
         $search = $filter['search'] ?? null; // ✅ extract from filter array
 
-        $employees = Employee::query()
-            ->with('office')
-            ->when($search, function (Builder $builder) use ($search) {
+        $employees = $model->employees() // ✅ Only employees of this office
+        ->with('office')
+            ->where('employment_type', '!=', 'Deleted') // ✅ Exclude Deleted
+            ->when($search, function ($builder) use ($search) {
                 $builder->where(function ($query) use ($search) {
                     $query->where('name', 'LIKE', "%$search%")
                         ->orWhere('mobile', 'LIKE', "%$search%")
@@ -86,18 +93,13 @@ class EmployeeController extends Controller
                         ->orWhere('name_of_workplace', 'LIKE', "%$search%");
                 });
             })
-
-            ->when($filter['office'] ?? null, function (Builder $query, $officeId) {
-                $query->whereHas('office', function (Builder $q) use ($officeId) {
-                    $q->where('id', $officeId);
-                });
-            })
-            ->when($filter['type'] ?? null, function (Builder $query, $type) {
+            ->when($filter['type'] ?? null, function ($query, $type) {
                 $query->where('employment_type', $type);
             })
-            ->when($filter['skill'] ?? null, function (Builder $query, $skill) {
+            ->when($filter['skill'] ?? null, function ($query, $skill) {
                 $query->where('skill_at_present', $skill);
             });
+
 
         return response()->json([
             'list' => $employees->paginate($perPage),
@@ -189,7 +191,7 @@ class EmployeeController extends Controller
         ], 200);
     }
 
-    public function indexDeletedEmployees() // shows PE type
+    public function deletedEmployees() // shows PE type
     {
         $office = Office::whereHas('employees')->get(); // ⬅️ Only offices with employees
 

@@ -5,7 +5,7 @@
 
     <div class="flex items-center justify-between q-pa-md bg-white">
       <div>
-        <div class="stitle">All Employee List</div>
+        <div class="stitle">All Employee List : {{office.name}}</div>
         <q-breadcrumbs  class="text-dark">
           <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
 
@@ -55,7 +55,20 @@
               </div>
 
               <div class="row q-col-gutter-md">
-
+                  <q-input
+                      dense
+                      outlined
+                      debounce="300"
+                      v-model="filters.search"
+                      placeholder="Search"
+                      class="col-12 col-sm-4"
+                      clearable
+                      @update:model-value="handleSearch"
+                  >
+                      <template #append>
+                          <q-icon name="search" />
+                      </template>
+                  </q-input>
 
                 <q-select
                     label="Select Employment Type"
@@ -69,20 +82,7 @@
                     clearable
                     @update:model-value="handleSearch"
                 />
-                <q-select
-                    label="Select Office"
-                    class="col-12 col-sm-4"
-                    v-model="filters.office"
-                    :options="office"
-                    option-label="name"
-                    option-value="id"
-                    emit-value
-                    map-options
-                    outlined
-                    dense
-                    clearable
-                    @update:model-value="handleSearch"
-                />
+
                 <q-select
                     label="Select Skill"
                     class="col-12 col-sm-4"
@@ -118,12 +118,12 @@
                 </q-input>
 
                 <!--                                <q-btn label="Export" icon="desktop_windows" color="grey-4" disable />-->
-                <q-btn
-                    label="Add New Employee"
-                    icon="add"
-                    color="primary"
-                    @click="$inertia.get(route('employee.create'))"
-                />
+<!--                <q-btn-->
+<!--                    label="Add New Employee"-->
+<!--                    icon="add"-->
+<!--                    color="primary"-->
+<!--                    @click="$inertia.get(route('employee.create'))"-->
+<!--                />-->
               </div>
             </q-card-section>
           </q-card>
@@ -132,7 +132,7 @@
       <q-table
           flat
           ref="tableRef"
-          title="List of All Employees"
+          :title="office.name"
           :rows="rows"
           :columns="columns"
           row-key="id"
@@ -255,20 +255,11 @@ const cards = [
     iconColor: 'orange-5',
     bgColor: '#ffe9d6',
   },
-  {
-    title: 'Deleted',
-    value: props.deletedCount,
-    icon: 'person',
-
-    iconColor: 'red-6',
-    bgColor: '#ffe1e1',
-  },
 
 ]
 
 const filters = ref({
   type: null,
-  office: null,
   skill: null,
   search:null,
 })
@@ -276,7 +267,6 @@ const filters = ref({
 const type = [
   { label: 'MR', value: 'MR' },
   { label: 'PE', value: 'PE' },
-  { label: 'Deleted', value: 'Deleted' },
 ]
 
 const skills = [
@@ -308,13 +298,13 @@ const handleSearch = () => {
   });
 };
 
-function onRequest (props) {
-  const { page, rowsPerPage, sortBy, descending } = props.pagination
-  const filter = props.filter
-  const search = props.search
+function onRequest (prop) {
+  const { page, rowsPerPage, sortBy, descending } = prop.pagination
+  const filter = prop.filter
+  const search = prop.search
 
   loading.value = true
-  axios.get(route('employees.json-index-all'),{
+  axios.get(route('employees.json-index-all', props.office),{
     params:{
       filter,
       page,

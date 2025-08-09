@@ -91,7 +91,7 @@
                               route().current()==='employees.all'
                              || route().current()==='employees.mr'
                              || route().current()==='employees.pe'
-                              || route().current()==='employee.deleted'
+                              || route().current()==='employees.deleted'
                              || route().current()==='employee.show'
                               || route().current()==='employee.create'
                               || route().current()==='employee.edit'

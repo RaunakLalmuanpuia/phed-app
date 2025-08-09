@@ -53,20 +53,25 @@
         <br/>
 
 
+
+
+        <br/>
         <q-card flat>
             <q-card-section>
                 <div class="q-pa-md">
-                    <!-- Use wrap and gap via flex utilities instead of q-gutter-md -->
-                    <div class="row wrap items-start">
+
+                    <!-- Dashboard Cards -->
+                    <div class="q-gutter-md row q-col-gutter-md q-mb-md">
                         <q-card
                             flat
                             bordered
-                            class="bg-white q-px-md q-py-lg shadow-1 col-12 col-sm-6 col-md-3"
+                            class="bg-white q-px-md q-py-lg shadow-1 col-12 col-sm-6 col-md-3 q-mr-sm"
                             v-for="office in offices"
-                            :key="office.id"
+                            @click="$inertia.get(route('employees.index-all', office))"
+                            :key="office.title"
                         >
                             <div>
-                                <div class="text-grey-6 text-subtitle1">{{ office.name }}</div>
+                                <div class="stitle">{{ office.name }}</div>
                                 <div class="text-caption text-grey-6 q-mt-xs">{{ office.type }}</div>
                                 <div class="row q-mt-sm">
                                     <div class="col-auto">
@@ -81,55 +86,11 @@
                             </div>
                         </q-card>
                     </div>
+
+
                 </div>
             </q-card-section>
         </q-card>
-
-        <br/>
-        <q-card flat>
-            <q-card-section>
-                <div class="q-pa-md">
-                    <!-- Dashboard Cards -->
-                    <div class="row q-col-gutter-lg q-mb-md">
-                        <q-card
-                            flat
-                            bordered
-                            class="bg-white q-px-md q-py-lg shadow-1 col-12 col-sm-6 col-md-3"
-                            v-for="office in offices"
-                            :key="office.title"
-
-                        >
-                            <div class="row justify-between items-center">
-                                <div>
-                                    <div class="text-grey-6 text-subtitle1">{{ office.type }}</div>
-                                    <div class="text-h5 text-weight-bold">
-                                        {{ office.name }}
-                                    </div>
-                                    <div class="text-caption text-grey-6 q-mt-xs">
-                                        Employees
-                                    </div>
-                                </div>
-                            </div>
-                        </q-card>
-                    </div>
-                </div>
-            </q-card-section>
-        </q-card>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     </q-page>
