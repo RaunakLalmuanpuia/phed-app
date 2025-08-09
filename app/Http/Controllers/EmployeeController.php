@@ -42,9 +42,7 @@ class EmployeeController extends Controller
         ]);
     }
 
-    public function peEmployees(){
 
-    }
 
     public function mrEmployees(){
 
@@ -106,6 +104,63 @@ class EmployeeController extends Controller
         ], 200);
     }
 
+
+
+    public function peEmployees(){
+
+        $offices = Office::whereHas('employees', function ($query) {
+            $query->where('employment_type', 'PE'); // ✅ Only PE employees
+        })
+            ->withCount(['employees as pe_count' => function ($query) {
+                $query->where('employment_type', 'PE'); // ✅ Count PE employees
+            }])
+            ->get();
+
+        return Inertia::render('Backend/Employees/PeEmployees', [
+            'offices' => $offices,
+        ]);
+    }
+    public function indexPeEmployees(Office $model) // shows PE type
+    {
+
+        return Inertia::render('Backend/Employees/Index/PeEmployees', [
+            'office'=>$model,
+        ]);
+    }
+    public function jsonPeEmployees(Request $request, Office $model)
+    {
+
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
+
+        $perPage = $request->get('rowsPerPage') ?? 5;
+        $filter = $request->get('filter', []);
+        $search = $filter['search'] ?? null; // ✅ extract from filter array
+
+
+        $employees = $model->employees() // ✅ Only employees of this office
+        ->with('office')
+            ->where('employment_type', 'PE')
+            ->when($search, function ($builder) use ($search) {
+                $builder->where(function ($query) use ($search) {
+                    $query->where('name', 'LIKE', "%$search%")
+                        ->orWhere('mobile', 'LIKE', "%$search%")
+                        ->orWhere('designation', 'LIKE', "%$search%")
+                        ->orWhere('date_of_birth', 'LIKE', "%$search%")
+                        ->orWhere('name_of_workplace', 'LIKE', "%$search%");
+                });
+            })
+            ->when($filter['skill'] ?? null, function ($query, $skill) {
+                $query->where('skill_at_present', $skill);
+            });
+
+
+
+        return response()->json([
+            'list' => $employees->paginate($perPage),
+        ], 200);
+    }
+
     public function indexMrEmployees() // shows MR type
     {
         $office = Office::whereHas('employees')->get(); // ⬅️ Only offices with employees
@@ -125,48 +180,6 @@ class EmployeeController extends Controller
         $search = $filter['search'] ?? null; // ✅ extract from filter array
         $employees = Employee::query()
             ->where('employment_type', 'MR')
-            ->with('office')
-            ->when($search, function (Builder $builder) use ($search) {
-                $builder->where(function ($query) use ($search) {
-                    $query->where('name', 'LIKE', "%$search%")
-                        ->orWhere('mobile', 'LIKE', "%$search%")
-                        ->orWhere('designation', 'LIKE', "%$search%")
-                        ->orWhere('date_of_birth', 'LIKE', "%$search%")
-                        ->orWhere('name_of_workplace', 'LIKE', "%$search%");
-                });
-            })
-            ->when($filter['office'] ?? null, function (Builder $query, $officeId) {
-                $query->whereHas('office', function (Builder $q) use ($officeId) {
-                    $q->where('id', $officeId);
-                });
-            })
-            ->when($filter['skill'] ?? null, function (Builder $query, $skill) {
-                $query->where('skill_at_present', $skill);
-            });
-
-        return response()->json([
-            'list' => $employees->paginate($perPage),
-        ], 200);
-    }
-
-    public function indexPeEmployees() // shows PE type
-    {
-        $office = Office::whereHas('employees')->get(); // ⬅️ Only offices with employees
-
-        return Inertia::render('Backend/Employees/Index/PeEmployees', [
-            'office' => $office,
-        ]);
-    }
-    public function jsonPeEmployees(Request $request)
-    {
-        $user = auth()->user();
-        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
-
-        $perPage = $request->get('rowsPerPage') ?? 5;
-        $filter = $request->get('filter', []);
-        $search = $filter['search'] ?? null; // ✅ extract from filter array
-        $employees = Employee::query()
-            ->where('employment_type', 'PE')
             ->with('office')
             ->when($search, function (Builder $builder) use ($search) {
                 $builder->where(function ($query) use ($search) {
