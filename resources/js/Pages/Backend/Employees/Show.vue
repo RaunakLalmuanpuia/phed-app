@@ -182,10 +182,12 @@
 
                         <div class="row q-col-gutter-md">
                             <div class="col-12 col-md-7">
+                                <Remuneration v-if="data.employment_type === 'PE'" :data="data"/>
                                 <Transfer :data="data" :office="office"/>
                             </div>
 
                             <div class="col-12 col-md-5">
+                                <Deletion v-if="data.employment_type === 'Deleted'" :deletion="data.deletion_detail"/>
                                 <Deletion v-if="data.employment_type === 'Deleted'" :deletion="data.deletion_detail"/>
                             </div>
 
@@ -199,7 +201,7 @@
             </q-card-section>
         </q-card>
 
-
+        {{data.remuneration_detail}}
     </q-page>
 </template>
 
@@ -216,6 +218,7 @@ import Transfer from "@/Components/Employee/Transfer.vue";
 import DeletionDialog from "@/Components/Employee/DeletionDialog.vue";
 
 import Deletion from "@/Components/Employee/Deletion.vue";
+import Remuneration from "@/Components/Employee/Remuneration.vue";
 
 
 import { ref, computed } from 'vue'

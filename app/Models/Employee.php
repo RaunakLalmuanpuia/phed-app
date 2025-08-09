@@ -41,4 +41,9 @@ class Employee extends Model
         return $this->hasOne(DeletionDetail::class);
     }
 
+    public function remunerationDetail(): HasOne
+    {
+        return $this->hasOne(RemunerationDetail::class);
+    }
+
 }

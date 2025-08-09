@@ -13,6 +13,8 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\MISController;
 use App\Http\Controllers\TransferController;
 use App\Http\Controllers\DeletionController;
+use App\Http\Controllers\RemunerationController;
+
 
 
 
@@ -140,3 +142,9 @@ Route::group(['middleware'=>'auth','prefix' => 'deletion'], function () {
     Route::post('update/{model}', [DeletionController::class, 'update'])->middleware('can:edit-delete')->name('deletion.update');
 });
 
+
+//Remuneration
+Route::group(['middleware'=>'auth','prefix' => 'remuneration'], function () {
+    Route::post('store/{model}', [RemunerationController::class, 'store'])->middleware('can:create-remuneration')->name('remuneration.store');
+    Route::put('update/{model}', [RemunerationController::class, 'update'])->middleware('can:edit-remuneration')->name('remuneration.update');
+});

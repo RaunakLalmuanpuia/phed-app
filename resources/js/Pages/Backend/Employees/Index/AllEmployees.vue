@@ -270,8 +270,10 @@ const type = [
 ]
 
 const skills = [
-  { label: 'Skilled', value: 'skilled' },
+  { label: 'Skilled-I', value: 'skilled-I' },
   { label: 'Unskilled', value: 'unskilled' },
+    { label: 'Semi-Skilled', value: 'semi-skilled' },
+    { label: 'Skilled-II', value: 'skilled-II' },
 ]
 
 

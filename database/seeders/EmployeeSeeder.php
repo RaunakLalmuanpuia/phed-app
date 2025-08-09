@@ -6,6 +6,7 @@ use App\Models\Document;
 use App\Models\DocumentType;
 use App\Models\Employee;
 use App\Models\Office;
+use App\Models\RemunerationDetail;
 use App\Models\Transfer;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -66,6 +67,16 @@ class EmployeeSeeder extends Seeder
                 'skill_category' => 'Category A',
                 'skill_at_present' => 'Skill',
             ]);
+        });
+        // 🔹 Add remuneration for PE employees
+        $employees->each(function ($employee) {
+            if ($employee->employment_type === 'PE') {
+                RemunerationDetail::create([
+                    'employee_id' => $employee->id,
+                    'remuneration' => fake()->numberBetween(20000, 50000),
+                    'next_increment_date' => now()->addYear()->toDateString(),
+                ]);
+            }
         });
 
         // Seed Documents for each employee
