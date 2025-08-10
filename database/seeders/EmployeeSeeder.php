@@ -55,6 +55,7 @@ class EmployeeSeeder extends Seeder
                 'name' => fake()->name(),
                 'mobile' => fake()->unique()->numerify('9#########'),
                 'email' => fake()->unique()->safeEmail(),
+                'address' => fake()->address(),
                 'date_of_birth' => fake()->date('Y-m-d', '2000-01-01'),
                 'parent_name' => fake()->name(),
                 'employment_type' => $type,
