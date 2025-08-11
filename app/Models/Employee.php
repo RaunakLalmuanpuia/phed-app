@@ -46,4 +46,10 @@ class Employee extends Model
         return $this->hasOne(RemunerationDetail::class);
     }
 
+    public function engagementCard()
+    {
+        return $this->hasOne(EngagementCard::class);
+    }
+
+
 }

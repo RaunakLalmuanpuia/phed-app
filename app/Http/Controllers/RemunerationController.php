@@ -10,6 +10,9 @@ class RemunerationController extends Controller
     //
     public function store(Request $request, Employee $model){
 
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('create-remuneration'), 403, 'Access Denied');
+
         $validated = $request->validate([
             'remuneration' => 'required|numeric|min:0',
             'next_increment_date' => 'required|date'
@@ -21,6 +24,10 @@ class RemunerationController extends Controller
     }
     public function update(Request $request, Employee $model)
     {
+
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('edit-remuneration'), 403, 'Access Denied');
+
         $validated = $request->validate([
             'remuneration' => 'required|numeric|min:0',
             'next_increment_date' => 'required|date'

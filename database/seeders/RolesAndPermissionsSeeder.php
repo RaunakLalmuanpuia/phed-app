@@ -29,6 +29,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'view-any-document-type','view-document-type','create-document-type','delete-document-type','edit-document-type',
             'import-employee', 'export-employee',
             'create-remuneration', 'edit-remuneration','delete-remuneration',
+            'view-engagement-card','store-engagement-card','download-engagement-card',
         ];
 
         // Create permissions
@@ -47,6 +48,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'view-any-document-type','view-document-type','create-document-type','delete-document-type','edit-document-type',
                 'import-employee', 'export-employee',
                 'create-remuneration', 'edit-remuneration','delete-remuneration',
+                'view-engagement-card','store-engagement-card','download-engagement-card',
                 ],
         ];
 

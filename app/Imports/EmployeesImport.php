@@ -26,8 +26,9 @@ class EmployeesImport implements ToModel, WithStartRow
         'educational_qln'      => 10,
         'technical_qln'        => 11,
         'post_per_qln'         => 12,
-        'remuneration'         => 13, // new
-        'next_increment_date'  => 14  // new
+        'remuneration'         => 13,
+        'next_increment_date'  => 14,
+        'address'  => 15,
 
     ];
 
@@ -52,6 +53,7 @@ class EmployeesImport implements ToModel, WithStartRow
                 'name'                   => $row[$this->columns['name']] ?? null,
                 'parent_name'            => $row[$this->columns['parent_name']] ?? null,
                 'date_of_birth'          => $this->transformDate($row[$this->columns['date_of_birth']] ?? null),
+                'address'                 => $row[$this->columns['address']] ?? null,
                 'employment_type'        => $this->employment_type,
                 'educational_qln'        => $row[$this->columns['educational_qln']] ?? null,
                 'technical_qln'          => $row[$this->columns['technical_qln']] ?? null,

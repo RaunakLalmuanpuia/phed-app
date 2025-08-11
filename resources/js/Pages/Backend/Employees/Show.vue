@@ -188,7 +188,7 @@
                             </div>
 
                             <div class="col-12 col-md-5">
-                                <Deletion v-if="data.employment_type === 'Deleted'" :deletion="data.deletion_detail"/>
+                                <EngagementCard v-if="data.employment_type === 'PE'" :data="data"/>
                                 <Deletion v-if="data.employment_type === 'Deleted'" :deletion="data.deletion_detail"/>
                             </div>
 
@@ -218,6 +218,7 @@ import DeletionDialog from "@/Components/Employee/DeletionDialog.vue";
 
 import Deletion from "@/Components/Employee/Deletion.vue";
 import Remuneration from "@/Components/Employee/Remuneration.vue";
+import EngagementCard from "@/Components/Employee/EngagementCard.vue";
 
 
 import { ref, computed } from 'vue'

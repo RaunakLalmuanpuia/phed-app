@@ -14,6 +14,8 @@ use App\Http\Controllers\MISController;
 use App\Http\Controllers\TransferController;
 use App\Http\Controllers\DeletionController;
 use App\Http\Controllers\RemunerationController;
+use App\Http\Controllers\EngagementCardController;
+
 
 
 
@@ -148,3 +150,12 @@ Route::group(['middleware'=>'auth','prefix' => 'remuneration'], function () {
     Route::post('store/{model}', [RemunerationController::class, 'store'])->middleware('can:create-remuneration')->name('remuneration.store');
     Route::put('update/{model}', [RemunerationController::class, 'update'])->middleware('can:edit-remuneration')->name('remuneration.update');
 });
+
+
+
+
+
+
+Route::get('/employees/{employee}/engagement-card', [EngagementCardController::class, 'show'])->middleware('can:view-engagement-card')->name('engagement-card.show');
+Route::post('/engagement-card/{employee}', [EngagementCardController::class, 'store'])->middleware('can:store-engagement-card')->name('engagement-card.store');
+Route::get('/engagement-card/{employee}/download', [EngagementCardController::class, 'download'])->middleware('can:download-engagement-card')->name('engagement-card.download');
