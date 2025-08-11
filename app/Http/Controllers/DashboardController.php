@@ -52,8 +52,9 @@ class DashboardController extends Controller
     public function officeStatistics(){
         $offices = Office::query()
             ->withCount([
-                'employees as mr_count' => fn(Builder $q) => $q->where('employment_type', 'MR'),
                 'employees as pe_count' => fn(Builder $q) => $q->where('employment_type', 'PE'),
+                'employees as mr_count' => fn(Builder $q) => $q->where('employment_type', 'MR'),
+
             ])
             ->get();
 
@@ -64,14 +65,7 @@ class DashboardController extends Controller
         return response()->json([
             'labels' => $labels,
             'datasets' => [
-                [
-                    'label' => 'Muster Roll (MR)',
-                    'data' => $mrCounts,
-                    'backgroundColor' => '#29ad3d',
-                    'barThickness' => 8,
-                    'borderRadius' => 4,
-                    'categoryPercentage' => 0.6, // ⬅️ Lower = more space between bars
-                ],
+
                 [
                     'label' => 'Provisional (PE)',
                     'data' => $peCounts,
@@ -80,7 +74,15 @@ class DashboardController extends Controller
                     'borderRadius' => 4,
                     'categoryPercentage' => 0.6, // ⬅️ Lower = more space between bars
 
-                ]
+                ],
+                [
+                    'label' => 'Muster Roll (MR)',
+                    'data' => $mrCounts,
+                    'backgroundColor' => '#29ad3d',
+                    'barThickness' => 8,
+                    'borderRadius' => 4,
+                    'categoryPercentage' => 0.6, // ⬅️ Lower = more space between bars
+                ],
             ]
         ]);
     }

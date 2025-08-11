@@ -13,21 +13,21 @@
                 </div>
             </div>
             <div v-if="!applicant" class="col-xs-12 col-sm-3">
-                <div class="verification-card q-pa-md count-green">
-                    <div class="title-green">Provisional</div>
+                <div class="verification-card q-pa-md count-blue">
+                    <div class="title-blue">Provisional</div>
                     <div class="text-caption caption-sm">Employment Type</div>
                     <div class="flex items-center">
-                        <div class="count-green">{{ peCount }}</div>
+                        <div class="count-blue">{{ peCount }}</div>
                         <div class="caption q-ml-md">Employees</div>
                     </div>
                 </div>
             </div>
             <div v-if="!applicant" class="col-xs-12 col-sm-3">
-                <div class="approval-card q-pa-md count-blue">
-                    <div class="title-blue">Muster Roll</div>
+                <div class="approval-card q-pa-md count-green">
+                    <div class="title-green">Muster Roll</div>
                     <div class="text-caption caption-sm">Employment Type</div>
                     <div class="flex items-center">
-                        <div class="count-blue">{{ mrCount }}</div>
+                        <div class="count-green">{{ mrCount }}</div>
                         <div class="caption q-ml-md">Employees</div>
                     </div>
                 </div>
@@ -122,14 +122,16 @@ const applicant = false
     padding: 18px;
     background-color: #fff8f0;
     color: #f27001;
-}.verification-card{
+}
+.verification-card{
      padding: 18px;
-     background-color: #f0fdf6;
+    background-color: #eff7ff;
      color: #191c51;
  }
 .approval-card{
     padding: 18px;
-    background-color: #eff7ff;
+
+    background-color: #f0fdf6;
 }
 
 .deletion-card{
