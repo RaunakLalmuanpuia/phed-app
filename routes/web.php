@@ -153,9 +153,14 @@ Route::group(['middleware'=>'auth','prefix' => 'remuneration'], function () {
 
 
 
+//Engagement Card
+Route::group(['middleware'=>'auth','prefix' => 'engagement-card'], function () {
+    Route::get('{employee}', [EngagementCardController::class, 'show'])->middleware('can:view-engagement-card')->name('engagement-card.show');
+    Route::post('store/{employee}', [EngagementCardController::class, 'store'])->middleware('can:store-engagement-card')->name('engagement-card.store');
+    Route::get('/download/{employee}', [EngagementCardController::class, 'download'])->middleware('can:download-engagement-card')->name('engagement-card.download');
+});
 
 
 
-Route::get('/employees/{employee}/engagement-card', [EngagementCardController::class, 'show'])->middleware('can:view-engagement-card')->name('engagement-card.show');
-Route::post('/engagement-card/{employee}', [EngagementCardController::class, 'store'])->middleware('can:store-engagement-card')->name('engagement-card.store');
-Route::get('/engagement-card/{employee}/download', [EngagementCardController::class, 'download'])->middleware('can:download-engagement-card')->name('engagement-card.download');
+
+

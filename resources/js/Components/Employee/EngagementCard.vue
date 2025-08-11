@@ -33,30 +33,28 @@
                 @click="downloadPdf"
             />
 
-            <q-dialog v-model="dialog" persistent full-width>
-                <q-card>
+            <q-dialog v-model="dialog" persistent>
+                <q-card style="width: 1000px; max-width: 100vw;"> <!-- Increased width with max-width for responsiveness -->
                     <q-card-section class="row items-center justify-between bg-primary text-white">
                         <div class="text-h6">Engagement Card</div>
                         <q-btn dense flat icon="close" v-close-popup />
                     </q-card-section>
 
-                    <q-card-section>
+                    <q-card-section style="flex-grow: 1; overflow: auto; padding: 0;">
                         <q-editor
-                            v-model="editorContent"
-                            height="100%"
+                            v-model="form.html_content"
                             :definitions="{}"
-                            :toolbar="[
-                                 ['print', 'fullscreen'],
-                            ]"
-
+                            :toolbar="[['print', 'fullscreen']]"
+                            style="width: 100%; max-height: 1100px;"
                         />
                     </q-card-section>
 
-                    <q-card-actions align="right">
+                    <q-card-actions align="right" style="flex-shrink: 0;">
                         <q-btn color="primary" label="Save" @click="saveCard" />
                     </q-card-actions>
                 </q-card>
             </q-dialog>
+
         </q-card-section>
     </q-card>
 </template>
@@ -65,9 +63,14 @@
 <script setup>
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
+import {useForm} from "@inertiajs/vue3";
 
 const props = defineProps({
     data: Object,
+})
+const form = useForm({
+    html_content: props.data?.engagement_card?.content || '',
+
 })
 
 const dialog = ref(false);
@@ -80,6 +83,7 @@ const openDialog = async () => {
         axios.get(route('engagement-card.show', props.data))
             .then(res=>{
                 editorContent.value = res.data;
+                form.html_content = res.data;
 
             })
     } catch (err) {
@@ -88,19 +92,32 @@ const openDialog = async () => {
 };
 
 
+const saveCard = () => {
+    form.post(route('engagement-card.store', props.data), {
+        preserveScroll: true,
+        onSuccess: () => {
+            dialog.value = false
+            $q.notify({
+                type: 'positive',
+                message:  'Card saved successfully!'
+            })
+        }
+    })
+}
 
-const saveCard = async () => {
-    try {
-        await axios.post(route('engagement-card.store', props.data), {
-            html_content: editorContent.value,
-        });
-        $q.notify({ type: 'positive', message: 'Card saved successfully!' });
-        dialog.value = false;
-
-    } catch (error) {
-        $q.notify({ type: 'negative', message: 'Failed to save card.' });
-    }
-};
+//
+// const saveCard = async () => {
+//     try {
+//         await axios.post(route('engagement-card.store', props.data), {
+//             html_content: editorContent.value,
+//         });
+//         $q.notify({ type: 'positive', message: 'Card saved successfully!' });
+//         dialog.value = false;
+//
+//     } catch (error) {
+//         $q.notify({ type: 'negative', message: 'Failed to save card.' });
+//     }
+// };
 
 // Download PDF helper
 const downloadPdf = async () => {

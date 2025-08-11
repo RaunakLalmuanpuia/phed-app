@@ -181,14 +181,15 @@
                         <DeletionRequest v-if="tab === 'deletion'" :data="data" />
 
 
+
                         <div class="row q-col-gutter-md">
                             <div class="col-12 col-md-7">
-                                <Remuneration v-if="data.employment_type === 'PE'" :data="data"/>
+                                <Remuneration v-if="data.remuneration_detail" :data="data"/>
                                 <Transfer :data="data" :office="office"/>
                             </div>
 
                             <div class="col-12 col-md-5">
-                                <EngagementCard v-if="data.employment_type === 'PE'" :data="data"/>
+                                <EngagementCard v-if="data.engagement_card" :data="data"/>
                                 <Deletion v-if="data.employment_type === 'Deleted'" :deletion="data.deletion_detail"/>
                             </div>
 
