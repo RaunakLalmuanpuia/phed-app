@@ -75,6 +75,11 @@
                                         </q-item>
 
                                         <q-item>
+                                            <q-item-section side class="subtitle">Address:</q-item-section>
+                                            <q-item-section  class="text-label">{{data?.address ?? 'N/A'}}</q-item-section>
+                                        </q-item>
+
+                                        <q-item>
                                             <q-item-section side class="subtitle">Education Qln.:</q-item-section>
                                             <q-item-section  class="text-label">{{data?.educational_qln}}</q-item-section>
                                         </q-item>

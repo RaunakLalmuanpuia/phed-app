@@ -89,6 +89,11 @@
                                      :rules="[val => !!val || 'Date of Birth is required']" />
                         </div>
                         <div class="col-12 col-sm-6">
+                            <q-input v-model="form.address" label="Address" outlined dense
+                                     :error="!!form.errors?.address" :error-message="form.errors?.address"
+                                     :rules="[val => !!val || 'Address is required']" />
+                        </div>
+                        <div class="col-12 col-sm-6">
                             <q-input v-model="form.educational_qln" label="Educational Qualification" outlined dense
                                      :error="!!form.errors?.educational_qln" :error-message="form.errors?.educational_qln"
                                      :rules="[val => !!val || 'Education Qualification is required']" />
@@ -305,6 +310,7 @@ const form=useForm({
     mobile:props.data?.mobile,
     parent_name:props.data?.parent_name,
     date_of_birth:props.data?.date_of_birth,
+    address:props.data?.address,
     designation:props.data?.designation,
     employment_type:props.data?.employment_type,
     office:props.data?.office,
@@ -425,6 +431,7 @@ const submit = () => {
         formData.append('mobile', form.mobile)
         formData.append('parent_name', form.parent_name)
         formData.append('date_of_birth', form.date_of_birth)
+        formData.append('address', form.address)
         formData.append('designation', form.designation)
         formData.append('employment_type', form.employment_type)
         formData.append('office', form.office?.id || form.office)

@@ -7,7 +7,7 @@
             </div>
 
             <div class="flex q-gutter-sm">
-                <q-btn @click="showDialog = true" color="btn-primary" label="Add Transfer" />
+                <q-btn @click="showDialog = true" color="btn-primary" icon="add" />
             </div>
         </div>
 

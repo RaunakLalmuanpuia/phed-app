@@ -58,7 +58,7 @@ const submitForm = () => {
                     @click="openDialog(!!data.remuneration_detail)"
                     color="btn-primary"
                     :icon="data.remuneration_detail ? 'edit' : 'add'"
-                    :label="data.remuneration_detail ? 'Edit' : 'Add'"
+
                 />
             </div>
         </div>
