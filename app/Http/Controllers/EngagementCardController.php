@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Models\EngagementCard;
 use Illuminate\Http\Request;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class EngagementCardController extends Controller
 {
@@ -81,7 +81,7 @@ class EngagementCardController extends Controller
             abort(404, 'Engagement card not found.');
         }
 
-        $pdf = PDF::loadHTML($card->content)
+        $pdf = Pdf::loadHTML($card->content)
             ->setPaper('A4', 'portrait')
             ->setOptions([
                 'isRemoteEnabled' => true,
