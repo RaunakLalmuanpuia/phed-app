@@ -2,16 +2,15 @@
 
 <template>
     <q-card class="q-mt-md">
-
-
         <div class="flex items-center justify-between q-pa-md bg-white">
             <div>
-                <div class="stitle ">Engagement Card</div>
+                <div class="stitle">Engagement Card</div>
             </div>
 
             <div class="flex q-gutter-sm">
+                <!-- Edit button only if card exists AND canStoreEngagementCard -->
                 <q-btn
-                    v-if="data.engagement_card"
+                    v-if="data.engagement_card && canCreateEngagementCard"
                     color="primary"
                     icon="edit"
                     @click="openDialog"
@@ -20,22 +19,24 @@
         </div>
 
         <q-card-section>
+            <!-- Create button only if no card AND canStoreEngagementCard -->
             <q-btn
-                v-if="!data.engagement_card"
+                v-if="!data.engagement_card && canCreateEngagementCard"
                 color="primary"
                 label="Create"
                 @click="openDialog"
             />
 
+            <!-- Download button only if card exists AND canDownloadEngagementCard -->
             <q-btn
-                v-else
+                v-if="data.engagement_card && canDownloadEngagementCard"
                 color="primary"
                 label="Download"
                 @click="downloadPdf"
             />
 
             <q-dialog v-model="dialog" persistent>
-                <q-card style="width: 1000px; max-width: 100vw;"> <!-- Increased width with max-width for responsiveness -->
+                <q-card style="width: 1000px; max-width: 100vw;">
                     <q-card-section class="row items-center justify-between bg-primary text-white">
                         <div class="text-h6">Engagement Card</div>
                         <q-btn dense flat icon="close" v-close-popup />
@@ -44,8 +45,6 @@
                     <q-card-section style="flex-grow: 1; overflow: auto; padding: 0;">
                         <q-editor
                             v-model="form.html_content"
-
-
                             style="width: 100%; max-height: 1100px;"
                         />
                     </q-card-section>
@@ -55,10 +54,10 @@
                     </q-card-actions>
                 </q-card>
             </q-dialog>
-
         </q-card-section>
     </q-card>
 </template>
+
 
 
 <script setup>
@@ -68,6 +67,8 @@ import {useForm} from "@inertiajs/vue3";
 
 const props = defineProps({
     data: Object,
+    canCreateEngagementCard: Boolean,
+    canDownloadEngagementCard: Boolean,
 })
 const form = useForm({
     html_content: props.data?.engagement_card?.content || '',

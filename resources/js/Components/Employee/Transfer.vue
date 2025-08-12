@@ -7,7 +7,7 @@
             </div>
 
             <div class="flex q-gutter-sm">
-                <q-btn @click="showDialog = true" color="btn-primary" icon="add" />
+                <q-btn v-if="canCreateTransfer" @click="showDialog = true" color="btn-primary" icon="add" />
             </div>
         </div>
 
@@ -24,6 +24,7 @@
                             <div class="flex items-center justify-between">
                                 <span>Transfer #{{ index + 1 }}</span>
                                 <q-btn
+                                    v-if="canDeleteTransfer"
                                     icon="delete"
                                     color="red"
                                     flat
@@ -119,7 +120,7 @@
 import {computed, ref, watch} from "vue";
 import { useQuasar } from 'quasar'
 import {router, useForm} from "@inertiajs/vue3";
-const props=defineProps(['data', 'office']);
+const props=defineProps(['data', 'office','canCreateTransfer','canDeleteTransfer']);
 const $q = useQuasar()
 
 

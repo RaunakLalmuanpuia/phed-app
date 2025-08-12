@@ -133,6 +133,7 @@
 
                                     <div class=" q-mt-lg flex items-center justify-center">
                                         <q-btn
+                                            v-if="canEdit"
                                             label="Edit"
                                             @click="$inertia.get(route('employee.edit',data))"
                                             class="q-mr-md"
@@ -140,7 +141,8 @@
                                         />
 
                                         <q-btn
-                                            v-if="data.employment_type !== 'Deleted'"
+
+                                            v-if="canDelete && data.employment_type !== 'Deleted'"
                                             label="Delete"
                                             color="negative"
                                             unelevated
@@ -184,13 +186,13 @@
 
                         <div class="row q-col-gutter-md">
                             <div class="col-12 col-md-7">
-                                <Remuneration v-if="data.remuneration_detail" :data="data"/>
-                                <Transfer :data="data" :office="office"/>
+                                <Remuneration v-if="data.remuneration_detail" :data="data" :canCreateRemuneration="canCreateRemuneration"/>
+                                <Transfer :data="data" :office="office" :canCreateTransfer="canCreateTransfer" :canDeleteTransfer="canDeleteTransfer" />
                             </div>
 
                             <div class="col-12 col-md-5">
                                 <EngagementCard v-if="data.employment_type === 'PE'"
-                                    :data="data"/>
+                                    :data="data" :canCreateEngagementCard="canCreateEngagementCard" :canDownloadEngagementCard="canDownloadEngagementCard" />
                                 <Deletion v-if="data.employment_type === 'Deleted'" :deletion="data.deletion_detail"/>
                             </div>
 
@@ -227,7 +229,8 @@ import { ref, computed } from 'vue'
 
 defineOptions({layout:BackendLayout})
 
-const props=defineProps(['data','office']);
+const props=defineProps(['data','office','canCreate','canEdit','canDelete','canCreateRemuneration','canCreateTransfer',
+    'canDeleteTransfer','canCreateEngagementCard', 'canDownloadEngagementCard',]);
 
 const tab = ref('document')
 

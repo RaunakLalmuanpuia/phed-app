@@ -264,6 +264,14 @@ class EmployeeController extends Controller
         return inertia('Backend/Employees/Show', [
             'data' => $model->load(['office', 'documents.type','transfers.oldOffice','transfers.newOffice', 'deletionDetail', 'remunerationDetail','engagementCard']),
             'office' => $office,
+            'canDelete'=>$user->can('delete-employee'),
+            'canEdit'=>$user->can('edit-employee'),
+            'canCreate'=>$user->can('create-employee'),
+            'canCreateEngagementCard'=>$user->can('create-remuneration'),
+            'canViewEngagementCard'=>$user->can('view-engagement-card'),
+            'canDownloadEngagementCard'=>$user->can('download-engagement-card'),
+            'canCreateTransfer'=>$user->can('transfer-employee'),
+            'canDeleteTransfer'=>$user->can('delete-transfer'),
         ]);
     }
     public function create(Request $request)

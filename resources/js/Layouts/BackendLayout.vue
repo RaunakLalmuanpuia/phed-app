@@ -301,6 +301,7 @@
                     <template v-for="item in module.admin.children"
                               :key="item.route_name">
                         <q-item
+                            v-if="$page.props.permissions.find(val=>val.name===item.permission)"
                                 class="nav-item"
                                 :active="route().current()===item.route_name"
                                 active-class="active-item text-accent"

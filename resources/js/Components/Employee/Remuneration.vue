@@ -4,6 +4,7 @@ import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
     data: Object, // contains employee and remuneration_detail
+    canCreateRemuneration: Boolean,
 });
 
 const showDialog = ref(false);
@@ -55,6 +56,7 @@ const submitForm = () => {
 
             <div class="flex q-gutter-sm">
                 <q-btn
+                    v-if="canCreateRemuneration"
                     @click="openDialog(!!data.remuneration_detail)"
                     color="btn-primary"
                     :icon="data.remuneration_detail ? 'edit' : 'add'"

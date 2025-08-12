@@ -9,22 +9,38 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    //
+
     public function index(Request $request)
     {
-        $user = auth()->user();
 
-        if ($user->hasRole('Admin')) {
-            return to_route('dashboard.admin');
-        }
+        $totalEmployees = Employee::where('employment_type', '!=', 'Deleted')->count();
+        $peCount = Employee::where('employment_type', 'PE')->count();
+        $mrCount = Employee::where('employment_type', 'MR')->count();
+        $deletedCount = Employee::where('employment_type', 'Deleted')->count();
 
-        if ($user->hasRole('Manager')) {
-            return to_route('dashboard.manager');
-        }
-        return inertia('Dashboard', [
-
+        return inertia('Backend/Dashboard', [
+            'totalEmployees' => $totalEmployees,
+            'peCount' => $peCount,
+            'mrCount' => $mrCount,
+            'deletedCount' => $deletedCount,
         ]);
     }
+    //
+//    public function index(Request $request)
+//    {
+//        $user = auth()->user();
+//
+//        if ($user->hasRole('Admin')) {
+//            return to_route('dashboard.admin');
+//        }
+//
+//        if ($user->hasRole('Manager')) {
+//            return to_route('dashboard.manager');
+//        }
+//        return inertia('Dashboard', [
+//
+//        ]);
+//    }
 
     public function admin(Request $request)
     {
