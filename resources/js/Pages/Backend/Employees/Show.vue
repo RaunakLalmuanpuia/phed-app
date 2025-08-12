@@ -189,7 +189,7 @@
                             </div>
 
                             <div class="col-12 col-md-5">
-                                <EngagementCard
+                                <EngagementCard v-if="data.employment_type === 'PE'"
                                     :data="data"/>
                                 <Deletion v-if="data.employment_type === 'Deleted'" :deletion="data.deletion_detail"/>
                             </div>

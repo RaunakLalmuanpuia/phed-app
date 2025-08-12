@@ -1,0 +1,1 @@
+import{_ as o}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{c as r,o as a}from"./app-DFzdqFeF.js";const c={};function e(t,n){return a(),r("div",null,"Fallback Dashboard")}const l=o(c,[["render",e]]);export{l as default};

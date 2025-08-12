@@ -11,6 +11,7 @@
 
             <div class="flex q-gutter-sm">
                 <q-btn
+                    v-if="data.engagement_card"
                     color="primary"
                     icon="edit"
                     @click="openDialog"
@@ -22,7 +23,7 @@
             <q-btn
                 v-if="!data.engagement_card"
                 color="primary"
-                label="Preview"
+                label="Create"
                 @click="openDialog"
             />
 

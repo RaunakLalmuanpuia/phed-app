@@ -84,7 +84,7 @@
 
     <p class="bold">1.&emsp;Name of Post&nbsp;:&nbsp;{{ $post }}</p>
     <p>2.&emsp;Corresponding Pay in the Pay Matrix&nbsp;:&nbsp;{{ $pay_matrix }}</p>
-    <p>3.&emsp;Monthly Lumpsum Remuneration&nbsp;:&nbsp;₹ {{ $remuneration }}/-</p>
+    <p>3.&emsp;Monthly Lumpsum Remuneration&nbsp;:&nbsp;Rs {{ $remuneration }}/-</p>
     <p class="bold">4.&emsp;Period of Engagement&nbsp;:&nbsp;{{ $start_date }} to {{ $end_date }}</p>
 
 
