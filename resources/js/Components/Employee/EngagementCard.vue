@@ -44,8 +44,8 @@
                     <q-card-section style="flex-grow: 1; overflow: auto; padding: 0;">
                         <q-editor
                             v-model="form.html_content"
-                            :definitions="{}"
-                            :toolbar="[['print', 'fullscreen']]"
+
+
                             style="width: 100%; max-height: 1100px;"
                         />
                     </q-card-section>
