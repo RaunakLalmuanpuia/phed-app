@@ -81,9 +81,15 @@ class EngagementCardController extends Controller
             abort(404, 'Engagement card not found.');
         }
 
-        $pdf = PDF::loadHTML($card->content);
+        $pdf = PDF::loadHTML($card->content)
+            ->setPaper('A4', 'portrait')
+            ->setOptions([
+                'isRemoteEnabled' => true,
+                'isHtml5ParserEnabled' => true,
+            ]);
 
         return $pdf->download("EngagementCard_{$employee->id}.pdf");
+
     }
 
 }
