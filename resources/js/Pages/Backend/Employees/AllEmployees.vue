@@ -8,7 +8,13 @@
                     <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
                 </q-breadcrumbs>
             </div>
+            <div class="q-gutter-sm">
+                <q-btn label="PE Summary" color="primary" />
+                <q-btn label="MR Summary" color="primary" />
+            </div>
         </div>
+
+
         <br/>
 
         <q-card flat>

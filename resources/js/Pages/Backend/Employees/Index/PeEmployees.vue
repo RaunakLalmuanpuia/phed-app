@@ -9,12 +9,70 @@
                     <q-breadcrumbs-el label="All Employees" :to="route('mis.import')"/>
                 </q-breadcrumbs>
             </div>
+            <div class="q-gutter-sm">
+                <q-btn label="PE Summary" color="primary" />
+                <q-btn label="MR Summary" color="primary" />
+            </div>
         </div>
         <br/>
 
         <q-card flat bordered>
+
+            <q-card-section>
+                <div class="text-subtitle1 text-weight-medium text-grey-8 q-mb-md">
+                    Search Filter
+                </div>
+
+                <div class="row q-col-gutter-md">
+
+                    <q-input
+                        dense
+                        outlined
+                        debounce="300"
+                        v-model="filters.search"
+                        placeholder="Search"
+                        class="col-12 col-sm-4"
+                        clearable
+                        @update:model-value="handleSearch"
+                    >
+                        <template #append>
+                            <q-icon name="search" />
+                        </template>
+                    </q-input>
+
+                    <q-select
+                        label="Select Designation"
+                        class="col-12 col-sm-4"
+                        v-model="filters.type"
+                        :options="type"
+                        emit-value
+                        map-options
+                        outlined
+                        dense
+                        clearable
+                        @update:model-value="handleSearch"
+                    />
+
+                    <q-select
+                        label="Select Education Qln."
+                        class="col-12 col-sm-4"
+                        v-model="filters.skill"
+                        :options="skills"
+                        emit-value
+                        map-options
+                        outlined
+                        dense
+                        clearable
+                        @update:model-value="handleSearch"
+                    />
+                </div>
+            </q-card-section>
+
+            <q-separator />
+
             <q-card-section class="row items-center justify-between q-gutter-md">
                 <div class="row q-gutter-sm col-12 col-sm justify-end">
+
                     <q-input
                         dense
                         outlined
@@ -30,8 +88,8 @@
                         </template>
                     </q-input>
 
-<!--                                                    <q-btn label="Export" icon="desktop_windows" color="grey-4" disable />-->
-                                    <q-btn
+                    <q-btn label="Export" icon="desktop_windows" color="primary"  />
+                    <q-btn
                                         label="Add New PE Employee"
                                         icon="add"
                                         color="primary"

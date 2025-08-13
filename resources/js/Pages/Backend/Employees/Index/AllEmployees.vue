@@ -4,13 +4,20 @@
   <q-page class="container" padding>
 
     <div class="flex items-center justify-between q-pa-md bg-white">
-      <div>
+        <div>
         <div class="stitle">All Employee List : {{office.name}}</div>
         <q-breadcrumbs  class="text-dark">
           <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
-
         </q-breadcrumbs>
       </div>
+
+        <div class="q-gutter-sm">
+            <q-btn label="PE Summary" color="primary" />
+            <q-btn label="MR Summary" color="primary" />
+        </div>
+
+
+
     </div>
     <br/>
 
@@ -102,7 +109,9 @@
 
             <q-card-section class="row items-center justify-between q-gutter-md">
               <div class="row q-gutter-sm col-12 col-sm justify-end">
-                <q-input
+
+                  <q-btn label="Export" icon="desktop_windows" color="primary"  />
+                  <q-input
                     dense
                     outlined
                     debounce="300"
@@ -117,7 +126,7 @@
                   </template>
                 </q-input>
 
-                <!--                                <q-btn label="Export" icon="desktop_windows" color="grey-4" disable />-->
+
 <!--                <q-btn-->
 <!--                    label="Add New Employee"-->
 <!--                    icon="add"-->
