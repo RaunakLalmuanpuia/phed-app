@@ -68,6 +68,7 @@
 
 <!--                Employees-->
                 <q-expansion-item
+                    v-if="checkModules('employee')"
                     group="menu"
                     :label="module.employee.label"
                     :header-class="(
@@ -132,7 +133,7 @@
 
                     <template v-for="item in module.employee.children"
                               :key="item.route_name">
-                        <q-item
+                        <q-item v-if="$page.props.permissions.find(val=>val.name===item.permission)"
                             class="nav-item"
                             :active="route().current()===item.route_name"
                             active-class="active-item text-accent"
@@ -153,7 +154,7 @@
                 <q-separator class="q-my-sm"/>
 
 <!--                MIS-->
-                <q-expansion-item
+                <q-expansion-item v-if="checkModules('mis')"
                     group="menu"
                     :label="module.reports.label"
                     :header-class="(
@@ -192,8 +193,8 @@
                             </q-icon>
                         </q-item-section>
                         <q-item-section>
-                                            MIS
-                                        </q-item-section>
+                            MIS
+                        </q-item-section>
                     </template>
                     <template v-for="item in module.reports.children"
                               :key="item.route_name">
@@ -217,7 +218,7 @@
 
                 <q-separator class="q-my-sm"/>
                 <!--                Administration-->
-                <q-expansion-item
+                <q-expansion-item v-if="checkModules('administration')"
                                   group="menu"
                                   :label="module.admin.label"
                                   :header-class="(
@@ -365,10 +366,10 @@ const module = reactive({
     employee: {
         label: 'Employees',
         children: [
-            {route_name: 'employees.all', label: 'All Employee', permission: 'view-any-employee'},
-            {route_name: 'employees.pe', label: 'Provisional', permission: 'view-any-employee'},
-            {route_name: 'employees.mr', label: 'Muster Roll', permission: 'view-any-employee'},
-            {route_name: 'employees.deleted', label: 'Deleted', permission: 'view-any-employee'},
+            {route_name: 'employees.all', label: 'All Employee', permission: 'view-allemployee'},
+            {route_name: 'employees.pe', label: 'Provisional', permission: 'view-allemployee'},
+            {route_name: 'employees.mr', label: 'Muster Roll', permission: 'view-allemployee'},
+            {route_name: 'employees.deleted', label: 'Deleted', permission: 'view-allemployee'},
             // {route_name: 'role.index', label: 'Permissions', permission: 'view-anyrole'},
             // {route_name: 'user.index', label: 'User Accounts', permission: 'view-anyuser'},
 
@@ -407,9 +408,18 @@ const module = reactive({
 })
 
 
+const MENUS = {
+    Manager: ['employee', 'mis'],
+    Admin: ['employee', 'mis', 'administration']
+};
 
 
+const checkModules = (module) => {
+    const role = usePage().props.roles[0] || 'Admin';
+    const availableModules = MENUS[role] || [];
 
+    return availableModules.includes(module);
+};
 
 </script>
 
