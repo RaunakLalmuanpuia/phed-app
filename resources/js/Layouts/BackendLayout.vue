@@ -42,13 +42,13 @@
                         <span class="text-sm text-grey-7">(Government of Mizoram)</span>
                     </div>
                 </div>
-                <q-item :active="route().current()==='dashboard.admin'" active
+                <q-item :active="route().current()==='dashboard'" active
                         active-class="active-menu text-accent"
                         clickable
-                        @click="$inertia.get(route('dashboard.admin'))">
+                        @click="$inertia.get(route('dashboard'))">
                     <q-item-section avatar>
-                        <q-icon :active="route().current()==='dashboard.admin'">
-                            <svg v-if="route().current()==='dashboard.admin'" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <q-icon :active="route().current()==='dashboard'">
+                            <svg v-if="route().current()==='dashboard'" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke="#306ADB" stroke-width="1.5" d="M3.75 3.75h8.5v5.5h-8.5zM15.75 3.75H21A3.25 3.25 0 0 1 24.25 7v8.25h-8.5V3.75zM15.75 18.75h8.5V21A3.25 3.25 0 0 1 21 24.25h-5.25v-5.5zM3.75 12.75h8.5v11.5h-8.5z"/>
                             </svg>
                             <svg v-else width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
