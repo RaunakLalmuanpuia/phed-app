@@ -267,9 +267,12 @@ class EmployeeController extends Controller
             'canDelete'=>$user->can('delete-employee'),
             'canEdit'=>$user->can('edit-employee'),
             'canCreate'=>$user->can('create-employee'),
-            'canCreateEngagementCard'=>$user->can('create-remuneration'),
-            'canViewEngagementCard'=>$user->can('view-engagement-card'),
+
+            'canCreateRemuneration'=>$user->can('create-remuneration'),
+
+            'canCreateEngagementCard'=>$user->can('store-engagement-card'),
             'canDownloadEngagementCard'=>$user->can('download-engagement-card'),
+
             'canCreateTransfer'=>$user->can('transfer-employee'),
             'canDeleteTransfer'=>$user->can('delete-transfer'),
         ]);
