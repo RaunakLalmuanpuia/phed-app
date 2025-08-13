@@ -9,7 +9,6 @@ use App\Models\Office;
 use App\Models\RemunerationDetail;
 use App\Models\Transfer;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class EmployeeSeeder extends Seeder
@@ -44,11 +43,28 @@ class EmployeeSeeder extends Seeder
             'description' => "$type document",
         ]));
 
-//        // Seed Employees (10 MR, 10 PE)
-        $employmentTypes = array_merge(array_fill(0, 10, 'MR'), array_fill(0, 10, 'PE'));
+        // Predefined Designations
+        $designations = [
+            'Junior Assistant',
+            'Senior Assistant',
+            'Supervisor',
+            'Manager',
+            'Clerk',
+            'Field Officer',
+            'Technical Assistant',
+            'Engineer',
+            'Accountant',
+            'Data Entry Operator'
+        ];
+
+        // Predefined Skills for MR employees
+        $mrSkills = ['Unskilled', 'Semi-Skilled', 'Skilled-I', 'Skilled-II'];
+
+        // Seed Employees (10 MR, 10 PE)
+        $employmentTypes = array_merge(array_fill(0, 20, 'MR'), array_fill(0, 20, 'PE'));
         shuffle($employmentTypes);
 
-        $employees = collect($employmentTypes)->map(function ($type, $i) use ($offices) {
+        $employees = collect($employmentTypes)->map(function ($type, $i) use ($offices, $designations, $mrSkills) {
             return Employee::create([
                 'office_id' => $offices->random()->id,
                 'employee_code' => 'EMP' . str_pad($i + 1, 4, '0', STR_PAD_LEFT),
@@ -61,15 +77,16 @@ class EmployeeSeeder extends Seeder
                 'employment_type' => $type,
                 'educational_qln' => 'Graduate',
                 'technical_qln' => 'Diploma in IT',
-                'designation' => 'Staff',
+                'designation' => collect($designations)->random(),
                 'name_of_workplace' => fake()->company(),
-                'post_per_qualification' => 'Junior Assistant',
+                'post_per_qualification' => collect($designations)->random(),
                 'date_of_engagement' => fake()->date(),
                 'skill_category' => 'Category A',
-                'skill_at_present' => 'Skill',
+                'skill_at_present' => $type === 'MR' ? collect($mrSkills)->random() : null,
             ]);
         });
-        // 🔹 Add remuneration for PE employees
+
+        // Add remuneration for PE employees
         $employees->each(function ($employee) {
             if ($employee->employment_type === 'PE') {
                 RemunerationDetail::create([
@@ -94,6 +111,7 @@ class EmployeeSeeder extends Seeder
                 ]);
             }
         });
+
         // Seed Transfers for some employees (with history)
         $employees->random(10)->each(function ($employee) use ($offices) {
             $availableOffices = $offices->pluck('id')->toArray();
@@ -124,7 +142,5 @@ class EmployeeSeeder extends Seeder
             // Update employee's current office to last transferred office
             $employee->update(['office_id' => $currentOfficeId]);
         });
-
     }
-
 }

@@ -11,8 +11,8 @@ class SummaryController extends Controller
     //
     public function provisionalSummary(Request $request)
     {
-//        $user = $request->user();
-//        abort_if(!$user->hasPermissionTo('view-pe-summary'),403,'Access Denied');
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('view-pe-summary'),403,'Access Denied');
 
         $designations = Employee::where('employment_type', 'PE')
             ->select('designation')
@@ -59,8 +59,8 @@ class SummaryController extends Controller
     }
 
     public function musterRollSummary(Request $request){
-//        $user = $request->user();
-//        abort_if(!$user->hasPermissionTo('view-mr-summary'),403,'Access Denied');
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('view-mr-summary'),403,'Access Denied');
 
         $skillOrder = ['Unskilled', 'Semi-Skilled', 'Skilled-I', 'Skilled-II'];
 

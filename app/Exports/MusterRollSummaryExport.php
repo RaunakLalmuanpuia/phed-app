@@ -6,8 +6,10 @@ use App\Models\Employee;
 use App\Models\Office;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class MusterRollSummaryExport implements FromView
+class MusterRollSummaryExport implements FromView, WithStyles
 {
     protected $skills;
     protected $offices;
@@ -53,7 +55,21 @@ class MusterRollSummaryExport implements FromView
 
                 $row['total'] = $total;
                 return $row;
-            });
+            })
+            ->toArray();
+
+        // Step 4: Add Grand Total row
+        $grandTotalRow = ['name' => 'Grand Total'];
+        $grandTotal = 0;
+
+        foreach ($this->skills as $skill) {
+            $sum = array_sum(array_column($this->offices, $skill));
+            $grandTotalRow[$skill] = $sum;
+            $grandTotal += $sum;
+        }
+
+        $grandTotalRow['total'] = $grandTotal;
+        $this->offices[] = $grandTotalRow;
     }
 
     public function view(): View
@@ -62,5 +78,24 @@ class MusterRollSummaryExport implements FromView
             'skills' => $this->skills,
             'offices' => $this->offices
         ]);
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        $rowCount = count($this->offices) + 1; // +1 for header
+        $grandTotalRowIndex = $rowCount; // Last row is grand total
+
+        // Bold Total column (last column)
+        $lastColumnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(count($this->skills) + 2);
+        $sheet->getStyle($lastColumnLetter . '2:' . $lastColumnLetter . $rowCount)->getFont()->setBold(true);
+
+        // Black border for all cells
+        $sheet->getStyle('A1:' . $lastColumnLetter . $rowCount)
+            ->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN)
+            ->getColor()->setARGB('000000');
+
+        // Bold the grand total row
+        $sheet->getStyle('A' . $grandTotalRowIndex . ':' . $lastColumnLetter . $grandTotalRowIndex)
+            ->getFont()->setBold(true);
     }
 }

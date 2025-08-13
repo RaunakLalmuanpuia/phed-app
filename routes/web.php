@@ -169,11 +169,9 @@ Route::group(['middleware'=>'auth','prefix' => 'engagement-card'], function () {
 
 //Engagement Card
 Route::group(['middleware'=>'auth','prefix' => 'summary'], function () {
-//    Route::get('provisional', [SummaryController::class, 'provisionalSummary'])->middleware('can:view-pe-summary')->name('summary.pe');
-//    Route::get('muster-roll', [SummaryController::class, 'musterRollSummary'])->middleware('can:view-mr-summary')->name('summary.mr');
+    Route::get('provisional', [SummaryController::class, 'provisionalSummary'])->middleware('can:view-pe-summary')->name('summary.pe');
+    Route::get('muster-roll', [SummaryController::class, 'musterRollSummary'])->middleware('can:view-mr-summary')->name('summary.mr');
 
-    Route::get('provisional', [SummaryController::class, 'provisionalSummary'])->name('summary.pe');
-    Route::get('muster-roll', [SummaryController::class, 'musterRollSummary'])->name('summary.mr');
 });
 
 
@@ -182,7 +180,7 @@ Route::group(['middleware'=>'auth','prefix' => 'summary'], function () {
 //Engagement Card
 Route::group(['middleware'=>'auth','prefix' => 'export'], function () {
 
-    Route::get('summary-provisional', [ExportController::class, 'exportProvisionalSummary'])->name('export.summary-pe');
-    Route::get('summary-muster-roll', [ExportController::class, 'exportMusterRollSummary'])->name('export.summary-mr');
-//    Route::get('muster-roll', [ExportController::class, 'musterRollSummary'])->name('summary.mr');
+    Route::get('summary-provisional', [ExportController::class, 'exportProvisionalSummary'])->middleware('can:export-pe-summary')->name('export.summary-pe');
+    Route::get('summary-muster-roll', [ExportController::class, 'exportMusterRollSummary'])->middleware('can:export-mr-summary')->name('export.summary-mr');
+
 });
