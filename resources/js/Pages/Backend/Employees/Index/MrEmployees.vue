@@ -44,8 +44,8 @@
                     <q-select
                         label="Select Present Skill"
                         class="col-12 col-sm-4"
-                        v-model="filters.type"
-                        :options="type"
+                        v-model="filters.skill"
+                        :options="skills"
                         emit-value
                         map-options
                         outlined
@@ -57,8 +57,8 @@
                     <q-select
                         label="Select Education Qln."
                         class="col-12 col-sm-4"
-                        v-model="filters.skill"
-                        :options="skills"
+                        v-model="filters.education_qln"
+                        :options="educationQln"
                         emit-value
                         map-options
                         outlined
@@ -183,7 +183,7 @@ import {useQuasar} from "quasar";
 
 defineOptions({layout:BackendLayout})
 
-const props=defineProps(['office','canCreate','canEdit','canDelete'])
+const props=defineProps(['office','skills','educationQln','canCreate','canEdit','canDelete'])
 
 
 const columns = [
@@ -232,17 +232,12 @@ const cards = [
 ]
 
 const filters = ref({
-    office: null,
-    skill: null,
     search:null,
+    skill: null,
+    education_qln: null,
 })
 
 
-
-const skills = [
-    { label: 'Skilled', value: 'skilled' },
-    { label: 'Unskilled', value: 'unskilled' },
-]
 
 
 const search = ref('')

@@ -64,7 +64,27 @@ class EmployeeSeeder extends Seeder
         $employmentTypes = array_merge(array_fill(0, 20, 'MR'), array_fill(0, 20, 'PE'));
         shuffle($employmentTypes);
 
-        $employees = collect($employmentTypes)->map(function ($type, $i) use ($offices, $designations, $mrSkills) {
+        // Predefined Educational Qualifications
+        $educationalQualifications = [
+            'High School',
+            'Intermediate',
+            'Diploma',
+            'Graduate',
+            'Post Graduate',
+            'PhD'
+        ];
+
+// Predefined Technical Qualifications
+        $technicalQualifications = [
+            'Diploma in IT',
+            'Certificate in Electricals',
+            'B.Tech in Civil Engineering',
+            'B.Sc in Computer Science',
+            'ITI Welder',
+            'None'
+        ];
+
+        $employees = collect($employmentTypes)->map(function ($type, $i) use ($offices, $designations, $mrSkills, $educationalQualifications, $technicalQualifications) {
             return Employee::create([
                 'office_id' => $offices->random()->id,
                 'employee_code' => 'EMP' . str_pad($i + 1, 4, '0', STR_PAD_LEFT),
@@ -75,8 +95,8 @@ class EmployeeSeeder extends Seeder
                 'date_of_birth' => fake()->date('Y-m-d', '2000-01-01'),
                 'parent_name' => fake()->name(),
                 'employment_type' => $type,
-                'educational_qln' => 'Graduate',
-                'technical_qln' => 'Diploma in IT',
+                'educational_qln' => collect($educationalQualifications)->random(),
+                'technical_qln' => collect($technicalQualifications)->random(),
                 'designation' => collect($designations)->random(),
                 'name_of_workplace' => fake()->company(),
                 'post_per_qualification' => collect($designations)->random(),
@@ -85,6 +105,7 @@ class EmployeeSeeder extends Seeder
                 'skill_at_present' => $type === 'MR' ? collect($mrSkills)->random() : null,
             ]);
         });
+
 
         // Add remuneration for PE employees
         $employees->each(function ($employee) {

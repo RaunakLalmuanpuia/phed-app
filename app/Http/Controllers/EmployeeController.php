@@ -125,8 +125,29 @@ class EmployeeController extends Controller
     public function indexPeEmployees(Office $model) // shows PE type
     {
 
+        // Get distinct designation & education_qln for PE employees in this office
+        $designations = $model->employees()
+            ->where('employment_type', 'PE')
+            ->select('designation')
+            ->distinct()
+            ->orderBy('designation')
+            ->pluck('designation')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+        $educationQln = $model->employees()
+            ->where('employment_type', 'PE')
+            ->select('educational_qln')
+            ->distinct()
+            ->orderBy('educational_qln')
+            ->pluck('educational_qln')
+            ->map(fn($e) => ['label' => $e, 'value' => $e])
+            ->values();
+
         return Inertia::render('Backend/Employees/Index/PeEmployees', [
-            'office'=>$model,
+            'office' => $model,
+            'designations' => $designations,
+            'educationQln' => $educationQln,
         ]);
     }
     public function jsonPeEmployees(Request $request, Office $model)
@@ -151,9 +172,10 @@ class EmployeeController extends Controller
                         ->orWhere('date_of_birth', 'LIKE', "%$search%")
                         ->orWhere('name_of_workplace', 'LIKE', "%$search%");
                 });
-            })
-            ->when($filter['skill'] ?? null, function ($query, $skill) {
-                $query->where('skill_at_present', $skill);
+            })->when($filter['designation'] ?? null, function ($query, $designation) {
+            $query->where('designation', $designation);
+             })->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
+                $query->where('educational_qln', $educationQln);
             });
 
 
@@ -181,8 +203,29 @@ class EmployeeController extends Controller
     }
     public function indexMrEmployees(Office $model) // shows MR type
     {
+        // Get distinct designation & education_qln for PE employees in this office
+        $skills = $model->employees()
+            ->where('employment_type', 'MR')
+            ->select('skill_at_present')
+            ->distinct()
+            ->orderBy('skill_at_present')
+            ->pluck('skill_at_present')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+        $educationQln = $model->employees()
+            ->where('employment_type', 'MR')
+            ->select('educational_qln')
+            ->distinct()
+            ->orderBy('educational_qln')
+            ->pluck('educational_qln')
+            ->map(fn($e) => ['label' => $e, 'value' => $e])
+            ->values();
+
         return Inertia::render('Backend/Employees/Index/MrEmployees', [
             'office'=>$model,
+            'skills' => $skills,
+            'educationQln' => $educationQln,
         ]);
     }
 
@@ -208,6 +251,8 @@ class EmployeeController extends Controller
             })
             ->when($filter['skill'] ?? null, function ($query, $skill) {
                 $query->where('skill_at_present', $skill);
+            })->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
+                $query->where('educational_qln', $educationQln);
             });
 
         return response()->json([
