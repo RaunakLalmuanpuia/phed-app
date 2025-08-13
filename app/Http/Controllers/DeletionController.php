@@ -17,7 +17,7 @@ class DeletionController extends Controller
         abort_if(!$user->hasPermissionTo('delete-employee'), 403, 'Access Denied');
 
         $validated = $request->validate([
-            'seniority_list' => 'required|string|max:1000',
+            'seniority_list' => 'nullable|string|max:1000',
             'reason' => 'required|string|max:255',
             'year' => 'nullable|integer',
             'remark' => 'nullable|string',
@@ -48,8 +48,8 @@ class DeletionController extends Controller
 
         $validated = $request->validate([
             'reason' => 'required|string|max:255',
-            'seniority_list' => 'required|string|max:255',
-            'year' => 'required|integer',
+            'seniority_list' => 'nullable|string|max:255',
+            'year' => 'nullable|required|integer',
             'remark' => 'nullable|string',
             'supporting_document' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
         ]);
