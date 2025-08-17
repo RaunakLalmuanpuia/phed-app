@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -21,6 +23,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'mobile',
         'designation',
         'password',
 
@@ -47,5 +50,14 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function office(): HasOneThrough
+    {
+        return $this->hasOneThrough(Office::class,UserOffice::class,'user_id','office_id','id','id');
+    }
+    public function offices(): BelongsToMany
+    {
+        return $this->belongsToMany(Office::class, 'user_offices');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Office;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+
         abort_if(!$user->hasPermissionTo('view-anyuser'),403,'Access Denied');
 
         return inertia('Backend/User/Index',[
@@ -35,7 +37,7 @@ class UserController extends Controller
         $filter = $request->get('filter');
         return response()->json([
             'list' => User::query()
-                ->with(['roles'])
+                ->with(['roles','offices'])
                 ->when($filter,fn(Builder $builder)=>$builder->where('name','LIKE',"%$filter%"))
                 ->paginate($perPage),
         ],200);
@@ -47,7 +49,8 @@ class UserController extends Controller
         abort_if(!$user->hasPermissionTo('create-user'),403,'Access Denied');
 
         return inertia('Backend/User/Create',[
-            'userRoles'=>Role::query()->get(['name as value','name as label'])
+            'userRoles'=>Role::query()->get(['name as value','name as label']),
+            'offices'=>Office::query()->get(['name as label','id as value']),
         ]);
     }
 
@@ -62,12 +65,14 @@ class UserController extends Controller
             'designation'=>'required',
             'mobile'=>'required|digits:10|unique:users',
             'email'=>'required|email|unique:users',
-            'password'=>'required|confirmed'
+            'password'=>'required|confirmed',
+            'office_id' => ['required',Rule::exists('offices','id')],
         ]);
         $roles = $request->get('roles');
         $mergedData = array_merge($data, ['password' => Hash::make(Str::random(12))]);
         DB::transaction(function () use ($roles, $request, $mergedData) {
             $user=User::query()->create($mergedData);
+            $user->offices()->sync([$mergedData['office_id']]);
             if ($roles) {
                 $user->assignRole($roles);
             }
@@ -84,7 +89,9 @@ class UserController extends Controller
 
         return inertia('Backend/User/Edit', [
             'userRoles' => Role::query()->get(['name as value', 'name as label']),
-            'data' => $model->load(['roles'])
+            'current_offices' => $model->offices()->get(['name as label','offices.id as value']),
+            'data' => $model->load(['roles']),
+            'offices'=>Office::query()->get(['name as label','id as value'])
         ]);
 
 
@@ -100,11 +107,13 @@ class UserController extends Controller
             'designation'=>'required',
             'mobile'=>['required','digits:10',Rule::unique('users','mobile')->ignore($model->id)],
             'email'=>['required','email',Rule::unique('users','email')->ignore($model->id)],
+            'office_ids' => ['nullable'],
         ]);
         $roles = $request->get('roles');
         $password = $request->get('password');
         DB::transaction(function () use ($model, $password, $roles, $request, $data) {
             $model->update($data);
+            $model->offices()->sync($data['office_ids']);
             if ($roles) {
                 $model->assignRole($roles);
 
@@ -122,7 +131,7 @@ class UserController extends Controller
     public function show(Request $request, User $model)
     {
         return inertia('Backend/User/Show', [
-            'data'=>$model,
+            'data'=>$model->load(['roles', 'offices']),
         ]);
     }
 

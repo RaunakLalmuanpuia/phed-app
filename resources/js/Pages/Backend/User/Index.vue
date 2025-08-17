@@ -44,6 +44,11 @@
                     <q-chip v-for="item in props.row?.roles" :label="item.name" square/>
                 </q-td>
             </template>
+            <template v-slot:body-cell-office="props">
+                <q-td>
+                    <q-chip v-for="item in props.row?.offices" :label="item.name" square/>
+                </q-td>
+            </template>
             <template v-slot:body-cell-action="props">
                 <q-td>
                     <q-btn round icon="more_vert">
@@ -79,6 +84,7 @@ const columns = [
     { name: 'designation', align: 'left', label: 'Designation', field: 'designation', sortable: false },
     { name: 'mobile', align:'left', label: 'Mobile', field: 'mobile', sortable: true },
     { name: 'email',align:'left', label: 'Email', field: 'email', sortable: true },
+    { name: 'office',align:'left', label: 'Office', field: 'office', sortable: true },
     { name: 'role', align:'left',label: 'Role', field: 'role', sortable: true },
     { name: 'action',align:'left', label: 'Action', field: 'action', sortable: true },
 ]

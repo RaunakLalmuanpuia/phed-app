@@ -84,30 +84,51 @@
                          item-aligned
                 />
             </div>
-<!--            <div class="col-xs-12 col-sm-3">-->
-<!--                <div class="text-label q-mt-md">Password</div>-->
-<!--            </div>-->
-<!--            <div class="col-xs-12 col-sm-9">-->
-<!--                <q-input v-model="form.password"-->
-<!--                         type="password"-->
-<!--                         :error="!!form.errors?.password"-->
-<!--                         :error-message="form.errors?.password?.toString()"-->
-<!--                         outlined-->
-<!--                         dense-->
-<!--                         item-aligned/>-->
-<!--            </div>-->
-<!--            <div class="col-xs-12 col-sm-3">-->
-<!--                <div class="text-label q-mt-md">Password Confirmation</div>-->
-<!--            </div>-->
-<!--            <div class="col-xs-12 col-sm-9">-->
-<!--                <q-input v-model="form.password_confirmation"-->
-<!--                         type="password"-->
-<!--                         :error="!!form.errors?.password_confirmation"-->
-<!--                         :error-message="form.errors?.password_confirmation?.toString()"-->
-<!--                         outlined-->
-<!--                         dense-->
-<!--                         item-aligned/>-->
-<!--            </div>-->
+
+            <template v-if="showOffice">
+                <div class="col-xs-12 col-sm-3">
+                    <div class="text-label q-mt-md">Office</div>
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                    <q-select v-model="form.offices"
+                              :error="!!form.errors?.office_id"
+                              :error-message="form.errors?.office_id?.toString()"
+                              :options="offices"
+                              :rules="[
+                             val=>!!val || 'Office is required'
+                         ]"
+                              multiple
+                              use-chips
+                              no-error-icon
+                              outlined
+                              item-aligned
+                    />
+                </div>
+            </template>
+            <div class="col-xs-12 col-sm-3">
+                <div class="text-label q-mt-md">Password</div>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <q-input v-model="form.password"
+                         type="password"
+                         :error="!!form.errors?.password"
+                         :error-message="form.errors?.password?.toString()"
+                         outlined
+                         dense
+                         item-aligned/>
+            </div>
+            <div class="col-xs-12 col-sm-3">
+                <div class="text-label q-mt-md">Password Confirmation</div>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <q-input v-model="form.password_confirmation"
+                         type="password"
+                         :error="!!form.errors?.password_confirmation"
+                         :error-message="form.errors?.password_confirmation?.toString()"
+                         outlined
+                         dense
+                         item-aligned/>
+            </div>
             <div class="col-xs-12">
                 <q-separator class="q-my-md"/>
             </div>
@@ -119,29 +140,36 @@
         </div>
     </q-form>
 
-
+{{current_offices}}
 </q-page>
 </template>
 <script setup>
 import BackendLayout from "@/Layouts/BackendLayout.vue";
 import {useForm} from "@inertiajs/vue3";
 import {useQuasar} from "quasar";
+import {computed} from "vue";
 
 defineOptions({layout:BackendLayout})
-const props=defineProps(['userRoles','data']);
+const props=defineProps(['userRoles','data','current_offices','offices']);
 const q = useQuasar();
 const form=useForm({
     name:props.data?.name,
     email:props?.data?.email,
     mobile:props?.data?.mobile,
     roles: props?.data?.roles?.map(item=>({value:item.name,label:item.name})),
+    offices:props.current_offices,
     designation:props?.data.designation,
     password:'',
     password_confirmation:'',
 
 })
+const showOffice = computed(() =>
+    form.roles.some(r => r.value === 'Manager')
+);
 const submit=e=>{
-    form.transform(data => ({...data,roles:data.roles.map(item=>item.value)}))
+    form.transform(data => ({...data,
+        office_ids: data?.offices?.map(item=>item.value),
+        roles:data.roles.map(item=>item.value)}))
     .put(route('user.update',props.data.id),{
         onStart:params => q.loading.show(),
         onFinish:params => q.loading.hide()

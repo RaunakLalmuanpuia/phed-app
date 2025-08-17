@@ -31,6 +31,14 @@
                         <div class="text-grey-7">Email</div>
                         <div class="text-weight-medium">{{ data?.mobile }}</div>
                     </div>
+                    <div class="flex justify-between items-center  ">
+                        <div class="text-grey-7">Role</div>
+                        <div v-for="item in data?.roles" class="text-weight-medium">{{ item?.name }}</div>
+                    </div>
+                    <div class="flex justify-between items-center  ">
+                        <div class="text-grey-7">Office</div>
+                        <div v-for="item in data?.offices" class="text-weight-medium">{{ item?.name }}</div>
+                    </div>
                 </div>
 
             </div>

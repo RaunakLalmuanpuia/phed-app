@@ -69,52 +69,76 @@
                          val=>val !=='' || 'Email is required'
                      ]"/>
             </div>
+
             <div class="col-xs-12 col-sm-3">
                 <div class="text-label q-mt-md">Role</div>
             </div>
             <div class="col-xs-12 col-sm-9">
                 <q-select v-model="form.roles"
-                         :error="!!form.errors?.roles"
+                          :error="!!form.errors?.roles"
                           :options="userRoles"
                           multiple
                           use-chips
-                         :error-message="form.errors?.roles?.toString()"
+                          :error-message="form.errors?.roles?.toString()"
+                          outlined
+                          dense
+                          item-aligned
+                />
+            </div>
+
+            <template v-if="showOffice">
+                <div class="col-xs-12 col-sm-3">
+                    <div class="text-label q-mt-md">Office</div>
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                    <q-select v-model="form.office"
+                              :error="!!form.errors?.office"
+                              :error-message="form.errors?.office?.toString()"
+                              :options="offices"
+                              :rules="[
+                             val => !!val || 'Office is required'
+                          ]"
+                              clearable
+                              no-error-icon
+                              outlined
+                              dense
+                              item-aligned
+                    />
+                </div>
+            </template>
+
+
+            <div class="col-xs-12 col-sm-3">
+                <div class="text-label q-mt-md">Password</div>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <q-input v-model="form.password"
+                         type="password"
+                         :error="!!form.errors?.password"
+                         :error-message="form.errors?.password?.toString()"
                          outlined
                          dense
                          item-aligned
-                />
+                         :rules="[
+                         val=>val !=='' || 'Password is required'
+                     ]"/>
             </div>
-<!--            <div class="col-xs-12 col-sm-3">-->
-<!--                <div class="text-label q-mt-md">Password</div>-->
-<!--            </div>-->
-<!--            <div class="col-xs-12 col-sm-9">-->
-<!--                <q-input v-model="form.password"-->
-<!--                         type="password"-->
-<!--                         :error="!!form.errors?.password"-->
-<!--                         :error-message="form.errors?.password?.toString()"-->
-<!--                         outlined-->
-<!--                         dense-->
-<!--                         item-aligned-->
-<!--                         :rules="[-->
-<!--                         val=>val !=='' || 'Password is required'-->
-<!--                     ]"/>-->
-<!--            </div>-->
-<!--            <div class="col-xs-12 col-sm-3">-->
-<!--                <div class="text-label q-mt-md">Password Confirmation</div>-->
-<!--            </div>-->
-<!--            <div class="col-xs-12 col-sm-9">-->
-<!--                <q-input v-model="form.password_confirmation"-->
-<!--                         type="password"-->
-<!--                         :error="!!form.errors?.password_confirmation"-->
-<!--                         :error-message="form.errors?.password_confirmation?.toString()"-->
-<!--                         outlined-->
-<!--                         dense-->
-<!--                         item-aligned-->
-<!--                         :rules="[-->
-<!--                         val=>val !=='' || 'Password Confirmation is required',-->
-<!--                         val=>val===form.password || 'Password confirmation does not match password'-->
-<!--                     ]"/>-->
-<!--            </div>-->
+            <div class="col-xs-12 col-sm-3">
+                <div class="text-label q-mt-md">Password Confirmation</div>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <q-input v-model="form.password_confirmation"
+                         type="password"
+                         :error="!!form.errors?.password_confirmation"
+                         :error-message="form.errors?.password_confirmation?.toString()"
+                         outlined
+                         dense
+                         item-aligned
+                         :rules="[
+                         val=>val !=='' || 'Password Confirmation is required',
+                         val=>val===form.password || 'Password confirmation does not match password'
+                     ]"/>
+            </div>
             <div class="col-xs-12">
                 <q-separator class="q-my-md"/>
             </div>
@@ -126,29 +150,38 @@
         </div>
     </q-form>
 
-
 </q-page>
 </template>
 <script setup>
 import BackendLayout from "@/Layouts/BackendLayout.vue";
 import {useForm} from "@inertiajs/vue3";
 import {useQuasar} from "quasar";
+import {computed} from "vue";
 
 defineOptions({layout:BackendLayout})
-const props=defineProps(['userRoles']);
+const props=defineProps(['userRoles','offices']);
 const q = useQuasar();
 const form=useForm({
     name:'',
     email:'',
     mobile:'',
     roles: [],
+    office:null,
     designation:'',
-    password:'password123',
-    password_confirmation:'password123',
+    password:'',
+    password_confirmation:'',
 
 })
+
+const showOffice = computed(() =>
+    form.roles.some(r => r.value === 'Manager')
+);
+
 const submit=e=>{
-    form.transform(data => ({...data,roles:data.roles.map(item=>item.value)}))
+    form.transform(data => ({...data,
+        office_id: data?.office?.value,
+        roles:data.roles.map(item=>item.value)
+    }))
     .post(route('user.store'),{
         onStart:params => q.loading.show(),
         onFinish:params => q.loading.hide()
