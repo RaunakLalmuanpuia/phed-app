@@ -41,7 +41,10 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Define roles and their permissions
         $roles = [
-            'Manager' => ['request-edit', 'request-delete', 'request-transfer',],
+            'Manager' => ['request-edit', 'request-delete', 'request-transfer', 'view-employee','view-allemployee',
+                'export-employee','download-engagement-card','view-pe-summary','view-mr-summary','export-pe-summary', 'export-mr-summary'],
+
+
             'Admin' => ['approve-edit', 'approve-delete', 'approve-transfer','transfer-employee','delete-transfer',
                 'view-employee','view-allemployee','create-employee','delete-employee','edit-employee','edit-delete',
                 'view-anyuser','view-user','create-user','delete-user','edit-user',

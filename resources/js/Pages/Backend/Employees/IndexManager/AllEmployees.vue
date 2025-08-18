@@ -67,15 +67,15 @@
                                     class="col-12 col-sm-4"
                                     v-model="filters.office"
                                     :options="props.offices"
-                                option-label="label"
-                                option-value="value"
-                                emit-value
-                                map-options
-                                multiple
-                                outlined
-                                dense
-                                clearable
-                                @update:model-value="handleSearch"
+                                    option-label="label"
+                                    option-value="value"
+                                    emit-value
+                                    map-options
+                                    multiple
+                                    outlined
+                                    dense
+                                    clearable
+                                    @update:model-value="handleSearch"
                                 />
 
                                 <q-select
@@ -90,8 +90,34 @@
                                     clearable
                                     @update:model-value="handleSearch"
                                 />
+                                <q-select
+                                    label="Select Education Qln."
+                                    class="col-12 col-sm-4"
+                                    v-model="filters.education_qln"
+                                    :options="educationQln"
+                                    emit-value
+                                    map-options
+                                    outlined
+                                    dense
+                                    clearable
+                                    @update:model-value="handleSearch"
+                                />
 
                                 <q-select
+                                    v-if="filters.type === 'PE'"
+                                    label="Select Designation"
+                                    class="col-12 col-sm-4"
+                                    v-model="filters.designation"
+                                    :options="designations"
+                                    emit-value
+                                    map-options
+                                    outlined
+                                    dense
+                                    clearable
+                                    @update:model-value="handleSearch"
+                                />
+                                <q-select
+                                    v-if="filters.type === 'MR'"
                                     label="Select Skill"
                                     class="col-12 col-sm-4"
                                     v-model="filters.skill"
@@ -103,6 +129,10 @@
                                     clearable
                                     @update:model-value="handleSearch"
                                 />
+
+
+
+
                             </div>
                         </q-card-section>
 
@@ -111,7 +141,7 @@
                         <q-card-section class="row items-center justify-between q-gutter-md">
                             <div class="row q-gutter-sm col-12 col-sm justify-end">
 
-                                <q-btn label="Export" icon="desktop_windows" color="primary"  />
+                                <q-btn label="Export" icon="desktop_windows" color="primary" disabled />
                                 <q-input
                                     dense
                                     outlined
@@ -244,7 +274,7 @@ import {useQuasar} from "quasar";
 
 defineOptions({layout:BackendLayout})
 
-const props=defineProps(['offices','totalEmployees','peCount','mrCount'])
+const props=defineProps(['offices','totalEmployees','peCount','mrCount','designations','educationQln','skills'])
 
 
 const columns = [
@@ -283,9 +313,11 @@ const cards = [
 
 const filters = ref({
     office: [],
-    type: null,
+    type: 'PE',
     skill: null,
     search:null,
+    designation: null,
+    education_qln: null,
 })
 
 const type = [

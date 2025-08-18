@@ -588,11 +588,46 @@ class EmployeeController extends Controller
             ->where('employment_type', 'MR')
             ->count();
 
+        // Distinct Designations
+        $designations = Employee::whereIn('office_id', $officeIds)
+            ->where('employment_type', 'PE')
+            ->select('designation')
+            ->distinct()
+            ->orderBy('designation')
+            ->pluck('designation')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+        // Distinct Educational Qualifications
+        $educationQln = Employee::whereIn('office_id', $officeIds)
+            ->where('employment_type', 'PE')
+            ->select('educational_qln')
+            ->distinct()
+            ->orderBy('educational_qln')
+            ->pluck('educational_qln')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+
+        // Get distinct designation & education_qln for PE employees in this office
+        $skills = Employee::whereIn('office_id', $officeIds)
+            ->where('employment_type', 'MR')
+            ->select('skill_at_present')
+            ->distinct()
+            ->orderBy('skill_at_present')
+            ->pluck('skill_at_present')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+
         return inertia('Backend/Employees/IndexManager/AllEmployees', [
             'offices' => $offices,          // now plain array, safe for Vue
             'totalEmployees' => $totalEmployees,
             'peCount' => $peCount,
             'mrCount' => $mrCount,
+            'designations' => $designations,
+            'educationQln' => $educationQln,
+            'skills' => $skills,
         ]);
     }
 
@@ -617,7 +652,12 @@ class EmployeeController extends Controller
                     ->orWhere('name_of_workplace', 'LIKE', "%{$search}%");
             }))
             ->when(($filter['type'] ?? null), fn($q, $type) => $q->where('employment_type', $type))
-            ->when(($filter['skill'] ?? null), fn($q, $skill) => $q->where('skill_at_present', $skill));
+            ->when(($filter['skill'] ?? null), fn($q, $skill) => $q->where('skill_at_present', $skill))
+            ->when($filter['designation'] ?? null, function ($query, $designation) {
+                $query->where('designation', $designation);
+            })->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
+                $query->where('educational_qln', $educationQln);
+            });
 
         return response()->json([
             'list' => $employees->paginate($perPage),
@@ -626,21 +666,142 @@ class EmployeeController extends Controller
 
 
     public function managerPe(){
+        $user = auth()->user();
+
+        // Offices directly formatted for q-select
+        $offices = $user->offices()
+            ->get(['offices.name as label', 'offices.id as value'])
+            ->map(function ($office) {
+                return [
+                    'label' => $office->label,
+                    'value' => $office->value,
+                ];
+            });
+
+        // Get designations of PE employees from all offices user belongs to
+        $designations = Employee::whereIn('office_id', $offices->pluck('value'))
+            ->where('employment_type', 'PE')
+            ->select('designation')
+            ->distinct()
+            ->orderBy('designation')
+            ->pluck('designation')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+        $educationQln = Employee::whereIn('office_id', $offices->pluck('value'))
+            ->where('employment_type', 'PE')
+            ->select('educational_qln')
+            ->distinct()
+            ->orderBy('educational_qln')
+            ->pluck('educational_qln')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
         return inertia('Backend/Employees/IndexManager/PeEmployees', [
-
+            'offices' => $offices,
+            'designations' => $designations,
+            'educationQln' => $educationQln,
         ]);
     }
-    public function jsonMangerPe(){
+    public function jsonMangerPe(Request $request)
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
 
+        $perPage = $request->integer('rowsPerPage', 5);
+        $filter  = $request->get('filter', []);
+        $search  = $filter['search'] ?? null;
+        $officeIds = $filter['office'] ?? $user->offices()->pluck('offices.id')->all();
+
+        $employees = Employee::with(['office','remunerationDetail'])
+            ->whereIn('office_id', (array) $officeIds)
+            ->where('employment_type',  'PE')
+            ->when($search, fn($q) => $q->where(function ($sub) use ($search) {
+                $sub->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('mobile', 'LIKE', "%{$search}%")
+                    ->orWhere('designation', 'LIKE', "%{$search}%")
+                    ->orWhere('date_of_birth', 'LIKE', "%{$search}%")
+                    ->orWhere('name_of_workplace', 'LIKE', "%{$search}%");
+            }))
+            ->when($filter['designation'] ?? null, function ($query, $designation) {
+                $query->where('designation', $designation);
+            })->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
+                $query->where('educational_qln', $educationQln);
+            });
+
+        return response()->json([
+            'list' => $employees->paginate($perPage),
+        ], 200);
     }
-    public function managerMr(){
+    public function managerMr()
+    {
+
+        $user = auth()->user();
+
+        // Offices directly formatted for q-select
+        $offices = $user->offices()
+            ->get(['offices.name as label', 'offices.id as value'])
+            ->map(function ($office) {
+                return [
+                    'label' => $office->label,
+                    'value' => $office->value,
+                ];
+            });
+        // Get distinct designation & education_qln for PE employees in this office
+        $skills = Employee::whereIn('office_id', $offices->pluck('value'))
+            ->where('employment_type', 'MR')
+            ->select('skill_at_present')
+            ->distinct()
+            ->orderBy('skill_at_present')
+            ->pluck('skill_at_present')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+        $educationQln = Employee::whereIn('office_id', $offices->pluck('value'))
+            ->where('employment_type', 'MR')
+            ->select('educational_qln')
+            ->distinct()
+            ->orderBy('educational_qln')
+            ->pluck('educational_qln')
+            ->map(fn($e) => ['label' => $e, 'value' => $e])
+            ->values();
+
         return inertia('Backend/Employees/IndexManager/MrEmployees', [
-
+            'offices' => $offices,
+            'skills' => $skills,
+            'educationQln' => $educationQln,
         ]);
     }
 
-    public function jsonMangerMr(){
+    public function jsonMangerMr(Request $request)
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
 
+        $perPage = $request->integer('rowsPerPage', 5);
+        $filter  = $request->get('filter', []);
+        $search  = $filter['search'] ?? null;
+        $officeIds = $filter['office'] ?? $user->offices()->pluck('offices.id')->all();
+
+        $employees = Employee::with(['office'])
+            ->whereIn('office_id', (array) $officeIds)
+            ->where('employment_type',  'MR')
+            ->when($search, fn($q) => $q->where(function ($sub) use ($search) {
+                $sub->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('mobile', 'LIKE', "%{$search}%")
+                    ->orWhere('designation', 'LIKE', "%{$search}%")
+                    ->orWhere('date_of_birth', 'LIKE', "%{$search}%")
+                    ->orWhere('name_of_workplace', 'LIKE', "%{$search}%");
+            }))
+            ->when($filter['skill'] ?? null, function ($query, $skill) {
+                $query->where('skill_at_present', $skill);
+            })->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
+                $query->where('educational_qln', $educationQln);
+            });
+
+        return response()->json([
+            'list' => $employees->paginate($perPage),
+        ], 200);
     }
 
 }
