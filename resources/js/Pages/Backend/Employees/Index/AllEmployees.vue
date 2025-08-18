@@ -62,20 +62,6 @@
               </div>
 
               <div class="row q-col-gutter-md">
-                  <q-input
-                      dense
-                      outlined
-                      debounce="300"
-                      v-model="filters.search"
-                      placeholder="Search"
-                      class="col-12 col-sm-4"
-                      clearable
-                      @update:model-value="handleSearch"
-                  >
-                      <template #append>
-                          <q-icon name="search" />
-                      </template>
-                  </q-input>
 
                 <q-select
                     label="Select Employment Type"
@@ -90,18 +76,61 @@
                     @update:model-value="handleSearch"
                 />
 
-                <q-select
-                    label="Select Skill"
-                    class="col-12 col-sm-4"
-                    v-model="filters.skill"
-                    :options="skills"
-                    emit-value
-                    map-options
-                    outlined
-                    dense
-                    clearable
-                    @update:model-value="handleSearch"
-                />
+                  <q-select
+                      v-if="filters.type === 'PE'"
+                      label="Select Designation"
+                      class="col-12 col-sm-4"
+                      v-model="filters.designation"
+                      :options="designations"
+                      emit-value
+                      map-options
+                      outlined
+                      dense
+                      clearable
+                      @update:model-value="handleSearch"
+                  />
+                  <q-select
+                      v-if="filters.type === 'MR'"
+                      label="Select Skill"
+                      class="col-12 col-sm-4"
+                      v-model="filters.skill"
+                      :options="skills"
+                      emit-value
+                      map-options
+                      outlined
+                      dense
+                      clearable
+                      @update:model-value="handleSearch"
+                  />
+
+                  <q-select
+                      v-if="filters.type === 'MR'"
+                      label="Select Education Qln."
+                      class="col-12 col-sm-4"
+                      v-model="filters.education_qln_mr"
+                      :options="educationQlnMr"
+                      emit-value
+                      map-options
+                      outlined
+                      dense
+                      clearable
+                      @update:model-value="handleSearch"
+                  />
+
+                  <q-select
+                      v-if="filters.type === 'PE'"
+                      label="Select Education Qln."
+                      class="col-12 col-sm-4"
+                      v-model="filters.education_qln_pe"
+                      :options="educationQlnPe"
+                      emit-value
+                      map-options
+                      outlined
+                      dense
+                      clearable
+                      @update:model-value="handleSearch"
+                  />
+
               </div>
             </q-card-section>
 
@@ -244,7 +273,7 @@ import {useQuasar} from "quasar";
 
 defineOptions({layout:BackendLayout})
 
-const props=defineProps(['office','canCreate','canEdit','canDelete','totalEmployees','peCount','mrCount','deletedCount'])
+const props=defineProps(['office','totalEmployees','peCount','mrCount','deletedCount','designations','skills','educationQlnPe','educationQlnMr'])
 
 
 const columns = [
@@ -282,22 +311,18 @@ const cards = [
 ]
 
 const filters = ref({
-  type: null,
-  skill: null,
-  search:null,
+    type: 'PE',
+    skill: null,
+    search:null,
+    designation: null,
+    education_qln_pe: null,
+    education_qln_mr: null,
 })
-
 const type = [
   { label: 'MR', value: 'MR' },
   { label: 'PE', value: 'PE' },
 ]
 
-const skills = [
-  { label: 'Skilled-I', value: 'skilled-I' },
-  { label: 'Unskilled', value: 'unskilled' },
-    { label: 'Semi-Skilled', value: 'semi-skilled' },
-    { label: 'Skilled-II', value: 'skilled-II' },
-]
 
 
 const search = ref('')

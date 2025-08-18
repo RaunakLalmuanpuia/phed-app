@@ -62,11 +62,56 @@ class EmployeeController extends Controller
             ->where('employment_type', 'MR')
             ->count();
 
+        // Get distinct designation & education_qln for PE employees in this office
+        $designations = $model->employees()
+            ->where('employment_type', 'PE')
+            ->select('designation')
+            ->distinct()
+            ->orderBy('designation')
+            ->pluck('designation')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+
+        // Get distinct designation & education_qln for PE employees in this office
+        $skills = $model->employees()
+            ->where('employment_type', 'MR')
+            ->select('skill_at_present')
+            ->distinct()
+            ->orderBy('skill_at_present')
+            ->pluck('skill_at_present')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+        $educationQlnPe = $model->employees()
+            ->where('employment_type', 'PE')
+            ->select('educational_qln')
+            ->distinct()
+            ->orderBy('educational_qln')
+            ->pluck('educational_qln')
+            ->map(fn($e) => ['label' => $e, 'value' => $e])
+            ->values();
+
+
+        $educationQlnMr = $model->employees()
+            ->where('employment_type', 'MR')
+            ->select('educational_qln')
+            ->distinct()
+            ->orderBy('educational_qln')
+            ->pluck('educational_qln')
+            ->map(fn($e) => ['label' => $e, 'value' => $e])
+            ->values();
+
+
         return Inertia::render('Backend/Employees/Index/AllEmployees', [
             'office'=>$model,
             'totalEmployees' => $totalEmployees,
             'peCount' => $peCount,
             'mrCount' => $mrCount,
+            'designations' => $designations,
+            'skills' => $skills,
+            'educationQlnPe' => $educationQlnPe,
+            'educationQlnMr' => $educationQlnMr,
         ]);
     }
 
@@ -96,6 +141,13 @@ class EmployeeController extends Controller
             })
             ->when($filter['skill'] ?? null, function ($query, $skill) {
                 $query->where('skill_at_present', $skill);
+            })
+            ->when($filter['designation'] ?? null, function ($query, $designation) {
+                $query->where('designation', $designation);
+            })->when($filter['education_qln_pe'] ?? null, function ($query, $educationQln) {
+                $query->where('educational_qln', $educationQln);
+            })->when($filter['education_qln_mr'] ?? null, function ($query, $educationQln) {
+                $query->where('educational_qln', $educationQln);
             });
 
 
@@ -599,8 +651,18 @@ class EmployeeController extends Controller
             ->values();
 
         // Distinct Educational Qualifications
-        $educationQln = Employee::whereIn('office_id', $officeIds)
+        $educationQlnPe = Employee::whereIn('office_id', $officeIds)
             ->where('employment_type', 'PE')
+            ->select('educational_qln')
+            ->distinct()
+            ->orderBy('educational_qln')
+            ->pluck('educational_qln')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+        // Distinct Educational Qualifications
+        $educationQlnMr = Employee::whereIn('office_id', $officeIds)
+            ->where('employment_type', 'MR')
             ->select('educational_qln')
             ->distinct()
             ->orderBy('educational_qln')
@@ -626,7 +688,8 @@ class EmployeeController extends Controller
             'peCount' => $peCount,
             'mrCount' => $mrCount,
             'designations' => $designations,
-            'educationQln' => $educationQln,
+            'educationQlnPe' => $educationQlnPe,
+            'educationQlnMr' => $educationQlnMr,
             'skills' => $skills,
         ]);
     }
@@ -795,7 +858,9 @@ class EmployeeController extends Controller
             }))
             ->when($filter['skill'] ?? null, function ($query, $skill) {
                 $query->where('skill_at_present', $skill);
-            })->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
+            })->when($filter['education_qln_pr'] ?? null, function ($query, $educationQln) {
+                $query->where('educational_qln', $educationQln);
+            })->when($filter['education_qln_mr'] ?? null, function ($query, $educationQln) {
                 $query->where('educational_qln', $educationQln);
             });
 

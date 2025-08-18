@@ -91,19 +91,6 @@
                                     @update:model-value="handleSearch"
                                 />
                                 <q-select
-                                    label="Select Education Qln."
-                                    class="col-12 col-sm-4"
-                                    v-model="filters.education_qln"
-                                    :options="educationQln"
-                                    emit-value
-                                    map-options
-                                    outlined
-                                    dense
-                                    clearable
-                                    @update:model-value="handleSearch"
-                                />
-
-                                <q-select
                                     v-if="filters.type === 'PE'"
                                     label="Select Designation"
                                     class="col-12 col-sm-4"
@@ -129,6 +116,37 @@
                                     clearable
                                     @update:model-value="handleSearch"
                                 />
+
+                                <q-select
+                                    v-if="filters.type === 'PE'"
+                                    label="Select Education Qln."
+                                    class="col-12 col-sm-4"
+                                    v-model="filters.education_qln_pe"
+                                    :options="educationQlnPe"
+                                    emit-value
+                                    map-options
+                                    outlined
+                                    dense
+                                    clearable
+                                    @update:model-value="handleSearch"
+                                />
+
+                                <q-select
+                                    v-if="filters.type === 'MR'"
+                                    label="Select Education Qln."
+                                    class="col-12 col-sm-4"
+                                    v-model="filters.education_qln_mr"
+                                    :options="educationQlnMr"
+                                    emit-value
+                                    map-options
+                                    outlined
+                                    dense
+                                    clearable
+                                    @update:model-value="handleSearch"
+                                />
+
+
+
 
 
 
@@ -274,7 +292,7 @@ import {useQuasar} from "quasar";
 
 defineOptions({layout:BackendLayout})
 
-const props=defineProps(['offices','totalEmployees','peCount','mrCount','designations','educationQln','skills'])
+const props=defineProps(['offices','totalEmployees','peCount','mrCount','designations','educationQlnPe','educationQlnMr','skills'])
 
 
 const columns = [
@@ -317,7 +335,8 @@ const filters = ref({
     skill: null,
     search:null,
     designation: null,
-    education_qln: null,
+    education_qln_pe: null,
+    education_qln_mr: null,
 })
 
 const type = [
@@ -325,12 +344,6 @@ const type = [
     { label: 'PE', value: 'PE' },
 ]
 
-const skills = [
-    { label: 'Skilled-I', value: 'skilled-I' },
-    { label: 'Unskilled', value: 'unskilled' },
-    { label: 'Semi-Skilled', value: 'semi-skilled' },
-    { label: 'Skilled-II', value: 'skilled-II' },
-]
 
 
 const search = ref('')
