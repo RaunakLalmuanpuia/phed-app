@@ -125,9 +125,13 @@ Route::group(['middleware'=>'auth','prefix' => 'employees'], function () {
     Route::get('json-index-mr/{model}', [EmployeeController::class, 'jsonMrEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-mr');
 
 
-
     Route::get('/deleted', [EmployeeController::class, 'deletedEmployees'])->middleware('can:view-allemployee')->name('employees.deleted');
     Route::get('json-index-deleted', [EmployeeController::class, 'jsonDeletedEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-deleted');
+
+
+    Route::get('manager-all', [EmployeeController::class, 'managerAll'])->middleware('can:view-allemployee')->name('employees.manager.all');
+    Route::get('json-manager-all', [EmployeeController::class, 'jsonMangerAll'])->middleware('can:view-allemployee')->name('employees.json-manager-all');
+
 
     Route::get('{model}/show', [EmployeeController::class, 'show'])->middleware('can:view-employee')->name('employee.show');
     Route::get('create', [EmployeeController::class, 'create'])->middleware('can:create-employee')->name('employee.create');

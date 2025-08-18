@@ -140,7 +140,6 @@
         </div>
     </q-form>
 
-{{current_offices}}
 </q-page>
 </template>
 <script setup>

@@ -66,7 +66,7 @@
                 <q-separator class="q-my-sm"/>
 
 
-<!--                Employees-->
+<!--             Admin   Employees-->
                 <q-expansion-item
                     v-if="checkModules('employee')"
                     group="menu"
@@ -139,6 +139,92 @@
                             active-class="active-item text-accent"
                             clickable
                             @click="$inertia.get(route(item.route_name),{},{preserveState:true})">
+                            <q-item-section avatar class="q-ml-sm">
+                                <q-icon :size="route().current()===item.route_name ? '12px':'9px'"
+                                        name="fiber_manual_record"/>
+                            </q-item-section>
+                            <q-item-section>
+                                <q-item-label>{{ item.label }}</q-item-label>
+                            </q-item-section>
+                        </q-item>
+                    </template>
+
+                </q-expansion-item>
+
+
+<!--                Manager Employees-->
+                <q-expansion-item
+                    v-if="checkModules('manager')"
+                    group="menu"
+                    :label="module.manager.label"
+                    :header-class="(
+                              route().current()==='employees.all'
+                             || route().current()==='employees.mr'
+                             || route().current()==='employees.pe'
+                              || route().current()==='employees.deleted'
+                             || route().current()==='employee.show'
+                              || route().current()==='employee.create'
+                              || route().current()==='employee.edit'
+
+                          )
+
+                          ?'active-menu text-accent':''"
+                    icon="manage_accounts">
+
+                    <template #header>
+                        <q-item-section avatar>
+
+                            <q-icon :active="
+                              route().current()==='employees.all'
+                             || route().current()==='employees.mr'
+                             || route().current()==='employees.pe'
+                              || route().current()==='employees.deleted'
+                             || route().current()==='employee.show'
+                              || route().current()==='employee.create'
+                              || route().current()==='employee.edit'
+
+                        ">
+
+                                <svg
+                                    v-if="route().current()==='employees.all'
+                             || route().current()==='employees.mr'
+                             || route().current()==='employees.pe'
+                              || route().current()==='employees.deleted'
+                             || route().current()==='employee.show'
+                              || route().current()==='employee.create'
+                              || route().current()==='employee.edit'"
+                                    width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M6 4.5h13.5a.5.5 0 0 1 .5.5v6.938l1.5-1.52V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a8 8 0 0 0 8 8h7.5a2 2 0 0 0 2-2v-3.038l-1.5 1.52V23a.5.5 0 0 1-.5.5H12A6.5 6.5 0 0 1 5.5 17V5a.5.5 0 0 1 .5-.5z" fill="#306ADB"/>
+                                    <path fill="#306ADB" d="M5 18h7v1.5H5z"/>
+                                    <path fill="#306ADB" d="M11 24v-6h1.5v6z"/>
+                                    <circle cx="12.55" cy="9.25" r="1.65" stroke="#306ADB" stroke-width="1.2"/>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M15.457 15a3.496 3.496 0 0 0-2.873-1.5c-1.19 0-2.24.593-2.873 1.5H8a5.001 5.001 0 0 1 9.168 0h-1.711zM15.914 20.128v.698h.717l7.065-6.92-.707-.708-7.075 6.93zM23 11.088l-8.586 8.41v2.828h2.829l8.585-8.41L23 11.088z" fill="#306ADB"/>
+                                </svg>
+                                <svg v-else width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M6 4.5h13.5a.5.5 0 0 1 .5.5v6.938l1.5-1.52V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a8 8 0 0 0 8 8h7.5a2 2 0 0 0 2-2v-3.038l-1.5 1.52V23a.5.5 0 0 1-.5.5H12A6.5 6.5 0 0 1 5.5 17V5a.5.5 0 0 1 .5-.5z" fill="#191C51"/>
+                                    <path fill="#191C51" d="M5 18h7v1.5H5z"/>
+                                    <path fill="#191C51" d="M11 24v-6h1.5v6z"/>
+                                    <circle cx="12.551" cy="9.25" r="1.65" stroke="#191C51" stroke-width="1.2"/>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M15.457 15a3.496 3.496 0 0 0-2.873-1.5c-1.19 0-2.24.593-2.873 1.5H8a5.001 5.001 0 0 1 9.168 0h-1.711z" fill="#191C51"/>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M15.914 20.128v.698h.717l7.065-6.92-.707-.708-7.075 6.93zM23 11.088l-8.586 8.41v2.828h2.829l8.585-8.41L23 11.088z" fill="#D81D1D"/>
+                                </svg>
+
+                            </q-icon>
+                        </q-item-section>
+
+                        <q-item-section>
+                            Employees
+                        </q-item-section>
+                    </template>
+
+                    <template v-for="item in module.manager.children"
+                              :key="item.route_name">
+                        <q-item v-if="$page.props.permissions.find(val=>val.name===item.permission)"
+                                class="nav-item"
+                                :active="route().current()===item.route_name"
+                                active-class="active-item text-accent"
+                                clickable
+                                @click="$inertia.get(route(item.route_name),{},{preserveState:true})">
                             <q-item-section avatar class="q-ml-sm">
                                 <q-icon :size="route().current()===item.route_name ? '12px':'9px'"
                                         name="fiber_manual_record"/>
@@ -377,6 +463,15 @@ const module = reactive({
         ]
     },
 
+    manager: {
+        label: 'Employees',
+        children: [
+            {route_name: 'employees.manager.all', label: 'All Employee', permission: 'view-allemployee'},
+            {route_name: 'employees.manager.pe', label: 'Provisional', permission: 'view-allemployee'},
+            {route_name: 'employees.manager.mr', label: 'Muster Roll', permission: 'view-allemployee'},
+        ]
+    },
+
 
     admin: {
         label: 'Administration',
@@ -409,7 +504,7 @@ const module = reactive({
 
 
 const MENUS = {
-    Manager: ['employee', 'mis'],
+    Manager: ['manager', 'mis'],
     Admin: ['employee', 'mis', 'administration']
 };
 
@@ -420,6 +515,9 @@ const checkModules = (module) => {
 
     return availableModules.includes(module);
 };
+
+const isAdmin = computed(() => !!usePage().props.roles?.find(item => item === 'Admin'));
+const isManager = computed(() => !!usePage().props.roles?.find(item => item === 'Manager'));
 
 </script>
 

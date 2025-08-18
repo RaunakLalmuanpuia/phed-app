@@ -557,4 +557,90 @@ class EmployeeController extends Controller
 
     }
 
+    public function managerAll()
+    {
+        $user = auth()->user();
+
+        // Offices directly formatted for q-select
+        $offices = $user->offices()
+            ->get(['offices.name as label', 'offices.id as value'])
+            ->map(function ($office) {
+                return [
+                    'label' => $office->label,
+                    'value' => $office->value,
+                ];
+            })
+            ->toArray();
+
+        // Get all office IDs the user belongs to
+        $officeIds = collect($offices)->pluck('value');
+
+        // Total employees across all offices
+        $totalEmployees = Employee::whereIn('office_id', $officeIds)
+            ->where('employment_type', '!=', 'Deleted')
+            ->count();
+
+        $peCount = Employee::whereIn('office_id', $officeIds)
+            ->where('employment_type', 'PE')
+            ->count();
+
+        $mrCount = Employee::whereIn('office_id', $officeIds)
+            ->where('employment_type', 'MR')
+            ->count();
+
+        return inertia('Backend/Employees/IndexManager/AllEmployees', [
+            'offices' => $offices,          // now plain array, safe for Vue
+            'totalEmployees' => $totalEmployees,
+            'peCount' => $peCount,
+            'mrCount' => $mrCount,
+        ]);
+    }
+
+    public function jsonMangerAll(Request $request)
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
+
+        $perPage = $request->integer('rowsPerPage', 5);
+        $filter  = $request->get('filter', []);
+        $search  = $filter['search'] ?? null;
+        $officeIds = $filter['office'] ?? $user->offices()->pluck('offices.id')->all();
+
+        $employees = Employee::with('office')
+            ->whereIn('office_id', (array) $officeIds)
+            ->where('employment_type', '!=', 'Deleted')
+            ->when($search, fn($q) => $q->where(function ($sub) use ($search) {
+                $sub->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('mobile', 'LIKE', "%{$search}%")
+                    ->orWhere('designation', 'LIKE', "%{$search}%")
+                    ->orWhere('date_of_birth', 'LIKE', "%{$search}%")
+                    ->orWhere('name_of_workplace', 'LIKE', "%{$search}%");
+            }))
+            ->when(($filter['type'] ?? null), fn($q, $type) => $q->where('employment_type', $type))
+            ->when(($filter['skill'] ?? null), fn($q, $skill) => $q->where('skill_at_present', $skill));
+
+        return response()->json([
+            'list' => $employees->paginate($perPage),
+        ], 200);
+    }
+
+
+    public function managerPe(){
+        return inertia('Backend/Employees/IndexManager/PeEmployees', [
+
+        ]);
+    }
+    public function jsonMangerPe(){
+
+    }
+    public function managerMr(){
+        return inertia('Backend/Employees/IndexManager/MrEmployees', [
+
+        ]);
+    }
+
+    public function jsonMangerMr(){
+
+    }
+
 }
