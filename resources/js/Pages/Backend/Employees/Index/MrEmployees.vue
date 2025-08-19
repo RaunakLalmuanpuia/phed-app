@@ -88,7 +88,7 @@
                         </template>
                     </q-input>
 
-                    <q-btn label="Export" icon="desktop_windows" color="primary" />
+                    <q-btn label="Export" icon="desktop_windows" color="primary" @click="exportData" />
 
                     <q-btn
                         label="Add New MR Employee"
@@ -291,6 +291,28 @@ function onRequest (prop) {
         })
         .finally(()=>loading.value=false)
 }
+
+const exportData = () => {
+    q.loading.show();
+
+    axios.get(route('export.mr', props.office), { responseType: 'blob' })
+        .then((res) => {
+            const fileUrl = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement('a');
+            link.href = fileUrl;
+            link.setAttribute('download', props.office.name.replace(/\s+/g, '_') + '_muster_roll_employees.xlsx');
+            link.click();
+        })
+        .catch((err) => {
+            q.notify({
+                type: 'negative',
+                message: err.response?.data?.message || 'Failed to download file',
+            });
+        })
+        .finally(() => {
+            q.loading.hide();
+        });
+};
 
 onMounted(() => {
     // get initial data from server (1st page)

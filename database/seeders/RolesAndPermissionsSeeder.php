@@ -31,7 +31,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'create-remuneration', 'edit-remuneration','delete-remuneration',
             'view-engagement-card','store-engagement-card','download-engagement-card',
             'view-pe-summary','view-mr-summary',
-            'export-pe-summary', 'export-mr-summary'
+            'export-pe-summary', 'export-mr-summary','export-pe','export-mr','export-all'
         ];
 
         // Create permissions
@@ -42,7 +42,8 @@ class RolesAndPermissionsSeeder extends Seeder
         // Define roles and their permissions
         $roles = [
             'Manager' => ['request-edit', 'request-delete', 'request-transfer', 'view-employee','view-allemployee',
-                'export-employee','download-engagement-card','view-pe-summary','view-mr-summary','export-pe-summary', 'export-mr-summary'],
+                'export-employee','download-engagement-card','view-pe-summary','view-mr-summary',
+                'export-pe-summary', 'export-mr-summary','export-pe','export-mr','export-all'],
 
 
             'Admin' => ['approve-edit', 'approve-delete', 'approve-transfer','transfer-employee','delete-transfer',
@@ -55,7 +56,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'create-remuneration', 'edit-remuneration','delete-remuneration',
                 'view-engagement-card','store-engagement-card','download-engagement-card',
                 'view-pe-summary','view-mr-summary',
-                'export-pe-summary', 'export-mr-summary'
+                'export-pe-summary', 'export-mr-summary','export-pe','export-mr','export-all'
                 ],
         ];
 

@@ -139,7 +139,7 @@
             <q-card-section class="row items-center justify-between q-gutter-md">
               <div class="row q-gutter-sm col-12 col-sm justify-end">
 
-                  <q-btn label="Export" icon="desktop_windows" color="primary"  />
+
                   <q-input
                     dense
                     outlined
@@ -155,6 +155,7 @@
                   </template>
                 </q-input>
 
+                  <q-btn label="Export" icon="desktop_windows" color="primary" @click="exportData"/>
 
 <!--                <q-btn-->
 <!--                    label="Add New Employee"-->
@@ -311,7 +312,7 @@ const cards = [
 ]
 
 const filters = ref({
-    type: 'PE',
+    type: null,
     skill: null,
     search:null,
     designation: null,
@@ -378,6 +379,28 @@ function onRequest (prop) {
       .finally(()=>loading.value=false)
 }
 
+
+const exportData = () => {
+    q.loading.show();
+
+    axios.get(route('export.all', props.office), { responseType: 'blob' })
+        .then((res) => {
+            const fileUrl = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement('a');
+            link.href = fileUrl;
+            link.setAttribute('download', props.office.name.replace(/\s+/g, '_') + '_all_employees.xlsx');
+            link.click();
+        })
+        .catch((err) => {
+            q.notify({
+                type: 'negative',
+                message: err.response?.data?.message || 'Failed to download file',
+            });
+        })
+        .finally(() => {
+            q.loading.hide();
+        });
+};
 onMounted(() => {
   onRequest({
     pagination: pagination.value,
