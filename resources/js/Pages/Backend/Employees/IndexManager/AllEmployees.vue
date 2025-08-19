@@ -331,7 +331,7 @@ const cards = [
 
 const filters = ref({
     office: [],
-    type: 'PE',
+    type: null,
     skill: null,
     search:null,
     designation: null,
