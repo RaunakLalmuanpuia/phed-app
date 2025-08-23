@@ -25,6 +25,7 @@
                     row-key="id"
                     flat
                     :filter="filter"
+                    :pagination="{ rowsPerPage: 0 }"
                 >
                     <template v-slot:top-right>
                         <q-input borderless dense debounce="800"
