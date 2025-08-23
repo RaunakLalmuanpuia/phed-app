@@ -5,7 +5,7 @@
 <template>
     <q-card class="q-mt-md">
         <q-card-section>
-            <div class="stitle">Deletion Request</div>
+            <div class="stitle">Request Deletion</div>
 
 
         </q-card-section>

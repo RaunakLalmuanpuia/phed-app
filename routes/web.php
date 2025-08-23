@@ -149,6 +149,9 @@ Route::group(['middleware'=>'auth','prefix' => 'employees'], function () {
 //Transfer
 Route::group(['middleware'=>'auth','prefix' => 'transfer'], function () {
     Route::post('store/{model}', [TransferController::class, 'store'])->middleware('can:transfer-employee')->name('transfer.store');
+    Route::post('request/{model}', [TransferController::class, 'request'])->middleware('can:request-transfer')->name('transfer.request');
+    Route::post('approve/{model}', [TransferController::class, 'approve'])->middleware('can:approve-transfer')->name('transfer.approve');
+    Route::post('reject/{model}', [TransferController::class, 'reject'])->name('transfer.reject');
     Route::delete('{model}', [TransferController::class, 'destroy'])->middleware('can:delete-transfer')->name('transfer.destroy');
 });
 

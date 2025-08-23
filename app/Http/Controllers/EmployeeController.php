@@ -350,12 +350,20 @@ class EmployeeController extends Controller
         abort_if(!$user->hasPermissionTo('view-employee'), 403, 'Access Denied');
         $office = Office::all();
         return inertia('Backend/Employees/Show', [
-            'data' => $model->load(['office', 'documents.type','transfers.oldOffice','transfers.newOffice', 'deletionDetail', 'remunerationDetail','engagementCard']),
+            'data' => $model->load(['office', 'documents.type','transfers.oldOffice','transfers.newOffice',
+                'deletionDetail', 'remunerationDetail','engagementCard','transferRequests.currentOffice','transferRequests.requestedOffice',]),
             'office' => $office,
             'canDelete'=>$user->can('delete-employee'),
             'canEdit'=>$user->can('edit-employee'),
             'canCreate'=>$user->can('create-employee'),
             'canRequestEdit'=>$user->can('request-edit'),
+            'canRequestDelete'=>$user->can('request-delete'),
+            'canRequestTransfer'=>$user->can('request-transfer'),
+
+            'canApproveEdit'=>$user->can('approve-edit'),
+            'canApproveDelete'=>$user->can('approve-delete'),
+            'canApproveTransfer'=>$user->can('approve-transfer'),
+
 
             'canCreateRemuneration'=>$user->can('create-remuneration'),
 

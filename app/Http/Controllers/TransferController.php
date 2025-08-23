@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use App\Models\Transfer;
+use App\Models\TransferRequest;
 use Illuminate\Http\Request;
 
 class TransferController extends Controller
@@ -47,5 +48,60 @@ class TransferController extends Controller
         $model->delete();
 
         return redirect()->back()->with('success', 'Transfer successfully Deleted.');
+    }
+
+    public function request(Request $request, Employee $model){
+//        dd($request->all());
+
+        $request->validate([
+            'requested_office_id.id' => 'required|exists:offices,id',
+        ]);
+
+        // Create the transfer request
+        $transferRequest = TransferRequest::create([
+            'employee_id' => $model->id,
+            'current_office_id' => $model->office_id, // current office
+            'requested_office_id' => $request->requested_office_id['id'],
+            'request_date' => now(),
+            'approval_status' => 'pending',
+        ]);
+        return redirect()->back()->with('success', 'Transfer request successfully recorded.');
+    }
+
+    public function approve(TransferRequest $model)
+    {
+        $model->update([
+            'approval_status' => 'approved',
+            'approval_date' => now(),
+        ]);
+
+//        dd($model);
+        // Create actual transfer record
+        Transfer::create([
+            'employee_id' => $model->employee_id,
+            'old_office_id' => $model->current_office_id,
+            'new_office_id' => $model->requested_office_id,
+            'transfer_date' => now(),
+        ]);
+
+
+        // Update employee's office
+        $model->employee->update([
+            'office_id' => $model->requested_office_id,
+        ]);
+
+        return redirect()->back()->with('success', 'Transfer request approved and employee transferred.');
+
+    }
+
+    public function reject(TransferRequest $model)
+    {
+        $model->update([
+            'approval_status' => 'rejected',
+            'approval_date' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Transfer request rejected');
+
     }
 }

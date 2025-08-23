@@ -170,20 +170,26 @@
                             align="center"
                         >
                             <q-tab name="document" label="Documents" icon="drive_folder_upload" />
-                            <q-tab v-if="isAdmin" name="edit" label="Edit Request" icon="edit"/>
-                            <q-tab v-if="isAdmin" name="transfer_request" label="Transfer Request" icon="input" />
-                            <q-tab v-if="isAdmin" name="deletion" label="Deletion Request" icon="delete_sweep" />
+                            <q-tab v-if="isAdmin && canApproveEdit " name="edit" label="Edit Request" icon="edit"/>
+                            <q-tab v-if="isAdmin && canApproveTransfer" name="transfer_request" label="Transfer Request" icon="input" />
+                            <q-tab v-if="isAdmin && canApproveDelete" name="deletion" label="Deletion Request" icon="delete_sweep" />
 
-                            <q-tab v-if="isManager && canRequestEdit" name="edit" label="Request Edit" icon="edit"/>
-                            <q-tab v-if="isManager" name="transfer_request" label="Request Transfer" icon="input" />
-                            <q-tab v-if="isManager" name="deletion" label="Request Deletion" icon="delete_sweep" />
+                            <q-tab v-if="isManager && canRequestEdit" name="request_edit" label="Request Edit" icon="edit"/>
+                            <q-tab v-if="isManager && canRequestTransfer" name="request_transfer" label="Request Transfer" icon="input" />
+                            <q-tab v-if="isManager && canRequestDelete" name="request_deletion" label="Request Deletion" icon="delete_sweep" />
                         </q-tabs>
 
                         <Document v-if="tab === 'document'" :data="data" />
 
                         <EditRequest v-if="tab === 'edit'" :data="data" />
-                        <TransferRequest v-if="tab === 'transfer_request'" :data="data" />
+                        <TransferRequest v-if="tab === 'transfer_request'" :data="data" :office="office" />
                         <DeletionRequest v-if="tab === 'deletion'" :data="data" />
+
+
+                        <RequestEdit v-if="tab === 'request_edit'"/>
+                        <RequestTransfer v-if="tab ==='request_transfer'" :data="data" :office="office" />
+                        <RequestDeletion v-if="tab === 'request_deletion'" :data="data" />
+
 
 
 
@@ -219,6 +225,10 @@ import TransferRequest from "@/Components/Employee/TransferRequest.vue";
 import EditRequest from "@/Components/Employee/EditRequest.vue";
 import DeletionRequest from "@/Components/Employee/DeletionRequest.vue";
 
+import RequestDeletion from "@/Components/Employee/RequestDeletion.vue";
+import RequestEdit from "@/Components/Employee/RequestEdit.vue";
+import RequestTransfer from "@/Components/Employee/RequestTransfer.vue";
+
 import Transfer from "@/Components/Employee/Transfer.vue";
 
 import DeletionDialog from "@/Components/Employee/DeletionDialog.vue";
@@ -234,7 +244,8 @@ import {usePage} from "@inertiajs/vue3";
 defineOptions({layout:BackendLayout})
 
 const props=defineProps(['data','office','canCreate','canEdit','canDelete','canCreateRemuneration','canCreateTransfer',
-    'canDeleteTransfer','canCreateEngagementCard', 'canDownloadEngagementCard','canRequestEdit']);
+    'canDeleteTransfer','canCreateEngagementCard', 'canDownloadEngagementCard','canRequestEdit','canRequestDelete','canRequestTransfer',
+    'canApproveEdit','canApproveTransfer','canApproveDelete']);
 
 const tab = ref('document')
 
