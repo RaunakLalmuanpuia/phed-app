@@ -141,7 +141,6 @@
                                         />
 
                                         <q-btn
-
                                             v-if="canDelete && data.employment_type !== 'Deleted'"
                                             label="Delete"
                                             color="negative"
@@ -171,9 +170,13 @@
                             align="center"
                         >
                             <q-tab name="document" label="Documents" icon="drive_folder_upload" />
-                            <q-tab name="edit" label="Edit Request" icon="edit"/>
-                            <q-tab name="transfer_request" label="Transfer Request" icon="input" />
-                            <q-tab name="deletion" label="Deletion Request" icon="delete_sweep" />
+                            <q-tab v-if="isAdmin" name="edit" label="Edit Request" icon="edit"/>
+                            <q-tab v-if="isAdmin" name="transfer_request" label="Transfer Request" icon="input" />
+                            <q-tab v-if="isAdmin" name="deletion" label="Deletion Request" icon="delete_sweep" />
+
+                            <q-tab v-if="isManager && canRequestEdit" name="edit" label="Request Edit" icon="edit"/>
+                            <q-tab v-if="isManager" name="transfer_request" label="Request Transfer" icon="input" />
+                            <q-tab v-if="isManager" name="deletion" label="Request Deletion" icon="delete_sweep" />
                         </q-tabs>
 
                         <Document v-if="tab === 'document'" :data="data" />
@@ -226,16 +229,18 @@ import EngagementCard from "@/Components/Employee/EngagementCard.vue";
 
 
 import { ref, computed } from 'vue'
+import {usePage} from "@inertiajs/vue3";
 
 defineOptions({layout:BackendLayout})
 
 const props=defineProps(['data','office','canCreate','canEdit','canDelete','canCreateRemuneration','canCreateTransfer',
-    'canDeleteTransfer','canCreateEngagementCard', 'canDownloadEngagementCard',]);
+    'canDeleteTransfer','canCreateEngagementCard', 'canDownloadEngagementCard','canRequestEdit']);
 
 const tab = ref('document')
 
 const showDeleteDialog = ref(false)
 
-
+const isAdmin = computed(() => !!usePage().props.roles?.find(item => item === 'Admin'));
+const isManager = computed(() => !!usePage().props.roles?.find(item => item === 'Manager'));
 
 </script>

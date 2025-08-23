@@ -11,7 +11,7 @@
             </div>
 
             <div class="q-gutter-sm">
-                <q-btn label="PE Summary" color="primary" @click="$inertia.get(route('summary.pe'))" />
+
                 <q-btn label="MR Summary" color="primary" @click="$inertia.get(route('summary.mr'))" />
             </div>
         </div>
@@ -191,7 +191,7 @@ const columns = [
     { name: 'name_of_workplace', label: 'Workplace', align: 'left', field: 'name_of_workplace', sortable: false },
     { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: false },
     { name: 'skill_at_present', label: 'Skill At Present', align: 'left', field: 'skill_at_present', sortable: true },
-    { name: 'date_of_engagement', label: 'Date of Engagement', align: 'left', field: 'date_of_engagement', sortable: true },
+    { name: 'date_of_engagement', label: 'Initial Engagement', align: 'left', field: 'date_of_engagement', sortable: true },
     { name: 'actions', label: 'Actions', align: 'center' },
 ];
 

@@ -64,7 +64,7 @@
                         />
                     </div>
 
-                    <div class="row q-col-gutter-sm">
+                    <div v-if="isAdmin" class="row q-col-gutter-sm">
                         <div class="col-12 col-sm-6">
                             <q-input v-model="form.name" label="Name" outlined dense :error="!!form.errors?.name"
                                      :error-message="form.errors?.name" :rules="[val => !!val || 'Name is required']" />
@@ -104,13 +104,49 @@
                                      :rules="[val => !!val || 'Technical Qualification is required']" />
                         </div>
                     </div>
+                    <div v-if="isManager" class="row q-col-gutter-sm">
+                        <div class="col-12 col-sm-6">
+                            <q-input v-model="form.name" label="Name" disable outlined dense :error="!!form.errors?.name"
+                                     :error-message="form.errors?.name" :rules="[val => !!val || 'Name is required']" />
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <q-input v-model="form.email" label="Email" type="email" outlined dense
+                                     :error="!!form.errors?.email" :error-message="form.errors?.email" />
+                        </div>
+
+                        <div class="col-12 col-sm-6">
+                            <q-input v-model="form.mobile" label="Mobile" mask="##########" outlined dense
+                                     :error="!!form.errors?.mobile" :error-message="form.errors?.mobile"
+                                     :rules="[val => !!val || 'Mobile is required']" />
+                        </div>
+
+                        <div class="col-12 col-sm-6">
+                            <q-input v-model="form.address" label="Address" outlined dense
+                                     :error="!!form.errors?.address" :error-message="form.errors?.address"
+                                     :rules="[val => !!val || 'Address is required']" />
+                        </div>
+
+                        <div class="col-12 col-sm-6">
+                            <q-input v-model="form.name_of_workplace" label="Workplace" outlined dense
+                                     :error="!!form.errors?.name_of_workplace" :error-message="form.errors?.name_of_workplace"
+                                     :rules="[val => !!val || 'Workplace is required']" />
+                        </div>
+
+                        <div class="col-12 col-sm-6">
+                            <q-input v-model="form.technical_qln" label="Technical Qualification" outlined dense
+                                     :error="!!form.errors?.technical_qln" :error-message="form.errors?.technical_qln"
+                                     :rules="[val => !!val || 'Technical Qualification is required']" />
+                        </div>
+                    </div>
                     <q-stepper-navigation>
+                        <q-btn flat color="negative" label="Cancel" class="q-ml-sm" @click="$inertia.get(isAdmin ? route('employees.all') : route('employees.manager.all'))"  />
                         <q-btn color="primary" label="Next" @click="nextStep" />
+
                     </q-stepper-navigation>
                 </q-step>
 
                 <!-- Step 2: Job Info -->
-                <q-step name="2" title="Job Info" icon="work" :done="step > 2">
+                <q-step v-if="isAdmin" name="2" title="Job Info" icon="work" :done="step > 2">
                     <div class="row q-col-gutter-sm">
                         <div class="col-12 col-sm-6">
                             <q-select v-model="form.employment_type" label="Employment Type" :options="type"
@@ -160,8 +196,9 @@
                         </div>
                     </div>
                     <q-stepper-navigation>
-                        <q-btn color="primary" label="Next" @click="nextStep" />
+                        <q-btn flat color="negative" label="Cancel" class="q-ml-sm" @click="$inertia.get(isAdmin ? route('employees.all') : route('employees.manager.all'))"  />
                         <q-btn flat color="primary" label="Back" @click="prevStep" class="q-ml-sm" />
+                        <q-btn color="primary" label="Next" @click="nextStep" />
                     </q-stepper-navigation>
                 </q-step>
 
@@ -205,10 +242,9 @@
                     </div>
 
                     <q-stepper-navigation>
-                        <q-btn color="primary" label="Next" @click="nextStep" />
-
+                        <q-btn flat color="negative" label="Cancel" class="q-ml-sm" @click="$inertia.get(isAdmin ? route('employees.all') : route('employees.manager.all'))"  />
                         <q-btn flat color="primary" label="Back" @click="prevStep" class="q-ml-sm" />
-
+                        <q-btn color="primary" label="Next" @click="nextStep" />
                     </q-stepper-navigation>
                 </q-step>
 
@@ -279,9 +315,9 @@
                     </div>
 
                     <q-stepper-navigation>
-                        <q-btn type="submit" color="btn-primary" label="Submit" />
+                        <q-btn flat color="negative" label="Cancel" class="q-ml-sm" @click="$inertia.get(isAdmin ? route('employees.all') : route('employees.manager.all'))"  />
                         <q-btn flat color="primary" label="Back" @click="prevStep" class="q-ml-sm" />
-                        <q-btn flat color="negative" label="Cancel" class="q-ml-sm" @click="$inertia.get(route('employees.all'))" />
+                        <q-btn type="submit" color="btn-primary" label="Submit" />
                     </q-stepper-navigation>
                 </q-step>
             </q-stepper>
@@ -290,9 +326,9 @@
 </template>
 <script setup>
 import BackendLayout from "@/Layouts/BackendLayout.vue";
-import {useForm,router} from "@inertiajs/vue3";
+import {useForm, router, usePage} from "@inertiajs/vue3";
 import {useQuasar} from "quasar";
-import {ref, onMounted} from 'vue'
+import {ref, onMounted, computed} from 'vue'
 import {data} from "autoprefixer";
 
 defineOptions({layout:BackendLayout})
@@ -377,7 +413,8 @@ const nextStep = () => {
             $q.notify({ type: 'negative', message: 'Please fill all required Personal Info fields.' })
             return
         }
-        step.value = '2'
+        // If admin → go to Step 2, else skip directly to Step 3
+        step.value = isAdmin.value ? '2' : '3'
     } else if (step.value === '2') {
         if (
             !form.employment_type || !form.designation ||
@@ -394,10 +431,16 @@ const nextStep = () => {
 }
 
 const prevStep = () => {
-    if (step.value === '4') step.value = '3'
-    else if (step.value === '3') step.value = '2'
-    else if (step.value === '2') step.value = '1'
+    if (step.value === '4') {
+        step.value = '3'
+    } else if (step.value === '3') {
+        // If admin → back to Step 2, else back to Step 1
+        step.value = isAdmin.value ? '2' : '1'
+    } else if (step.value === '2') {
+        step.value = '1'
+    }
 }
+
 const getFileUrl = (file) => {
     if (!file) return '#'
     return typeof file === 'string' ? file : URL.createObjectURL(file)
@@ -550,5 +593,9 @@ onMounted(() => {
         previewUrl.value = defaultUrl
     }
 })
+
+
+const isAdmin = computed(() => !!usePage().props.roles?.find(item => item === 'Admin'));
+const isManager = computed(() => !!usePage().props.roles?.find(item => item === 'Manager'));
 
 </script>

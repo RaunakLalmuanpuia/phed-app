@@ -46,8 +46,6 @@ class EmployeeController extends Controller
             'deletedCount' => $deletedCount,
         ]);
     }
-
-    //
     public function indexAllEmployees(Office $model) // shows all employees
     {
         $totalEmployees = $model->employees()
@@ -114,7 +112,6 @@ class EmployeeController extends Controller
             'educationQlnMr' => $educationQlnMr,
         ]);
     }
-
     public function jsonAllEmployees(Request $request, Office $model)
     {
         $user = auth()->user();
@@ -155,9 +152,6 @@ class EmployeeController extends Controller
             'list' => $employees->paginate($perPage),
         ], 200);
     }
-
-
-
     public function peEmployees(Request $request){
         $search = $request->get('search');
         $offices = Office::whereHas('employees', function ($query) {
@@ -236,7 +230,6 @@ class EmployeeController extends Controller
             'list' => $employees->paginate($perPage),
         ], 200);
     }
-
     public function mrEmployees(Request $request){
         $search = $request->get('search');
         $offices = Office::whereHas('employees', function ($query) {
@@ -280,7 +273,6 @@ class EmployeeController extends Controller
             'educationQln' => $educationQln,
         ]);
     }
-
     public function jsonMrEmployees(Request $request, Office $model)
     {
         $user = auth()->user();
@@ -311,7 +303,6 @@ class EmployeeController extends Controller
             'list' => $employees->paginate($perPage),
         ], 200);
     }
-
     public function deletedEmployees() // shows PE type
     {
         $office = Office::whereHas('employees')->get(); // ⬅️ Only offices with employees
@@ -364,6 +355,7 @@ class EmployeeController extends Controller
             'canDelete'=>$user->can('delete-employee'),
             'canEdit'=>$user->can('edit-employee'),
             'canCreate'=>$user->can('create-employee'),
+            'canRequestEdit'=>$user->can('request-edit'),
 
             'canCreateRemuneration'=>$user->can('create-remuneration'),
 
@@ -386,7 +378,6 @@ class EmployeeController extends Controller
             'offices' => $offices,
         ]);
     }
-
     public function store(Request $request){
 //        dd($request->all());
 
@@ -488,7 +479,6 @@ class EmployeeController extends Controller
 
 
     }
-
     public function edit(Request $request,Employee $model)
     {
         $user = auth()->user();
@@ -503,7 +493,6 @@ class EmployeeController extends Controller
         ]);
 
     }
-
     public function update(Request $request, Employee $model)
     {
 //        dd($request->all());
@@ -608,7 +597,6 @@ class EmployeeController extends Controller
         ]);
 
     }
-
     public function managerAll()
     {
         $user = auth()->user();
@@ -693,7 +681,6 @@ class EmployeeController extends Controller
             'skills' => $skills,
         ]);
     }
-
     public function jsonMangerAll(Request $request)
     {
         $user = auth()->user();
@@ -726,8 +713,6 @@ class EmployeeController extends Controller
             'list' => $employees->paginate($perPage),
         ], 200);
     }
-
-
     public function managerPe(){
         $user = auth()->user();
 
@@ -835,7 +820,6 @@ class EmployeeController extends Controller
             'educationQln' => $educationQln,
         ]);
     }
-
     public function jsonMangerMr(Request $request)
     {
         $user = auth()->user();
@@ -868,5 +852,6 @@ class EmployeeController extends Controller
             'list' => $employees->paginate($perPage),
         ], 200);
     }
+
 
 }
