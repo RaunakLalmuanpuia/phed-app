@@ -351,7 +351,7 @@ class EmployeeController extends Controller
         $office = Office::all();
         return inertia('Backend/Employees/Show', [
             'data' => $model->load(['office', 'documents.type','transfers.oldOffice','transfers.newOffice',
-                'deletionDetail','deletionRequests', 'remunerationDetail','engagementCard',
+                'deletionDetail','deletionRequests', 'remunerationDetail','engagementCard','editRequests',
                 'transferRequests.currentOffice','transferRequests.requestedOffice',]),
             'office' => $office,
             'canDelete'=>$user->can('delete-employee'),

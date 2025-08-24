@@ -186,7 +186,7 @@
                         <DeletionRequest v-if="tab === 'deletion'" :data="data" />
 
 
-                        <RequestEdit v-if="tab === 'request_edit'"/>
+                        <RequestEdit v-if="tab === 'request_edit'" :data="data"/>
                         <RequestTransfer v-if="tab ==='request_transfer'" :data="data" :office="office" />
                         <RequestDeletion v-if="tab === 'request_deletion'" :data="data" />
 

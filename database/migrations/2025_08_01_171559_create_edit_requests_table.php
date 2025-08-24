@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('edit_requests', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Employee::class);
-            $table->text('requested_changes')->nullable();
+            $table->json('requested_changes')->nullable();
             $table->date('request_date')->nullable();
             $table->string('approval_status')->default('Pending');
             $table->date('approval_date')->nullable();

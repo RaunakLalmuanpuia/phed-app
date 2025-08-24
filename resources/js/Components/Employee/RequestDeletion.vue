@@ -150,6 +150,11 @@ function submitRequest() {
         </q-dialog>
         <!-- History -->
         <q-card-section>
+
+            <div v-if="data.deletion_requests.length === 0" class="q-pa-md text-center  text-gray-500">
+                No Deletion requests found.
+            </div>
+
             <div class="row q-col-gutter-md q-gutter-sm flex-nowrap overflow-auto">
                 <q-card
                     v-for="request in data.deletion_requests"

@@ -11,6 +11,7 @@ use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\MISController;
+use App\Http\Controllers\EditRequestController;
 use App\Http\Controllers\TransferController;
 use App\Http\Controllers\DeletionController;
 use App\Http\Controllers\RemunerationController;
@@ -144,6 +145,14 @@ Route::group(['middleware'=>'auth','prefix' => 'employees'], function () {
     Route::post('store', [EmployeeController::class, 'store'])->middleware('can:create-employee')->name('employee.store');
     Route::get('edit/{model}', [EmployeeController::class, 'edit'])->middleware('can:edit-employee')->name('employee.edit');
     Route::post('update/{model}', [EmployeeController::class, 'update'])->middleware('can:edit-employee')->name('employee.update');
+});
+
+
+//Edit Request
+Route::group(['middleware'=>'auth','prefix' => 'edit'], function () {
+    Route::post('request/{model}', [EditRequestController::class, 'request'])->middleware('can:request-edit')->name('edit.request');
+    Route::post('approve/{model}', [EditRequestController::class, 'approve'])->middleware('can:approve-edit')->name('edit.approve');
+    Route::post('reject/{model}', [EditRequestController::class, 'reject'])->middleware('can:approve-edit')->name('edit.reject');
 });
 
 //Transfer
