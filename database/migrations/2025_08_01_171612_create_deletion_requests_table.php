@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('deletion_requests', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Employee::class);
-            $table->text('reason')->nullable();
+            $table->json('reason');
             $table->date('request_date')->nullable();
             $table->string('approval_status')->default('Pending');
             $table->date('approval_date')->nullable();

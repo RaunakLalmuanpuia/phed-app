@@ -3,10 +3,9 @@ import { ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import {useQuasar} from "quasar";
 const $q = useQuasar()
-const props = defineProps({
-  deletion: Object,
-})
 
+
+const props=defineProps(['deletion','canEditDelete']);
 const showDialog = ref(false)
 
 const form = useForm({
@@ -24,7 +23,7 @@ const submit = () => {
       showDialog.value = false
         $q.notify({
             type: 'positive',
-            message:  'Employee Deleted successfully.'
+            message:  'Deleted details updated successfully.'
         })
     }
   })
@@ -45,7 +44,7 @@ const viewDocument = (url) => {
       </div>
 
       <div class="flex q-gutter-sm">
-        <q-btn @click="showDialog = true" color="btn-primary" icon="edit" />
+        <q-btn v-if="canEditDelete" @click="showDialog = true" color="btn-primary" icon="edit" />
       </div>
     </div>
 

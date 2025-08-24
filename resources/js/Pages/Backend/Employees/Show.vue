@@ -202,7 +202,7 @@
                             <div class="col-12 col-md-5">
                                 <EngagementCard v-if="data.employment_type === 'PE'"
                                     :data="data" :canCreateEngagementCard="canCreateEngagementCard" :canDownloadEngagementCard="canDownloadEngagementCard" />
-                                <Deletion v-if="data.employment_type === 'Deleted'" :deletion="data.deletion_detail"/>
+                                <Deletion v-if="data.employment_type === 'Deleted'" :deletion="data.deletion_detail" :canEditDelete="canEditDelete"/>
                             </div>
 
                         </div>
@@ -245,7 +245,7 @@ defineOptions({layout:BackendLayout})
 
 const props=defineProps(['data','office','canCreate','canEdit','canDelete','canCreateRemuneration','canCreateTransfer',
     'canDeleteTransfer','canCreateEngagementCard', 'canDownloadEngagementCard','canRequestEdit','canRequestDelete','canRequestTransfer',
-    'canApproveEdit','canApproveTransfer','canApproveDelete']);
+    'canApproveEdit','canApproveTransfer','canApproveDelete','canEditDelete']);
 
 const tab = ref('document')
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DeletionDetail;
+use App\Models\DeletionRequest;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 
@@ -59,10 +60,96 @@ class DeletionController extends Controller
             $filename = 'deletion_' . uniqid() . '.' . $file->getClientOriginalExtension();
             $validated['supporting_document'] = $file->storeAs('deletions', $filename, 'public');
         }
+        else {
+            // Remove supporting_document from $validated so it doesn't overwrite existing
+            unset($validated['supporting_document']);
+        }
 
         $model->update($validated);
 
         return  redirect()->back()->with('success', 'Deletion detail updated.');
+    }
+
+
+
+    public function request(Request $request, Employee $model){
+
+        $request->validate([
+            'reason' => 'required|string|max:255',
+            'seniority_list' => 'nullable|string',
+            'year' => 'nullable|integer',
+            'remark' => 'nullable|string',
+            'supporting_document' => 'nullable|file|max:2048',
+        ]);
+
+        // Handle file upload if exists
+        $documentPath = null;
+        if ($request->hasFile('supporting_document')) {
+            $file = $request->file('supporting_document');
+            $filename = 'deletion_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $documentPath = $file->storeAs('deletions', $filename, 'public');
+        }
+
+        // Store everything in reason as JSON
+        $deletionRequest = DeletionRequest::create([
+            'employee_id' => $model->id,
+            'reason' => json_encode([
+                'reason' => $request->reason,
+                'seniority_list' => $request->seniority_list,
+                'year' => $request->year,
+                'remark' => $request->remark,
+                'supporting_document' => $documentPath,
+            ]),
+            'request_date' => now(),
+            'approval_status' => 'pending',
+        ]);
+
+        return redirect()->back()->with('success', 'Deletion request submitted successfully.');
+
+    }
+    // 2. Approve deletion (auto create DeletionDetail from JSON)
+    public function approve(DeletionRequest $model)
+    {
+//        dd($model);
+        $employee = $model->employee;
+
+        // Decode stored details from JSON
+        $details = json_decode($model->reason, true);
+
+        // Update request status
+        $model->update([
+            'approval_status' => 'approved',
+            'approval_date' => now(),
+        ]);
+
+        // Update employee
+        $employee->update([
+            'employment_type' => 'Deleted',
+        ]);
+
+        // Create DeletionDetail from JSON
+        $detail = DeletionDetail::create([
+            'employee_id' => $employee->id,
+            'seniority_list' => $details['seniority_list'] ?? null,
+            'reason' => $details['reason'] ?? null,
+            'year' => $details['year'] ?? null,
+            'remark' => $details['remark'] ?? null,
+            'supporting_document' => $details['supporting_document'] ?? null,
+        ]);
+
+        return redirect()->back()->with('success', 'Deletion request approved and employee marked as Deleted.');
+
+    }
+
+    public function reject(DeletionRequest $model)
+    {
+        $model->update([
+            'approval_status' => 'rejected',
+            'approval_date' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Deletion request rejected.');
+
     }
 
 }

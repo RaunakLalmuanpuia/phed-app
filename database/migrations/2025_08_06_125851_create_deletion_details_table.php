@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('deletion_details', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Employee::class);
-            $table->unsignedTinyInteger('seniority_list')->nullable();
+            $table->text('seniority_list')->nullable();
             $table->string('reason');
             $table->year('year')->nullable();
             $table->text('remark')->nullable();

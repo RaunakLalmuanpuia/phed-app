@@ -159,6 +159,9 @@ Route::group(['middleware'=>'auth','prefix' => 'transfer'], function () {
 Route::group(['middleware'=>'auth','prefix' => 'deletion'], function () {
     Route::post('store/{model}', [DeletionController::class, 'store'])->middleware('can:delete-employee')->name('deletion.store');
     Route::post('update/{model}', [DeletionController::class, 'update'])->middleware('can:edit-delete')->name('deletion.update');
+    Route::post('request/{model}', [DeletionController::class, 'request'])->middleware('can:request-delete')->name('deletion.request');
+    Route::post('approve/{model}', [DeletionController::class, 'approve'])->middleware('can:approve-delete')->name('deletion.approve');
+    Route::post('reject/{model}', [DeletionController::class, 'reject'])->middleware('can:approve-delete')->name('deletion.reject');
 });
 
 
