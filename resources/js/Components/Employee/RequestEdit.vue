@@ -126,18 +126,7 @@ const fieldLabels = {
                     </q-card-section>
 
                     <!-- Show buttons only when status is pending -->
-                    <q-card-actions align="right" v-if="req.approval_status === 'pending'">
-                        <q-btn
-                            label="Approve"
-                            color="positive"
-                            @click="approveRequest(req.id)"
-                        />
-                        <q-btn
-                            label="Reject"
-                            color="negative"
-                            @click="rejectRequest(req.id)"
-                        />
-                    </q-card-actions>
+
                 </q-card>
             </div>
         </q-card-section>
