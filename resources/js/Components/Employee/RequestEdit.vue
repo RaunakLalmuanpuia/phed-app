@@ -77,39 +77,67 @@ const fieldLabels = {
         <q-separator />
         <!-- Previous Requests -->
         <q-card-section>
-            <div v-if="data.edit_requests.length === 0" class=" text-center text-gray-500">
+            <!-- Empty state -->
+            <div v-if="data.edit_requests.length === 0" class="text-gray-500 text-center py-6">
                 No edit requests found.
             </div>
 
-            <div v-else class="grid gap-3">
+            <!-- Requests flex layout -->
+            <div v-else class="flex flex-col gap-4">
                 <q-card
                     v-for="req in data.edit_requests"
                     :key="req.id"
-                    class="shadow-md rounded-lg"
+                    class="shadow-md rounded-xl border border-gray-200 hover:shadow-lg transition"
                 >
                     <q-card-section>
-                        <div class="text-sm">
-                            <div><b>Status:</b> {{ req.approval_status }}</div>
-                            <div><b>Requested On:</b> {{ req.request_date }}</div>
+                        <!-- Top meta info -->
+                        <div class="flex flex-wrap justify-between items-center  mb-3">
                             <div>
-                                <b>Requested Changes:</b>
-                                <div class="bg-gray-50 p-2 rounded text-xs border mt-1">
-                                    <div
-                                        v-for="(value, key) in parseChanges(req.requested_changes)"
-                                        :key="key"
-                                        class="flex justify-between border-b last:border-0 py-1"
-                                    >
-                                        <span class="font-medium">
-                                            {{ fieldLabels[key] ?? key }}
-                                        </span>
-                                        <span>{{ value }}</span>
-                                    </div>
+                                <b class="text-label">Status:</b>
+                                <span
+                                    :class="{
+                                    'text-yellow-600': req.approval_status === 'pending',
+                                    'text-green-600': req.approval_status === 'approved',
+                                    'text-red-600': req.approval_status === 'rejected'
+                                  }"
+                                >
+                                  {{ req.approval_status }}
+                                </span>
+                            </div>
+                            <div><b class="text-label">Requested On:</b> {{ req.request_date }}</div>
+                        </div>
+
+                        <!-- Requested Changes stacked horizontally -->
+                        <div>
+                            <b class="block mb-2 text-label">Requested Changes:</b>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2  p-3 rounded-md ">
+                                <div
+                                    v-for="(value, key) in parseChanges(req.requested_changes)"
+                                    :key="key"
+                                    class="flex justify-between items-center"
+                                >
+                                    <q-item>
+                                        <q-item-section side class="subtitle"> {{ fieldLabels[key] ?? key }}:</q-item-section>
+                                        <q-item-section  class="text-label">{{ value }}</q-item-section>
+                                    </q-item>
                                 </div>
                             </div>
                         </div>
                     </q-card-section>
 
-
+                    <!-- Show buttons only when status is pending -->
+                    <q-card-actions align="right" v-if="req.approval_status === 'pending'">
+                        <q-btn
+                            label="Approve"
+                            color="positive"
+                            @click="approveRequest(req.id)"
+                        />
+                        <q-btn
+                            label="Reject"
+                            color="negative"
+                            @click="rejectRequest(req.id)"
+                        />
+                    </q-card-actions>
                 </q-card>
             </div>
         </q-card-section>
