@@ -330,32 +330,46 @@ const latestTransferRequest = computed(() => {
     const arr = props.data.transfer_requests;
     return arr && arr.length ? arr[arr.length - 1] : null;
 });
+// Helper to check if approval_date is within last 15 days
+function isRecent(approvalDate) {
+    if (!approvalDate) return true; // no date, treat as recent
+    const today = new Date();
+    const approved = new Date(approvalDate);
+    const diffDays = (today - approved) / (1000 * 60 * 60 * 24);
+    return diffDays <= 15;
+}
 
 // Alert logic
 const showEditAlert = computed(() => {
     if (!latestEditRequest.value) return false;
-    return isAdmin.value
-        ? latestEditRequest.value.approval_status === 'pending'
-        : isManager.value
-            ? latestEditRequest.value.approval_status !== 'pending'
-            : false;
+    if (isAdmin.value) {
+        return latestEditRequest.value.approval_status === 'pending';
+    } else if (isManager.value) {
+        return latestEditRequest.value.approval_status !== 'pending' &&
+            isRecent(latestEditRequest.value.approval_date);
+    }
+    return false;
 });
 
 const showDeletionAlert = computed(() => {
     if (!latestDeletionRequest.value) return false;
-    return isAdmin.value
-        ? latestDeletionRequest.value.approval_status === 'pending'
-        : isManager.value
-            ? latestDeletionRequest.value.approval_status !== 'pending'
-            : false;
+    if (isAdmin.value) {
+        return latestDeletionRequest.value.approval_status === 'pending';
+    } else if (isManager.value) {
+        return latestDeletionRequest.value.approval_status !== 'pending' &&
+            isRecent(latestDeletionRequest.value.approval_date);
+    }
+    return false;
 });
 
 const showTransferAlert = computed(() => {
     if (!latestTransferRequest.value) return false;
-    return isAdmin.value
-        ? latestTransferRequest.value.approval_status === 'pending'
-        : isManager.value
-            ? latestTransferRequest.value.approval_status !== 'pending'
-            : false;
+    if (isAdmin.value) {
+        return latestTransferRequest.value.approval_status === 'pending';
+    } else if (isManager.value) {
+        return latestTransferRequest.value.approval_status !== 'pending' &&
+            isRecent(latestTransferRequest.value.approval_date);
+    }
+    return false;
 });
 </script>
