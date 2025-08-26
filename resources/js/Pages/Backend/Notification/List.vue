@@ -78,12 +78,25 @@ const goToShow = (id) => {
                     <q-item-label caption>
                         Requested at: {{ formatDateTime(item.created_at) }}
                     </q-item-label>
+
+                    <!-- 🔹 Show status if not pending -->
+                    <q-item-label
+                        v-if="item.status !== 'pending'"
+                        caption
+                        :class="{
+                'text-green-600': item.status === 'approved',
+                'text-red-600': item.status === 'rejected'
+            }"
+                    >
+                        Status: {{ item.status }}
+                    </q-item-label>
                 </q-item-section>
 
                 <q-item-section side>
                     <q-icon size="18px" name="chevron_right" />
                 </q-item-section>
             </q-item>
+
 
             <!-- Empty state -->
             <div v-if="filteredList.length === 0" class="text-gray-500 text-center py-6">
