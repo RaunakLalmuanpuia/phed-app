@@ -104,6 +104,9 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
         Route::post('import-employee', [MISController::class, 'importEmployee'])->middleware('can:import-employee')->name('mis.import-employee');
         Route::get('export', [MISController::class, 'export'])->middleware('can:export-employee')->name('mis.export');
         Route::post('export-employee', [MISController::class, 'exportEmployee'])->middleware('can:export-employee')->name('mis.export-employee');
+
+        Route::get('remuneration', [MISController::class, 'remuneration'])->middleware('can:export-employee')->name('mis.remuneration');
+        Route::get('engagement-card', [MISController::class, 'engagementCard'])->middleware('can:export-employee')->name('mis.engagement-card');
     });
 
 
@@ -184,6 +187,7 @@ Route::group(['middleware'=>'auth','prefix'=>'notification'], function () {
 //    Route::post('store', [NotificationMessageController::class, 'store'])->name('notification.store');
 //    Route::post('token/upload', [FcmTokenController::class, 'updateToken'])->name('token.upload');
 });
+
 //Remuneration
 Route::group(['middleware'=>'auth','prefix' => 'remuneration'], function () {
     Route::post('store/{model}', [RemunerationController::class, 'store'])->middleware('can:create-remuneration')->name('remuneration.store');
@@ -202,7 +206,7 @@ Route::group(['middleware'=>'auth','prefix' => 'engagement-card'], function () {
 
 
 
-//Engagement Card
+//Summary
 Route::group(['middleware'=>'auth','prefix' => 'summary'], function () {
     Route::get('provisional', [SummaryController::class, 'provisionalSummary'])->middleware('can:view-pe-summary')->name('summary.pe');
     Route::get('muster-roll', [SummaryController::class, 'musterRollSummary'])->middleware('can:view-mr-summary')->name('summary.mr');
@@ -212,7 +216,7 @@ Route::group(['middleware'=>'auth','prefix' => 'summary'], function () {
 
 
 
-//Engagement Card
+//Export
 Route::group(['middleware'=>'auth','prefix' => 'export'], function () {
 
     Route::get('summary-provisional', [ExportController::class, 'exportProvisionalSummary'])->middleware('can:export-pe-summary')->name('export.summary-pe');

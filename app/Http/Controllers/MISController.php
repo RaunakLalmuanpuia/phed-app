@@ -66,4 +66,28 @@ class MISController extends Controller
         return redirect()->back()->with('message','Employee data imported successfully');
 
     }
+
+    public function remuneration(Request $request){
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('import-employee'),403,'Access Denied');
+
+        $office = Office::all();
+
+        return Inertia::render('Backend/MIS/Remuneration', [
+            'office' => $office,
+            'canImport'=>$user->can('import-employee'),
+        ]);
+    }
+
+    public function engagementCard(Request $request){
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('import-employee'),403,'Access Denied');
+
+        $office = Office::all();
+
+        return Inertia::render('Backend/MIS/EngagementCard', [
+            'office' => $office,
+            'canImport'=>$user->can('import-employee'),
+        ]);
+    }
 }
