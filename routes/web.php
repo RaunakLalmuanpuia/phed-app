@@ -18,6 +18,7 @@ use App\Http\Controllers\RemunerationController;
 use App\Http\Controllers\EngagementCardController;
 use App\Http\Controllers\SummaryController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\NotificationController;
 
 
 
@@ -173,7 +174,16 @@ Route::group(['middleware'=>'auth','prefix' => 'deletion'], function () {
     Route::post('reject/{model}', [DeletionController::class, 'reject'])->middleware('can:approve-delete')->name('deletion.reject');
 });
 
-
+//Notifications
+Route::group(['middleware'=>'auth','prefix'=>'notification'], function () {
+    Route::get('list', [NotificationController::class, 'myNotifications'])->name('notification.list');
+//    Route::get('index', [NotificationMessageController::class, 'index'])->name('notification.index');
+//    Route::get('create', [NotificationMessageController::class, 'create'])->name('notification.create');
+//    Route::get('{model}/show', [NotificationMessageController::class, 'show'])->name('notification.show');
+//    Route::delete('{model}', [NotificationMessageController::class, 'destroy'])->name('notification.destroy');
+//    Route::post('store', [NotificationMessageController::class, 'store'])->name('notification.store');
+//    Route::post('token/upload', [FcmTokenController::class, 'updateToken'])->name('token.upload');
+});
 //Remuneration
 Route::group(['middleware'=>'auth','prefix' => 'remuneration'], function () {
     Route::post('store/{model}', [RemunerationController::class, 'store'])->middleware('can:create-remuneration')->name('remuneration.store');

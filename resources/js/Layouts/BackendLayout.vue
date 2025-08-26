@@ -27,7 +27,7 @@
                         </q-list>
                     </q-btn-dropdown>
 
-                    <q-icon size="21px" @click="$inertia.get(route('dashboard'))" class="cursor-pointer" name="notifications">
+                    <q-icon size="21px" @click="$inertia.get(route('notification.list'))" class="cursor-pointer" name="notifications">
 <!--                        <q-badge v-if="hasNotification" floating color="negative" rounded/>-->
                         <q-badge floating color="negative" rounded/>
                     </q-icon>
