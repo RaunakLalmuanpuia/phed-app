@@ -170,14 +170,75 @@
                             align="center"
                         >
                             <q-tab name="document" label="Documents" icon="drive_folder_upload" />
-                            <q-tab v-if="isAdmin && canApproveEdit " name="edit" label="Edit Request" icon="edit"/>
-                            <q-tab v-if="isAdmin && canApproveTransfer" name="transfer_request" label="Transfer Request" icon="input" />
-                            <q-tab v-if="isAdmin && canApproveDelete" name="deletion" label="Deletion Request" icon="delete_sweep" />
 
-                            <q-tab v-if="isManager && canRequestEdit" name="request_edit" label="Request Edit" icon="edit"/>
-                            <q-tab v-if="isManager && canRequestTransfer" name="request_transfer" label="Request Transfer" icon="input" />
-                            <q-tab v-if="isManager && canRequestDelete" name="request_deletion" label="Request Deletion" icon="delete_sweep" />
+                            <q-tab
+                                v-if="isAdmin && canApproveEdit"
+                                name="edit"
+                                label="Edit Request"
+                                icon="edit"
+                                :alert="showEditAlert"
+                                alert-icon="circle"
+                                alert-color="red"
+                                :class="showEditAlert ? 'text-red' : ''"
+                            />
+
+                            <q-tab
+                                v-if="isAdmin && canApproveTransfer"
+                                name="transfer_request"
+                                label="Transfer Request"
+                                icon="input"
+                                :alert="showTransferAlert"
+                                alert-icon="circle"
+                                alert-color="red"
+                                :class="showTransferAlert ? 'text-red' : ''"
+                            />
+
+                            <q-tab
+                                v-if="isAdmin && canApproveDelete"
+                                name="deletion"
+                                label="Deletion Request"
+                                icon="delete_sweep"
+                                :alert="showDeletionAlert"
+                                alert-icon="circle"
+                                alert-color="red"
+                                :class="showDeletionAlert ? 'text-red' : ''"
+                            />
+
+                            <q-tab
+                                v-if="isManager && canRequestEdit"
+                                name="request_edit"
+                                label="Request Edit"
+                                icon="edit"
+                                :alert="showEditAlert"
+                                alert-icon="circle"
+                                alert-color="red"
+                                :class="showEditAlert ? 'text-red' : ''"
+                            />
+
+                            <q-tab
+                                v-if="isManager && canRequestTransfer"
+                                name="request_transfer"
+                                label="Request Transfer"
+                                icon="input"
+                                :alert="showTransferAlert"
+                                alert-icon="circle"
+                                alert-color="red"
+                                :class="showTransferAlert ? 'text-red' : ''"
+                            />
+
+                            <q-tab
+                                v-if="isManager && canRequestDelete"
+                                name="request_deletion"
+                                label="Request Deletion"
+                                icon="delete_sweep"
+                                :alert="showDeletionAlert"
+                                alert-icon="circle"
+                                alert-color="red"
+                                :class="showDeletionAlert ? 'text-red' : ''"
+                            />
                         </q-tabs>
+
+
 
                         <Document v-if="tab === 'document'" :data="data" />
 
@@ -254,4 +315,47 @@ const showDeleteDialog = ref(false)
 const isAdmin = computed(() => !!usePage().props.roles?.find(item => item === 'Admin'));
 const isManager = computed(() => !!usePage().props.roles?.find(item => item === 'Manager'));
 
+// Latest requests (last element is latest)
+const latestEditRequest = computed(() => {
+    const arr = props.data.edit_requests;
+    return arr && arr.length ? arr[arr.length - 1] : null;
+});
+
+const latestDeletionRequest = computed(() => {
+    const arr = props.data.deletion_requests;
+    return arr && arr.length ? arr[arr.length - 1] : null;
+});
+
+const latestTransferRequest = computed(() => {
+    const arr = props.data.transfer_requests;
+    return arr && arr.length ? arr[arr.length - 1] : null;
+});
+
+// Alert logic
+const showEditAlert = computed(() => {
+    if (!latestEditRequest.value) return false;
+    return isAdmin.value
+        ? latestEditRequest.value.approval_status === 'pending'
+        : isManager.value
+            ? latestEditRequest.value.approval_status !== 'pending'
+            : false;
+});
+
+const showDeletionAlert = computed(() => {
+    if (!latestDeletionRequest.value) return false;
+    return isAdmin.value
+        ? latestDeletionRequest.value.approval_status === 'pending'
+        : isManager.value
+            ? latestDeletionRequest.value.approval_status !== 'pending'
+            : false;
+});
+
+const showTransferAlert = computed(() => {
+    if (!latestTransferRequest.value) return false;
+    return isAdmin.value
+        ? latestTransferRequest.value.approval_status === 'pending'
+        : isManager.value
+            ? latestTransferRequest.value.approval_status !== 'pending'
+            : false;
+});
 </script>
