@@ -122,16 +122,24 @@
                             <div>
                                 <div class="text-body1">{{ props.row.name }}</div>
                                 <div class="text-caption text-grey">{{ props.row.mobile }}</div>
-                                <div class="text-caption text-grey">{{ props.row.date_of_birth }}</div>
+                                <div class="text-caption text-grey">{{ formatDate(props.row.date_of_birth) }}</div>
                             </div>
                         </div>
                     </q-td>
                 </template>
 
+
+
                 <!-- Office Cell -->
                 <template v-slot:body-cell-office="props">
                     <q-td :props="props">
                         <q-chip color="primary" text-color="white" dense>{{ props.row.office?.name }}</q-chip>
+                    </q-td>
+                </template>
+
+                <template v-slot:body-cell-date_of_engagement="props">
+                    <q-td :props="props">
+                        {{formatDate(props.row.date_of_engagement)}}
                     </q-td>
                 </template>
 
@@ -179,7 +187,9 @@ import {onMounted, ref, watch} from 'vue';
 
 import BackendLayout from "@/Layouts/BackendLayout.vue";
 import {useQuasar} from "quasar";
+import useUtils from "@/Compositions/useUtils";
 
+const {formatDate} = useUtils();
 defineOptions({layout:BackendLayout})
 
 const props=defineProps(['offices','skills','educationQln'])

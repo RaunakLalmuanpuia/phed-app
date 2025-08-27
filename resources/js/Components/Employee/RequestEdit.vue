@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
+import useUtils from "@/Compositions/useUtils";
 
+const {formatDate, formatDateTime} = useUtils();
 const props = defineProps(['data']);
 
 const showDialog = ref(false);
@@ -104,7 +106,7 @@ const fieldLabels = {
                                   {{ req.approval_status }}
                                 </span>
                             </div>
-                            <div><b class="text-label">Requested On:</b> {{ req.request_date }}</div>
+                            <div><b class="text-label">Requested On:</b> {{formatDate(req.request_date)  }}</div>
                         </div>
 
                         <!-- Requested Changes stacked horizontally -->
@@ -117,8 +119,12 @@ const fieldLabels = {
                                     class="flex justify-between items-center"
                                 >
                                     <q-item>
-                                        <q-item-section side class="subtitle"> {{ fieldLabels[key] ?? key }}:</q-item-section>
-                                        <q-item-section  class="text-label">{{ value }}</q-item-section>
+                                        <q-item-section side class="subtitle">
+                                            {{ fieldLabels[key] ?? key }}:
+                                        </q-item-section>
+                                        <q-item-section class="text-label">
+                                            {{ key === 'date_of_birth' || key === 'date_of_engagement' ? formatDate(value) : value }}
+                                        </q-item-section>
                                     </q-item>
                                 </div>
                             </div>

@@ -214,7 +214,7 @@
                             <div>
                                 <div class="text-body1">{{ props.row.name }}</div>
                                 <div class="text-caption text-grey">{{ props.row.mobile }}</div>
-                                <div class="text-caption text-grey">{{ props.row.date_of_birth }}</div>
+                                <div class="text-caption text-grey">{{ formatDate(props.row.date_of_birth) }}</div>
                             </div>
                         </div>
                     </q-td>
@@ -289,7 +289,9 @@ import {onMounted, ref, watch} from 'vue';
 
 import BackendLayout from "@/Layouts/BackendLayout.vue";
 import {useQuasar} from "quasar";
+import useUtils from "@/Compositions/useUtils";
 
+const {formatDate} = useUtils();
 defineOptions({layout:BackendLayout})
 
 const props=defineProps(['offices','totalEmployees','peCount','mrCount','designations','educationQlnPe','educationQlnMr','skills'])

@@ -71,7 +71,7 @@
 
                                         <q-item>
                                             <q-item-section side class="subtitle">Date of Birth:</q-item-section>
-                                            <q-item-section  class="text-label">{{data.date_of_birth}}</q-item-section>
+                                            <q-item-section  class="text-label">{{formatDate(data.date_of_birth)}}</q-item-section>
                                         </q-item>
 
                                         <q-item>
@@ -112,7 +112,9 @@
 
                                         <q-item>
                                             <q-item-section side class="subtitle">Date of Engagement:</q-item-section>
-                                            <q-item-section  class="text-label">{{data?.date_of_engagement ?? 'N/A'}}</q-item-section>
+                                            <q-item-section class="text-label">
+                                                {{ formatDate(data?.date_of_engagement) || 'N/A' }}
+                                            </q-item-section>
                                         </q-item>
 
                                         <q-item v-if=" data?.employment_type?.trim() === 'MR'">
@@ -301,6 +303,9 @@ import EngagementCard from "@/Components/Employee/EngagementCard.vue";
 
 import { ref, computed } from 'vue'
 import {usePage} from "@inertiajs/vue3";
+import useUtils from "@/Compositions/useUtils";
+
+const {formatDate} = useUtils();
 
 defineOptions({layout:BackendLayout})
 

@@ -3,7 +3,9 @@ import {computed} from "vue";
 import {useForm} from "@inertiajs/vue3";
 import {useQuasar} from "quasar";
 
+import useUtils from "@/Compositions/useUtils";
 
+const {formatDate, formatDateTime} = useUtils();
 const $q = useQuasar();
 
 const form = useForm({
@@ -20,13 +22,7 @@ function parseReason(request) {
     }
 }
 
-function formatDate(dateStr) {
-    return new Date(dateStr).toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-    });
-}
+
 
 function statusColor(status) {
     switch (status) {

@@ -120,7 +120,7 @@
                             <div>
                                 <div class="text-body1">{{ props.row.name }}</div>
                                 <div class="text-caption text-grey">{{ props.row.mobile }}</div>
-                                <div class="text-caption text-grey">{{ props.row.date_of_birth }}</div>
+                                <div class="text-caption text-grey">{{ formatDate(props.row.date_of_birth) }}</div>
                             </div>
                         </div>
                     </q-td>
@@ -149,7 +149,7 @@
                     <q-td :props="props">
                         {{
                             props.row.remuneration_detail?.next_increment_date
-                                ? new Date(props.row.remuneration_detail.next_increment_date).toLocaleDateString()
+                                ? formatDate(props.row.remuneration_detail.next_increment_date)
                                 : '—'
                         }}
                     </q-td>
@@ -201,7 +201,9 @@ import {onMounted, ref, watch} from 'vue';
 
 import BackendLayout from "@/Layouts/BackendLayout.vue";
 import {useQuasar} from "quasar";
+import useUtils from "@/Compositions/useUtils";
 
+const {formatDate} = useUtils();
 defineOptions({layout:BackendLayout})
 
 const props = defineProps(['offices', 'designations', 'educationQln',]);

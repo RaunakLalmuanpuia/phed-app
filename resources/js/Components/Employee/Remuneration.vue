@@ -1,7 +1,9 @@
 <script setup>
 import { ref, watch } from "vue";
 import { useForm } from "@inertiajs/vue3";
+import useUtils from "@/Compositions/useUtils";
 
+const {formatDate} = useUtils();
 const props = defineProps({
     data: Object, // contains employee and remuneration_detail
     canCreateRemuneration: Boolean,
@@ -111,7 +113,7 @@ const submitForm = () => {
                 <q-item>
                     <q-item-section side class="subtitle">Date of next Increment:</q-item-section>
                     <q-item-section class="text-label">
-                        {{ new Date(data.remuneration_detail.next_increment_date).toLocaleDateString() }}
+                        {{ formatDate(data.remuneration_detail.next_increment_date) }}
                     </q-item-section>
                 </q-item>
             </q-list>

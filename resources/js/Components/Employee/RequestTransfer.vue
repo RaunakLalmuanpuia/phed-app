@@ -2,7 +2,9 @@
 import { ref,computed } from "vue";
 import { useQuasar } from "quasar";
 import { useForm } from "@inertiajs/vue3";
+import useUtils from "@/Compositions/useUtils";
 
+const {formatDate, formatDateTime} = useUtils();
 const props = defineProps(['data', 'office']);
 const $q = useQuasar();
 
@@ -74,7 +76,7 @@ const submit = () => {
                   { name: 'current_office', label: 'Current Office', field: row => row.current_office?.name },
                   { name: 'requested_office', label: 'Requested Office', field: row => row.requested_office?.name },
                   { name: 'status', label: 'Status', field: 'approval_status' },
-                  { name: 'date', label: 'Request Date', field: 'request_date' }
+                  { name: 'date', label: 'Request Date', field: row => formatDate(row.request_date) }
                 ]"
                 row-key="id"
                 flat
