@@ -74,7 +74,7 @@ class MISController extends Controller
         abort_if(!$user->hasPermissionTo('generate-remuneration'),403,'Access Denied');
 
         $office = Office::whereHas('employees', function($query) {
-            $query->where('employee_type', 'PE');
+            $query->where('employment_type', 'PE');
         })->get();
 
 
