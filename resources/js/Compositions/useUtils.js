@@ -48,6 +48,6 @@ export default function () {
         formatDateTime,
         emailRegex,
         mobileRegex,
-        paytmUrl
+
     }
 };
