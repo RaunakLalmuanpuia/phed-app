@@ -4,7 +4,7 @@ import { useForm } from "@inertiajs/vue3";
 import useUtils from "@/Compositions/useUtils";
 
 const {formatDate, formatDateTime} = useUtils();
-const props = defineProps(['data']);
+const props = defineProps(['data','documentTypes']);
 
 const showDialog = ref(false);
 
@@ -76,6 +76,7 @@ const fieldLabels = {
             <q-btn label="Request Edit" color="primary" @click="showDialog = true" />
         </q-card-section>
 
+        {{documentTypes}}
         <q-separator />
         <!-- Previous Requests -->
         <q-card-section>

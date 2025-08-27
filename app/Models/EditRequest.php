@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class EditRequest extends Model
 {
@@ -24,5 +25,10 @@ class EditRequest extends Model
     public function employee(): BelongsTo {
         return $this->belongsTo(Employee::class);
     }
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(EditRequestDocument::class);
+    }
+
 
 }

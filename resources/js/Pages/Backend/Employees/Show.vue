@@ -249,7 +249,7 @@
                         <DeletionRequest v-if="tab === 'deletion'" :data="data" />
 
 
-                        <RequestEdit v-if="tab === 'request_edit'" :data="data"/>
+                        <RequestEdit v-if="tab === 'request_edit'" :data="data" :documentTypes="documentTypes"/>
                         <RequestTransfer v-if="tab ==='request_transfer'" :data="data" :office="office" />
                         <RequestDeletion v-if="tab === 'request_deletion'" :data="data" />
 
@@ -309,7 +309,7 @@ const {formatDate} = useUtils();
 
 defineOptions({layout:BackendLayout})
 
-const props=defineProps(['data','office','canCreate','canEdit','canDelete','canCreateRemuneration','canCreateTransfer',
+const props=defineProps(['data','office','documentTypes','canCreate','canEdit','canDelete','canCreateRemuneration','canCreateTransfer',
     'canDeleteTransfer','canCreateEngagementCard', 'canDownloadEngagementCard','canRequestEdit','canRequestDelete','canRequestTransfer',
     'canApproveEdit','canApproveTransfer','canApproveDelete','canEditDelete']);
 
