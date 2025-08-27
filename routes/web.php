@@ -105,8 +105,10 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
         Route::get('export', [MISController::class, 'export'])->middleware('can:export-employee')->name('mis.export');
         Route::post('export-employee', [MISController::class, 'exportEmployee'])->middleware('can:export-employee')->name('mis.export-employee');
 
-        Route::get('remuneration', [MISController::class, 'remuneration'])->middleware('can:export-employee')->name('mis.remuneration');
-        Route::get('engagement-card', [MISController::class, 'engagementCard'])->middleware('can:export-employee')->name('mis.engagement-card');
+        Route::get('remuneration', [MISController::class, 'remuneration'])->middleware('can:generate-remuneration')->name('mis.remuneration');
+        Route::get('json-remuneration', [MISController::class, 'jsonRemuneration'])->middleware('can:generate-remuneration')->name('mis.json-remuneration');
+
+        Route::get('engagement-card', [MISController::class, 'engagementCard'])->middleware('can:generate-engagement-card')->name('mis.engagement-card');
     });
 
 
@@ -194,8 +196,6 @@ Route::group(['middleware'=>'auth','prefix' => 'remuneration'], function () {
     Route::put('update/{model}', [RemunerationController::class, 'update'])->middleware('can:edit-remuneration')->name('remuneration.update');
 });
 
-
-
 //Engagement Card
 Route::group(['middleware'=>'auth','prefix' => 'engagement-card'], function () {
     Route::get('{employee}', [EngagementCardController::class, 'show'])->middleware('can:view-engagement-card')->name('engagement-card.show');
@@ -203,18 +203,12 @@ Route::group(['middleware'=>'auth','prefix' => 'engagement-card'], function () {
     Route::get('/download/{employee}', [EngagementCardController::class, 'download'])->middleware('can:download-engagement-card')->name('engagement-card.download');
 });
 
-
-
-
 //Summary
 Route::group(['middleware'=>'auth','prefix' => 'summary'], function () {
     Route::get('provisional', [SummaryController::class, 'provisionalSummary'])->middleware('can:view-pe-summary')->name('summary.pe');
     Route::get('muster-roll', [SummaryController::class, 'musterRollSummary'])->middleware('can:view-mr-summary')->name('summary.mr');
 
 });
-
-
-
 
 //Export
 Route::group(['middleware'=>'auth','prefix' => 'export'], function () {

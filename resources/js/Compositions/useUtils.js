@@ -5,16 +5,6 @@ export default function () {
         return (new Intl.NumberFormat('en-IN', {style: 'currency', currency: 'INR'}).format(Number(value)));
     }
 
-    // const paytmUrl = () => {
-    //     return (true) ? 'https://securegw-stage.paytm.in/merchantpgpui/checkoutjs/merchants/Mizora32691755815703.js'
-    //         : 'https://securegw.paytm.in/merchantpgpui/checkoutjs/merchants/Mizora49434774766128.js';
-    // };
-
-    const paytmUrl = () => {
-        return (true) ? 'https://securestage.paytmpayments.com/merchantpgpui/checkoutjs/merchants/Resell00448805757124.js'
-            : 'https://secure.paytmpayments.com/merchantpgpui/checkoutjs/merchants/Mizora41210038573029.js';
-    };
-
     const formatDate = (value, pattern) => {
         try {
             if (pattern) {

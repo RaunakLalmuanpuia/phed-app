@@ -251,6 +251,8 @@
                     :header-class="(
                               route().current()==='mis.export'
                              || route().current()==='mis.import'
+                              || route().current()==='mis.remuneration'
+                               || route().current()==='mis.engagement-card'
                           )
 
                           ?'active-menu text-accent':''"
@@ -260,7 +262,8 @@
 
                             <q-icon>
                                 <svg v-if=" route().current()==='mis.export' ||
-                                           route().current()==='mis.import'" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                           route().current()==='mis.import'  || route().current()==='mis.remuneration'
+                               || route().current()==='mis.engagement-card'" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect x="14" y="7" width="1.5" height="7" fill="#306ADB"/>
                                     <rect x="18" y="8" width="1.5" height="6" fill="#306ADB"/>
                                     <rect x="22" y="4" width="1.5" height="10" fill="#306ADB"/>
@@ -495,8 +498,8 @@ const module = reactive({
         children: [
             {route_name: 'mis.export', label: 'Export', permission: 'export-employee'},
             {route_name: 'mis.import', label: 'Import', permission: 'import-employee'},
-            {route_name: 'mis.import', label: 'Remuneration Details', permission: 'import-employee'},
-            {route_name: 'mis.import', label: 'Engagement Card', permission: 'import-employee'},
+            {route_name: 'mis.remuneration', label: 'Remuneration Details', permission: 'generate-remuneration'},
+            {route_name: 'mis.engagement-card', label: 'Engagement Card', permission: 'generate-engagement-card'},
         ]
     },
     requests: {
