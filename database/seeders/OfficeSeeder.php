@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+
 class OfficeSeeder extends Seeder
 {
     /**
@@ -12,9 +12,14 @@ class OfficeSeeder extends Seeder
      */
     public function run(): void
     {
-        //
         DB::table('offices')->insert([
-
+            [
+                'name' => 'Aizawl Circle Office',
+                'type' => 'Circle',
+                'location' => 'Aizawl',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
             [
                 'name' => 'AWDD North',
                 'type' => 'Division',
@@ -37,7 +42,42 @@ class OfficeSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'name' => 'S&D',
+                'name' => 'C.E Z-I',
+                'type' => 'Zone',
+                'location' => 'Aizawl',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'C.E Z-II',
+                'type' => 'Zone',
+                'location' => 'Aizawl',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Champhai',
+                'type' => 'Division',
+                'location' => 'Champhai',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Champhai Circle Office',
+                'type' => 'Circle',
+                'location' => 'Champhai',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'E-in-C',
+                'type' => 'Office',
+                'location' => 'Aizawl',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'GW&QC',
                 'type' => 'Division',
                 'location' => 'Aizawl',
                 'created_at' => now(),
@@ -50,16 +90,43 @@ class OfficeSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-
             [
-                'name' => 'GW&QC',
+                'name' => 'Hnahthial',
                 'type' => 'Division',
-                'location' => 'Aizawl',
+                'location' => 'Hnahthial',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'RWD Aizawl',
+                'name' => 'Khawzawl',
+                'type' => 'Division',
+                'location' => 'Khawzawl',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Kolasib',
+                'type' => 'Division',
+                'location' => 'Kolasib',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Lawngtlai',
+                'type' => 'Division',
+                'location' => 'Lawngtlai',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Lunglei Circle Office',
+                'type' => 'Circle',
+                'location' => 'Lunglei',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'LWSM',
                 'type' => 'Division',
                 'location' => 'Lawngtlai',
                 'created_at' => now(),
@@ -73,42 +140,14 @@ class OfficeSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Kolasib',
-                'type' => 'Division',
-                'location' => 'Kolasib',
+                'name' => 'Rural Circle Office',
+                'type' => 'Circle',
+                'location' => 'Aizawl',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Serchhip',
-                'type' => 'Division',
-                'location' => 'Serchhip',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Khawzawl',
-                'type' => 'Division',
-                'location' => 'Khawzawl',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Champhai',
-                'type' => 'Division',
-                'location' => 'Champhai',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Hnahthial',
-                'type' => 'Division',
-                'location' => 'Hnahthial',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'LWSM',
+                'name' => 'RWD Aizawl',
                 'type' => 'Division',
                 'location' => 'Lawngtlai',
                 'created_at' => now(),
@@ -122,9 +161,23 @@ class OfficeSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Lawngtlai',
+                'name' => 'S & S Circle Office',
+                'type' => 'Circle',
+                'location' => 'Aizawl',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'S&D',
                 'type' => 'Division',
-                'location' => 'Lawngtlai',
+                'location' => 'Aizawl',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Serchhip',
+                'type' => 'Division',
+                'location' => 'Serchhip',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -135,71 +188,6 @@ class OfficeSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-
-            [
-                'name' => 'E-in-C',
-                'type' => 'Office',
-                'location' => 'Aizawl',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-
-            [
-                'name' => 'C.E Z-I',
-                'type' => 'Zone',
-                'location' => 'Aizawl',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-
-            [
-                'name' => 'C.E Z-II',
-                'type' => 'Zone',
-                'location' => 'Aizawl',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-
-            [
-                'name' => 'Aizawl Circle Office',
-                'type' => 'Circle',
-                'location' => 'Aizawl',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-
-            [
-                'name' => 'S & S Circle Office',
-                'type' => 'Circle',
-                'location' => 'Aizawl',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-
-            [
-                'name' => 'Rural Circle Office',
-                'type' => 'Circle',
-                'location' => 'Aizawl',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-
-            [
-                'name' => 'Champhai Circle Office',
-                'type' => 'Circle',
-                'location' => 'Champhai',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-
-            [
-                'name' => 'Lunglei Circle Office',
-                'type' => 'Circle',
-                'location' => 'Lunglei',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-
         ]);
     }
 }

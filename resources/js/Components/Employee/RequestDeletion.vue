@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import {computed, ref} from "vue";
 import { useForm, router } from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
 import useUtils from "@/Compositions/useUtils";
@@ -17,6 +17,10 @@ const form = useForm({
     remark: "",
     supporting_document: null,
 });
+
+const latestRequestPending = computed(() =>
+    props.data.deletion_requests?.slice(-1)[0]?.approval_status === 'pending'
+);
 
 // Dialog state
 const showDialog = ref(false);
@@ -78,6 +82,7 @@ function submitRequest() {
                     label="Request Deletion"
                     color="negative"
                     v-if="data.employment_type !== 'Deleted'"
+                    :disable="latestRequestPending"
                     @click="showDialog = true"
                 />
             </div>

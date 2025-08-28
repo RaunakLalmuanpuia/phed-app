@@ -95,8 +95,9 @@
                                      :rules="[val => !!val || 'Address is required']" />
                         </div>
                         <div class="col-12 col-sm-6">
-                            <q-input v-model="form.educational_qln" label="Educational Qualification" outlined dense
-                                     :error="!!form.errors?.educational_qln" :error-message="form.errors?.educational_qln"
+
+                            <q-select v-model="form.educational_qln" :options="educationalQualifications" label="Educational Qualification" outlined dense
+                                      emit-value map-options :error="!!form.errors?.educational_qln" :error-message="form.errors?.educational_qln"
                                      :rules="[val => !!val || 'Education Qualification is required']" />
                         </div>
                         <div class="col-12 col-sm-6">
@@ -283,6 +284,10 @@ import BackendLayout from "@/Layouts/BackendLayout.vue";
 import {useForm,router} from "@inertiajs/vue3";
 import {useQuasar} from "quasar";
 import {ref} from 'vue'
+
+import useUtils from "@/Compositions/useUtils";
+
+const { educationalQualifications } = useUtils();
 
 defineOptions({layout:BackendLayout})
 const props=defineProps(['documentTypes','offices']);

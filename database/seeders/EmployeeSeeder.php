@@ -66,12 +66,11 @@ class EmployeeSeeder extends Seeder
 
         // Predefined Educational Qualifications
         $educationalQualifications = [
-            'High School',
-            'Intermediate',
-            'Diploma',
-            'Graduate',
-            'Post Graduate',
-            'PhD'
+            'U/M',
+            'HSLC',
+            'HSSLC',
+            'Graduate & Level',
+            'Master Degree & Level',
         ];
 
 // Predefined Technical Qualifications

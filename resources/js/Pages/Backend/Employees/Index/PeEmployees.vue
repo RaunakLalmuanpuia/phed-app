@@ -24,20 +24,20 @@
 
                 <div class="row q-col-gutter-md">
 
-                    <q-input
-                        dense
-                        outlined
-                        debounce="300"
-                        v-model="filters.search"
-                        placeholder="Search"
-                        class="col-12 col-sm-4"
-                        clearable
-                        @update:model-value="handleSearch"
-                    >
-                        <template #append>
-                            <q-icon name="search" />
-                        </template>
-                    </q-input>
+<!--                    <q-input-->
+<!--                        dense-->
+<!--                        outlined-->
+<!--                        debounce="300"-->
+<!--                        v-model="filters.search"-->
+<!--                        placeholder="Search"-->
+<!--                        class="col-12 col-sm-4"-->
+<!--                        clearable-->
+<!--                        @update:model-value="handleSearch"-->
+<!--                    >-->
+<!--                        <template #append>-->
+<!--                            <q-icon name="search" />-->
+<!--                        </template>-->
+<!--                    </q-input>-->
 
                     <q-select
                         label="Select Designation"

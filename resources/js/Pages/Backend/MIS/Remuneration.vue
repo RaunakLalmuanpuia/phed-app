@@ -166,7 +166,7 @@
 
                     <div class="row q-mb-sm items-center">
                         <div class="col-4 text-subtitle2 text-grey-8">Current Remuneration (Total)</div>
-                        <div class="col-8 text-body1">Rs {{ currentRow?.remuneration_detail?.total || 0 }}</div>
+                        <div class="col-8 text-body1">Rs {{ currentRow?.remuneration_detail?.round_total || 0 }}</div>
                     </div>
 
                     <div class="row q-mb-sm items-center">
@@ -231,7 +231,7 @@ function fetchEmployees() {
     if (!filters.value.offices || filters.value.offices.length === 0) {
         q.notify({
             type: 'negative',
-            message: 'Please select at least one office'
+            message: 'Please select an office'
         })
         return
     }

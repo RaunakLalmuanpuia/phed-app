@@ -856,9 +856,7 @@ class EmployeeController extends Controller
             }))
             ->when($filter['skill'] ?? null, function ($query, $skill) {
                 $query->where('skill_at_present', $skill);
-            })->when($filter['education_qln_pr'] ?? null, function ($query, $educationQln) {
-                $query->where('educational_qln', $educationQln);
-            })->when($filter['education_qln_mr'] ?? null, function ($query, $educationQln) {
+            })->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
                 $query->where('educational_qln', $educationQln);
             });
 

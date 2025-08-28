@@ -1,10 +1,10 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import useUtils from "@/Compositions/useUtils";
 import {useQuasar} from "quasar";
 
-const { formatDate } = useUtils();
+const { formatDate, educationalQualifications } = useUtils();
 const props = defineProps(["data", "documentTypes"]);
 
 const $q = useQuasar();
@@ -21,6 +21,11 @@ const form = useForm({
     },
     documents: {}, // 🔹 hold uploaded files
 });
+
+const latestRequestPending = computed(() =>
+    props.data.edit_requests?.slice(-1)[0]?.approval_status === 'pending'
+);
+
 
 watch(showDialog, (val) => {
     if (!val) {
@@ -52,7 +57,19 @@ const clearForm = () => {
     form.documents = {}; // 🔹 explicitly clear uploaded files too
 };
 
+const hasChanges = computed(() => {
+    return Object.values(form.requested_changes).some(v => v && v.trim?.() !== "");
+});
+
 const submitRequest = () => {
+    if (!hasChanges.value) {
+        $q.notify({
+            type: "warning",
+            message: "Please enter at least one change before submitting.",
+        });
+        return;
+    }
+
     const fd = new FormData();
 
     // add requested changes
@@ -109,7 +126,7 @@ const safeParse = (data) => {
     <q-card class="q-mt-md">
         <q-card-section class="flex items-center justify-between">
             <div class="stitle text-lg font-bold">Request Edit</div>
-            <q-btn label="Request Edit" color="primary" @click="showDialog = true" />
+            <q-btn label="Request Edit" color="primary"  :disable="latestRequestPending" @click="showDialog = true" />
         </q-card-section>
 
         <q-separator />
@@ -211,16 +228,29 @@ const safeParse = (data) => {
                             <div class="text-sm font-bold mb-1">New {{ label }}:</div>
 
                             <q-input
-                                v-if="field !== 'date_of_birth'"
+                                v-if="field === 'date_of_birth'"
                                 v-model="form.requested_changes[field]"
+                                type="date"
                                 outlined
                                 dense
                             />
 
+                            <!-- Educational Qualification dropdown -->
+                            <q-select
+                                v-else-if="field === 'educational_qln'"
+                                v-model="form.requested_changes[field]"
+                                :options="educationalQualifications"
+                                label="Select Qualification"
+                                outlined
+                                dense
+                                emit-value
+                                map-options
+                            />
+
+                            <!-- Default input -->
                             <q-input
                                 v-else
                                 v-model="form.requested_changes[field]"
-                                type="date"
                                 outlined
                                 dense
                             />
@@ -265,6 +295,7 @@ const safeParse = (data) => {
                     label="Submit"
                     color="primary"
                     :loading="form.processing"
+                    :disable="!hasChanges"
                     @click="submitRequest"
                 />
             </q-card-actions>

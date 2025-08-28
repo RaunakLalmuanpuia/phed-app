@@ -57,7 +57,7 @@ const safeParse = (data) => {
         <q-card-section>
             <!-- Empty state -->
             <div v-if="data.edit_requests.length === 0" class="text-gray-500 text-center py-6">
-                No edit requests found.
+                No edit requests.
             </div>
 
             <!-- Requests flex layout -->

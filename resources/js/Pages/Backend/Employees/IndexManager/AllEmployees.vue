@@ -62,21 +62,21 @@
                             <div class="row q-col-gutter-md">
 
 
-                                <q-select
-                                    label="Select Office"
-                                    class="col-12 col-sm-4"
-                                    v-model="filters.office"
-                                    :options="props.offices"
-                                    option-label="label"
-                                    option-value="value"
-                                    emit-value
-                                    map-options
-                                    multiple
-                                    outlined
-                                    dense
-                                    clearable
-                                    @update:model-value="handleSearch"
-                                />
+<!--                                <q-select-->
+<!--                                    label="Select Office"-->
+<!--                                    class="col-12 col-sm-4"-->
+<!--                                    v-model="filters.office"-->
+<!--                                    :options="props.offices"-->
+<!--                                    option-label="label"-->
+<!--                                    option-value="value"-->
+<!--                                    emit-value-->
+<!--                                    map-options-->
+<!--                                    multiple-->
+<!--                                    outlined-->
+<!--                                    dense-->
+<!--                                    clearable-->
+<!--                                    @update:model-value="handleSearch"-->
+<!--                                />-->
 
                                 <q-select
                                     label="Select Employment Type"

@@ -29,19 +29,36 @@ export default function () {
             return 'invalid Date'
         }
     }
-    const DEFAULT_TEST_PARAMS = {
-        chest: '35 cm',
-        expanded_chest: '38 cm',
-        height: '165 cm',
-        long_jump: '3 Meter',
-        high_jump: '3 Meter',
-        short_race: '10 Sec',
-        long_race: '20 Min',
-    }
+
+    const employment_types = [
+        'MR',
+        'PE',
+        'Deleted',
+    ];
+
+    const educationalQualifications = [
+        'U/M',
+        'HSLC',
+        'HSSLC',
+        'Graduate & Level',
+        'Master Degree & Level',
+    ];
+
+    const skills = [
+        'Unskilled',
+        'Semi-Skilled',
+        'Skilled-I',
+        'Skilled-II',
+    ];
+
+
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const mobileRegex = /^[0-9]{10}$/;
+
     return {
-        DEFAULT_TEST_PARAMS,
+        employment_types,
+        educationalQualifications,
+        skills,
         formatMoney,
         formatAudioTime,
         formatDate,
