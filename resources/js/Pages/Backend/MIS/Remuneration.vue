@@ -41,7 +41,7 @@
                                     outlined
                                     dense
                                     clearable
-                                    multiple
+
                                     @clear="clearTable"
                                     @update:model-value="checkOffices"
                                 />
