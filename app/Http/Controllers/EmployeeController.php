@@ -352,7 +352,7 @@ class EmployeeController extends Controller
         $documentTypes = DocumentType::all(); // get all document types
         return inertia('Backend/Employees/Show', [
             'data' => $model->load(['office', 'documents.type','transfers.oldOffice','transfers.newOffice',
-                'deletionDetail','deletionRequests', 'remunerationDetail','engagementCard','editRequests.attachments',
+                'deletionDetail','deletionRequests', 'remunerationDetail','engagementCard','editRequests.attachments.type',
                 'transferRequests.currentOffice','transferRequests.requestedOffice',]),
             'office' => $office,
             'documentTypes' => $documentTypes,

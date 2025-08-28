@@ -74,7 +74,7 @@ const fieldLabels = {
                                   {{ req.approval_status }}
                                 </span>
                             </div>
-                            <div><b class="text-label">Requested On:</b> {{ formatDateTime(req.request_date) }}</div>
+                            <div><b class="text-label">Requested On:</b> {{ formatDate(req.request_date) }}</div>
                         </div>
 
                         <!-- Requested Changes stacked horizontally -->
@@ -94,6 +94,53 @@ const fieldLabels = {
                                             {{ key === 'date_of_birth' || key === 'date_of_engagement' ? formatDate(value) : value }}
                                         </q-item-section>
                                     </q-item>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="req.attachments && req.attachments.length > 0" class="mt-4">
+                            <b class="block mb-2">Attached Documents:</b>
+                            <div class="space-y-2">
+                                <div
+                                    v-for="file in req.attachments"
+                                    :key="file.id"
+                                    class="flex items-center justify-between p-2 border rounded-md"
+                                >
+                                    <div class="flex items-center space-x-2">
+                                        <q-icon name="attach_file" size="sm" />
+                                        <!-- Show Document Type Name + File Name -->
+                                        <span>
+                                          <b>{{ file.type?.name || 'Unknown Type' }}</b>
+
+                                        </span>
+                                    </div>
+
+                                    <div class="flex space-x-2">
+                                        <!-- Download -->
+                                        <q-btn
+                                            flat
+                                            dense
+                                            round
+                                            color="primary"
+                                            icon="download"
+                                            :href="`/storage/${file.path}`"
+                                            target="_blank"
+                                        >
+                                            <q-tooltip>Download</q-tooltip>
+                                        </q-btn>
+
+                                        <!-- View -->
+                                        <q-btn
+                                            flat
+                                            dense
+                                            round
+                                            color="primary"
+                                            icon="visibility"
+                                            :href="`/storage/${file.path}`"
+                                            target="_blank"
+                                        >
+                                            <q-tooltip>View</q-tooltip>
+                                        </q-btn>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -33,11 +33,11 @@ class EmployeeSeeder extends Seeder
 
         // Seed Document Types
         $docTypes = collect([
-            'Aadhar Card',
-            'PAN Card',
-            'Passport',
-            'Driving License',
-            'Voter ID'
+            'Aadhar',
+            'EPIC',
+            'Birth Certificate',
+            'Educational Certificate',
+            'Technical Certificate'
         ])->map(fn($type) => DocumentType::create([
             'name' => $type,
             'description' => "$type document",
@@ -118,20 +118,20 @@ class EmployeeSeeder extends Seeder
             }
         });
 
-        // Seed Documents for each employee
-        $employees->each(function ($employee) use ($docTypes) {
-            foreach ($docTypes->random(2) as $docType) {
-                Document::create([
-                    'document_type_id' => $docType->id,
-                    'employee_id' => $employee->id,
-                    'mime' => 'application/pdf',
-                    'path' => 'uploads/documents/sample.pdf',
-                    'name' => $docType->name . ' - ' . $employee->name,
-                    'type' => 'identity',
-                    'upload_date' => Carbon::now()->toDateString(),
-                ]);
-            }
-        });
+//        // Seed Documents for each employee
+//        $employees->each(function ($employee) use ($docTypes) {
+//            foreach ($docTypes->random(2) as $docType) {
+//                Document::create([
+//                    'document_type_id' => $docType->id,
+//                    'employee_id' => $employee->id,
+//                    'mime' => 'application/pdf',
+//                    'path' => 'uploads/documents/sample.pdf',
+//                    'name' => $docType->name . ' - ' . $employee->name,
+//                    'type' => 'identity',
+//                    'upload_date' => Carbon::now()->toDateString(),
+//                ]);
+//            }
+//        });
 
         // Seed Transfers for some employees (with history)
         $employees->random(10)->each(function ($employee) use ($offices) {

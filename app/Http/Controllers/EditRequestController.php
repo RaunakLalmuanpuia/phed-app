@@ -43,25 +43,84 @@ class EditRequestController extends Controller
             ->filter(fn($v) => !is_null($v) && $v !== '')
             ->toArray();
 
+        // Field → Required documents
+        $fieldToDocuments = [
+            'date_of_birth'   => ['Birth Certificate', 'Aadhar', 'EPIC', 'Educational Certificate'],
+            'name'            => ['Birth Certificate', 'Aadhar', 'EPIC', 'Educational Certificate'],
+            'parent_name'     => ['Birth Certificate'],
+            'educational_qln' => ['Educational Certificate'],
+            'technical_qln'   => ['Technical Certificate'],
+        ];
+
+        // Collect required docs
+        $requiredDocTypes = collect($changes)
+            ->keys()
+            ->flatMap(fn($field) => $fieldToDocuments[$field] ?? [])
+            ->unique()
+            ->values();
+
+        // 🔹 Validate that all required docs exist
+        foreach ($requiredDocTypes as $docTypeName) {
+            $docType = DocumentType::where('name', $docTypeName)->first();
+            if (!$docType) {
+                return back()->withErrors([
+                    'documents' => "Document type '{$docTypeName}' not found in system."
+                ]);
+            }
+
+            $fileInput = $request->file("documents.$docTypeName");
+
+            if (!$fileInput) {
+                return back()->withErrors([
+                    'documents' => "Please upload required document: {$docTypeName}."
+                ]);
+            }
+
+            // Normalize to array
+            $files = is_array($fileInput) ? $fileInput : [$fileInput];
+
+            if (count($files) === 0) {
+                return back()->withErrors([
+                    'documents' => "Please upload required document: {$docTypeName}."
+                ]);
+            }
+        }
+
+        // 🔹 Save edit request
         $editRequest = EditRequest::create([
-            'employee_id' => $model->id,
+            'employee_id'       => $model->id,
             'requested_changes' => json_encode($changes),
-            'request_date' => now(),
-            'approval_status' => 'pending',
+            'request_date'      => now(),
+            'approval_status'   => 'pending',
         ]);
 
+        // 🔹 Save uploaded documents
         if ($request->has('documents')) {
             foreach ($request->documents as $field => $files) {
+                // normalize to array
+                $files = is_array($files) ? $files : [$files];
+
                 foreach ($files as $file) {
-                    $path = $file->store('edit_request_documents');
-                    $docType = DocumentType::where('name', $field)->first(); // map to DocumentType
+
+
+
+
+
+                    $docType = DocumentType::where('name', $field)->first();
+
+                    $randomString = \Str::random(8); // Laravel helper for random string
+                    $extension = $file->getClientOriginalExtension();
+                    $generatedName = $docType->name . '_' . $randomString . '.' . $extension;
+
+                    $path = $file->storeAs('edit_request_documents', $generatedName, 'public');
+
                     EditRequestDocument::create([
-                        'edit_request_id' => $editRequest->id,
-                        'employee_id' => $model->id,
+                        'edit_request_id'  => $editRequest->id,
+                        'employee_id'      => $model->id,
                         'document_type_id' => $docType->id ?? null,
-                        'name' => $file->getClientOriginalName(),
-                        'path' => $path,
-                        'mime' => $file->getClientMimeType(),
+                        'name'             => $generatedName,
+                        'path'             => $path,
+                        'mime'             => $file->getClientMimeType(),
                     ]);
                 }
             }
@@ -69,6 +128,8 @@ class EditRequestController extends Controller
 
         return redirect()->back()->with('success', 'Edit request submitted.');
     }
+
+
 
     // Approve request
 //    public function approve(EditRequest $model)
@@ -91,29 +152,34 @@ class EditRequestController extends Controller
         $changes = json_decode($model->requested_changes, true);
         $employee = $model->employee;
 
-        // Update employee
+        // Update employee fields
         $employee->update($changes);
 
-        // Copy or update documents
+        // Save documents from request attachments into employee documents
         foreach ($model->attachments as $attachment) {
             $employee->documents()->updateOrCreate(
-                ['document_type_id' => $attachment->document_type_id],
                 [
-                    'name' => $attachment->name,
-                    'path' => $attachment->path,
-                    'mime' => $attachment->mime,
+                    'document_type_id' => $attachment->document_type_id
+                ],
+                [
+                    'name'        => $attachment->name,
+                    'path'        => $attachment->path,   // already uploaded by q-file
+                    'mime'        => $attachment->mime,
                     'upload_date' => now(),
+                    'type' => $attachment->document_type_id,
                 ]
             );
         }
 
+        // Mark request as approved
         $model->update([
             'approval_status' => 'approved',
-            'approval_date' => now(),
+            'approval_date'   => now(),
         ]);
 
-        return redirect()->back()->with('success', 'Edit request approved.');
+        return redirect()->back()->with('success', 'Edit request approved and documents saved.');
     }
+
 
 
     // Reject request
