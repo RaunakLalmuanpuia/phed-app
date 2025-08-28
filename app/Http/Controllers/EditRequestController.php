@@ -83,9 +83,6 @@ class EditRequestController extends Controller
                 foreach ($files as $file) {
 
 
-
-
-
                     $docType = DocumentType::where('name', $field)->first();
 
                     $randomString = \Str::random(8); // Laravel helper for random string

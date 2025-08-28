@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import useUtils from "@/Compositions/useUtils";
 import {useQuasar} from "quasar";
@@ -20,6 +20,13 @@ const form = useForm({
         technical_qln: "",
     },
     documents: {}, // 🔹 hold uploaded files
+});
+
+watch(showDialog, (val) => {
+    if (!val) {
+        form.reset(); // reset values
+        form.clearErrors(); // optional: clear validation errors too
+    }
 });
 
 // field → required docs mapping
