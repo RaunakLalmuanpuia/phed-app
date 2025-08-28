@@ -46,6 +46,12 @@ const fieldLabels = {
     technical_qln: "Technical Qualification",
 };
 
+const clearForm = () => {
+    form.reset();
+    form.clearErrors();
+    form.documents = {}; // 🔹 explicitly clear uploaded files too
+};
+
 const submitRequest = () => {
     const fd = new FormData();
 
@@ -291,6 +297,12 @@ const submitRequest = () => {
             </q-card-section>
 
             <q-card-actions align="right">
+                <q-btn
+                    flat
+                    label="Clear"
+                    color="warning"
+                    @click="clearForm"
+                />
                 <q-btn flat label="Cancel" v-close-popup />
                 <q-btn
                     label="Submit"
