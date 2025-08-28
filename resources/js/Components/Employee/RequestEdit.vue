@@ -300,7 +300,7 @@ const submitRequest = () => {
                 <q-btn
                     flat
                     label="Clear"
-                    color="warning"
+                    color="red"
                     @click="clearForm"
                 />
                 <q-btn flat label="Cancel" v-close-popup />
