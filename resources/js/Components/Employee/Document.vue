@@ -19,7 +19,7 @@
         <q-markup-table flat dense class="q-ma-sm">
             <thead>
             <tr class="text-left">
-                <th>Document Name</th>
+
                 <th>Type</th>
                 <th>Mime Type</th>
                 <th>Upload Date</th>
@@ -32,7 +32,6 @@
                 :key="doc.id"
                 class="text-left"
             >
-                <td class="q-pa-sm">{{ doc.name }}</td>
                 <td class="q-pa-sm">{{ doc.type?.name || '—' }}</td>
                 <td class="q-pa-sm">{{ doc.mime }}</td>
                 <td class="q-pa-sm">{{ formatDate(doc.upload_date) }}</td>
@@ -41,6 +40,7 @@
                         icon="visibility"
                         flat
                         dense
+                        color="primary"
                         round
                         :href="`/storage/${doc.path}`"
                         target="_blank"
@@ -51,6 +51,7 @@
                         flat
                         dense
                         round
+                        color="primary"
                         :href="`/storage/${doc.path}`"
                         download
                         title="Download Document"

@@ -166,8 +166,8 @@ const submitRequest = () => {
                                         <q-icon name="attach_file" size="sm" />
                                         <!-- Show Document Type Name + File Name -->
                                         <span>
-                                          <b>{{ file.type?.name || 'Unknown Type' }}:</b>
-                                          {{ file.name }}
+                                          <b>{{ file.type?.name || 'Unknown Type' }}</b>
+
                                         </span>
                                     </div>
 
