@@ -222,10 +222,7 @@
                                 name="request_transfer"
                                 label="Request Transfer"
                                 icon="input"
-                                :alert="showTransferAlert"
-                                alert-icon="circle"
-                                alert-color="red"
-                                :class="showTransferAlert ? 'text-red' : ''"
+
                             />
 
                             <q-tab
@@ -233,10 +230,6 @@
                                 name="request_deletion"
                                 label="Request Deletion"
                                 icon="delete_sweep"
-                                :alert="showDeletionAlert"
-                                alert-icon="circle"
-                                alert-color="red"
-                                :class="showDeletionAlert ? 'text-red' : ''"
                             />
                         </q-tabs>
 
