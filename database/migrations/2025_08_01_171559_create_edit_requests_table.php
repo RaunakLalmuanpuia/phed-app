@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(\App\Models\Employee::class);
             $table->json('requested_changes')->nullable();
+            $table->json('previous_data')->nullable();
             $table->date('request_date')->nullable();
             $table->string('approval_status')->default('Pending');
             $table->date('approval_date')->nullable();

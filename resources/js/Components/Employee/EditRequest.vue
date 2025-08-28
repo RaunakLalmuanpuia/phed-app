@@ -36,6 +36,14 @@ const fieldLabels = {
     skill_category: "Skill Category",
     skill_at_present: "Skill at Present",
 };
+
+const safeParse = (data) => {
+    try {
+        return data ? JSON.parse(data) : {};
+    } catch {
+        return {};
+    }
+};
 </script>
 
 <template>
@@ -91,7 +99,8 @@ const fieldLabels = {
                                             {{ fieldLabels[key] ?? key }}:
                                         </q-item-section>
                                         <q-item-section class="text-label">
-                                            {{ key === 'date_of_birth' || key === 'date_of_engagement' ? formatDate(value) : value }}
+                                            From {{ key === "date_of_birth" ? formatDate(safeParse(req.previous_data)[key]) : safeParse(req.previous_data)[key] || "—" }}
+                                            To {{ key === 'date_of_birth' || key === 'date_of_engagement' ? formatDate(value) : value }}
                                         </q-item-section>
                                     </q-item>
                                 </div>

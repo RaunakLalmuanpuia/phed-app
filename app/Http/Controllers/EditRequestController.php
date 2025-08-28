@@ -65,10 +65,14 @@ class EditRequestController extends Controller
                 ]);
             }
         }
-
+        $previousData = [];
+        foreach (array_keys($changes) as $field) {
+            $previousData[$field] = $model->{$field};
+        }
         // 🔹 Save edit request
         $editRequest = EditRequest::create([
             'employee_id'       => $model->id,
+            'previous_data'     => json_encode($previousData),
             'requested_changes' => json_encode($changes),
             'request_date'      => now(),
             'approval_status'   => 'pending',

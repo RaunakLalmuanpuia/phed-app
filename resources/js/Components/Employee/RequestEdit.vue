@@ -96,6 +96,13 @@ const submitRequest = () => {
         },
     });
 };
+const safeParse = (data) => {
+    try {
+        return data ? JSON.parse(data) : {};
+    } catch {
+        return {};
+    }
+};
 </script>
 
 <template>
@@ -141,6 +148,7 @@ const submitRequest = () => {
                             </div>
                         </div>
 
+
                         <div>
                             <b class="block mb-2">Requested Changes:</b>
                             <div
@@ -151,71 +159,20 @@ const submitRequest = () => {
                                     :key="key"
                                     class="flex justify-between items-center"
                                 >
+
                                     <q-item>
                                         <q-item-section side>
                                             {{ fieldLabels[key] ?? key }}:
                                         </q-item-section>
                                         <q-item-section>
-                                            {{
-                                                key === "date_of_birth"
-                                                    ? formatDate(value)
-                                                    : value
-                                            }}
+                                            From {{ key === "date_of_birth" ? formatDate(safeParse(req.previous_data)[key]) : safeParse(req.previous_data)[key] || "—" }}
+                                            To {{ key === "date_of_birth" ? formatDate(value) : value }}
                                         </q-item-section>
                                     </q-item>
                                 </div>
 
                             </div>
                         </div>
-                        <div v-if="req.attachments && req.attachments.length > 0" class="mt-4">
-                            <b class="block mb-2">Attached Documents:</b>
-                            <div class="space-y-2">
-                                <div
-                                    v-for="file in req.attachments"
-                                    :key="file.id"
-                                    class="flex items-center justify-between p-2 border rounded-md"
-                                >
-                                    <div class="flex items-center space-x-2">
-                                        <q-icon name="attach_file" size="sm" />
-                                        <!-- Show Document Type Name + File Name -->
-                                        <span>
-                                          <b>{{ file.type?.name || 'Unknown Type' }}</b>
-
-                                        </span>
-                                    </div>
-
-                                    <div class="flex space-x-2">
-                                        <!-- Download -->
-                                        <q-btn
-                                            flat
-                                            dense
-                                            round
-                                            color="primary"
-                                            icon="download"
-                                            :href="`/storage/${file.path}`"
-                                            target="_blank"
-                                        >
-                                            <q-tooltip>Download</q-tooltip>
-                                        </q-btn>
-
-                                        <!-- View -->
-                                        <q-btn
-                                            flat
-                                            dense
-                                            round
-                                            color="primary"
-                                            icon="visibility"
-                                            :href="`/storage/${file.path}`"
-                                            target="_blank"
-                                        >
-                                            <q-tooltip>View</q-tooltip>
-                                        </q-btn>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
                     </q-card-section>
                 </q-card>
             </div>

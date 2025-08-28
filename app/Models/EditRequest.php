@@ -11,6 +11,7 @@ class EditRequest extends Model
     //
     protected $fillable = [
         'employee_id',
+        'previous_data',
         'requested_changes',
         'request_date',
         'approval_status',
@@ -20,6 +21,8 @@ class EditRequest extends Model
     protected $casts = [
         'request_date' => 'date',
         'approval_date' => 'date',
+        'requested_changes' => 'array',
+        'previous_data' => 'array',
     ];
 
     public function employee(): BelongsTo {
