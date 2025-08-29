@@ -113,84 +113,107 @@ const submitRequest = () => {
         },
     });
 };
-const safeParse = (data) => {
+
+// Helper to safely parse JSON
+const parseChanges = (changes) => {
     try {
-        return data ? JSON.parse(data) : {};
-    } catch {
+        return JSON.parse(changes);
+    } catch (e) {
         return {};
     }
 };
 </script>
 
 <template>
-    <q-card class="q-mt-md">
+    <q-card class="q-mt-md shadow-lg rounded-xl border border-gray-200">
+        <!-- Title -->
         <q-card-section class="flex items-center justify-between">
             <div class="stitle text-lg font-bold">Request Edit</div>
             <q-btn label="Request Edit" color="primary"  :disable="latestRequestPending" @click="showDialog = true" />
         </q-card-section>
 
+
         <q-separator />
 
-        <!-- Previous Requests -->
         <q-card-section>
+            <!-- Empty state -->
             <div
                 v-if="data.edit_requests.length === 0"
-                class="text-gray-500 text-center py-6"
+                class="text-gray-500 text-center py-10 text-base italic"
             >
                 No edit requests found.
             </div>
 
-            <div v-else class="flex flex-col gap-4">
+            <!-- Requests list -->
+            <div v-else class="flex flex-col gap-6">
                 <q-card
                     v-for="req in data.edit_requests"
                     :key="req.id"
-                    class="shadow-md rounded-xl border border-gray-200 hover:shadow-lg transition"
+                    class="rounded-xl border border-gray-100 hover:shadow-md transition duration-200"
                 >
                     <q-card-section>
-                        <div class="flex flex-wrap justify-between items-center mb-3">
-                            <div>
-                                <b>Status:</b>
+                        <!-- Header Info -->
+                        <div class="flex flex-wrap justify-between items-center mb-4">
+                            <div class="">
+                                <b class="text-gray-600">Status:</b>
                                 <span
+                                    class="ml-1 font-medium capitalize"
                                     :class="{
-                                    'text-yellow-600': req.approval_status === 'pending',
-                                    'text-green-600': req.approval_status === 'approved',
-                                    'text-red-600': req.approval_status === 'rejected'
-                                  }"
-                                                >
-                                  {{ req.approval_status }}
-                                </span>
+                                      'text-yellow-600': req.approval_status === 'pending',
+                                      'text-green-600': req.approval_status === 'approved',
+                                      'text-red-600': req.approval_status === 'rejected'
+                                    }"
+                                >
+                                    {{ req.approval_status }}
+                                  </span>
                             </div>
-                            <div>
+                            <div class="text-gray-600">
                                 <b>Requested On:</b> {{ formatDate(req.request_date) }}
                             </div>
                         </div>
 
-
+                        <!-- Requested Changes -->
                         <div>
-                            <b class="block mb-2">Requested Changes:</b>
+                            <b class="block mb-3 text-gray-700">Requested Changes</b>
                             <div
-                                class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 p-3 rounded-md"
+                                class="grid grid-cols-1 md:grid-cols-2 gap-4  p-4 rounded-lg"
                             >
                                 <div
-                                    v-for="(value, key) in JSON.parse(req.requested_changes)"
+                                    v-for="(value, key) in parseChanges(req.requested_changes)"
                                     :key="key"
-                                    class="flex justify-between items-center"
                                 >
+                                    <div class="flex flex-col">
+                                      <span class="text-gray-500">
+                                        {{ fieldLabels[key] ?? key }}:
+                                      </span>
+                                        <span class="text-gray-800">
+                                              From:
+                                            <span class="font-bold">
 
-                                    <q-item>
-                                        <q-item-section side>
-                                            {{ fieldLabels[key] ?? key }}:
-                                        </q-item-section>
-                                        <q-item-section>
-                                            From {{ key === "date_of_birth" ? formatDate(safeParse(req.previous_data)[key]) : safeParse(req.previous_data)[key] || "—" }}
-                                            To {{ key === "date_of_birth" ? formatDate(value) : value }}
-                                        </q-item-section>
-                                    </q-item>
+                                              {{
+                                                    key === "date_of_birth"
+                                                        ? formatDate(parseChanges(req.previous_data)[key])
+                                                        : parseChanges(req.previous_data)[key] || "—"
+                                                }}
+                                            </span>
+                                           To:
+                                            <span class="font-bold">
+
+                                              {{
+                                                    key === "date_of_birth" ||
+                                                    key === "date_of_engagement"
+                                                        ? formatDate(value)
+                                                        : value
+                                                }}
+                                            </span>
+                                         </span>
+                                    </div>
                                 </div>
-
                             </div>
                         </div>
+
                     </q-card-section>
+
                 </q-card>
             </div>
         </q-card-section>

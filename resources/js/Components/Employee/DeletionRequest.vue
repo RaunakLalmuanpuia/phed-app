@@ -91,7 +91,8 @@ const rejectRequest = (id) => {
 </script>
 
 <template>
-    <q-card class="q-mt-md">
+    <q-card class="q-mt-md shadow-lg rounded-xl border border-gray-200">
+        <!-- Title -->
         <q-card-section>
             <div class="stitle text-lg font-bold">Deletion Requests</div>
         </q-card-section>
@@ -99,64 +100,91 @@ const rejectRequest = (id) => {
         <q-separator />
 
         <q-card-section>
-            <!-- Empty state -->
-            <div v-if="data.deletion_requests.length === 0" class="text-gray-500 text-center py-6">
-                No deletion requests.
+            <!-- Empty State -->
+            <div
+                v-if="data.deletion_requests.length === 0"
+                class="text-gray-500 text-center py-10 text-base italic"
+            >
+                No deletion requests found.
             </div>
 
-            <!-- Requests flex layout -->
-            <div v-else class="flex flex-col gap-4">
+            <!-- Requests List -->
+            <div v-else class="flex flex-col gap-6">
                 <q-card
                     v-for="request in data.deletion_requests"
                     :key="request.id"
-                    class="shadow-md rounded-xl border border-gray-200 hover:shadow-lg transition"
+                    class="rounded-xl border border-gray-100 hover:shadow-md transition duration-200"
                 >
                     <q-card-section>
-                        <!-- Top meta info -->
-                        <div class="flex flex-wrap justify-between items-center mb-3">
+                        <!-- Header Info -->
+                        <div class="flex flex-wrap justify-between items-center mb-4">
                             <div>
-                                <b class="text-label">Status:</b>
+                                <b class="text-gray-600">Status:</b>
                                 <span
+                                    class="ml-1 font-medium capitalize"
                                     :class="{
-                    'text-yellow-600': request.approval_status === 'pending',
-                    'text-green-600': request.approval_status === 'approved',
-                    'text-red-600': request.approval_status === 'rejected'
-                  }"
-                                >
-                  {{ request.approval_status }}
-                </span>
+                                      'text-yellow-600': request.approval_status === 'pending',
+                                      'text-green-600': request.approval_status === 'approved',
+                                      'text-red-600': request.approval_status === 'rejected'
+                                    }"
+                                                    >
+                                    {{ request.approval_status }}
+                                  </span>
                             </div>
-                            <div>
-                                <b class="text-label">Requested On:</b>
-                                {{ formatDate(request.request_date) }}
+                            <div class="text-gray-600">
+                                <b>Requested On:</b> {{ formatDate(request.request_date) }}
                             </div>
-
                         </div>
 
-                        <!-- Reason details stacked horizontally -->
+                        <!-- Reason Details -->
                         <div>
-                            <b class="block mb-2 text-label">Reason Details:</b>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 p-3 rounded-md">
-                                <q-item>
-                                    <q-item-section side class="subtitle">Reason:</q-item-section>
-                                    <q-item-section class="text-label">{{ parseReason(request).reason }}</q-item-section>
-                                </q-item>
-                                <q-item>
-                                    <q-item-section side class="subtitle">Year:</q-item-section>
-                                    <q-item-section class="text-label">{{ parseReason(request).year }}</q-item-section>
-                                </q-item>
-                                <q-item>
-                                    <q-item-section side class="subtitle">Remark:</q-item-section>
-                                    <q-item-section class="text-label">{{ parseReason(request).remark }}</q-item-section>
-                                </q-item>
-                                <q-item>
-                                    <q-item-section side class="subtitle">Seniority List:</q-item-section>
-                                    <q-item-section class="text-label">{{ parseReason(request).seniority_list }}</q-item-section>
-                                </q-item>
+                            <b class="block mb-3 text-gray-700">Reason Details</b>
+                            <div
+                                class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-lg"
+                            >
+                                <div>
+                                    <div class="text-gray-500">
+                                        Reason:
+                                        <span class="text-gray-800 font-bold">
+                                         {{ parseReason(request).reason }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="text-gray-500">
+                                        Year:
+                                        <span class="text-gray-800 font-bold">
+                                         {{ parseReason(request).year }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="text-gray-500">
+                                        Remark:
+                                        <span class="text-gray-800 font-bold">
+                                        {{ parseReason(request).remark }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="text-gray-500">
+                                        Seniority List:
+                                        <span class="text-gray-800 font-bold">
+                                        {{ parseReason(request).seniority_list }}
+                                        </span>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <!-- Supporting Document -->
-                            <div v-if="parseReason(request).supporting_document" class="mt-3">
+                            <div
+                                v-if="parseReason(request).supporting_document"
+                                class="mt-4 flex items-center"
+                            >
                                 <q-btn
                                     dense
                                     flat
@@ -165,21 +193,30 @@ const rejectRequest = (id) => {
                                     :href="`/${parseReason(request).supporting_document}`"
                                     target="_blank"
                                     label="View Document"
+                                    class="rounded-lg"
                                 />
                             </div>
                         </div>
                     </q-card-section>
 
-                    <!-- Show buttons only when status is pending -->
-                    <q-card-actions align="right" v-if="request.approval_status === 'pending'">
+                    <!-- Actions (only pending) -->
+                    <q-card-actions
+                        align="right"
+                        v-if="request.approval_status === 'pending'"
+                        class="px-4 pb-4"
+                    >
                         <q-btn
                             label="Approve"
                             color="positive"
+                            unelevated
+                            class="rounded-lg"
                             @click="approveRequest(request.id)"
                         />
                         <q-btn
                             label="Reject"
                             color="negative"
+                            flat
+                            class="rounded-lg"
                             @click="rejectRequest(request.id)"
                         />
                     </q-card-actions>
@@ -187,6 +224,7 @@ const rejectRequest = (id) => {
             </div>
         </q-card-section>
     </q-card>
+
 </template>
 
 

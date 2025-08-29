@@ -72,64 +72,104 @@ const rejectRequest = (id) => {
 </script>
 
 <template>
-    <q-card class="q-mt-md">
+    <q-card class="q-mt-md shadow-lg rounded-xl border border-gray-200">
+        <!-- Title -->
         <q-card-section class="flex items-center justify-between">
             <div class="stitle text-lg font-bold">Transfer Request</div>
-
-            <!-- Open Dialog Button -->
         </q-card-section>
-
 
         <q-separator />
 
         <q-card-section>
-            <div class="stitle text-md font-semibold q-mb-sm">Tranfer Requests</div>
-
-            <q-table
-                :rows="data.transfer_requests"
-                :columns="[
-                  { name: 'current_office', label: 'Current Office', field: row => row.current_office?.name },
-                  { name: 'requested_office', label: 'Requested Office', field: row => row.requested_office?.name },
-                  { name: 'status', label: 'Status', field: 'approval_status' },
-                  { name: 'date', label: 'Request Date', field: row => formatDate(row.request_date) },
-                  { name: 'actions', label: 'Actions', field: 'id', align: 'center' }
-                ]"
-                row-key="id"
-                flat
-                bordered
+            <!-- Empty State -->
+            <div
+                v-if="data.transfer_requests.length === 0"
+                class="text-gray-500 text-center py-10 text-base italic"
             >
-                <!-- Action Column -->
-                <template v-slot:body-cell-actions="props">
-                    <q-td :props="props">
-                        <q-btn-dropdown
-                            v-if="props.row.approval_status === 'pending'"
-                            flat
-                            dense
-                            color="primary"
-                            label="Actions"
-                            size="sm"
-                        >
-                            <q-list>
-                                <q-item clickable v-ripple @click="approveRequest(props.row.id)">
-                                    <q-item-section avatar>
-                                        <q-icon name="check" color="positive" />
-                                    </q-item-section>
-                                    <q-item-section>Approve</q-item-section>
-                                </q-item>
+                No transfer requests found.
+            </div>
 
-                                <q-item clickable v-ripple @click="rejectRequest(props.row.id)">
-                                    <q-item-section avatar>
-                                        <q-icon name="close" color="negative" />
-                                    </q-item-section>
-                                    <q-item-section>Reject</q-item-section>
-                                </q-item>
-                            </q-list>
-                        </q-btn-dropdown>
-                    </q-td>
-                </template>
-            </q-table>
+            <!-- Requests List -->
+            <div v-else class="flex flex-col gap-6">
+                <q-card
+                    v-for="req in data.transfer_requests"
+                    :key="req.id"
+                    class="rounded-xl border border-gray-100 hover:shadow-md transition duration-200"
+                >
+                    <q-card-section>
+                        <!-- Header Info -->
+                        <div class="flex flex-wrap justify-between items-center mb-4">
+                            <div>
+                                <b class="text-gray-600">Status:</b>
+                                <span
+                                    class="ml-1 font-medium capitalize"
+                                    :class="{
+                                  'text-yellow-600': req.approval_status === 'pending',
+                                  'text-green-600': req.approval_status === 'approved',
+                                  'text-red-600': req.approval_status === 'rejected'
+                                }"
+                                                >
+                                {{ req.approval_status }}
+                              </span>
+                            </div>
+                            <div class="text-gray-600">
+                                <b>Requested On:</b> {{ formatDate(req.request_date) }}
+                            </div>
+                        </div>
+
+                        <!-- Transfer Details -->
+                        <div>
+                            <b class="block mb-3 text-gray-700">Transfer Details</b>
+                            <div
+                                class="grid grid-cols-1 md:grid-cols-2 gap-4  p-4 "
+                            >
+                                <div>
+                                    <div class="text-gray-500">
+                                        Current Office:
+                                        <span class="text-gray-800 font-bold">
+                                        {{ req.current_office?.name || '—' }}
+                                        </span>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div class="text-gray-500">
+                                        Requested Office:
+                                        <span class="text-gray-800 font-bold">
+                                       {{ req.requested_office?.name || '—' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </q-card-section>
+
+                    <!-- Actions (only when pending) -->
+                    <q-card-actions
+                        align="right"
+                        v-if="req.approval_status === 'pending'"
+                        class="px-4 pb-4"
+                    >
+                        <q-btn
+                            label="Approve"
+                            color="positive"
+                            unelevated
+                            class="rounded-lg"
+                            @click="approveRequest(req.id)"
+                        />
+                        <q-btn
+                            label="Reject"
+                            color="negative"
+                            flat
+                            class="rounded-lg"
+                            @click="rejectRequest(req.id)"
+                        />
+                    </q-card-actions>
+                </q-card>
+            </div>
         </q-card-section>
     </q-card>
+
 
 </template>
 

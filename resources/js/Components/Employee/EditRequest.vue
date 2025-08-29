@@ -47,7 +47,8 @@ const safeParse = (data) => {
 </script>
 
 <template>
-    <q-card class="q-mt-md">
+    <q-card class="q-mt-md shadow-lg rounded-xl border border-gray-200">
+        <!-- Title -->
         <q-card-section>
             <div class="stitle text-lg font-bold">Edit Requests</div>
         </q-card-section>
@@ -56,88 +57,101 @@ const safeParse = (data) => {
 
         <q-card-section>
             <!-- Empty state -->
-            <div v-if="data.edit_requests.length === 0" class="text-gray-500 text-center py-6">
-                No edit requests.
+            <div
+                v-if="data.edit_requests.length === 0"
+                class="text-gray-500 text-center py-10 text-base italic"
+            >
+                No edit requests found.
             </div>
 
-            <!-- Requests flex layout -->
-            <div v-else class="flex flex-col gap-4">
+            <!-- Requests list -->
+            <div v-else class="flex flex-col gap-6">
                 <q-card
                     v-for="req in data.edit_requests"
                     :key="req.id"
-                    class="shadow-md rounded-xl border border-gray-200 hover:shadow-lg transition"
+                    class="rounded-xl border border-gray-100 hover:shadow-md transition duration-200"
                 >
                     <q-card-section>
-                        <!-- Top meta info -->
-                        <div class="flex flex-wrap justify-between items-center  mb-3">
-                            <div>
-                                <b class="text-label">Status:</b>
+                        <!-- Header Info -->
+                        <div class="flex flex-wrap justify-between items-center mb-4">
+                            <div class="">
+                                <b class="text-gray-600">Status:</b>
                                 <span
+                                    class="ml-1 font-medium capitalize"
                                     :class="{
-                                    'text-yellow-600': req.approval_status === 'pending',
-                                    'text-green-600': req.approval_status === 'approved',
-                                    'text-red-600': req.approval_status === 'rejected'
-                                  }"
-                                                >
-                                  {{ req.approval_status }}
-                                </span>
+                                      'text-yellow-600': req.approval_status === 'pending',
+                                      'text-green-600': req.approval_status === 'approved',
+                                      'text-red-600': req.approval_status === 'rejected'
+                                    }"
+                                                    >
+                                    {{ req.approval_status }}
+                                  </span>
                             </div>
-                            <div><b class="text-label">Requested On:</b> {{ formatDate(req.request_date) }}</div>
+                            <div class="text-gray-600">
+                                <b>Requested On:</b> {{ formatDate(req.request_date) }}
+                            </div>
                         </div>
 
-                        <!-- Requested Changes stacked horizontally -->
+                        <!-- Requested Changes -->
                         <div>
-                            <b class="block mb-2 text-label">Requested Changes:</b>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2  p-3 rounded-md ">
+                            <b class="block mb-3 text-gray-700">Requested Changes</b>
+                            <div
+                                class="grid grid-cols-1 md:grid-cols-2 gap-4  p-4 rounded-lg"
+                            >
                                 <div
                                     v-for="(value, key) in parseChanges(req.requested_changes)"
                                     :key="key"
-                                    class="flex justify-between items-center"
                                 >
-                                    <q-item>
-                                        <q-item-section side class="subtitle">
-                                            {{ fieldLabels[key] ?? key }}:
-                                        </q-item-section>
-                                        <q-item-section class="text-label">
-                                            From {{ key === "date_of_birth" ? formatDate(safeParse(req.previous_data)[key]) : safeParse(req.previous_data)[key] || "—" }}
-                                            To {{ key === 'date_of_birth' || key === 'date_of_engagement' ? formatDate(value) : value }}
-                                        </q-item-section>
-                                    </q-item>
+                                    <div class="flex flex-col">
+                                      <span class="font-bold">
+                                        {{ fieldLabels[key] ?? key }}:
+                                      </span>
+                                        <span class="text-gray-800">
+                                              From:
+                                            <span class="font-bold">
+
+                                              {{
+                                                    key === "date_of_birth"
+                                                        ? formatDate(safeParse(req.previous_data)[key])
+                                                        : safeParse(req.previous_data)[key] || "—"
+                                                }}
+                                            </span>
+                                           To:
+                                            <span class="font-bold">
+
+                                              {{
+                                                    key === "date_of_birth" ||
+                                                    key === "date_of_engagement"
+                                                        ? formatDate(value)
+                                                        : value
+                                                }}
+                                            </span>
+                                         </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div v-if="req.attachments && req.attachments.length > 0" class="mt-4">
-                            <b class="block mb-2">Attached Documents:</b>
+
+                        <!-- Attachments -->
+                        <div
+                            v-if="req.attachments && req.attachments.length > 0"
+                            class="mt-6"
+                        >
+                            <b class="block mb-3 text-gray-700">Attached Documents</b>
                             <div class="space-y-2">
                                 <div
                                     v-for="file in req.attachments"
                                     :key="file.id"
-                                    class="flex items-center justify-between p-2 border rounded-md"
+                                    class="flex items-center justify-between p-3 border rounded-lg bg-gray-50 hover:bg-gray-100 transition"
                                 >
-                                    <div class="flex items-center space-x-2">
-                                        <q-icon name="attach_file" size="sm" />
-                                        <!-- Show Document Type Name + File Name -->
+                                    <div class="flex items-center space-x-2 text-gray-700">
+                                        <q-icon name="attach_file" size="16px" class="text-gray-500" />
                                         <span>
-                                          <b>{{ file.type?.name || 'Unknown Type' }}</b>
-
+                                            <b>{{ file.type?.name || "Unknown Type" }}</b>
                                         </span>
                                     </div>
 
-                                    <div class="flex space-x-2">
-                                        <!-- Download -->
-                                        <q-btn
-                                            flat
-                                            dense
-                                            round
-                                            color="primary"
-                                            icon="download"
-                                            :href="`/storage/${file.path}`"
-                                            target="_blank"
-                                        >
-                                            <q-tooltip>Download</q-tooltip>
-                                        </q-btn>
-
-                                        <!-- View -->
+                                    <div class="flex space-x-1">
                                         <q-btn
                                             flat
                                             dense
@@ -149,22 +163,43 @@ const safeParse = (data) => {
                                         >
                                             <q-tooltip>View</q-tooltip>
                                         </q-btn>
+
+                                        <q-btn
+                                            flat
+                                            dense
+                                            round
+                                            color="primary"
+                                            icon="download"
+                                            :href="`/storage/${file.path}`"
+                                            download
+                                        >
+                                            <q-tooltip>Download</q-tooltip>
+                                        </q-btn>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </q-card-section>
 
-                    <!-- Show buttons only when status is pending -->
-                    <q-card-actions align="right" v-if="req.approval_status === 'pending'">
+                    <!-- Actions (only pending) -->
+                    <q-card-actions
+                        align="right"
+                        v-if="req.approval_status === 'pending'"
+                        class="px-4 pb-4"
+                    >
                         <q-btn
                             label="Approve"
                             color="positive"
+                            unelevated
+                            class="rounded-lg"
                             @click="approveRequest(req.id)"
                         />
                         <q-btn
                             label="Reject"
                             color="negative"
+                            flat
+                            class="rounded-lg"
                             @click="rejectRequest(req.id)"
                         />
                     </q-card-actions>
@@ -172,6 +207,7 @@ const safeParse = (data) => {
             </div>
         </q-card-section>
     </q-card>
+
 </template>
 
 

@@ -48,42 +48,86 @@ const submit = () => {
 </script>
 
 <template>
-    <q-card class="q-mt-md">
+    <q-card class="q-mt-md shadow-lg rounded-xl border border-gray-200">
+        <!-- Title + Action Button -->
         <q-card-section class="flex items-center justify-between">
             <div class="stitle text-lg font-bold">Request Transfer</div>
-
-            <!-- Open Dialog Button -->
-            <div>
-                <q-btn
-                    label="Request Transfer"
-                    color="primary"
-                    :disable="latestRequestPending"
-                    @click="showDialog = true"
-                />
-            </div>
+            <q-btn
+                label="Request Transfer"
+                color="primary"
+                :disable="latestRequestPending"
+                @click="showDialog = true"
+            />
         </q-card-section>
-
 
         <q-separator />
 
         <q-card-section>
-            <div class="stitle text-md font-semibold q-mb-sm">Previous Requests</div>
+            <!-- Empty State -->
+            <div
+                v-if="data.transfer_requests.length === 0"
+                class="text-gray-500 text-center py-10 text-base italic"
+            >
+                No transfer requests found.
+            </div>
 
-            <q-table
-                :rows="data.transfer_requests"
-                :columns="[
-                  { name: 'id', label: 'ID', field: 'id', align: 'left' },
-                  { name: 'current_office', label: 'Current Office', field: row => row.current_office?.name },
-                  { name: 'requested_office', label: 'Requested Office', field: row => row.requested_office?.name },
-                  { name: 'status', label: 'Status', field: 'approval_status' },
-                  { name: 'date', label: 'Request Date', field: row => formatDate(row.request_date) }
-                ]"
-                row-key="id"
-                flat
-                bordered
-            />
+            <!-- Requests List -->
+            <div v-else class="flex flex-col gap-6">
+                <q-card
+                    v-for="req in data.transfer_requests"
+                    :key="req.id"
+                    class="rounded-xl border border-gray-100 hover:shadow-md transition duration-200"
+                >
+                    <q-card-section>
+                        <!-- Header Info -->
+                        <div class="flex flex-wrap justify-between items-center mb-4">
+                            <div>
+                                <b class="text-gray-600">Status:</b>
+                                <span
+                                    class="ml-1 font-medium capitalize"
+                                    :class="{
+                                  'text-yellow-600': req.approval_status === 'pending',
+                                  'text-green-600': req.approval_status === 'approved',
+                                  'text-red-600': req.approval_status === 'rejected'
+                                }"
+                                                >
+                                {{ req.approval_status }}
+                              </span>
+                            </div>
+                            <div class="text-gray-600">
+                                <b>Requested On:</b> {{ formatDate(req.request_date) }}
+                            </div>
+                        </div>
+
+                        <!-- Office Info -->
+                        <div>
+                            <b class="block mb-3 text-gray-700">Transfer Details:</b>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4  p-  rounded-lg">
+                                <div>
+                                    <div class="text-gray-500">
+                                        Current Office:
+                                        <span class="text-gray-800 font-bold">
+                                        {{ req.current_office?.name || '—' }}
+                                        </span>
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <div class="text-gray-500">
+                                        Requested Office:
+                                        <span class="text-gray-800 font-bold">
+                                       {{ req.requested_office?.name || '—' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </q-card-section>
+                </q-card>
+            </div>
         </q-card-section>
     </q-card>
+
 
     <!-- Dialog -->
     <q-dialog v-model="showDialog" persistent>

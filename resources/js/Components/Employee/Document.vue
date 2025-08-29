@@ -5,7 +5,7 @@
         <q-card-section>
             <div v-if="filteredDocuments.length === 0">
                 <div class="stitle text-lg font-bold">Uploaded Documents</div>
-                <p class="text-center text-grey py-6">No documents found</p>
+                <p class="text-gray-500 text-center py-10 text-base italic">No documents found</p>
 
             </div>
 
