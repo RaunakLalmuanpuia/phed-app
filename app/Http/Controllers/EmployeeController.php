@@ -399,23 +399,23 @@ class EmployeeController extends Controller
         abort_if(!$user->hasPermissionTo('create-employee'), 403, 'Access Denied');
 
         $validated = $request->validate([
-            'avatar' => 'required|image|mimes:jpg,jpeg,png|max:800', // 800KB limit
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:800', // 800KB limit
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255|unique:employees,email',
             'mobile' => 'required|string|max:20|unique:employees,mobile',
             'parent_name' => 'required|string|max:255',
             'date_of_birth' => 'required|date',
-            'address' => 'required|string|max:255',
+            'address' => 'nullable|string|max:255',
             'designation' => 'required|string|max:255',
             'employment_type' => ['required', Rule::in(['MR', 'PE'])],
             'office' => 'required|exists:offices,id',
             'educational_qln' => 'required|string|max:255',
-            'technical_qln' => 'required|string|max:255',
+            'technical_qln' => 'nullable|string|max:255',
             'name_of_workplace' => 'required|string|max:255',
-            'post_per_qualification' => 'required|string|max:255',
-            'date_of_engagement' => 'required|date',
-            'skill_category' => 'required|string|max:255',
-            'skill_at_present' => 'required|string|max:255',
+            'post_per_qualification' => 'nullable|string|max:255',
+            'date_of_engagement' => 'nullable|date',
+            'skill_category' => 'nullable|string|max:255',
+            'skill_at_present' => 'nullable|string|max:255',
             'documents' => 'nullable|array',
             'documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);

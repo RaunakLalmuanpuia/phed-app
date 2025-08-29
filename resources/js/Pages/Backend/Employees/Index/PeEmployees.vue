@@ -71,6 +71,7 @@
 
             <q-card-section class="row items-center justify-between q-gutter-md">
                 <div class="row q-gutter-sm col-12 col-sm justify-end">
+                    <q-btn label="Export" icon="desktop_windows" color="primary" @click="exportData"  />
 
                     <q-input
                         dense
@@ -87,13 +88,6 @@
                         </template>
                     </q-input>
 
-                    <q-btn label="Export" icon="desktop_windows" color="primary" @click="exportData"  />
-                    <q-btn
-                                        label="Add New PE Employee"
-                                        icon="add"
-                                        color="primary"
-                                        @click="$inertia.get(route('employee.create'))"
-                                    />
                 </div>
             </q-card-section>
 

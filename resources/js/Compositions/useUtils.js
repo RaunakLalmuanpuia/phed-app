@@ -7,12 +7,13 @@ export default function () {
 
     const formatDate = (value, pattern) => {
         try {
+            if (!value) return 'N/A'   // ✅ handle null/undefined/empty
             if (pattern) {
-                return date.formatDate(new Date(value), pattern);
+                return date.formatDate(new Date(value), pattern)
             }
-            return date.formatDate(new Date(value), 'DD MMM YYYY');
+            return date.formatDate(new Date(value), 'DD MMM YYYY')
         } catch (er) {
-            return 'invalid Date'
+            return 'Invalid Date'
         }
     }
     const formatAudioTime = secs => {

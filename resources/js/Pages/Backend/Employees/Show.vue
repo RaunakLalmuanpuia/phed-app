@@ -111,7 +111,7 @@
                                         </q-item>
 
                                         <q-item>
-                                            <q-item-section side class="subtitle">Date of Engagement:</q-item-section>
+                                            <q-item-section side class="subtitle">Date of Initial Engagement:</q-item-section>
                                             <q-item-section class="text-label">
                                                 {{ formatDate(data?.date_of_engagement) || 'N/A' }}
                                             </q-item-section>

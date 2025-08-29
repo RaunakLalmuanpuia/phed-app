@@ -141,7 +141,6 @@
                     <q-stepper-navigation>
                         <q-btn flat color="negative" label="Cancel" class="q-ml-sm" @click="$inertia.get(isAdmin ? route('employees.all') : route('employees.manager.all'))"  />
                         <q-btn color="primary" label="Next" @click="nextStep" />
-
                     </q-stepper-navigation>
                 </q-step>
 

@@ -91,8 +91,7 @@
                         </div>
                         <div class="col-12 col-sm-6">
                             <q-input v-model="form.address" label="Address" outlined dense
-                                     :error="!!form.errors?.address" :error-message="form.errors?.address"
-                                     :rules="[val => !!val || 'Address is required']" />
+                                     :error="!!form.errors?.address" :error-message="form.errors?.address"/>
                         </div>
                         <div class="col-12 col-sm-6">
 
@@ -103,10 +102,11 @@
                         <div class="col-12 col-sm-6">
                             <q-input v-model="form.technical_qln" label="Technical Qualification" outlined dense
                                      :error="!!form.errors?.technical_qln" :error-message="form.errors?.technical_qln"
-                                     :rules="[val => !!val || 'Technical Qualification is required']" />
+                                     />
                         </div>
                     </div>
                     <q-stepper-navigation>
+                        <q-btn flat color="negative" label="Cancel" class="q-ml-sm" @click="$inertia.get( route('employees.all'))"  />
                         <q-btn color="primary" label="Next" @click="nextStep" />
                     </q-stepper-navigation>
                 </q-step>
@@ -126,11 +126,6 @@
                                      :rules="[val => !!val || 'Designation is required']" />
                         </div>
                         <div class="col-12 col-sm-6">
-                            <q-input v-model="form.date_of_engagement" label="Date of Engagement" type="date" outlined dense
-                                     :error="!!form.errors?.date_of_engagement" :error-message="form.errors?.date_of_engagement"
-                                     :rules="[val => !!val || 'Date of Engagement is required']" />
-                        </div>
-                        <div class="col-12 col-sm-6">
                             <q-input v-model="form.name_of_workplace" label="Workplace" outlined dense
                                      :error="!!form.errors?.name_of_workplace" :error-message="form.errors?.name_of_workplace"
                                      :rules="[val => !!val || 'Workplace is required']" />
@@ -143,18 +138,26 @@
                         </div>
 
                         <div class="col-12 col-sm-6">
-                            <q-input v-model="form.post_per_qualification" label="Post per Qualification" outlined dense
-                                     :error="!!form.errors?.post_per_qualification" :error-message="form.errors?.post_per_qualification"
-                                     :rules="[val => !!val || 'Post per Qualification is required']" />
+                            <q-input v-model="form.date_of_engagement" label="Date of Engagement" type="date" outlined dense
+                                     :error="!!form.errors?.date_of_engagement" :error-message="form.errors?.date_of_engagement"
+                                     />
                         </div>
 
+
+
                         <div class="col-12 col-sm-6">
-                            <q-select v-model="form.skill_category" label="Skill Category" :options="skills"
+                            <q-input v-model="form.post_per_qualification" label="Post per Qualification" outlined dense
+                                     :error="!!form.errors?.post_per_qualification" :error-message="form.errors?.post_per_qualification"
+                            />
+                        </div>
+
+                        <div v-if="form.employment_type === 'MR'" class="col-12 col-sm-6">
+                            <q-select  v-model="form.skill_category" label="Skill Category" :options="skills"
                                       emit-value map-options outlined dense
                                       :error="!!form.errors?.skill_category" :error-message="form.errors?.skill_category"
                                       :rules="[val => !!val || 'Skill Category is required']" />
                         </div>
-                        <div class="col-12 col-sm-6">
+                        <div v-if="form.employment_type === 'MR'" class="col-12 col-sm-6">
                             <q-select v-model="form.skill_at_present" label="Skill at Present" :options="skills"
                                       emit-value map-options outlined dense
                                       :error="!!form.errors?.skill_at_present" :error-message="form.errors?.skill_at_present"
@@ -162,8 +165,10 @@
                         </div>
                     </div>
                     <q-stepper-navigation>
-                        <q-btn color="primary" label="Next" @click="nextStep" />
+                        <q-btn flat color="negative" label="Cancel" class="q-ml-sm" @click="$inertia.get( route('employees.all'))"   />
                         <q-btn flat color="primary" label="Back" @click="prevStep" class="q-ml-sm" />
+                        <q-btn color="primary" label="Next" @click="nextStep"  class="q-ml-sm" />
+
                     </q-stepper-navigation>
                 </q-step>
 
@@ -194,9 +199,12 @@
                     </div>
 
                     <q-stepper-navigation>
+
+                        <q-btn flat color="negative" label="Cancel" class="q-ml-sm" @click="$inertia.get( route('employees.all'))"   />
+                        <q-btn flat color="primary" label="Back" @click="prevStep" class="q-ml-sm" />
                         <q-btn color="primary" label="Next" @click="nextStep" />
 
-                        <q-btn flat color="primary" label="Back" @click="prevStep" class="q-ml-sm" />
+
 
                     </q-stepper-navigation>
                 </q-step>
@@ -237,8 +245,8 @@
                         <div class="col-12 col-sm-6"> <strong>Workplace:</strong> {{ form.name_of_workplace }} </div>
                         <div class="col-12 col-sm-6"> <strong>Office:</strong> {{ offices[form.office].name }} </div>
                         <div class="col-12 col-sm-6"> <strong>Post per Qualification:</strong> {{ form.post_per_qualification }} </div>
-                        <div class="col-12 col-sm-6"> <strong>Skill Category:</strong> {{ form.skill_category }} </div>
-                        <div class="col-12 col-sm-6"> <strong>Skill at Present:</strong> {{ form.skill_at_present }} </div>
+                        <div v-if="form.employment_type ==='MR'" class="col-12 col-sm-6"> <strong>Skill Category:</strong> {{ form.skill_category }} </div>
+                        <div v-if="form.employment_type ==='MR'" class="col-12 col-sm-6"> <strong>Skill at Present:</strong> {{ form.skill_at_present }} </div>
                     </div>
 
                     <div class="q-mb-md text-h6">Uploaded Documents</div>
@@ -269,9 +277,9 @@
                     </div>
 
                     <q-stepper-navigation>
-                        <q-btn type="submit" color="btn-primary" label="Submit" />
-                        <q-btn flat color="primary" label="Back" @click="prevStep" class="q-ml-sm" />
                         <q-btn flat color="negative" label="Cancel" class="q-ml-sm" @click="$inertia.get(route('employees.all'))" />
+                        <q-btn flat color="primary" label="Back" @click="prevStep" class="q-ml-sm" />
+                        <q-btn type="submit" color="btn-primary" label="Submit" />
                     </q-stepper-navigation>
                 </q-step>
             </q-stepper>
@@ -287,7 +295,7 @@ import {ref} from 'vue'
 
 import useUtils from "@/Compositions/useUtils";
 
-const { educationalQualifications } = useUtils();
+const {  educationalQualifications, skills } = useUtils();
 
 defineOptions({layout:BackendLayout})
 const props=defineProps(['documentTypes','offices']);
@@ -352,7 +360,7 @@ const nextStep = () => {
     if (step.value === '1') {
         if (
             !form.name || !form.mobile || !form.parent_name ||
-            !form.date_of_birth || !form.educational_qln || !form.technical_qln
+            !form.date_of_birth || !form.educational_qln
         ) {
             $q.notify({ type: 'negative', message: 'Please fill all required Personal Info fields.' })
             return
@@ -360,19 +368,26 @@ const nextStep = () => {
         step.value = '2'
     } else if (step.value === '2') {
         if (
-            !form.employment_type || !form.designation || !form.date_of_engagement ||
-            !form.name_of_workplace || !form.office || !form.post_per_qualification
-            || !form.skill_category || !form.skill_at_present
+            !form.employment_type || !form.designation ||
+            !form.name_of_workplace || !form.office
         ) {
             $q.notify({ type: 'negative', message: 'Please fill all required Job Info fields.' })
             return
         }
+
+        // 🔹 Additional check only if employment_type = MR
+        if (form.employment_type === 'MR' && (!form.skill_category || !form.skill_at_present)) {
+            $q.notify({ type: 'negative', message: 'Skill Category and Present Skill are required for MR employment type.' })
+            return
+        }
+
         step.value = '3'
     } else if (step.value === '3') {
         // Optional: check if at least one document is uploaded, or skip validation
         step.value = '4'
     }
 }
+
 
 const prevStep = () => {
     if (step.value === '4') step.value = '3'
@@ -390,13 +405,7 @@ const type = [
     { label: 'PE', value: 'PE' },
 ]
 
-const skills = [
-    { label: 'Unskilled', value: 'Unskilled' },
-    { label: 'Semi-Skilled', value: 'Semi-Skilled' },
-    { label: 'Skilled-I', value: 'Skilled-I' },
-    { label: 'Skilled-II', value: 'Skilled-II' },
 
-]
 // const submit=e=>{
 //     form.post(route('employee.store'),{
 //             onStart:params => q.loading.show(),
@@ -413,7 +422,9 @@ const submit = () => {
         persistent: true
     }).onOk(() => {
         const formData = new FormData()
-        formData.append('avatar', form.avatar)
+        if (form.avatar) {
+            formData.append('avatar', form.avatar)
+        }
         formData.append('name', form.name)
         formData.append('email', form.email)
         formData.append('mobile', form.mobile)
