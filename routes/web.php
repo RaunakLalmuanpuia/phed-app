@@ -105,6 +105,9 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
         Route::get('export', [MISController::class, 'export'])->middleware('can:export-employee')->name('mis.export');
         Route::post('export-employee', [MISController::class, 'exportEmployee'])->middleware('can:export-employee')->name('mis.export-employee');
 
+        Route::get('create-pe-employee', [MISController::class, 'createPE'])->middleware('can:create-employee')->name('mis.create-pe-employee');
+        Route::get('create-mr-employee', [MISController::class, 'createMR'])->middleware('can:create-employee')->name('mis.create-mr-employee');
+
         Route::get('remuneration', [MISController::class, 'remuneration'])->middleware('can:generate-remuneration')->name('mis.remuneration');
         Route::get('json-remuneration', [MISController::class, 'jsonRemuneration'])->middleware('can:generate-remuneration')->name('mis.json-remuneration');
 

@@ -498,6 +498,8 @@ const module = reactive({
         children: [
             {route_name: 'mis.export', label: 'Export', permission: 'export-employee'},
             {route_name: 'mis.import', label: 'Import', permission: 'import-employee'},
+            {route_name: 'mis.create-pe-employee', label: 'Add PE Employee', permission: 'create-employee'},
+            {route_name: 'mis.create-mr-employee', label: 'Add MR Employee', permission: 'create-employee'},
             {route_name: 'mis.remuneration', label: 'Remuneration Details', permission: 'generate-remuneration'},
             {route_name: 'mis.engagement-card', label: 'Engagement Card', permission: 'generate-engagement-card'},
         ]

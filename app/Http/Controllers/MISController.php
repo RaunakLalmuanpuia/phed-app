@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DocumentType;
 use App\Models\Employee;
 use App\Models\Office;
 use Illuminate\Http\Request;
@@ -11,6 +12,35 @@ use App\Imports\EmployeesImport;
 use Carbon\Carbon;
 class MISController extends Controller
 {
+
+    public function createPE(Request $request){
+
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('create-employee'),403,'Access Denied');
+
+        $documentTypes = DocumentType::all();
+        $offices = Office::all();
+
+        return Inertia::render('Backend/Employees/Create/PE', [
+            'documentTypes' => $documentTypes,
+            'offices' => $offices,
+            'canCreate'=>$user->can('create-employee'),
+        ]);
+    }
+    public function createMR(Request $request){
+
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('create-employee'),403,'Access Denied');
+
+        $documentTypes = DocumentType::all();
+        $offices = Office::all();
+
+        return Inertia::render('Backend/Employees/Create/MR', [
+            'documentTypes' => $documentTypes,
+            'offices' => $offices,
+            'canCreate'=>$user->can('create-employee'),
+        ]);
+    }
 
     public function import(Request $request){
 
@@ -134,10 +164,6 @@ class MISController extends Controller
             'list' => $employees->paginate($perPage),
         ], 200);
     }
-
-
-
-
 
     public function engagementCard(Request $request){
         $user = $request->user();
