@@ -76,12 +76,12 @@
                             <q-icon name="search" />
                         </template>
                     </q-input>
-                    <q-btn
-                        label="Add New Employee"
-                        icon="add"
-                        color="primary"
-                        @click="$inertia.get(route('employee.create'))"
-                    />
+<!--                    <q-btn-->
+<!--                        label="Add New Employee"-->
+<!--                        icon="add"-->
+<!--                        color="primary"-->
+<!--                        @click="$inertia.get(route('employee.create'))"-->
+<!--                    />-->
                 </div>
             </q-card-section>
 
