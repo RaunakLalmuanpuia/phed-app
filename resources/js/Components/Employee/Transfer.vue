@@ -42,6 +42,26 @@
                             to
                             <strong>{{ transfer.new_office?.name || 'Unknown Office' }}</strong>
                         </div>
+                        <div v-if="transfer.supporting_document">
+                            Transfer Order:
+                            <q-btn
+                                dense
+                                flat
+                                color="primary"
+                                icon="visibility"
+                                :href="`/storage/${transfer.supporting_document}`"
+                                target="_blank"
+                            />
+                            <q-btn
+                                dense
+                                flat
+                                color="primary"
+                                icon="download"
+                                :href="`/storage/${transfer.supporting_document}`"
+                                target="_blank"
+                                download
+                            />
+                        </div>
                     </q-timeline-entry>
                 </q-timeline>
             </div>
@@ -105,6 +125,14 @@
                     dense
                     outlined
                 />
+
+                <q-file
+                    v-model="form.supporting_document"
+                    label="Transfer Order"
+                    outlined
+                    :error="!!form.errors.supporting_document"
+                    :error-message="form.errors.supporting_document"
+                />
             </q-card-section>
 
             <q-card-actions align="right">
@@ -133,7 +161,8 @@ const form=useForm({
     old_office_id: null,
     new_office_id: null,
     transfer_date: '',
-    is_present_transfer:false
+    is_present_transfer:false,
+    supporting_document: null,
 
 })
 const sortedTransfers = computed(() => {

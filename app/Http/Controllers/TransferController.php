@@ -20,7 +20,8 @@ class TransferController extends Controller
             'is_present_transfer' => 'required|boolean',
             'old_office_id.id' => 'required|exists:offices,id',
             'new_office_id.id' => 'required|exists:offices,id',
-            'transfer_date' => 'required|date'
+            'transfer_date' => 'required|date',
+            'supporting_document' => 'nullable|file|max:2048',
         ]);
 
         if ($validated['is_present_transfer']) {
@@ -28,12 +29,21 @@ class TransferController extends Controller
                 'office_id' => $validated['new_office_id']['id']
             ]);
         }
+
+        $documentPath = null;
+        if ($request->hasFile('supporting_document')) {
+            $file = $request->file('supporting_document');
+            $filename = 'transfer_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $documentPath = $file->storeAs('transfers', $filename, 'public');
+        }
+
         // Create the transfer
         Transfer::create([
             'employee_id' => $model->id,
             'old_office_id' => $validated['old_office_id']['id'],
             'new_office_id' => $validated['new_office_id']['id'],
             'transfer_date' => $validated['transfer_date'],
+            'supporting_document' => $documentPath,
         ]);
 
         return redirect()->back()->with('success', 'Transfer successfully recorded.');

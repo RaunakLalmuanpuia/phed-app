@@ -30,6 +30,7 @@ const fieldLabels = {
     employment_type: "Employment Type",
     designation: "Designation",
     educational_qln: "Educational Qualification",
+    technical_qln: "Technical Qualification",
     name_of_workplace: "Workplace Name",
     post_per_qualification: "Post per Qualification",
     date_of_engagement: "Date of Engagement",
