@@ -218,12 +218,7 @@
                 </q-step>
 
                 <!--                Step 3: Document upload-->
-                <q-step
-                    name="3"
-                    title="Upload Documents"
-                    icon="cloud_upload"
-                    :done="step > 3"
-                >
+                <q-step v-if="isAdmin" name="3" title="Upload Documents" icon="cloud_upload" :done="step > 3">
                     <div class="row q-col-gutter-sm">
                         <div
                             class="col-12 col-sm-6"
@@ -435,7 +430,7 @@ const nextStep = () => {
             return
         }
         // If admin → go to Step 2, else skip directly to Step 3
-        step.value = isAdmin.value ? '2' : '3'
+        step.value = isAdmin.value ? '2' : '4'
     } else if (step.value === '2') {
         // Base required fields
         if (!form.employment_type || !form.designation  || !form.office) {
@@ -461,7 +456,7 @@ const nextStep = () => {
 
 const prevStep = () => {
     if (step.value === '4') {
-        step.value = '3'
+        step.value = isAdmin.value ? '3' : '1'
     } else if (step.value === '3') {
         // If admin → back to Step 2, else back to Step 1
         step.value = isAdmin.value ? '2' : '1'
