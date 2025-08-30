@@ -178,24 +178,32 @@ const rejectRequest = (id) => {
                                     </div>
                                 </div>
 
+                                <div v-if="parseReason(request).supporting_document">
+                                    <div class="text-gray-500">
+                                        Supporting Document:
+                                        <q-btn
+                                            dense
+                                            flat
+                                            color="primary"
+                                            icon="visibility"
+                                            :href="`/storage/${parseReason(request).supporting_document}`"
+                                            target="_blank"
+                                        />
+                                        <q-btn
+                                            dense
+                                            flat
+                                            color="primary"
+                                            icon="download"
+                                            :href="`/storage/${parseReason(request).supporting_document}`"
+                                            target="_blank"
+                                            download
+                                        />
+
+                                    </div>
+                                </div>
+
                             </div>
 
-                            <!-- Supporting Document -->
-                            <div
-                                v-if="parseReason(request).supporting_document"
-                                class="mt-4 flex items-center"
-                            >
-                                <q-btn
-                                    dense
-                                    flat
-                                    color="primary"
-                                    icon="attach_file"
-                                    :href="`/${parseReason(request).supporting_document}`"
-                                    target="_blank"
-                                    label="View Document"
-                                    class="rounded-lg"
-                                />
-                            </div>
                         </div>
                     </q-card-section>
 

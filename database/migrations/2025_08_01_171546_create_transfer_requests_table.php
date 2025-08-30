@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('request_date')->nullable();
             $table->string('approval_status')->default('Pending');
             $table->date('approval_date')->nullable();
+            $table->string('supporting_document')->nullable(); // File path
             $table->timestamps();
         });
     }

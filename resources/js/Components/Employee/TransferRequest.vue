@@ -140,6 +140,29 @@ const rejectRequest = (id) => {
                                         </span>
                                     </div>
                                 </div>
+                                <div>
+                                    <div class="text-gray-500">
+                                        Transfer Order:
+                                        <q-btn
+                                            dense
+                                            flat
+                                            color="primary"
+                                            icon="visibility"
+                                            :href="`/storage/${req.supporting_document}`"
+                                            target="_blank"
+                                        />
+                                        <q-btn
+                                            dense
+                                            flat
+                                            color="primary"
+                                            icon="download"
+                                            :href="`/storage/${req.supporting_document}`"
+                                            target="_blank"
+                                            download
+                                        />
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </q-card-section>

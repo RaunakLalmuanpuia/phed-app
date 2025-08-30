@@ -55,7 +55,16 @@ class TransferController extends Controller
 
         $request->validate([
             'requested_office_id.id' => 'required|exists:offices,id',
+            'supporting_document' => 'nullable|file|max:2048',
         ]);
+
+        // Handle file upload if exists
+        $documentPath = null;
+        if ($request->hasFile('supporting_document')) {
+            $file = $request->file('supporting_document');
+            $filename = 'transfer_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $documentPath = $file->storeAs('transfers', $filename, 'public');
+        }
 
         // Create the transfer request
         $transferRequest = TransferRequest::create([
@@ -64,6 +73,7 @@ class TransferController extends Controller
             'requested_office_id' => $request->requested_office_id['id'],
             'request_date' => now(),
             'approval_status' => 'pending',
+            'supporting_document' => $documentPath,
         ]);
         return redirect()->back()->with('success', 'Transfer request successfully recorded.');
     }
@@ -81,6 +91,7 @@ class TransferController extends Controller
             'employee_id' => $model->employee_id,
             'old_office_id' => $model->current_office_id,
             'new_office_id' => $model->requested_office_id,
+            'supporting_document' => $model->supporting_document,
             'transfer_date' => now(),
         ]);
 

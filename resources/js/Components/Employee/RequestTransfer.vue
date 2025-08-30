@@ -12,6 +12,7 @@ const showDialog = ref(false);
 
 const form = useForm({
     requested_office_id: '',
+    supporting_document: null,
 });
 
 const latestRequestPending = computed(() =>
@@ -120,6 +121,30 @@ const submit = () => {
                                         </span>
                                     </div>
                                 </div>
+
+                                <div>
+                                    <div class="text-gray-500">
+                                        Transfer Order:
+                                        <q-btn
+                                            dense
+                                            flat
+                                            color="primary"
+                                            icon="visibility"
+                                            :href="`/storage/${req.supporting_document}`"
+                                            target="_blank"
+                                        />
+                                        <q-btn
+                                            dense
+                                            flat
+                                            color="primary"
+                                            icon="download"
+                                            :href="`/storage/${req.supporting_document}`"
+                                            target="_blank"
+                                            download
+                                        />
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </q-card-section>
@@ -145,6 +170,14 @@ const submit = () => {
                     label="Office"
                     dense
                     outlined
+                />
+                <q-file
+                    v-model="form.supporting_document"
+                    label="Transfer Order"
+                    outlined
+                    class="q-mt-md"
+                    :error="!!form.errors.supporting_document"
+                    :error-message="form.errors.supporting_document"
                 />
             </q-card-section>
 

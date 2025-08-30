@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Transfer extends Model
 {
     //
-    protected $fillable = ['employee_id', 'old_office_id', 'new_office_id', 'transfer_date'];
+    protected $fillable = ['employee_id', 'old_office_id', 'new_office_id', 'transfer_date','supporting_document'];
 
     public function employee(): BelongsTo {
         return $this->belongsTo(Employee::class);

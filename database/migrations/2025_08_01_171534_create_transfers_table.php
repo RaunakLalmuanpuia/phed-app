@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('old_office_id')->constrained('offices')->onDelete('cascade');
             $table->foreignId('new_office_id')->constrained('offices')->onDelete('cascade');
             $table->date('transfer_date');
+            $table->string('supporting_document')->nullable(); // File path
             $table->timestamps();
         });
     }
