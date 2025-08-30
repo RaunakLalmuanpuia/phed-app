@@ -16,12 +16,12 @@ export default function () {
             return 'Invalid Date'
         }
     }
+
     const formatAudioTime = secs => {
         let minutes = Math.floor(secs / 60) || 0;
         let seconds = Math.floor(secs - minutes * 60) || 0;
         return (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
     }
-
 
     const formatDateTime = value => {
         try {
@@ -46,10 +46,10 @@ export default function () {
     ];
 
     const skills = [
-        'Unskilled',
-        'Semi-Skilled',
-        'Skilled-I',
         'Skilled-II',
+        'Skilled-I',
+        'Semi-Skilled',
+        'Unskilled',
     ];
 
 

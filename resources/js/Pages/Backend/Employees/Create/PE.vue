@@ -125,15 +125,16 @@
                                       :error="!!form.errors?.office" :error-message="form.errors?.office"
                                       :rules="[val => !!val || 'Office is required']" />
                         </div>
-                        <div class="col-12 col-sm-6">
-                            <q-input v-model="form.name_of_workplace" label="Workplace" outlined dense
-                                     :error="!!form.errors?.name_of_workplace" :error-message="form.errors?.name_of_workplace"
-                                      />
-                        </div>
 
                         <div class="col-12 col-sm-6">
                             <q-input v-model="form.date_of_engagement" label="Date of Initial Engagement" type="date" outlined dense
                                      :error="!!form.errors?.date_of_engagement" :error-message="form.errors?.date_of_engagement"
+                            />
+                        </div>
+
+                        <div class="col-12 col-sm-6">
+                            <q-input v-model="form.name_of_workplace" label="Workplace" outlined dense
+                                     :error="!!form.errors?.name_of_workplace" :error-message="form.errors?.name_of_workplace"
                             />
                         </div>
 
@@ -216,8 +217,8 @@
                         <div class="col-12 col-sm-6"> <strong>Employment Type:</strong> Provisional Employee </div>
                         <div class="col-12 col-sm-6"> <strong>Office:</strong> {{ offices[form.office].name }} </div>
                         <div class="col-12 col-sm-6"> <strong>Designation:</strong> {{ form.designation }} </div>
-                        <div class="col-12 col-sm-6"> <strong>Workplace:</strong> {{ form.name_of_workplace }} </div>
                         <div class="col-12 col-sm-6"> <strong>Date of Initial Engagement:</strong> {{ formatDate(form.date_of_engagement) }} </div>
+                        <div class="col-12 col-sm-6"> <strong>Workplace:</strong> {{ form.name_of_workplace }} </div>
 
                     </div>
 

@@ -64,46 +64,7 @@
                         />
                     </div>
 
-                    <div v-if="isAdmin" class="row q-col-gutter-sm">
-                        <div class="col-12 col-sm-6">
-                            <q-input v-model="form.name" label="Name" outlined dense :error="!!form.errors?.name"
-                                     :error-message="form.errors?.name" :rules="[val => !!val || 'Name is required']" />
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <q-input v-model="form.email" label="Email" type="email" outlined dense
-                                     :error="!!form.errors?.email" :error-message="form.errors?.email" />
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <q-input v-model="form.mobile" label="Mobile" mask="##########" outlined dense
-                                     :error="!!form.errors?.mobile" :error-message="form.errors?.mobile"
-                                     :rules="[val => !!val || 'Mobile is required']" />
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <q-input v-model="form.parent_name" label="Parent Name" outlined dense
-                                     :error="!!form.errors?.parent_name" :error-message="form.errors?.parent_name"
-                                     :rules="[val => !!val || 'Parent Name is required']" />
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <q-input v-model="form.date_of_birth" label="Date of Birth" type="date" outlined dense
-                                     :error="!!form.errors?.date_of_birth" :error-message="form.errors?.date_of_birth"
-                                     :rules="[val => !!val || 'Date of Birth is required']" />
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <q-input v-model="form.address" label="Address" outlined dense
-                                     :error="!!form.errors?.address" :error-message="form.errors?.address"
-                                     :rules="[val => !!val || 'Address is required']" />
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <q-input v-model="form.educational_qln" label="Educational Qualification" outlined dense
-                                     :error="!!form.errors?.educational_qln" :error-message="form.errors?.educational_qln"
-                                     :rules="[val => !!val || 'Education Qualification is required']" />
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <q-input v-model="form.technical_qln" label="Technical Qualification" outlined dense
-                                     :error="!!form.errors?.technical_qln" :error-message="form.errors?.technical_qln"
-                                     :rules="[val => !!val || 'Technical Qualification is required']" />
-                        </div>
-                    </div>
+
                     <div v-if="isManager" class="row q-col-gutter-sm">
                         <div class="col-12 col-sm-6">
                             <q-input v-model="form.name" label="Name" disable outlined dense :error="!!form.errors?.name"
@@ -138,6 +99,46 @@
                                      :rules="[val => !!val || 'Technical Qualification is required']" />
                         </div>
                     </div>
+                    <div v-if="isAdmin" class="row q-col-gutter-sm">
+                        <div class="col-12 col-sm-6">
+                            <q-input v-model="form.name" label="Name" outlined dense :error="!!form.errors?.name"
+                                     :error-message="form.errors?.name" :rules="[val => !!val || 'Name is required']" />
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <q-input v-model="form.email" label="Email" type="email" outlined dense
+                                     :error="!!form.errors?.email" :error-message="form.errors?.email" />
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <q-input v-model="form.mobile" label="Mobile" mask="##########" outlined dense
+                                     :error="!!form.errors?.mobile" :error-message="form.errors?.mobile"
+                                     :rules="[val => !!val || 'Mobile is required']" />
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <q-input v-model="form.parent_name" label="Parent Name" outlined dense
+                                     :error="!!form.errors?.parent_name" :error-message="form.errors?.parent_name"
+                                     :rules="[val => !!val || 'Parent Name is required']" />
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <q-input v-model="form.date_of_birth" label="Date of Birth" type="date" outlined dense
+                                     :error="!!form.errors?.date_of_birth" :error-message="form.errors?.date_of_birth"
+                                     :rules="[val => !!val || 'Date of Birth is required']" />
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <q-input v-model="form.address" label="Address" outlined dense
+                                     :error="!!form.errors?.address" :error-message="form.errors?.address"
+                                     :rules="[val => !!val || 'Address is required']" />
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <q-select v-model="form.educational_qln" :options="educationalQualifications" label="Educational Qualification *" outlined dense
+                                      emit-value map-options :error="!!form.errors?.educational_qln" :error-message="form.errors?.educational_qln"
+                                      :rules="[val => !!val || 'Education Qualification is required']" />
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <q-input v-model="form.technical_qln" label="Technical Qualification" outlined dense
+                                     :error="!!form.errors?.technical_qln" :error-message="form.errors?.technical_qln"
+                                     :rules="[val => !!val || 'Technical Qualification is required']" />
+                        </div>
+                    </div>
                     <q-stepper-navigation>
                         <q-btn flat color="negative" label="Cancel" class="q-ml-sm" @click="$inertia.get(isAdmin ? route('employees.all') : route('employees.manager.all'))"  />
                         <q-btn color="primary" label="Next" @click="nextStep" />
@@ -148,51 +149,66 @@
                 <q-step v-if="isAdmin" name="2" title="Job Info" icon="work" :done="step > 2">
                     <div class="row q-col-gutter-sm">
                         <div class="col-12 col-sm-6">
-                            <q-select v-model="form.employment_type" label="Employment Type" :options="type"
+                            <q-select v-model="form.employment_type" label="Employment Type *" :options="type"
                                       emit-value map-options outlined dense
                                       :error="!!form.errors?.employment_type" :error-message="form.errors?.employment_type"
                                       :rules="[val => !!val || 'Employment Type is required']" />
                         </div>
                         <div class="col-12 col-sm-6">
-                            <q-input v-model="form.designation" label="Designation" outlined dense
+                            <q-input v-model="form.designation" label="Designation *" outlined dense
                                      :error="!!form.errors?.designation" :error-message="form.errors?.designation"
                                      :rules="[val => !!val || 'Designation is required']" />
                         </div>
                         <div class="col-12 col-sm-6">
-                            <q-input v-model="form.date_of_engagement" label="Date of Engagement" type="date" outlined dense
-                                     :error="!!form.errors?.date_of_engagement" :error-message="form.errors?.date_of_engagement"
-                                     :rules="[val => !!val || 'Date of Engagement is required']" />
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <q-input v-model="form.name_of_workplace" label="Workplace" outlined dense
-                                     :error="!!form.errors?.name_of_workplace" :error-message="form.errors?.name_of_workplace"
-                                     :rules="[val => !!val || 'Workplace is required']" />
-                        </div>
-                        <div class="col-12 col-sm-6">
-                            <q-select v-model="form.office" label="Office" :options="offices" option-label="name" option-value="id"
+                            <q-select v-model="form.office" label="Office *" :options="offices" option-label="name" option-value="id"
                                       emit-value map-options outlined dense
                                       :error="!!form.errors?.office" :error-message="form.errors?.office"
                                       :rules="[val => !!val || 'Office is required']" />
                         </div>
 
-                        <div class="col-12 col-sm-6">
-                            <q-input v-model="form.post_per_qualification" label="Post per Qualification" outlined dense
-                                     :error="!!form.errors?.post_per_qualification" :error-message="form.errors?.post_per_qualification"
-                                     :rules="[val => !!val || 'Post per Qualification is required']" />
+
+                        <div v-if="form.employment_type === 'PE'" class="col-12 col-sm-6">
+                            <q-input v-model="form.date_of_engagement" label="Date of Initial Engagement" type="date" outlined dense
+                                     :error="!!form.errors?.date_of_engagement" :error-message="form.errors?.date_of_engagement"
+                                     :rules="[val => !!val || 'Date of Initial Engagement is required']"
+                            />
                         </div>
 
-                        <div class="col-12 col-sm-6">
-                            <q-select v-model="form.skill_category" label="Skill Category" :options="skills"
+                        <div v-if="form.employment_type === 'MR'" class="col-12 col-sm-6">
+                            <q-input v-model="form.date_of_engagement" label="Date of Initial Engagement *" type="date" outlined dense
+                                     :error="!!form.errors?.date_of_engagement" :error-message="form.errors?.date_of_engagement"
+                                     :rules="[val => !!val || 'Date of Initial Engagement is required']"
+                            />
+                        </div>
+
+                        <div v-if="form.employment_type === 'MR'" class="col-12 col-sm-6">
+                            <q-select v-model="form.skill_category" label="Skill Category at Initial Engagement *" :options="skills"
                                       emit-value map-options outlined dense
                                       :error="!!form.errors?.skill_category" :error-message="form.errors?.skill_category"
                                       :rules="[val => !!val || 'Skill Category is required']" />
                         </div>
-                        <div class="col-12 col-sm-6">
-                            <q-select v-model="form.skill_at_present" label="Skill at Present" :options="skills"
+
+                        <div v-if="form.employment_type === 'MR'" class="col-12 col-sm-6">
+                            <q-select v-model="form.skill_at_present" label="Skill at Present *" :options="skills"
                                       emit-value map-options outlined dense
                                       :error="!!form.errors?.skill_at_present" :error-message="form.errors?.skill_at_present"
                                       :rules="[val => !!val || 'Skill at Present is required']" />
                         </div>
+
+
+                        <div class="col-12 col-sm-6">
+                            <q-input v-model="form.name_of_workplace" label="Workplace" outlined dense
+                                     :error="!!form.errors?.name_of_workplace" :error-message="form.errors?.name_of_workplace"
+                            />
+                        </div>
+
+                        <div v-if="form.employment_type === 'MR'" class="col-12 col-sm-6">
+                            <q-input v-model="form.post_per_qualification" label="Post Selected" outlined dense
+                                     :error="!!form.errors?.post_per_qualification" :error-message="form.errors?.post_per_qualification"
+                                     :rules="[val => !!val || 'Post per Qualification is required']" />
+                        </div>
+
+
                     </div>
                     <q-stepper-navigation>
                         <q-btn flat color="negative" label="Cancel" class="q-ml-sm" @click="$inertia.get(isAdmin ? route('employees.all') : route('employees.manager.all'))"  />
@@ -275,16 +291,19 @@
                         <div class="col-12 col-sm-6"> <strong>Technical Qualification:</strong> {{ form.technical_qln }} </div>
                     </div>
 
+
+
                     <div class="q-mb-md text-h6">Job Info</div>
                     <div class="row q-col-gutter-sm q-mb-md">
                         <div class="col-12 col-sm-6"> <strong>Employment Type:</strong> {{ form.employment_type }} </div>
+                        <div class="col-12 col-sm-6"> <strong>Office:</strong>  {{ offices.find(o => o.id === form.office)?.name || '—' }} </div>
                         <div class="col-12 col-sm-6"> <strong>Designation:</strong> {{ form.designation }} </div>
-                        <div class="col-12 col-sm-6"> <strong>Date of Engagement:</strong> {{ form.date_of_engagement }} </div>
+                        <div class="col-12 col-sm-6"> <strong>Date of Initial Engagement:</strong> {{ formatDate(form.date_of_engagement) }} </div>
+
+                        <div v-if="form.employment_type === 'MR'" class="col-12 col-sm-6"> <strong>Skill Category at Initial Engagement:</strong> {{ form.skill_category }} </div>
+                        <div v-if="form.employment_type === 'MR'" class="col-12 col-sm-6"> <strong>Skill at Present:</strong> {{ form.skill_at_present }} </div>
+                        <div v-if="form.employment_type === 'MR'" class="col-12 col-sm-6"> <strong>Post Selected:</strong> {{ form.post_per_qualification }} </div>
                         <div class="col-12 col-sm-6"> <strong>Workplace:</strong> {{ form.name_of_workplace }} </div>
-<!--                        <div class="col-12 col-sm-6"> <strong>Office:</strong> {{ offices[form.office].name }} </div>-->
-                        <div class="col-12 col-sm-6"> <strong>Post per Qualification:</strong> {{ form.post_per_qualification }} </div>
-                        <div class="col-12 col-sm-6"> <strong>Skill Category:</strong> {{ form.skill_category }} </div>
-                        <div class="col-12 col-sm-6"> <strong>Skill at Present:</strong> {{ form.skill_at_present }} </div>
                     </div>
 
                     <div class="q-mb-md text-h6">Uploaded Documents</div>
@@ -328,10 +347,13 @@ import BackendLayout from "@/Layouts/BackendLayout.vue";
 import {useForm, router, usePage} from "@inertiajs/vue3";
 import {useQuasar} from "quasar";
 import {ref, onMounted, computed} from 'vue'
-import {data} from "autoprefixer";
 
+
+import useUtils from "@/Compositions/useUtils";
+
+const {  educationalQualifications, skills,formatDate } = useUtils();
 defineOptions({layout:BackendLayout})
-const props=defineProps(['documentTypes','offices','data']);
+const props=defineProps(['documentTypes','offices','data','current_offices']);
 const $q = useQuasar();
 
 
@@ -348,7 +370,7 @@ const form=useForm({
     address:props.data?.address,
     designation:props.data?.designation,
     employment_type:props.data?.employment_type,
-    office:props.data?.office,
+    office: props.data?.office?.id ?? null, // pick the ID only
     educational_qln:props.data?.educational_qln,
     technical_qln:props.data?.technical_qln,
     name_of_workplace:props.data?.name_of_workplace,
@@ -415,13 +437,21 @@ const nextStep = () => {
         // If admin → go to Step 2, else skip directly to Step 3
         step.value = isAdmin.value ? '2' : '3'
     } else if (step.value === '2') {
-        if (
-            !form.employment_type || !form.designation ||
-            !form.name_of_workplace || !form.office
-        ) {
+        // Base required fields
+        if (!form.employment_type || !form.designation  || !form.office) {
             $q.notify({ type: 'negative', message: 'Please fill all required Job Info fields.' })
             return
         }
+
+        // Conditional validation based on employment_type
+        if (form.employment_type === 'MR') {
+            // Example: for PE, require post_per_qualification and technical_qln
+            if (!form.skill_category || !form.skill_at_present || !form.date_of_engagement) {
+                $q.notify({ type: 'negative', message: 'Please fill all required Job Info fields.' })
+                return
+            }
+        }
+
         step.value = '3'
     } else if (step.value === '3') {
         // Optional: check if at least one document is uploaded, or skip validation
@@ -451,13 +481,6 @@ const type = [
     { label: 'PE', value: 'PE' },
 ]
 
-const skills = [
-    { label: 'Unskilled', value: 'Unskilled' },
-    { label: 'Semi-Skilled', value: 'Semi-Skilled' },
-    { label: 'Skilled-I', value: 'Skilled-I' },
-    { label: 'Skilled-II', value: 'Skilled-II' },
-
-]
 
 const submit = () => {
 

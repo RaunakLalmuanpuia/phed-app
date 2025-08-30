@@ -143,15 +143,17 @@
                                       :rules="[val => !!val || 'Skill at Present is required']" />
                         </div>
                         <div class="col-12 col-sm-6">
-                            <q-input v-model="form.name_of_workplace" label="Workplace" outlined dense
-                                     :error="!!form.errors?.name_of_workplace" :error-message="form.errors?.name_of_workplace"
-                                      />
-                        </div>
-                        <div class="col-12 col-sm-6">
                             <q-input v-model="form.post_per_qualification" label="Post Selected" outlined dense
                                      :error="!!form.errors?.post_per_qualification" :error-message="form.errors?.post_per_qualification"
                             />
                         </div>
+
+                        <div class="col-12 col-sm-6">
+                            <q-input v-model="form.name_of_workplace" label="Workplace" outlined dense
+                                     :error="!!form.errors?.name_of_workplace" :error-message="form.errors?.name_of_workplace"
+                                      />
+                        </div>
+
 
 
                     </div>
@@ -236,8 +238,9 @@
                         <div class="col-12 col-sm-6"> <strong>Date of Initial Engagement:</strong> {{ formatDate(form.date_of_engagement) }} </div>
                         <div class="col-12 col-sm-6"> <strong>Skill Category at Initial Engagement:</strong> {{ form.skill_category }} </div>
                         <div class="col-12 col-sm-6"> <strong>Skill at Present:</strong> {{ form.skill_at_present }} </div>
-                        <div class="col-12 col-sm-6"> <strong>Workplace:</strong> {{ form.name_of_workplace }} </div>
                         <div class="col-12 col-sm-6"> <strong>Post Selected:</strong> {{ form.post_per_qualification }} </div>
+                        <div class="col-12 col-sm-6"> <strong>Workplace:</strong> {{ form.name_of_workplace }} </div>
+
 
                     </div>
 
