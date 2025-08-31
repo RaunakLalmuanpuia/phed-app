@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('document_edit_requests', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Employee::class);
-            $table->foreignIdFor(\App\Models\Document::class);
+            $table->foreignIdFor(\App\Models\DocumentType::class);
             $table->string('mime');
             $table->text('path');
             $table->string('name');

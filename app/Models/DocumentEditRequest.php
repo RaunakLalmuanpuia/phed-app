@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class DocumentEditRequest extends Model
 {
     protected $fillable = [
-        'document_id', 'employee_id','mime', 'path', 'name','type','upload_date','request_date',
+        'document_type_id', 'employee_id','mime', 'path', 'name','type','request_date',
         'approval_status', 'approval_date',
     ];
 
@@ -16,7 +16,8 @@ class DocumentEditRequest extends Model
         return $this->belongsTo(Employee::class);
     }
 
-    public function document(): BelongsTo {
-        return $this->belongsTo(Document::class);
+    public function documentType(): BelongsTo
+    {
+        return $this->belongsTo(DocumentType::class);
     }
 }

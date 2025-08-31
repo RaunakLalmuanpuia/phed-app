@@ -353,7 +353,7 @@ class EmployeeController extends Controller
         return inertia('Backend/Employees/Show', [
             'data' => $model->load(['office', 'documents.type','transfers.oldOffice','transfers.newOffice',
                 'deletionDetail','deletionRequests', 'remunerationDetail','engagementCard','editRequests.attachments.type',
-                'transferRequests.currentOffice','transferRequests.requestedOffice',]),
+                'transferRequests.currentOffice','transferRequests.requestedOffice', 'documentRequest.documentType']),
             'office' => $office,
             'documentTypes' => $documentTypes,
             'canDelete'=>$user->can('delete-employee'),
@@ -365,11 +365,12 @@ class EmployeeController extends Controller
             'canRequestEdit'=>$user->can('request-edit'),
             'canRequestDelete'=>$user->can('request-delete'),
             'canRequestTransfer'=>$user->can('request-transfer'),
+            'canRequestDocumentEdit'=>$user->can('request-document-edit'),
 
             'canApproveEdit'=>$user->can('approve-edit'),
             'canApproveDelete'=>$user->can('approve-delete'),
             'canApproveTransfer'=>$user->can('approve-transfer'),
-
+            'canApproveDocumentEdit'=>$user->can('approve-document-edit'),
 
             'canCreateRemuneration'=>$user->can('create-remuneration'),
 

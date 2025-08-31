@@ -20,6 +20,10 @@ class Employee extends Model
     {
         return $this->hasMany(Document::class);
     }
+    public function documentRequest(): HasMany {
+        return $this->hasMany(DocumentEditRequest::class);
+    }
+
     public function transfers(): HasMany {
         return $this->hasMany(Transfer::class);
     }

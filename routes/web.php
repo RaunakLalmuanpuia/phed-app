@@ -19,6 +19,8 @@ use App\Http\Controllers\EngagementCardController;
 use App\Http\Controllers\SummaryController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\DocumentController;
+
 
 
 
@@ -163,6 +165,17 @@ Route::group(['middleware'=>'auth','prefix' => 'edit'], function () {
     Route::post('approve/{model}', [EditRequestController::class, 'approve'])->middleware('can:approve-edit')->name('edit.approve');
     Route::post('reject/{model}', [EditRequestController::class, 'reject'])->middleware('can:approve-edit')->name('edit.reject');
 });
+
+//Document Edit Request
+
+Route::group(['middleware'=>'auth','prefix' => 'document'], function () {
+    Route::post('request/{model}', [DocumentController::class, 'request'])->middleware('can:request-document-edit')->name('document.request');;
+    Route::post('approve/{model}', [DocumentController::class, 'approve'])->middleware('can:approve-document-edit')->name('document.approve');;;
+    Route::post('reject/{model}', [DocumentController::class, 'reject'])->middleware('can:approve-document-edit')->name('document.reject');;;
+
+});
+
+
 
 //Transfer
 Route::group(['middleware'=>'auth','prefix' => 'transfer'], function () {

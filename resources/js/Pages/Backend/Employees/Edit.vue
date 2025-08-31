@@ -456,6 +456,7 @@ const nextStep = () => {
 
 const prevStep = () => {
     if (step.value === '4') {
+        // If admin → back to Step 3, else back to Step 1
         step.value = isAdmin.value ? '3' : '1'
     } else if (step.value === '3') {
         // If admin → back to Step 2, else back to Step 1

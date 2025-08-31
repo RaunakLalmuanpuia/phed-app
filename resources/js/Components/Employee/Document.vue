@@ -5,12 +5,26 @@
         <q-card-section>
             <div v-if="filteredDocuments.length === 0">
                 <div class="stitle text-lg font-bold">Uploaded Documents</div>
+                <q-btn
+                    label="Request Document Update"
+                    color="primary"
+                    v-if="canRequestDocumentEdit"
+                    @click="showDialog = true"
+                />
                 <p class="text-gray-500 text-center py-10 text-base italic">No documents found</p>
 
             </div>
 
             <div v-if="filteredDocuments.length > 0">
                 <div class="stitle text-lg font-bold">Uploaded Documents</div>
+
+                <q-btn
+                    label="Request Document Update"
+                    color="primary"
+                    v-if="canRequestDocumentEdit"
+                    @click="showDialog = true"
+                />
+
 
                 <div class="row q-col-gutter-md q-mt-sm">
                     <q-input
@@ -72,17 +86,149 @@
             </div>
         </q-card-section>
 
+        <q-card-section>
+            <!-- Empty State -->
+            <div
+                v-if="data.document_request.length === 0"
+                class="text-gray-500 text-center py-10 text-base italic"
+            >
+                No Document update request found.
+            </div>
 
+            <!-- Requests List -->
+            <div v-else class="flex flex-col gap-6">
+                <q-card
+                    v-for="req in data.document_request"
+                    :key="req.id"
+                    class="rounded-xl border border-gray-100 hover:shadow-md transition duration-200"
+                >
+                    <q-card-section>
+                        <!-- Header Info -->
+                        <div class="flex flex-wrap justify-between items-center mb-4">
+                            <div>
+                                <b class="text-gray-600">Status:</b>
+                                <span
+                                    class="ml-1 font-medium capitalize"
+                                    :class="{
+                                  'text-yellow-600': req.approval_status === 'pending',
+                                  'text-green-600': req.approval_status === 'approved',
+                                  'text-red-600': req.approval_status === 'rejected'
+                                }"
+                                >
+                                {{ req.approval_status }}
+                              </span>
+                            </div>
+                            <div class="text-gray-600">
+                                <b>Requested On:</b> {{ formatDate(req.request_date) }}
+                            </div>
+                        </div>
+
+                        <!-- Document Details -->
+                        <div>
+                            <b class="block mb-3 text-gray-700">Documents</b>
+                            <div
+                                class="grid grid-cols-1 md:grid-cols-2 gap-4  p-4 "
+                            >
+
+                                <div>
+                                    <div class="text-gray-500">
+                                        {{ req.document_type.name }}:
+                                        <q-btn
+                                            dense
+                                            flat
+                                            color="primary"
+                                            icon="visibility"
+                                            :href="`/storage/${req.path}`"
+                                            target="_blank"
+                                        />
+                                        <q-btn
+                                            dense
+                                            flat
+                                            color="primary"
+                                            icon="download"
+                                            :href="`/storage/${req.path}`"
+                                            target="_blank"
+                                            download
+                                        />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </q-card-section>
+
+                    <!-- Actions (only when pending) -->
+                    <q-card-actions
+                        align="right"
+                        v-if="req.approval_status === 'pending' && canApproveDocumentEdit"
+                        class="px-4 pb-4"
+                    >
+                        <q-btn
+                            label="Approve"
+                            color="positive"
+                            unelevated
+                            class="rounded-lg"
+                            @click="approveRequest(req.id)"
+                        />
+                        <q-btn
+                            label="Reject"
+                            color="negative"
+                            flat
+                            class="rounded-lg"
+                            @click="rejectRequest(req.id)"
+                        />
+                    </q-card-actions>
+                </q-card>
+            </div>
+        </q-card-section>
     </q-card>
+
+    <q-dialog v-model="showDialog">
+        <q-card style="min-width: 600px">
+            <q-card-section>
+                <div class="text-lg font-bold">Request Document Update</div>
+
+
+            </q-card-section>
+
+            <q-card-section>
+                <!-- Document Type Select -->
+                <div
+                    v-for="dt in documentTypes"
+                    :key="dt.id"
+                    class="mb-4"
+                >
+                    <div class="font-semibold mb-1">{{ dt.name }}</div>
+                    <q-file
+                        v-model="form.files[dt.id]"
+                        filled
+                        dense
+                        label="Choose file"
+                    />
+                </div>
+            </q-card-section>
+
+            <q-card-actions align="right">
+                <q-btn flat label="Cancel" color="grey" v-close-popup />
+                <q-btn
+                    label="Submit Request"
+                    color="primary"
+                    :loading="form.processing"
+                    @click="submit"
+                />
+            </q-card-actions>
+        </q-card>
+    </q-dialog>
 </template>
 
 <script setup>
-import {computed, ref} from "vue";
-
-const props=defineProps(['data', 'office']);
-
+import {computed, ref, watch} from "vue";
+import { useForm } from "@inertiajs/vue3";
+import {useQuasar} from "quasar";
+const props=defineProps(['data', 'office','documentTypes','canApproveDocumentEdit','canRequestDocumentEdit']);
+const $q = useQuasar();
 const search = ref('')
-
+const showDialog = ref(false);
 
 const filteredDocuments = computed(() => {
     if (!props.data?.documents) return [];
@@ -104,6 +250,93 @@ function formatDate(dateStr) {
         day: 'numeric'
     })
 }
+
+
+
+
+const form = useForm({
+    files: {} // { [document_type_id]: File }
+});
+
+const submit = () => {
+    form.post(route("document.request", props.data), {
+        onSuccess: () => {
+            form.reset("files");
+            showDialog.value = false; // close dialog
+            $q.notify({
+                type: 'positive',
+                message: 'Document Request Submitted',
+                position: 'bottom',
+            });
+        },
+        onError: (errors) => {
+            Object.values(errors).forEach((error) => {
+                $q.notify({
+                    type: 'negative',
+                    message: error,
+                    position: 'bottom',
+                });
+            });
+        },
+    });
+
+};
+
+// Approve request
+const approveRequest = (id) => {
+    form.post(route('document.approve', id), {
+        onStart: () => {
+            $q.loading.show();
+        },
+        onFinish: () => {
+            $q.loading.hide();
+            showDialog.value = false; // close dialog
+            form.reset();
+            $q.notify({
+                type: 'positive',
+                message: 'Document Approved',
+                position: 'bottom',
+            });
+        },
+        onError: (errors) => {
+            Object.values(errors).forEach((error) => {
+                $q.notify({
+                    type: 'negative',
+                    message: error,
+                    position: 'bottom',
+                });
+            });
+        },
+    });
+};
+
+// Approve request
+const rejectRequest = (id) => {
+    form.post(route('document.reject', id), {
+        onStart: () => {
+            $q.loading.show();
+        },
+        onFinish: () => {
+            $q.loading.hide();
+            showDialog.value = false; // close dialog
+            form.reset();
+            $q.notify({
+                type: 'negative',
+                message: 'Transfer Rejected',
+                position: 'bottom',
+            });
+        },
+        onError: (errors) => {
+            Object.values(errors).forEach((error) => {
+                $q.notify({
+                    type: 'negative',
+                    message: error,
+                    position: 'bottom',
+                });
+            });
+        },
+    });
+};
 </script>
 
 <style scoped>
