@@ -2,29 +2,18 @@
 
 <template>
     <q-card class="q-mt-md">
+        <q-card-section class="flex items-center justify-between">
+            <div class="stitle text-lg font-bold">Uploaded Documents</div>
+            <q-btn label="Request Document Update" color="primary"  :disable="latestRequestPending" v-if="canRequestDocumentEdit" @click="showDialog = true" />
+        </q-card-section>
+
+
         <q-card-section>
             <div v-if="filteredDocuments.length === 0">
-                <div class="stitle text-lg font-bold">Uploaded Documents</div>
-                <q-btn
-                    label="Request Document Update"
-                    color="primary"
-                    v-if="canRequestDocumentEdit"
-                    @click="showDialog = true"
-                />
-                <p class="text-gray-500 text-center py-10 text-base italic">No documents found</p>
-
+                <p class="text-gray-500 text-center py-5 text-base italic">No documents uploaded</p>
             </div>
 
             <div v-if="filteredDocuments.length > 0">
-                <div class="stitle text-lg font-bold">Uploaded Documents</div>
-
-                <q-btn
-                    label="Request Document Update"
-                    color="primary"
-                    v-if="canRequestDocumentEdit"
-                    @click="showDialog = true"
-                />
-
 
                 <div class="row q-col-gutter-md q-mt-sm">
                     <q-input
@@ -85,12 +74,13 @@
                 </q-markup-table>
             </div>
         </q-card-section>
+        <q-separator/>
 
         <q-card-section>
             <!-- Empty State -->
             <div
                 v-if="data.document_request.length === 0"
-                class="text-gray-500 text-center py-10 text-base italic"
+                class="text-gray-500 text-center py-5 text-base italic"
             >
                 No Document update request found.
             </div>
@@ -130,15 +120,16 @@
                                 class="grid grid-cols-1 md:grid-cols-2 gap-4  p-4 "
                             >
 
-                                <div>
+
+                                <div v-for="file in req.files" :key="file.id" class="mb-2">
                                     <div class="text-gray-500">
-                                        {{ req.document_type.name }}:
+                                        {{ file.document_type.name }}:
                                         <q-btn
                                             dense
                                             flat
                                             color="primary"
                                             icon="visibility"
-                                            :href="`/storage/${req.path}`"
+                                            :href="`/storage/${file.path}`"
                                             target="_blank"
                                         />
                                         <q-btn
@@ -146,13 +137,13 @@
                                             flat
                                             color="primary"
                                             icon="download"
-                                            :href="`/storage/${req.path}`"
+                                            :href="`/storage/${file.path}`"
                                             target="_blank"
                                             download
                                         />
-
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </q-card-section>
@@ -252,7 +243,9 @@ function formatDate(dateStr) {
 }
 
 
-
+const latestRequestPending = computed(() =>
+    props.data.document_request?.slice(-1)[0]?.approval_status === 'pending'
+);
 
 const form = useForm({
     files: {} // { [document_type_id]: File }
