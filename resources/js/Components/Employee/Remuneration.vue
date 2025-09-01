@@ -22,7 +22,7 @@ const form = useForm({
 const openDialog = (edit = false) => {
     isEdit.value = edit;
     if (edit && props.data.remuneration_detail) {
-        form.remuneration = props.data.remuneration_detail.remuneration;
+        form.remuneration = props.data.remuneration_detail.total;
         form.next_increment_date = props.data.remuneration_detail.next_increment_date;
     } else {
         form.reset();
