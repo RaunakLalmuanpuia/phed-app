@@ -175,7 +175,7 @@
 
                     <div class="row q-mb-sm items-center">
                         <div class="col-4 text-subtitle2 text-grey-8">Current Remuneration (Total)</div>
-                        <div class="col-8 text-body1">Rs {{ currentRow?.remuneration_detail?.remuneration || 0 }}</div>
+                        <div class="col-8 text-body1">Rs {{ currentRow?.remuneration_detail?.total || 0 }}</div>
                     </div>
 
                     <div class="row q-mb-sm items-center">
@@ -343,7 +343,7 @@ const openDialog = (row) => {
     currentRow.value = row;
 
     if (row.remuneration_detail) {
-        form.remuneration = row.remuneration_detail.remuneration;
+        form.remuneration = row.remuneration_detail.total;
         form.next_increment_date = row.remuneration_detail.next_increment_date;
     } else {
         form.reset();
