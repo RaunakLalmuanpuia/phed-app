@@ -4,11 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
+    <meta name="description" content=" Employees Database Management System - PUBLIC HEALTH ENGINEERING DEPARTMENT : MIZORAM.Developed by Raunak Lalmuanpuia, Software Developer, MSeGS.">
+    <meta name="keywords" content="Mizoram, EDMS, PHED, Employees Database, Government of Mizoram">
     <meta name="author" content="Raunak Lalmuanpuia">
-    <meta name="description" content="Developed by Raunak Lalmuanpuia">
 
+    <title>EDMS</title>
 
-    <title inertia>{{ config('app.name', 'Bets') }}</title>
+    <title inertia>{{ config('app.name', 'PHED Dept: GOM') }}</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -22,3 +24,4 @@
 @inertia
 </body>
 </html>
+http://localhost:8000/employees/40/show
