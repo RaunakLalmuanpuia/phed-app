@@ -39,6 +39,11 @@ class ExportController extends Controller
         $user = $request->user();
         abort_if(!$user->hasPermissionTo('export-pe'),403,'Access Denied');
 
+
+        if ($user->hasRole('Manager')) {
+            $model = $user->offices()->firstOrFail();
+        }
+
         return Excel::download(
             new ProvisionalEmployeesExport($model),
             Str::slug($model->name, '_') . '_provisional_employees.xlsx'
@@ -48,6 +53,12 @@ class ExportController extends Controller
     public function exportMusterRoll(Request $request, Office $model){
         $user = $request->user();
         abort_if(!$user->hasPermissionTo('export-mr'),403,'Access Denied');
+
+
+        if ($user->hasRole('Manager')) {
+            $model = $user->offices()->firstOrFail();
+        }
+
         return Excel::download(
             new MusterRollEmployeesExport($model),
             Str::slug($model->name, '_') . '_muster_roll_employees.xlsx'
@@ -58,6 +69,10 @@ class ExportController extends Controller
 
         $user = $request->user();
         abort_if(!$user->hasPermissionTo('export-all'),403,'Access Denied');
+
+        if ($user->hasRole('Manager')) {
+            $model = $user->offices()->firstOrFail();
+        }
         return Excel::download(
             new AllEmployeesExport($model),
             Str::slug($model->name, '_') . '_all_employees.xlsx'

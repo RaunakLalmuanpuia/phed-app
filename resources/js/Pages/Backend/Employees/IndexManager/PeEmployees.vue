@@ -75,7 +75,7 @@
 
 
 
-                    <q-btn label="Export" icon="desktop_windows" color="primary"  disabled />
+                    <q-btn label="Export" icon="desktop_windows" color="primary"   @click="exportData" />
                     <q-input
                         dense
                         outlined
@@ -319,7 +319,36 @@ function onRequest (prop) {
         })
         .finally(()=>loading.value=false)
 }
+const exportData = () => {
+    q.loading.show();
 
+    // Pick first office
+    const firstOffice = props.offices?.length ? props.offices[0] : null;
+
+    axios.get(
+        route('export.pe', firstOffice?.value),   // <-- pass ID only
+        { responseType: 'blob' }
+    )
+        .then((res) => {
+            const fileUrl = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement('a');
+            link.href = fileUrl;
+            link.setAttribute(
+                'download',
+                (firstOffice?.label || 'employees').replace(/\s+/g, '_') + '_pe_employees.xlsx'
+            );
+            link.click();
+        })
+        .catch((err) => {
+            q.notify({
+                type: 'negative',
+                message: err.response?.data?.message || 'Failed to download file',
+            });
+        })
+        .finally(() => {
+            q.loading.hide();
+        });
+};
 onMounted(() => {
     onRequest({pagination:pagination.value,
         filter:filters.value,

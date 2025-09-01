@@ -145,12 +145,6 @@
                                     @update:model-value="handleSearch"
                                 />
 
-
-
-
-
-
-
                             </div>
                         </q-card-section>
 
@@ -159,7 +153,7 @@
                         <q-card-section class="row items-center justify-between q-gutter-md">
                             <div class="row q-gutter-sm col-12 col-sm justify-end">
 
-                                <q-btn label="Export" icon="desktop_windows" color="primary" disabled />
+                                <q-btn label="Export" icon="desktop_windows" color="primary"   @click="exportData" />
                                 <q-input
                                     dense
                                     outlined
@@ -296,6 +290,7 @@ defineOptions({layout:BackendLayout})
 
 const props=defineProps(['offices','totalEmployees','peCount','mrCount','designations','educationQlnPe','educationQlnMr','skills'])
 
+console.log(props.offices)
 
 const columns = [
     { name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true },
@@ -386,7 +381,6 @@ function onRequest (props) {
         }
     })
         .then(res=>{
-            console.log(res.data);
             const {list} = res.data;
             const {data,per_page,current_page,total,to,from} = list;
             rows.value = data;
@@ -400,6 +394,38 @@ function onRequest (props) {
         })
         .finally(()=>loading.value=false)
 }
+
+const exportData = () => {
+    q.loading.show();
+
+    // Pick first office
+    const firstOffice = props.offices?.length ? props.offices[0] : null;
+
+    axios.get(
+        route('export.all', firstOffice?.value),   // <-- pass ID only
+        { responseType: 'blob' }
+    )
+        .then((res) => {
+            const fileUrl = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement('a');
+            link.href = fileUrl;
+            link.setAttribute(
+                'download',
+                (firstOffice?.label || 'employees').replace(/\s+/g, '_') + '_all_employees.xlsx'
+            );
+            link.click();
+        })
+        .catch((err) => {
+            q.notify({
+                type: 'negative',
+                message: err.response?.data?.message || 'Failed to download file',
+            });
+        })
+        .finally(() => {
+            q.loading.hide();
+        });
+};
+
 
 onMounted(() => {
     onRequest({
