@@ -54,6 +54,7 @@
                                     :options="yearOptions"
                                     emit-value
                                     map-options
+                                    @clear="clearTable"
                                 />
 
                             </div>
@@ -83,7 +84,7 @@
         <q-table
             v-if="showTable"
             ref="empTable"
-            title="Employees"
+            title="Employees Remuneration"
             :rows="rows"
             :columns="columns"
             row-key="id"
@@ -91,24 +92,36 @@
             v-model:pagination="pagination"
             :rows-per-page-options="[5, 10, 20, 50]"
             @request="onRequest"
+            selection="multiple"
+            v-model:selected="selectedEmployees"
         >
+
             <template v-slot:top-right>
+
+                <q-btn class="q-mr-sm"  icon="upload"  v-if="selectedEmployees.length > 0" label="Update" color="primary"  @click="openBulkUpdateDialog" />
+
                 <q-input
-                    borderless
                     dense
-                    debounce="800"
-                    bg-color="grey-2"
                     outlined
+                    debounce="800"
                     v-model="search"
                     placeholder="Search"
+                    class="col-12 col-sm-auto"
                     clearable
                     @update:model-value="handleSearch"
                 >
-                    <template v-slot:append>
+                    <template #append>
                         <q-icon name="search" />
                     </template>
                 </q-input>
+
+
             </template>
+
+
+
+
+
             <template v-slot:body-cell-office="props">
                 <q-td :props="props">
                     {{ props.row.office?.name }}
@@ -117,19 +130,25 @@
 
             <template v-slot:body-cell-remuneration="props">
                 <q-td :props="props">
-                    {{ props.row.remuneration_detail?.remuneration }}
+                    ₹{{ props.row.remuneration_detail?.remuneration }}
                 </q-td>
             </template>
 
-            <template v-slot:body-cell-total="props">
+            <template v-slot:body-cell-round_total="props">
                 <q-td :props="props">
-                    {{ props.row.remuneration_detail?.round_total }}
+                    ₹{{ props.row.remuneration_detail?.round_total }}
                 </q-td>
             </template>
 
             <template v-slot:body-cell-next_increment_date="props">
                 <q-td :props="props">
                     {{ formatDate(props.row.remuneration_detail?.next_increment_date) }}
+                </q-td>
+            </template>
+
+            <template v-slot:body-cell-next_increment_amount="props">
+                <q-td :props="props">
+                    ₹{{ props.row.remuneration_detail?.total }}
                 </q-td>
             </template>
 
@@ -226,6 +245,49 @@
         </q-dialog>
 
 
+        <q-dialog v-model="showBulkDialog">
+
+
+            <q-card style="min-width: 300px">
+                <q-card-section>
+                    <div class="text-h6">Update Remuneration</div>
+                </q-card-section>
+
+                <q-card-section>
+                    <q-banner class="bg-grey-2 text-body2 q-pa-sm rounded-borders">
+                        Note: When updating the increment date, each selected employee’s
+                        <strong>remuneration</strong> will be set to their
+                        <strong>next increment amount</strong>, and the new increment date will be applied
+                        based on this updated remuneration.
+                    </q-banner>
+                </q-card-section>
+
+                <q-card-section>
+                    <q-input
+                        type="date"
+                        v-model="bulkForm.next_increment_date"
+                        outlined
+                        label="New Increment Date"
+                        dense
+                        :error="!!bulkForm.errors.next_increment_date"
+                        :error-message="bulkForm.errors.next_increment_date"
+                    />
+                </q-card-section>
+
+
+
+                <q-card-actions align="right">
+                    <q-btn flat label="Cancel" v-close-popup @click="cancelBulkEdit" />
+                    <q-btn
+                        color="primary"
+                        label="Update"
+                        :loading="bulkForm.processing"
+                        @click="submitBulkUpdate"
+                    />
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
+
     </q-page>
 </template>
 
@@ -250,17 +312,26 @@ const filters = ref({
 const startYear = 2020;
 const endYear = 2035;
 
-
-
 const yearOptions = Array.from(
     { length: endYear - startYear + 1 },
     (_, i) => startYear + i
 );
 const search = ref("");
 
+const selectedEmployees = ref([])
+const showBulkDialog = ref(false)
+
 const q = useQuasar();
 const rows = ref([]);
 const loading = ref(false);
+
+
+
+const bulkForm = useForm({
+    employee_ids: [],
+    next_increment_date: ''
+})
+
 
 const editMode = ref(false);
 const showDialog = ref(false);
@@ -330,8 +401,9 @@ const columns = [
     { name: "designation", label: "Designation", field: "designation", align: "left", sortable: true },
     { name: "office", label: "Office", field: "office.name", align: "left" },
     { name: "remuneration", label: "Remuneration", field: "remuneration_detail.remuneration", align: "right" },
-    { name: "total", label: "Total", field: "remuneration_detail.round_total", align: "right" },
+    { name: "round_total", label: "Total", field: "remuneration_detail.round_total", align: "right" },
     { name: "next_increment_date", label: "Next Increment", field: "remuneration_detail.next_increment_date", align: "left" },
+    { name: "next_increment_amount", label: "Next Increment Amount", field: "remuneration_detail.total", align: "left" },
     { name: 'actions', label: 'Actions', align: 'center' },
 ];
 
@@ -353,6 +425,11 @@ const openDialog = (row) => {
     showDialog.value = true;
     editMode.value = false; // 🔹 start as readonly
 };
+function openBulkUpdateDialog () {
+    bulkForm.reset()
+    bulkForm.employee_ids = selectedEmployees.value.map(e => e.id)
+    showBulkDialog.value = true
+}
 
 const enableEdit = () => {
     editMode.value = true; // enable editing
@@ -362,6 +439,11 @@ const cancelEdit = () => {
     editMode.value = false;
     showDialog.value = false;
     form.reset();
+};
+
+const cancelBulkEdit = () => {
+    showBulkDialog.value = false;
+    bulkForm.reset();
 };
 
 function onRequest(props) {
@@ -406,9 +488,46 @@ const submitForm = () => {
             if (empTable.value) empTable.value.requestServerInteraction();
             q.notify({ type: "positive", message: "Remuneration updated successfully." });
         },
+        onError: (errors) => {
+            Object.values(errors).forEach((error) => {
+                q.notify({
+                    type: 'negative',
+                    message: error,
+                    position: 'bottom',
+                });
+            });
+        },
     });
 };
 
+
+function submitBulkUpdate () {
+    if (!bulkForm.next_increment_date) {
+        q.notify({ type: 'negative', message: 'Please select a new increment date' })
+        return
+    }
+
+    bulkForm.post(route('remuneration.bulk-update'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            q.notify({ type: 'positive', message: 'Increment updated successfully' })
+            showBulkDialog.value = false
+            selectedEmployees.value = []
+            bulkForm.reset();
+            // onRequest({ pagination: pagination.value }) // reload table
+            if (empTable.value) empTable.value.requestServerInteraction();
+        },
+        onError: (errors) => {
+            Object.values(errors).forEach((error) => {
+                q.notify({
+                    type: 'negative',
+                    message: error,
+                    position: 'bottom',
+                });
+            });
+        },
+    })
+}
 
 </script>
 

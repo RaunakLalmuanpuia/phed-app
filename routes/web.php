@@ -210,6 +210,7 @@ Route::group(['middleware'=>'auth','prefix'=>'notification'], function () {
 Route::group(['middleware'=>'auth','prefix' => 'remuneration'], function () {
     Route::post('store/{model}', [RemunerationController::class, 'store'])->middleware('can:create-remuneration')->name('remuneration.store');
     Route::put('update/{model}', [RemunerationController::class, 'update'])->middleware('can:edit-remuneration')->name('remuneration.update');
+    Route::post('bulk-update', [RemunerationController::class, 'bulkUpdate'])->middleware('can:bulk-update-remuneration')->name('remuneration.bulk-update');
 });
 
 //Engagement Card

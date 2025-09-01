@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\RemunerationDetail;
 use Illuminate\Http\Request;
 
 class RemunerationController extends Controller
@@ -41,5 +42,32 @@ class RemunerationController extends Controller
         }
 
         return back()->with('success', 'Remuneration successfully updated.');
+    }
+
+
+    public function bulkUpdate(Request $request)
+    {
+
+
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('bulk-update-remuneration'), 403, 'Access Denied');
+
+        $validated = $request->validate([
+            'employee_ids' => ['required', 'array', 'min:1'],
+            'employee_ids.*' => ['integer', 'exists:employees,id'],
+            'next_increment_date' => ['required', 'date'],
+        ]);
+
+        $ids = $validated['employee_ids'];
+        $date = $validated['next_increment_date'];
+
+        RemunerationDetail::whereIn('employee_id', $ids)->get()->each(function ($rem) use ($date) {
+
+            $rem->remuneration = $rem->total;
+            $rem->next_increment_date = $date;
+            $rem->save(); // triggers boot() recalculation
+        });
+
+        return back()->with('success', 'Employees updated successfully!');
     }
 }

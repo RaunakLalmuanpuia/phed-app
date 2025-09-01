@@ -24,4 +24,4 @@
 @inertia
 </body>
 </html>
-http://localhost:8000/employees/40/show
+
