@@ -121,12 +121,20 @@ class MISController extends Controller
         $filter  = $request->get('filter', []);
         $search  = $request->get('search');
         $officeIds = $filter['offices'] ?? [];
+        $incrementYear = $filter['incrementYear'] ?? null;
 
         $employees = Employee::with(['office','remunerationDetail'])
             ->whereIn('office_id', (array) $officeIds)
             ->where('employment_type', 'PE')
 
-            // Search
+            // 🔹 Filter by Increment Year
+            ->when($incrementYear, function ($q) use ($incrementYear) {
+                $q->whereHas('remunerationDetail', function ($rem) use ($incrementYear) {
+                    $rem->whereYear('next_increment_date', $incrementYear);
+                });
+            })
+
+            // 🔹 Search
             ->when($search, function ($q) use ($search) {
                 $q->where(function ($sub) use ($search) {
                     $sub->where('name', 'LIKE', "%{$search}%")
@@ -143,15 +151,7 @@ class MISController extends Controller
                 });
             })
 
-            // Extra filters
-            ->when($filter['designation'] ?? null, function ($query, $designation) {
-                $query->where('designation', $designation);
-            })
-            ->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
-                $query->where('educational_qln', $educationQln);
-            })
-
-            // Sort by closest next_increment_date to today
+            // 🔹 Sort by closest increment date
             ->orderByRaw("
             (
                 SELECT MIN(ABS(DATEDIFF(rd.next_increment_date, CURDATE())))
@@ -164,6 +164,7 @@ class MISController extends Controller
             'list' => $employees->paginate($perPage),
         ], 200);
     }
+
 
     public function engagementCard(Request $request){
         $user = $request->user();

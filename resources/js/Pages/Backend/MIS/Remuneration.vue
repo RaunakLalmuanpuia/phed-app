@@ -41,11 +41,20 @@
                                     outlined
                                     dense
                                     clearable
-
                                     @clear="clearTable"
                                     @update:model-value="checkOffices"
                                 />
-
+                                <q-select
+                                    class="col-12 col-sm-3"
+                                    outlined
+                                    dense
+                                    clearable
+                                    label="Increment Year"
+                                    v-model="filters.incrementYear"
+                                    :options="yearOptions"
+                                    emit-value
+                                    map-options
+                                />
 
                             </div>
                         </q-card-section>
@@ -120,7 +129,7 @@
 
             <template v-slot:body-cell-next_increment_date="props">
                 <q-td :props="props">
-                    {{ props.row.remuneration_detail?.next_increment_date }}
+                    {{ formatDate(props.row.remuneration_detail?.next_increment_date) }}
                 </q-td>
             </template>
 
@@ -166,39 +175,55 @@
 
                     <div class="row q-mb-sm items-center">
                         <div class="col-4 text-subtitle2 text-grey-8">Current Remuneration (Total)</div>
-                        <div class="col-8 text-body1">Rs {{ currentRow?.remuneration_detail?.round_total || 0 }}</div>
+                        <div class="col-8 text-body1">Rs {{ currentRow?.remuneration_detail?.remuneration || 0 }}</div>
                     </div>
 
                     <div class="row q-mb-sm items-center">
                         <div class="col-4 text-subtitle2 text-grey-8">Date of Next Increment</div>
-                        <div class="col-8 text-body1">{{ currentRow?.remuneration_detail?.next_increment_date || 0 }}</div>
+                        <div class="col-8 text-body1">{{ formatDate(currentRow?.remuneration_detail?.next_increment_date) || 0 }}</div>
                     </div>
 
-                    <!-- Editable fields -->
+                    <!-- Remuneration Input -->
                     <q-input
                         label="Remuneration"
                         type="number"
                         v-model="form.remuneration"
                         outlined
                         dense
-                    />
+                        :readonly="!editMode"
+
+                    >
+                        <template v-slot:append>
+                            <q-icon
+                                name="edit"
+                                class="cursor-pointer"
+                                @click="enableEdit"
+                            />
+                        </template>
+                    </q-input>
+
+                    <!-- Next Increment Date Input -->
                     <q-input
                         label="Next Increment Date"
                         type="date"
                         v-model="form.next_increment_date"
                         outlined
                         dense
+                        :readonly="!editMode"
                     />
                 </q-card-section>
 
                 <q-card-actions align="right">
-                    <q-btn flat label="Cancel" v-close-popup />
-                    <q-btn color="primary" label="Update" @click="submitForm" />
+                    <q-btn flat label="Cancel" v-close-popup @click="cancelEdit" />
+                    <q-btn
+                        color="primary"
+                        label="Update"
+                        :disable="!editMode"
+                        @click="submitForm"
+                    />
                 </q-card-actions>
             </q-card>
         </q-dialog>
-
-
 
 
     </q-page>
@@ -209,25 +234,40 @@ import BackendLayout from "@/Layouts/BackendLayout.vue";
 import { useQuasar } from "quasar";
 import { ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
+import useUtils from "@/Compositions/useUtils";
 
+const {formatDate} = useUtils();
 defineOptions({ layout: BackendLayout });
 
 const props = defineProps(["office", "canGenerateRemuneration"]);
 
 const filters = ref({
     offices: [], // multiple offices
+    incrementYear: "",   // 🔹 new
 });
+
+// Generate a range of years (e.g., from 2020 to 2030)
+const startYear = 2020;
+const endYear = 2035;
+
+
+
+const yearOptions = Array.from(
+    { length: endYear - startYear + 1 },
+    (_, i) => startYear + i
+);
 const search = ref("");
 
 const q = useQuasar();
 const rows = ref([]);
 const loading = ref(false);
+
+const editMode = ref(false);
 const showDialog = ref(false);
 
 const showTable = ref(false);
 const empTable = ref(null);   // declare a ref for your table
 function fetchEmployees() {
-
     if (!filters.value.offices || filters.value.offices.length === 0) {
         q.notify({
             type: 'negative',
@@ -235,14 +275,23 @@ function fetchEmployees() {
         })
         return
     }
+
+    if (!filters.value.incrementYear) {
+        q.notify({
+            type: 'negative',
+            message: 'Please enter the increment year'
+        })
+        return
+    }
+
     showTable.value = true;
     rows.value = [];
-    // trigger table request
+
     setTimeout(() => {
-        // small delay to ensure table renders before firing request
         if (empTable.value) empTable.value.requestServerInteraction();
     });
 }
+
 function handleSearch () {
 
     // reset to first page whenever search changes
@@ -293,7 +342,6 @@ const currentRow = ref(null);
 const openDialog = (row) => {
     currentRow.value = row;
 
-    // Populate editable form fields
     if (row.remuneration_detail) {
         form.remuneration = row.remuneration_detail.remuneration;
         form.next_increment_date = row.remuneration_detail.next_increment_date;
@@ -303,6 +351,17 @@ const openDialog = (row) => {
 
     formRowId.value = row.id;
     showDialog.value = true;
+    editMode.value = false; // 🔹 start as readonly
+};
+
+const enableEdit = () => {
+    editMode.value = true; // enable editing
+};
+
+const cancelEdit = () => {
+    editMode.value = false;
+    showDialog.value = false;
+    form.reset();
 };
 
 function onRequest(props) {

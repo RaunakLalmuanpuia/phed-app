@@ -242,7 +242,7 @@
 
                 </q-expansion-item>
 
-                <q-separator class="q-my-sm"/>
+                <q-separator v-if="isAdmin" class="q-my-sm"/>
 
 <!--                MIS-->
                 <q-expansion-item v-if="checkModules('mis')"
@@ -414,9 +414,6 @@
 
                 </q-expansion-item>
 
-
-
-
             </q-list>
         </q-drawer>
 
@@ -457,6 +454,15 @@ const toggleLeftDrawer = () => {
 
 const module = reactive({
 
+    manager: {
+        label: 'Employees',
+        children: [
+            {route_name: 'employees.manager.all', label: 'All Employee', permission: 'view-allemployee'},
+            {route_name: 'employees.manager.pe', label: 'Provisional', permission: 'view-allemployee'},
+            {route_name: 'employees.manager.mr', label: 'Muster Roll', permission: 'view-allemployee'},
+        ]
+    },
+
     employee: {
         label: 'Employees',
         children: [
@@ -470,16 +476,6 @@ const module = reactive({
 
         ]
     },
-
-    manager: {
-        label: 'Employees',
-        children: [
-            {route_name: 'employees.manager.all', label: 'All Employee', permission: 'view-allemployee'},
-            {route_name: 'employees.manager.pe', label: 'Provisional', permission: 'view-allemployee'},
-            {route_name: 'employees.manager.mr', label: 'Muster Roll', permission: 'view-allemployee'},
-        ]
-    },
-
 
     admin: {
         label: 'Administration',
@@ -504,19 +500,12 @@ const module = reactive({
             {route_name: 'mis.engagement-card', label: 'Engagement Card', permission: 'generate-engagement-card'},
         ]
     },
-    requests: {
-        label: 'Requests',
-        children: [
-            {route_name: 'dissolution.submitted', label: 'Submitted', permission: 'view-dissolution'},
-            {route_name: 'dissolution.ongoing', label: 'Ongoing', permission: 'view-dissolution'},
-            {route_name: 'dissolution.archived', label: 'Archived', permission: 'view-dissolution'},
-        ]
-    },
+
 })
 
 
 const MENUS = {
-    Manager: ['manager', 'mis'],
+    Manager: ['manager' ],
     Admin: ['employee', 'mis', 'administration']
 };
 
