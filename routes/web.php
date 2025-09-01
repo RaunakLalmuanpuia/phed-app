@@ -169,10 +169,10 @@ Route::group(['middleware'=>'auth','prefix' => 'edit'], function () {
 //Document Edit Request
 
 Route::group(['middleware'=>'auth','prefix' => 'document'], function () {
-    Route::post('request/{model}', [DocumentController::class, 'request'])->middleware('can:request-document-edit')->name('document.request');;
-    Route::post('approve/{model}', [DocumentController::class, 'approve'])->middleware('can:approve-document-edit')->name('document.approve');;;
-    Route::post('reject/{model}', [DocumentController::class, 'reject'])->middleware('can:approve-document-edit')->name('document.reject');;;
-
+    Route::post('request/{model}', [DocumentController::class, 'request'])->middleware('can:request-document-edit')->name('document.request');
+    Route::post('approve/{model}', [DocumentController::class, 'approve'])->middleware('can:approve-document-edit')->name('document.approve');
+    Route::post('reject/{model}', [DocumentController::class, 'reject'])->middleware('can:approve-document-edit')->name('document.reject');
+    Route::delete('{model}', [DocumentController::class, 'deleteEmployeeDocument'])->middleware('can:delete-document')->name('document.destroy');
 });
 
 

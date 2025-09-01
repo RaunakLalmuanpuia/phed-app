@@ -361,6 +361,7 @@ class EmployeeController extends Controller
             'canCreate'=>$user->can('create-employee'),
 
             'canEditDelete' => $user->can('edit-delete'),
+            'canDeleteDocument' => $user->can('delete-document'),
 
             'canRequestEdit'=>$user->can('request-edit'),
             'canRequestDelete'=>$user->can('request-delete'),

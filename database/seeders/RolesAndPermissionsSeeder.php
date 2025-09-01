@@ -23,7 +23,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'request-edit', 'request-delete', 'request-transfer','request-document-edit',
             'approve-edit', 'approve-delete', 'approve-transfer', 'approve-document-edit',
             'transfer-employee','delete-transfer',
-            'view-employee','view-allemployee','create-employee','delete-employee','edit-employee','edit-delete',
+            'view-employee','view-allemployee','create-employee','delete-employee','edit-employee','edit-delete','delete-document',
             'view-anyuser','view-user','create-user','delete-user','edit-user',
             'view-anyoffice','view-office','create-office','delete-office','edit-office',
             'view-anyrole','edit-role',
@@ -50,7 +50,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
             'Admin' => ['approve-edit', 'approve-delete', 'approve-transfer','approve-document-edit',
                 'transfer-employee','delete-transfer',
-                'view-employee','view-allemployee','create-employee','delete-employee','edit-employee','edit-delete',
+                'view-employee','view-allemployee','create-employee','delete-employee','edit-employee','edit-delete','delete-document',
                 'view-anyuser','view-user','create-user','delete-user','edit-user',
                 'view-anyoffice','view-office','create-office','delete-office','edit-office',
                 'view-anyrole','edit-role',

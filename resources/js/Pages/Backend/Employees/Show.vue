@@ -242,7 +242,7 @@
 
 
 
-                        <Document v-if="tab === 'document'" :data="data"  :documentTypes="documentTypes"
+                        <Document v-if="tab === 'document'" :data="data"  :documentTypes="documentTypes" :canDeleteDocument="canDeleteDocument"
                                   :canApproveDocumentEdit="canApproveDocumentEdit" :canRequestDocumentEdit="canRequestDocumentEdit"/>
 
                         <EditRequest v-if="tab === 'edit'" :data="data" />
@@ -310,7 +310,7 @@ const {formatDate} = useUtils();
 
 defineOptions({layout:BackendLayout})
 
-const props=defineProps(['data','office','documentTypes','canCreate','canEdit','canDelete','canCreateRemuneration','canCreateTransfer',
+const props=defineProps(['data','office','documentTypes','canCreate','canEdit','canDelete','canCreateRemuneration','canCreateTransfer','canDeleteDocument',
     'canDeleteTransfer','canCreateEngagementCard', 'canDownloadEngagementCard','canRequestEdit','canRequestDelete','canRequestTransfer',
     'canApproveEdit','canApproveTransfer','canApproveDelete','canEditDelete','canRequestDocumentEdit','canApproveDocumentEdit']);
 

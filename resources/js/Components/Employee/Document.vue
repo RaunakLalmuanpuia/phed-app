@@ -65,6 +65,17 @@
                                 download
                                 title="Download Document"
                             />
+                            <q-btn
+                                v-if="canDeleteDocument"
+                                icon="delete"
+                                flat
+                                dense
+                                round
+                                color="red"
+                                @click="deleteDocument(doc)"
+                                download
+                                title="Download Document"
+                            />
                         </td>
                     </tr>
                     <tr v-if="filteredDocuments.length === 0">
@@ -216,7 +227,7 @@
 import {computed, ref, watch} from "vue";
 import { useForm } from "@inertiajs/vue3";
 import {useQuasar} from "quasar";
-const props=defineProps(['data', 'office','documentTypes','canApproveDocumentEdit','canRequestDocumentEdit']);
+const props=defineProps(['data', 'office','documentTypes','canDeleteDocument','canApproveDocumentEdit','canRequestDocumentEdit']);
 const $q = useQuasar();
 const search = ref('')
 const showDialog = ref(false);
@@ -330,6 +341,32 @@ const rejectRequest = (id) => {
         },
     });
 };
+
+
+const deleteDocument = (doc) => {
+    $q.dialog({
+        title: 'Confirm',
+        message: `Are you sure you want to delete "${doc.type?.name}"?`,
+        cancel: true,
+        persistent: true
+    }).onOk(() => {
+        form.delete(route('document.destroy', doc), {
+            preserveScroll: true,
+            onSuccess: () => {
+                $q.notify({ type: 'positive', message: 'Document deleted successfully.' })
+            },
+            onError: (errors) => {
+                Object.values(errors).forEach((error) => {
+                    $q.notify({
+                        type: 'negative',
+                        message: error,
+                        position: 'bottom',
+                    });
+                });
+            },
+        })
+    })
+}
 </script>
 
 <style scoped>
