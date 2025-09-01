@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DocumentEditRequest;
 use App\Models\EditRequest;
 use App\Models\TransferRequest;
 use App\Models\DeletionRequest;
@@ -91,10 +92,33 @@ class NotificationController extends Controller
             })
             ->toArray();
 
+
+        $documentUpdateRequests = DocumentEditRequest::with('employee.office')
+            ->when($officeIds, function ($q) use ($officeIds) {
+                $q->whereHas('employee.office', function ($q) use ($officeIds) {
+                    $q->whereIn('offices.id', $officeIds);
+                });
+            })
+            ->whereIn('approval_status', $statusFilter)
+            ->get()
+            ->map(function ($req) {
+                return [
+                    'id' => "edit-" . $req->id,
+                    'type' => 'Document Update Request',
+                    'employee_name' => $req->employee->name,
+                    'employee_id' => $req->employee->id,
+                    'office' => $req->employee->office->name ?? '-',
+                    'created_at' => $req->request_date,
+                    'status' => $req->approval_status,
+                ];
+            })
+            ->toArray();
+
         // 🔹 Merge all and sort
         $notifications = collect($editRequests)
             ->merge($transferRequests)
             ->merge($deletionRequests)
+            ->merge($documentUpdateRequests)
             ->sortByDesc('created_at')
             ->values()
             ->all();

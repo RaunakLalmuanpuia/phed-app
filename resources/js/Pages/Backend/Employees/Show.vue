@@ -171,7 +171,14 @@
                             dense
                             align="center"
                         >
-                            <q-tab name="document" label="Documents" icon="drive_folder_upload" />
+                            <q-tab
+                                name="document"
+                                label="Documents"
+                                icon="drive_folder_upload"
+                                :alert="showDocumentUpdateAlert"
+                                alert-icon="circle"
+                                alert-color="red"
+                                :class="showDocumentUpdateAlert ? 'text-red' : ''"/>
 
                             <q-tab
                                 v-if="isAdmin && canApproveEdit"
@@ -329,6 +336,12 @@ const latestTransferRequest = computed(() => {
     const arr = props.data.transfer_requests;
     return arr && arr.length ? arr[arr.length - 1] : null;
 });
+
+
+const latestDocumentUpdateRequest = computed(() => {
+    const arr = props.data.document_request;
+    return arr && arr.length ? arr[arr.length - 1] : null;
+});
 // Helper to check if approval_date is within last 15 days
 function isRecent(approvalDate) {
     if (!approvalDate) return true; // no date, treat as recent
@@ -368,6 +381,17 @@ const showTransferAlert = computed(() => {
     } else if (isManager.value) {
         return latestTransferRequest.value.approval_status !== 'pending' &&
             isRecent(latestTransferRequest.value.approval_date);
+    }
+    return false;
+});
+
+const showDocumentUpdateAlert = computed(() => {
+    if (!latestDocumentUpdateRequest.value) return false;
+    if (isAdmin.value) {
+        return latestDocumentUpdateRequest.value.approval_status === 'pending';
+    } else if (isManager.value) {
+        return latestDocumentUpdateRequest.value.approval_status !== 'pending' &&
+            isRecent(latestDocumentUpdateRequest.value.approval_date);
     }
     return false;
 });
