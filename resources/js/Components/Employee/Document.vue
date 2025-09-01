@@ -206,6 +206,7 @@
                         filled
                         dense
                         label="Choose file"
+                        accept=".pdf,.jpg,.jpeg,.png"
                     />
                 </div>
             </q-card-section>
@@ -216,6 +217,7 @@
                     label="Submit Request"
                     color="primary"
                     :loading="form.processing"
+                    :disable="isSubmitDisabled"
                     @click="submit"
                 />
             </q-card-actions>
@@ -243,6 +245,13 @@ const filteredDocuments = computed(() => {
         );
     });
 });
+
+
+// Computed property to check if at least one file is uploaded
+const isSubmitDisabled = computed(() => {
+    return !Object.values(form.files).some(file => file); // disable if no file
+});
+
 
 function formatDate(dateStr) {
     const date = new Date(dateStr)

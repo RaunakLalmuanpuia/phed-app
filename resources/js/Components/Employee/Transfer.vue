@@ -104,6 +104,7 @@
                         option-label="name"
                         label="Old Office"
                         dense
+                        clearable
                         outlined
                     />
                 </div>
@@ -115,6 +116,7 @@
                     option-label="name"
                     label="New Office"
                     dense
+                    clearable
                     outlined
                 />
 
@@ -123,6 +125,7 @@
                     type="date"
                     label="Transfer Date"
                     dense
+                    clearable
                     outlined
                 />
 
@@ -130,8 +133,10 @@
                     v-model="form.supporting_document"
                     label="Transfer Order"
                     outlined
+                    clearable
                     :error="!!form.errors.supporting_document"
                     :error-message="form.errors.supporting_document"
+                    accept=".pdf,.jpg,.jpeg,.png"
                 />
             </q-card-section>
 
@@ -181,6 +186,44 @@ function formatDate(dateStr) {
 }
 
 const submit = (e) => {
+
+    if (!form.old_office_id) {
+        $q.notify({
+            type: 'negative',
+            message: 'Old Office is required',
+            position: 'bottom',
+        });
+        return; // stop submission
+    }
+
+    if (!form.new_office_id) {
+        $q.notify({
+            type: 'negative',
+            message: 'New Office is required',
+            position: 'bottom',
+        });
+        return; // stop submission
+    }
+
+    if (!form.transfer_date) {
+        $q.notify({
+            type: 'negative',
+            message: 'Transfer Date is required',
+            position: 'bottom',
+        });
+        return; // stop submission
+    }
+
+    if (!form.supporting_document) {
+        $q.notify({
+            type: 'negative',
+            message: 'Transfer Order is required',
+            position: 'bottom',
+        });
+        return; // stop submission
+    }
+
+
     form.is_present_transfer = isPresentTransfer.value // add this line
     form.post(route('transfer.store', props.data), {
         onStart: () => {

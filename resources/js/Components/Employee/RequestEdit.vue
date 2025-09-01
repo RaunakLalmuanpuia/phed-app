@@ -220,7 +220,7 @@ const parseChanges = (changes) => {
     </q-card>
 
     <!-- Request Edit Dialog -->
-    <q-dialog v-model="showDialog" persistent>
+    <q-dialog v-model="showDialog" >
         <q-card style="min-width: 700px">
             <q-card-section>
                 <div class="text-lg font-bold">Request Edit</div>

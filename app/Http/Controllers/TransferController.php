@@ -21,7 +21,7 @@ class TransferController extends Controller
             'old_office_id.id' => 'required|exists:offices,id',
             'new_office_id.id' => 'required|exists:offices,id',
             'transfer_date' => 'required|date',
-            'supporting_document' => 'nullable|file|max:2048',
+            'supporting_document' => 'required|file|max:2048',
         ]);
 
         if ($validated['is_present_transfer']) {
@@ -65,7 +65,7 @@ class TransferController extends Controller
 
         $request->validate([
             'requested_office_id.id' => 'required|exists:offices,id',
-            'supporting_document' => 'nullable|file|max:2048',
+            'supporting_document' => 'required|file|max:2048',
         ]);
 
         // Handle file upload if exists

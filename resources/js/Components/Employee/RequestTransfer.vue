@@ -1,5 +1,5 @@
 <script setup>
-import { ref,computed } from "vue";
+import {ref, computed, watch} from "vue";
 import { useQuasar } from "quasar";
 import { useForm } from "@inertiajs/vue3";
 import useUtils from "@/Compositions/useUtils";
@@ -14,6 +14,12 @@ const form = useForm({
     requested_office_id: '',
     supporting_document: null,
 });
+watch(showDialog, (val) => {
+    if (!val) {
+        form.reset(); // reset values
+        form.clearErrors(); // optional: clear validation errors too
+    }
+});
 
 const latestRequestPending = computed(() =>
     props.data.transfer_requests?.slice(-1)[0]?.approval_status === 'pending'
@@ -21,11 +27,30 @@ const latestRequestPending = computed(() =>
 
 // Submit request
 const submit = () => {
+
+    if (!form.requested_office_id) {
+        $q.notify({
+            type: 'negative',
+            message: 'Office is required',
+            position: 'bottom',
+        });
+        return; // stop submission
+    }
+
+    if (!form.supporting_document) {
+        $q.notify({
+            type: 'negative',
+            message: 'Transfer Order is required',
+            position: 'bottom',
+        });
+        return; // stop submission
+    }
+
     form.post(route('transfer.request', props.data), {
         onStart: () => {
             $q.loading.show();
         },
-        onFinish: () => {
+        onSuccess: () => {
             $q.loading.hide();
             showDialog.value = false; // close dialog
             form.reset();
@@ -34,6 +59,12 @@ const submit = () => {
                 message: 'Transfer Requested',
                 position: 'bottom',
             });
+        },
+        onFinish: () => {
+            $q.loading.hide();
+            showDialog.value = false; // close dialog
+            form.reset();
+
         },
         onError: (errors) => {
             Object.values(errors).forEach((error) => {
@@ -170,6 +201,11 @@ const submit = () => {
                     label="Office"
                     dense
                     outlined
+                    :error="!!form.errors.requested_office_id"
+                    :error-message="form.errors.requested_office_id"
+                    :rules="[
+                         val=>!!val || 'Office is required'
+                     ]"
                 />
                 <q-file
                     v-model="form.supporting_document"
@@ -178,6 +214,10 @@ const submit = () => {
                     class="q-mt-md"
                     :error="!!form.errors.supporting_document"
                     :error-message="form.errors.supporting_document"
+                    :rules="[
+                         val=>!!val || 'Transfer Order is required'
+                     ]"
+                    accept=".pdf,.jpg,.jpeg,.png"
                 />
             </q-card-section>
 

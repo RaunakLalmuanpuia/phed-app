@@ -34,6 +34,16 @@ function parseReason(request) {
 
 // Submit deletion request
 function submitRequest() {
+
+    if (!form.reason) {
+        $q.notify({
+            type: 'negative',
+            message: 'Reason is required',
+            position: 'bottom',
+        });
+        return; // stop submission
+    }
+
     form.post(route("deletion.request", props.data), {
         preserveScroll: true,
         onSuccess: () => {
@@ -206,6 +216,9 @@ function submitRequest() {
                     outlined
                     :error="!!form.errors.reason"
                     :error-message="form.errors.reason"
+                    :rules="[
+                         val=>!!val || 'Reason is required'
+                     ]"
                 />
                 <q-input
                     v-model="form.seniority_list"
@@ -233,6 +246,7 @@ function submitRequest() {
                     label="Supporting Document"
                     outlined
                     class="q-mt-sm"
+                    accept=".pdf,.jpg,.jpeg,.png"
                     :error="!!form.errors.supporting_document"
                     :error-message="form.errors.supporting_document"
                 />
