@@ -2,7 +2,8 @@
 import { ref, watch } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import useUtils from "@/Compositions/useUtils";
-
+import {useQuasar} from "quasar";
+const $q = useQuasar();
 const {formatDate} = useUtils();
 const props = defineProps({
     data: Object, // contains employee and remuneration_detail
@@ -11,12 +12,14 @@ const props = defineProps({
 
 const showDialog = ref(false);
 const isEdit = ref(false);
-
+const editMode = ref(false);
 // Form
 const form = useForm({
     remuneration: "",
     next_increment_date: ""
 });
+
+
 
 // When dialog opens in edit mode, populate form
 const openDialog = (edit = false) => {
@@ -28,7 +31,13 @@ const openDialog = (edit = false) => {
         form.reset();
     }
     showDialog.value = true;
+    editMode.value = false;
 };
+
+const enableEdit = () => {
+    editMode.value = true; // enable editing
+};
+
 
 // Submit
 const submitForm = () => {
@@ -36,14 +45,32 @@ const submitForm = () => {
         form.put(route("remuneration.update", props.data.id), {
             onSuccess: () => {
                 showDialog.value = false;
-            }
+            },
+            onError: (errors) => {
+                Object.values(errors).forEach((error) => {
+                    $q.notify({
+                        type: 'negative',
+                        message: error,
+                        position: 'bottom',
+                    });
+                });
+            },
         });
     } else {
         form.post(route("remuneration.store", props.data.id), {
             onSuccess: () => {
                 showDialog.value = false;
                 form.reset();
-            }
+            },
+            onError: (errors) => {
+                Object.values(errors).forEach((error) => {
+                    $q.notify({
+                        type: 'negative',
+                        message: error,
+                        position: 'bottom',
+                    });
+                });
+            },
         });
     }
 };
@@ -134,19 +161,29 @@ const submitForm = () => {
                     v-model="form.remuneration"
                     outlined
                     dense
-                />
+                    :readonly="!editMode"
+                >
+                    <template v-slot:append>
+                        <q-icon
+                            name="edit"
+                            class="cursor-pointer"
+                            @click="enableEdit"
+                        />
+                    </template>
+                </q-input>
                 <q-input
                     label="Next Increment Date"
                     type="date"
                     v-model="form.next_increment_date"
                     outlined
                     dense
+                    :readonly="!editMode"
                 />
             </q-card-section>
 
             <q-card-actions align="right">
                 <q-btn flat label="Cancel" v-close-popup />
-                <q-btn color="primary" :label="isEdit ? 'Update' : 'Save'" @click="submitForm" />
+                <q-btn color="primary" :label="isEdit ? 'Update' : 'Save'"  :disable="!editMode" @click="submitForm" />
             </q-card-actions>
         </q-card>
     </q-dialog>
