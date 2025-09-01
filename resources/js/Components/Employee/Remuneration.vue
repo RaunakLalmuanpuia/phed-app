@@ -41,6 +41,25 @@ const enableEdit = () => {
 
 // Submit
 const submitForm = () => {
+
+    if (!form.remuneration) {
+        $q.notify({
+            type: 'negative',
+            message: 'Remuneration amount is required',
+            position: 'bottom',
+        });
+        return; // stop submission
+    }
+
+    if (!form.next_increment_date) {
+        $q.notify({
+            type: 'negative',
+            message: 'Next Increment Date is required',
+            position: 'bottom',
+        });
+        return; // stop submission
+    }
+
     if (isEdit.value) {
         form.put(route("remuneration.update", props.data.id), {
             onSuccess: () => {

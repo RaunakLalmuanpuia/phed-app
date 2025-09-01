@@ -259,7 +259,7 @@
 
                         <div class="row q-col-gutter-md">
                             <div class="col-12 col-md-7">
-                                <Remuneration v-if="data.remuneration_detail" :data="data" :canCreateRemuneration="canCreateRemuneration"/>
+                                <Remuneration  :data="data" :canCreateRemuneration="canCreateRemuneration"/>
                                 <Transfer :data="data" :office="office" :canCreateTransfer="canCreateTransfer" :canDeleteTransfer="canDeleteTransfer" />
                             </div>
 
