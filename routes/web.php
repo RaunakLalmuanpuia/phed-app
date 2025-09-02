@@ -114,6 +114,9 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
         Route::get('json-remuneration', [MISController::class, 'jsonRemuneration'])->middleware('can:generate-remuneration')->name('mis.json-remuneration');
 
         Route::get('engagement-card', [MISController::class, 'engagementCard'])->middleware('can:generate-engagement-card')->name('mis.engagement-card');
+        Route::get('json-engagement-card', [MISController::class, 'jsonEngagementCard'])->middleware('can:generate-engagement-card')->name('mis.json-engagement-card');
+
+
     });
 
 
@@ -167,14 +170,12 @@ Route::group(['middleware'=>'auth','prefix' => 'edit'], function () {
 });
 
 //Document Edit Request
-
 Route::group(['middleware'=>'auth','prefix' => 'document'], function () {
     Route::post('request/{model}', [DocumentController::class, 'request'])->middleware('can:request-document-edit')->name('document.request');
     Route::post('approve/{model}', [DocumentController::class, 'approve'])->middleware('can:approve-document-edit')->name('document.approve');
     Route::post('reject/{model}', [DocumentController::class, 'reject'])->middleware('can:approve-document-edit')->name('document.reject');
     Route::delete('{model}', [DocumentController::class, 'deleteEmployeeDocument'])->middleware('can:delete-document')->name('document.destroy');
 });
-
 
 
 //Transfer
@@ -218,6 +219,12 @@ Route::group(['middleware'=>'auth','prefix' => 'engagement-card'], function () {
     Route::get('{employee}', [EngagementCardController::class, 'show'])->middleware('can:view-engagement-card')->name('engagement-card.show');
     Route::post('store/{employee}', [EngagementCardController::class, 'store'])->middleware('can:store-engagement-card')->name('engagement-card.store');
     Route::get('/download/{employee}', [EngagementCardController::class, 'download'])->middleware('can:download-engagement-card')->name('engagement-card.download');
+
+
+    Route::post('generate', [EngagementCardController::class, 'generate'])->name('engagement-card.generate');
+    Route::post('/bulk-generate', [EngagementCardController::class, 'bulkGenerate'])->name('engagement-card.bulk-generate');
+    Route::post('/engagement-card/bulk-download', [EngagementCardController::class, 'bulkDownload'])->name('engagement-card.bulk-download');
+
 });
 
 //Summary

@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(\App\Models\Employee::class);
             $table->longText('content');
+            $table->string('card_no');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->timestamps();
         });
     }

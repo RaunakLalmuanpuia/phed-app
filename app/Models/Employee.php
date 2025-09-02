@@ -50,9 +50,10 @@ class Employee extends Model
         return $this->hasOne(RemunerationDetail::class);
     }
 
-    public function engagementCard()
+    // If multiple cards per employee
+    public function engagementCard(): HasMany
     {
-        return $this->hasOne(EngagementCard::class);
+        return $this->hasMany(EngagementCard::class);
     }
 
 

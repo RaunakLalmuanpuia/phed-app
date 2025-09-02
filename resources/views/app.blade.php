@@ -8,9 +8,8 @@
     <meta name="keywords" content="Mizoram, EDMS, PHED, Employees Database, Government of Mizoram">
     <meta name="author" content="Raunak Lalmuanpuia">
 
-    <title>EDMS</title>
 
-    <title inertia>{{ config('app.name', 'PHED Dept: GOM') }}</title>
+    <title inertia>{{ config('app.name', 'EDMS') }}</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
