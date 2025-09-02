@@ -95,21 +95,94 @@ class EngagementCardController extends Controller
 
     }
 
-
+//    public function generate(Request $request)
+//    {
+////        dd($request->all());
+//        $request->validate([
+//            'employee_id' => 'required|exists:employees,id',
+//            'start_date' => 'required|date',
+//            'end_date' => 'required|date',
+//            'phed_file_no' => 'required|string',
+//            'approval_dpar'=> 'required|string',
+//            'approval_fin' => 'required|string',
+//        ]);
+//
+//        $employee = Employee::with(['office','remunerationDetail'])->findOrFail($request->employee_id);
+//
+//        // Generate office prefix (first 3 letters of office name, uppercase)
+//        $officePrefix = strtoupper(substr(optional($employee->office)->name ?? 'OFF', 0, 3));
+//
+//        // Count existing engagement cards for this office and period
+//        $existingCount = EngagementCard::whereHas('employee', function($q) use ($employee) {
+//            $q->where('office_id', $employee->office_id);
+//        })
+//            ->where('start_date', $request->start_date)
+//            ->where('end_date', $request->end_date)
+//            ->count();
+//
+//        $cardNumberSuffix = $existingCount + 1;
+//        $card_no = $officePrefix . '-' . $cardNumberSuffix;
+//
+//        $htmlContent = view('templates.engagement-card', [
+//            'name' => $employee->name,
+//            'dob' => $employee->date_of_birth,
+//            'parent_name' => $employee->parent_name,
+//            'address' => $employee->address,
+//            'post' => $employee->designation,
+//            'pay_matrix' => "Level 5 (29,200-64,700)",
+//            'remuneration' => $employee->remunerationDetail->remuneration,
+//            'start_date' => $request->start_date,
+//            'end_date' => $request->end_date,
+//            'card_no' => $card_no,
+//            'date'=> now(),
+//            'phed_file_no' => $request->phed_file_no,       // <- added
+//            'approval_dpar' => $request->approval_dpar,
+//            'approval_fin' => $request->approval_fin,
+//            'account_head_1' => '2215 - Water Supply & Sanitation',
+//            'account_head_2' => '01 - Water Supply',
+//            'account_head_3' => '001 - Direction & Administration',
+//            'account_head_4' => '02 - Administration',
+//            'account_head_5' => '02 - Establishment of MR Employees',
+//            'account_head_6' => '02 - Wages',
+//        ])->render();
+//
+//        // Create EngagementCard record
+//        $engagementCard = $employee->engagementCard()->create([
+//            'content' => $htmlContent,
+//            'start_date' => $request->start_date,
+//            'end_date' => $request->end_date,
+//            'card_no' => $card_no,
+//        ]);
+//
+//        return redirect()->back()->with('success', 'Engagement card saved successfully.');
+//    }
 
     public function generate(Request $request)
     {
-//        dd($request->all());
         $request->validate([
             'employee_id' => 'required|exists:employees,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'phed_file_no' => 'required|string',
+            'start_date'  => 'required|date',
+            'end_date'    => 'required|date|after_or_equal:start_date',
+            'phed_file_no'=> 'required|string',
             'approval_dpar'=> 'required|string',
             'approval_fin' => 'required|string',
         ]);
 
         $employee = Employee::with(['office','remunerationDetail'])->findOrFail($request->employee_id);
+
+        // 🟢 Compute fiscal year
+        $fiscalYear = $this->getFiscalYear($request->start_date, $request->end_date);
+
+        // 🛡 Check uniqueness (optional safety, since DB also enforces it)
+        $alreadyExists = EngagementCard::where('employee_id', $employee->id)
+            ->where('fiscal_year', $fiscalYear)
+            ->exists();
+
+        if ($alreadyExists) {
+            return redirect()->back()->withErrors([
+                'employee_id' => 'This employee already has an engagement card for fiscal year ' . $fiscalYear,
+            ]);
+        }
 
         // Generate office prefix (first 3 letters of office name, uppercase)
         $officePrefix = strtoupper(substr(optional($employee->office)->name ?? 'OFF', 0, 3));
@@ -148,40 +221,119 @@ class EngagementCardController extends Controller
             'account_head_6' => '02 - Wages',
         ])->render();
 
-        // Create EngagementCard record
+        // Create EngagementCard record (now with fiscal_year)
         $engagementCard = $employee->engagementCard()->create([
-            'content' => $htmlContent,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'card_no' => $card_no,
+            'content'     => $htmlContent,
+            'start_date'  => $request->start_date,
+            'end_date'    => $request->end_date,
+            'card_no'     => $card_no,
+            'fiscal_year' => $fiscalYear, // 🟢 new field
         ]);
-
-//        // Generate PDF for download
-//        $pdf = \PDF::loadHTML($htmlContent);
-//        $filename = 'Engagement_Card_' . $card_no . '.pdf';
-//
-//        return $pdf->download($filename);
 
         return redirect()->back()->with('success', 'Engagement card saved successfully.');
     }
 
+
+//    public function bulkGenerate(Request $request)
+//    {
+//        $request->validate([
+//            'employee_ids' => 'required|array',
+//            'employee_ids.*' => 'exists:employees,id',
+//            'start_date' => 'required|date',
+//            'end_date' => 'required|date',
+//            'phed_file_no' => 'required|string',
+//            'approval_dpar'=> 'required|string',
+//            'approval_fin' => 'required|string',
+//        ]);
+//
+//        $employees = Employee::with(['office','remunerationDetail'])
+//            ->whereIn('id', $request->employee_ids)
+//            ->get();
+//
+//        foreach ($employees as $employee) {
+//
+//            // Generate office prefix (first 3 letters of office name, uppercase)
+//            $officePrefix = strtoupper(substr(optional($employee->office)->name ?? 'OFF', 0, 3));
+//
+//            // Count existing engagement cards for this office and period
+//            $existingCount = EngagementCard::whereHas('employee', function($q) use ($employee) {
+//                $q->where('office_id', $employee->office_id);
+//            })
+//                ->where('start_date', $request->start_date)
+//                ->where('end_date', $request->end_date)
+//                ->count();
+//
+//            $cardNumberSuffix = $existingCount + 1;
+//            $card_no = $officePrefix . '-' . $cardNumberSuffix;
+//
+//            // Prepare HTML content using the template
+//            $htmlContent = view('templates.engagement-card', [
+//                'name' => $employee->name,
+//                'dob' => $employee->date_of_birth,
+//                'parent_name' => $employee->parent_name,
+//                'address' => $employee->address,
+//                'post' => $employee->designation,
+//                'pay_matrix' => $employee->remunerationDetail->pay_matrix ?? 'N/A',
+//                'remuneration' => $employee->remunerationDetail->remuneration ?? 0,
+//                'start_date' => $request->start_date,
+//                'end_date' => $request->end_date,
+//                'card_no' => $card_no,
+//                'date'=> now(),
+//                'phed_file_no' => $request->phed_file_no,
+//                'approval_dpar' => $request->approval_dpar,
+//                'approval_fin' => $request->approval_fin,
+//                'account_head_1' => '2215 - Water Supply & Sanitation',
+//                'account_head_2' => '01 - Water Supply',
+//                'account_head_3' => '001 - Direction & Administration',
+//                'account_head_4' => '02 - Administration',
+//                'account_head_5' => '02 - Establishment of MR Employees',
+//                'account_head_6' => '02 - Wages',
+//            ])->render();
+//
+//            // Save EngagementCard
+//            $employee->engagementCard()->create([
+//                'content' => $htmlContent,
+//                'start_date' => $request->start_date,
+//                'end_date' => $request->end_date,
+//                'card_no' => $card_no,
+//            ]);
+//        }
+//
+//        return redirect()->back()->with('success', 'Bulk engagement cards saved successfully.');
+//    }
+
     public function bulkGenerate(Request $request)
     {
         $request->validate([
-            'employee_ids' => 'required|array',
+            'employee_ids'   => 'required|array',
             'employee_ids.*' => 'exists:employees,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'phed_file_no' => 'required|string',
-            'approval_dpar'=> 'required|string',
-            'approval_fin' => 'required|string',
+            'start_date'     => 'required|date',
+            'end_date'       => 'required|date|after_or_equal:start_date',
+            'phed_file_no'   => 'required|string',
+            'approval_dpar'  => 'required|string',
+            'approval_fin'   => 'required|string',
         ]);
 
         $employees = Employee::with(['office','remunerationDetail'])
             ->whereIn('id', $request->employee_ids)
             ->get();
 
+        // Compute fiscal year once
+        $fiscalYear = $this->getFiscalYear($request->start_date, $request->end_date);
+
         foreach ($employees as $employee) {
+
+            // 🛡 Skip if card for this fiscal year already exists
+            $alreadyExists = EngagementCard::where('employee_id', $employee->id)
+                ->where('fiscal_year', $fiscalYear)
+                ->exists();
+
+            if ($alreadyExists) {
+                // Optionally skip silently or log it
+                // continue;
+                // or maybe collect IDs to notify user later
+                continue;
+            }
 
             // Generate office prefix (first 3 letters of office name, uppercase)
             $officePrefix = strtoupper(substr(optional($employee->office)->name ?? 'OFF', 0, 3));
@@ -199,20 +351,20 @@ class EngagementCardController extends Controller
 
             // Prepare HTML content using the template
             $htmlContent = view('templates.engagement-card', [
-                'name' => $employee->name,
-                'dob' => $employee->date_of_birth,
-                'parent_name' => $employee->parent_name,
-                'address' => $employee->address,
-                'post' => $employee->designation,
-                'pay_matrix' => $employee->remunerationDetail->pay_matrix ?? 'N/A',
-                'remuneration' => $employee->remunerationDetail->remuneration ?? 0,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'card_no' => $card_no,
-                'date'=> now(),
-                'phed_file_no' => $request->phed_file_no,
-                'approval_dpar' => $request->approval_dpar,
-                'approval_fin' => $request->approval_fin,
+                'name'           => $employee->name,
+                'dob'            => $employee->date_of_birth,
+                'parent_name'    => $employee->parent_name,
+                'address'        => $employee->address,
+                'post'           => $employee->designation,
+                'pay_matrix'     => $employee->remunerationDetail->pay_matrix ?? 'N/A',
+                'remuneration'   => $employee->remunerationDetail->remuneration ?? 0,
+                'start_date'     => $request->start_date,
+                'end_date'       => $request->end_date,
+                'card_no'        => $card_no,
+                'date'           => now(),
+                'phed_file_no'   => $request->phed_file_no,
+                'approval_dpar'  => $request->approval_dpar,
+                'approval_fin'   => $request->approval_fin,
                 'account_head_1' => '2215 - Water Supply & Sanitation',
                 'account_head_2' => '01 - Water Supply',
                 'account_head_3' => '001 - Direction & Administration',
@@ -221,27 +373,74 @@ class EngagementCardController extends Controller
                 'account_head_6' => '02 - Wages',
             ])->render();
 
-            // Save EngagementCard
+            // Save EngagementCard (with fiscal_year)
             $employee->engagementCard()->create([
-                'content' => $htmlContent,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'card_no' => $card_no,
+                'content'     => $htmlContent,
+                'start_date'  => $request->start_date,
+                'end_date'    => $request->end_date,
+                'card_no'     => $card_no,
+                'fiscal_year' => $fiscalYear, // 🟢 new field
             ]);
         }
 
         return redirect()->back()->with('success', 'Bulk engagement cards saved successfully.');
     }
 
+
+//    public function bulkDownload(Request $request)
+//    {
+////        dd($request);
+//        $request->validate([
+//            'employee_ids' => 'required|array',
+//            'employee_ids.*' => 'exists:employees,id',
+//            'start_date' => 'required|digits:4', // only 4-digit year
+//            'end_date' => 'required|digits:4',
+//        ]);
+//
+//        $zip = new \ZipArchive();
+//        $zipName = 'EngagementCards_' . now()->format('Ymd_His') . '.zip';
+//        $zipPath = storage_path('app/public/' . $zipName);
+//
+//        if ($zip->open($zipPath, \ZipArchive::CREATE) === TRUE) {
+//
+//            $employees = Employee::with(['engagementCard' => function($q) use ($request) {
+//                if ($request->start_date) {
+//                    $q->whereYear('start_date', '>=', $request->start_date);
+//                }
+//                if ($request->end_date) {
+//                    $q->whereYear('end_date', '<=', $request->end_date);
+//                }
+//            }])
+//                ->whereIn('id', $request->employee_ids)
+//                ->get();
+//
+//            foreach ($employees as $employee) {
+//                if ($employee->engagementCard && $employee->engagementCard->count()) {
+//                    foreach ($employee->engagementCard as $card) {
+//                        $pdf = \PDF::loadHTML($card->content);
+//                        $pdfName = "EngagementCard_{$employee->name}_{$card->card_no}.pdf";
+//                        $zip->addFromString($pdfName, $pdf->output());
+//                    }
+//                }
+//            }
+//
+//            $zip->close();
+//        }
+//
+//        return response()->download($zipPath)->deleteFileAfterSend(true);
+//    }
+
     public function bulkDownload(Request $request)
     {
-//        dd($request);
         $request->validate([
             'employee_ids' => 'required|array',
             'employee_ids.*' => 'exists:employees,id',
-            'start_date' => 'required|digits:4', // only 4-digit year
-            'end_date' => 'required|digits:4',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
         ]);
+
+        // Compute fiscal year from input dates
+        $fiscalYear = $this->getFiscalYear($request->start_date, $request->end_date);
 
         $zip = new \ZipArchive();
         $zipName = 'EngagementCards_' . now()->format('Ymd_His') . '.zip';
@@ -249,13 +448,9 @@ class EngagementCardController extends Controller
 
         if ($zip->open($zipPath, \ZipArchive::CREATE) === TRUE) {
 
-            $employees = Employee::with(['engagementCard' => function($q) use ($request) {
-                if ($request->start_date) {
-                    $q->whereYear('start_date', '>=', $request->start_date);
-                }
-                if ($request->end_date) {
-                    $q->whereYear('end_date', '<=', $request->end_date);
-                }
+            $employees = Employee::with(['engagementCard' => function($q) use ($fiscalYear) {
+                // Only get cards for the requested fiscal year
+                $q->where('fiscal_year', $fiscalYear);
             }])
                 ->whereIn('id', $request->employee_ids)
                 ->get();
@@ -275,6 +470,7 @@ class EngagementCardController extends Controller
 
         return response()->download($zipPath)->deleteFileAfterSend(true);
     }
+
 
 
     public function generateBatchEngagementCardsPdfZip($office_id, Carbon $start_date, Carbon $end_date)
@@ -362,6 +558,11 @@ class EngagementCardController extends Controller
         return $this->generateBatchEngagementCardsPdfZip($office_id, $start_date, $end_date);
     }
 
-
+    function getFiscalYear(string $startDate, string $endDate): string
+    {
+        $startYear = \Carbon\Carbon::parse($startDate)->format('Y');
+        $endYear   = \Carbon\Carbon::parse($endDate)->format('Y');
+        return $startYear . '-' . $endYear;
+    }
 
 }

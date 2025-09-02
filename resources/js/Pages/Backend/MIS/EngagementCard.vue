@@ -31,7 +31,7 @@
                                 <!-- Office Selector -->
                                 <q-select
                                     label="Select Office(s)"
-                                    class="col-12 col-sm-6"
+                                    class="col-12 col-sm-4"
                                     v-model="filters.offices"
                                     :options="office"
                                     option-label="name"
@@ -46,7 +46,7 @@
                                 />
 
                                 <q-input
-                                    class="col-12 col-sm-3"
+                                    class="col-12 col-sm-4"
                                     outlined
                                     dense
                                     clearable
@@ -58,7 +58,7 @@
                                 />
 
                                 <q-input
-                                    class="col-12 col-sm-3"
+                                    class="col-12 col-sm-4"
                                     outlined
                                     dense
                                     clearable
@@ -122,7 +122,7 @@
                     icon="download"
                     v-if="selectedEmployees.length > 0"
                     label="Download ZIP"
-                    color="secondary"
+                    color="primary"
                     @click="downloadBulkPdf"
                 />
 
@@ -151,19 +151,19 @@
 
             <template v-slot:body-cell-card_no="props">
                 <q-td :props="props">
-                    {{ props.row.engagement_card.length ? props.row.engagement_card[0].card_no : 'Not Generated' }}
+                    {{ props.row.engagement_card[0]?.card_no ?? 'Not Generated' }}
                 </q-td>
             </template>
 
             <template v-slot:body-cell-start_date="props">
                 <q-td :props="props">
-                    {{ props.row.engagement_card.length ? props.row.engagement_card[0].start_date : '-' }}
+                    {{ props.row.engagement_card[0]?.start_date ?? '-' }}
                 </q-td>
             </template>
 
             <template v-slot:body-cell-end_date="props">
                 <q-td :props="props">
-                    {{ props.row.engagement_card.length ? props.row.engagement_card[0].end_date : '-' }}
+                    {{ props.row.engagement_card[0]?.end_date ?? '-' }}
                 </q-td>
             </template>
 
@@ -530,10 +530,15 @@ const downloadBulkPdf = async () => {
 
         // Make API request to generate ZIP
         const response = await axios.post(
-            route('engagement-card.bulk-download'), // backend route
-            { employee_ids, start_date: filters.value.startYear, end_date: filters.value.endYear },
-            { responseType: 'blob' } // important for binary data
+            route('engagement-card.bulk-download'),
+            {
+                employee_ids,
+                start_date: `${filters.value.startYear}-03-01`,
+                end_date: `${filters.value.endYear}-02-28`
+            },
+            { responseType: 'blob' }
         );
+
 
         // Download the ZIP
         const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/zip' }));
@@ -543,11 +548,13 @@ const downloadBulkPdf = async () => {
         document.body.appendChild(link);
         link.click();
         link.remove();
+        empTable.value?.requestServerInteraction();
+        selectedEmployees.value = [];
 
         q.notify({ type: 'positive', message: 'ZIP downloaded successfully.' });
 
     } catch (error) {
-        q.notify({ type: 'negative', message: 'Failed to download ZIP.' });
+        q.notify({ type: "negative", message: 'No Engagement card to Download' });
         console.error(error);
     }
 };

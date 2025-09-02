@@ -13,6 +13,7 @@ class RemunerationDetail extends Model
     protected $fillable = [
         'employee_id',
         'remuneration',
+        'pay_matrix',
         'medical_percentage',
         'medical_amount',
         'total',

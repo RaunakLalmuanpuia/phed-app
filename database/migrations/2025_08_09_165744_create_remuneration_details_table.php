@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(\App\Models\Employee::class);
             $table->decimal('remuneration', 10, 2);
+            $table->string('pay_matrix')->nullable();
             $table->decimal('medical_percentage', 5, 2);
             $table->decimal('medical_amount', 10, 2);
             $table->decimal('total', 10, 2);

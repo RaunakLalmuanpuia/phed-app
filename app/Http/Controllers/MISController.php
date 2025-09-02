@@ -180,41 +180,92 @@ class MISController extends Controller
             'canGenerateEngagementCard'=>$user->can('generate-engagement-card'),
         ]);
     }
+//    public function jsonEngagementCard(Request $request)
+//    {
+//        $perPage = $request->integer('rowsPerPage', 5);
+//        $filter  = $request->get('filter', []);
+//        $search  = $request->get('search');
+//        $officeIds = $filter['offices'] ?? [];
+//        $startYear = $filter['startYear'] ?? null;
+//        $endYear   = $filter['endYear'] ?? null;
+//
+//        $employees = Employee::with(['office', 'engagementCard' => function($q) use ($startYear, $endYear) {
+//            if ($startYear) $q->whereYear('start_date', '>=', $startYear);
+//            if ($endYear) $q->whereYear('end_date', '<=', $endYear);
+//        }])
+//            ->whereIn('office_id', (array) $officeIds)
+//            ->where('employment_type', 'PE')
+//
+//// 🔹 No need to filter employees themselves by engagement card year
+//// Employees are included regardless of having cards in that period
+//            ->when($search, function ($q) use ($search) {
+//                $q->where(function ($sub) use ($search) {
+//                    $sub->where('name', 'LIKE', "%{$search}%")
+//                        ->orWhere('mobile', 'LIKE', "%{$search}%")
+//                        ->orWhere('designation', 'LIKE', "%{$search}%")
+//                        ->orWhere('date_of_birth', 'LIKE', "%{$search}%")
+//                        ->orWhere('name_of_workplace', 'LIKE', "%{$search}%")
+//                        ->orWhereHas('engagementCard', function ($card) use ($search) {
+//                            $card->where('card_no', 'LIKE', "%{$search}%");
+//                        });
+//                });
+//            });
+//
+//
+//        return response()->json([
+//            'list' => $employees->paginate($perPage),
+//        ], 200);
+//    }
+
     public function jsonEngagementCard(Request $request)
     {
         $perPage = $request->integer('rowsPerPage', 5);
         $filter  = $request->get('filter', []);
         $search  = $request->get('search');
         $officeIds = $filter['offices'] ?? [];
-        $startYear = $filter['startYear'] ?? null;
-        $endYear   = $filter['endYear'] ?? null;
+        $startYear = $filter['startYear']; // always provided
+        $endYear   = $filter['endYear'];   // always provided
 
-        $employees = Employee::with(['office', 'engagementCard' => function($q) use ($startYear, $endYear) {
-            if ($startYear) $q->whereYear('start_date', '>=', $startYear);
-            if ($endYear) $q->whereYear('end_date', '<=', $endYear);
-        }])
+        // Compute fiscal year
+        $fiscalYear = $this->getFiscalYear($startYear . '-03-01', $endYear . '-02-28');
+
+        $employees = Employee::with([
+            'office',
+            'engagementCard' => function($q) use ($fiscalYear) {
+                // Only load the card for the selected fiscal year
+                $q->where('fiscal_year', $fiscalYear)->latest();
+            }
+        ])
             ->whereIn('office_id', (array) $officeIds)
             ->where('employment_type', 'PE')
-
-// 🔹 No need to filter employees themselves by engagement card year
-// Employees are included regardless of having cards in that period
-            ->when($search, function ($q) use ($search) {
-                $q->where(function ($sub) use ($search) {
+            ->when($search, function ($q) use ($search, $fiscalYear) {
+                $q->where(function ($sub) use ($search, $fiscalYear) {
                     $sub->where('name', 'LIKE', "%{$search}%")
                         ->orWhere('mobile', 'LIKE', "%{$search}%")
                         ->orWhere('designation', 'LIKE', "%{$search}%")
                         ->orWhere('date_of_birth', 'LIKE', "%{$search}%")
                         ->orWhere('name_of_workplace', 'LIKE', "%{$search}%")
-                        ->orWhereHas('engagementCard', function ($card) use ($search) {
-                            $card->where('card_no', 'LIKE', "%{$search}%");
+                        ->orWhereHas('engagementCard', function ($card) use ($search, $fiscalYear) {
+                            $card->where('fiscal_year', $fiscalYear)
+                                ->where('card_no', 'LIKE', "%{$search}%");
                         });
                 });
-            });
-
+            })
+            ->paginate($perPage);
 
         return response()->json([
-            'list' => $employees->paginate($perPage),
+            'list' => $employees,
         ], 200);
+    }
+
+    /**
+     * Compute fiscal year string
+     */
+    function getFiscalYear(string $startDate, string $endDate): string
+    {
+        $startYear = \Carbon\Carbon::parse($startDate)->format('Y');
+        $endYear   = \Carbon\Carbon::parse($endDate)->format('Y');
+        return $startYear . '-' . $endYear;
     }
 
 

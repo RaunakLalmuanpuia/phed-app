@@ -9,10 +9,12 @@ class EngagementCard extends Model
     //
     protected $fillable = [
         'employee_id',
+        'fiscal_year', // can be removed
         'content',
         'start_date',
         'end_date',
-        'card_no'
+        'card_no',
+
     ];
 
     // Relationship: EngagementCard belongs to Employee

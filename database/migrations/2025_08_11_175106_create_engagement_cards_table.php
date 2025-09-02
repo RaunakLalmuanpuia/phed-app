@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('engagement_cards', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Employee::class);
+            $table->string('fiscal_year');
             $table->longText('content');
             $table->string('card_no');
             $table->date('start_date');
             $table->date('end_date');
+            $table->unique(['employee_id', 'fiscal_year']);
             $table->timestamps();
         });
     }

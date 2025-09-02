@@ -29,6 +29,7 @@ class EmployeesImport implements ToModel, WithStartRow
         'remuneration'         => 13,
         'next_increment_date'  => 14,
         'address'  => 15,
+        'pay_matrix'=>16,
 
     ];
 
@@ -70,13 +71,15 @@ class EmployeesImport implements ToModel, WithStartRow
         if ($this->employment_type === 'PE') {
             $remuneration = $row[$this->columns['remuneration']] ?? null;
             $nextIncrementDate = $this->transformDate($row[$this->columns['next_increment_date']] ?? null);
+            $pay_matrix = $row[$this->columns['pay_matrix']] ?? null;
 
             if (!empty($remuneration) && !empty($nextIncrementDate)) {
                 $employee->remunerationDetail()->updateOrCreate(
                     [],
                     [
                         'remuneration'        => $remuneration,
-                        'next_increment_date' => $nextIncrementDate
+                        'next_increment_date' => $nextIncrementDate,
+                        'pay_matrix'         => $pay_matrix,
                     ]
                 );
             }
