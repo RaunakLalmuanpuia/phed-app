@@ -258,13 +258,13 @@
 
 
                         <div class="row q-col-gutter-md">
-                            <div class="col-12 col-md-7">
+                            <div class="col-12 col-md-6">
                                 <Remuneration v-if="data.employment_type === 'PE'" :data="data" :canCreateRemuneration="canCreateRemuneration"/>
                                 <Transfer :data="data" :office="office" :canCreateTransfer="canCreateTransfer" :canDeleteTransfer="canDeleteTransfer" />
                             </div>
 
-                            <div class="col-12 col-md-5">
-                                <EngagementCard v-if="data.employment_type === 'PE'"
+                            <div class="col-12 col-md-6">
+                                <EngagementCard v-if="data.employment_type === 'PE'" :canDeleteEngagementCard="canDeleteEngagementCard"
                                     :data="data" :canCreateEngagementCard="canCreateEngagementCard" :canDownloadEngagementCard="canDownloadEngagementCard" />
                                 <Deletion v-if="data.employment_type === 'Deleted'" :deletion="data.deletion_detail" :canEditDelete="canEditDelete"/>
                             </div>
@@ -311,7 +311,7 @@ const {formatDate} = useUtils();
 defineOptions({layout:BackendLayout})
 
 const props=defineProps(['data','office','documentTypes','canCreate','canEdit','canDelete','canCreateRemuneration','canCreateTransfer','canDeleteDocument',
-    'canDeleteTransfer','canCreateEngagementCard', 'canDownloadEngagementCard','canRequestEdit','canRequestDelete','canRequestTransfer',
+    'canDeleteTransfer','canCreateEngagementCard', 'canDownloadEngagementCard','canDeleteEngagementCard','canRequestEdit','canRequestDelete','canRequestTransfer',
     'canApproveEdit','canApproveTransfer','canApproveDelete','canEditDelete','canRequestDocumentEdit','canApproveDocumentEdit']);
 
 const tab = ref('document')

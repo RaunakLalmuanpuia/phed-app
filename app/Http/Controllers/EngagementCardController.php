@@ -6,6 +6,7 @@ use App\Models\Employee;
 use App\Models\EngagementCard;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 use ZipArchive;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Response;
@@ -72,28 +73,30 @@ class EngagementCardController extends Controller
         return redirect()->back()->with('success', 'Engagement card saved successfully.');
 
     }
-    public function download(Employee $employee)
+    public function update(Request $request, EngagementCard $model)
     {
 
         $user = auth()->user();
-        abort_if(!$user->hasPermissionTo('download-engagement-card'), 403, 'Access Denied');
+        abort_if(!$user->hasPermissionTo('store-engagement-card'), 403, 'Access Denied');
 
-        $card = $employee->engagementCard;
+        $request->validate([
+            'html_content' => 'required|string',
+        ]);
 
-        if (!$card) {
-            abort(404, 'Engagement card not found.');
-        }
+        $data=$this->validate($request, [
+            'html_content' => 'required|string',
+        ]);
 
-        $pdf = Pdf::loadHTML($card->content)
-            ->setPaper('A4', 'portrait')
-            ->setOptions([
-                'isRemoteEnabled' => true,
-                'isHtml5ParserEnabled' => true,
-            ]);
+        DB::transaction(function () use ($data, $model) {
+            $model->content = $data['html_content'];
+            $model->update();
+        });
 
-        return $pdf->download("EngagementCard_{$employee->id}.pdf");
+        return redirect()->back()->with('success', 'Engagement card content updated successfully.');
+
 
     }
+
 
 //    public function generate(Request $request)
 //    {
@@ -558,11 +561,46 @@ class EngagementCardController extends Controller
         return $this->generateBatchEngagementCardsPdfZip($office_id, $start_date, $end_date);
     }
 
+
+    public function download(EngagementCard $model)
+    {
+
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('download-engagement-card'), 403, 'Access Denied');
+
+
+
+        if (!$model) {
+            abort(404, 'Engagement card not found.');
+        }
+
+        $pdf = Pdf::loadHTML($model->content)
+            ->setPaper('A4', 'portrait')
+            ->setOptions([
+                'isRemoteEnabled' => true,
+                'isHtml5ParserEnabled' => true,
+            ]);
+
+        return $pdf->download("EngagementCard_{$model->card_no}.pdf");
+
+    }
+
+    public function destroy(EngagementCard $model){
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('delete-engagement-card'),403,'Access Denied');
+        $model->delete();
+        return redirect()->back()->with('success', 'Engagement card deleted successfully.');
+    }
+
+
+
     function getFiscalYear(string $startDate, string $endDate): string
     {
         $startYear = \Carbon\Carbon::parse($startDate)->format('Y');
         $endYear   = \Carbon\Carbon::parse($endDate)->format('Y');
         return $startYear . '-' . $endYear;
     }
+
+
 
 }

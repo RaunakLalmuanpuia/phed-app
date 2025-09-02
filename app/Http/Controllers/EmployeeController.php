@@ -377,6 +377,8 @@ class EmployeeController extends Controller
 
             'canCreateEngagementCard'=>$user->can('store-engagement-card'),
             'canDownloadEngagementCard'=>$user->can('download-engagement-card'),
+            'canDeleteEngagementCard'=>$user->can('delete-engagement-card'),
+
 
             'canCreateTransfer'=>$user->can('transfer-employee'),
             'canDeleteTransfer'=>$user->can('delete-transfer'),

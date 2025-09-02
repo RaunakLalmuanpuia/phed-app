@@ -1,149 +1,144 @@
-
-
 <template>
-    <q-card class="q-mt-md">
-        <div class="flex items-center justify-between q-pa-md bg-white">
-            <div>
-                <div class="stitle">Engagement Card</div>
+    <div>
+        <q-card class="q-mt-md">
+            <div class="flex items-center justify-between q-pa-md bg-white">
+                <div>
+                    <div class="stitle">Engagement Cards</div>
+                </div>
             </div>
 
-            <div class="flex q-gutter-sm">
-                <!-- Edit button only if card exists AND canStoreEngagementCard -->
-                <q-btn
-                    v-if="data.engagement_card && canCreateEngagementCard"
-                    color="primary"
-                    icon="edit"
-                    @click="openDialog"
-                />
-            </div>
-        </div>
+            <q-card-section>
+                <div v-if="data.engagement_card && data.engagement_card.length">
+                    <q-item
+                        v-for="card in data.engagement_card"
+                        :key="card.id"
+                        class="q-mb-md"
+                    >
+                        <!-- Stack Card No and Fiscal vertically -->
+                        <q-item-section>
+                            <div class="subtitle">Card No: {{ card.card_no }}</div>
+                            <div class="text-label">Fiscal: {{ card.fiscal_year }}</div>
+                        </q-item-section>
 
-        <q-card-section>
-            <!-- Create button only if no card AND canStoreEngagementCard -->
-            <q-btn
-                v-if="!data.engagement_card && canCreateEngagementCard"
-                color="primary"
-                label="Create"
-                @click="openDialog"
-            />
+                        <!-- Buttons aligned horizontally on the right -->
+                        <q-item-section side>
+                            <div class="row items-center q-gutter-sm">
+                                <q-btn
+                                    v-if="canCreateEngagementCard"
+                                    dense
+                                    color="primary"
+                                    icon="edit"
+                                    @click="openDialog(card)"
+                                />
 
-            <!-- Download button only if card exists AND canDownloadEngagementCard -->
-            <q-btn
-                v-if="data.engagement_card && canDownloadEngagementCard"
-                color="primary"
-                label="Download"
-                @click="downloadPdf"
-            />
+                                <q-btn
+                                    v-if="canDownloadEngagementCard"
+                                    dense
+                                    color="primary"
+                                    icon="download"
+                                    @click="downloadPdf(card)"
+                                />
 
-            <q-dialog v-model="dialog" persistent>
-                <q-card style="width: 1000px; max-width: 100vw;">
-                    <q-card-section class="row items-center justify-between bg-primary text-white">
-                        <div class="text-h6">Engagement Card</div>
-                        <q-btn dense flat icon="close" v-close-popup />
-                    </q-card-section>
+                                <q-btn
+                                    v-if="canDeleteEngagementCard"
+                                    dense
+                                    color="red"
+                                    icon="delete"
+                                    @click="$inertia.delete(route('engagement-card.destroy', card.id))"
+                                />
+                            </div>
+                        </q-item-section>
+                    </q-item>
+                </div>
+            </q-card-section>
 
-                    <q-card-section style="flex-grow: 1; overflow: auto; padding: 0;">
-                        <q-editor
-                            v-model="form.html_content"
-                            style="width: 100%; max-height: 1100px;"
-                        />
-                    </q-card-section>
 
-                    <q-card-actions align="right" style="flex-shrink: 0;">
-                        <q-btn color="primary" label="Save" @click="saveCard" />
-                    </q-card-actions>
-                </q-card>
-            </q-dialog>
-        </q-card-section>
-    </q-card>
+        </q-card>
+
+        <!-- Dialog for editing/creating -->
+        <q-dialog v-model="dialog" persistent>
+            <q-card style="width: 1000px; max-width: 100vw;">
+                <q-card-section class="row items-center justify-between bg-primary text-white">
+                    <div class="text-h6">Engagement Card</div>
+                    <q-btn dense flat icon="close" v-close-popup />
+                </q-card-section>
+
+                <q-card-section style="flex-grow: 1; overflow: auto; padding: 0;">
+                    <q-editor
+                        v-model="form.html_content"
+                        style="width: 100%; max-height: 1100px;"
+                    />
+                </q-card-section>
+
+                <q-card-actions align="right" style="flex-shrink: 0;">
+                    <q-btn color="primary" label="Save" @click="saveCard" />
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
+    </div>
 </template>
-
-
 
 <script setup>
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
-import {useForm} from "@inertiajs/vue3";
+import { useForm } from "@inertiajs/vue3";
+import axios from 'axios';
 
 const props = defineProps({
     data: Object,
     canCreateEngagementCard: Boolean,
     canDownloadEngagementCard: Boolean,
-})
-const form = useForm({
-    html_content: props.data?.engagement_card?.content || '',
-
-})
+    canDeleteEngagementCard: Boolean,
+});
 
 const dialog = ref(false);
-const editorContent = ref('');
+const selectedCard = ref(null);
+const form = useForm({
+    html_content: '',
+});
+
 const $q = useQuasar();
 
-const openDialog = async () => {
-    dialog.value = true;
-    try {
-        axios.get(route('engagement-card.show', props.data))
-            .then(res=>{
-                editorContent.value = res.data;
-                form.html_content = res.data;
-
-            })
-    } catch (err) {
-        $q.notify({ type: 'negative', message: 'Failed to load card data' });
+// Open dialog for a specific card or a new card
+const openDialog = async (card = null) => {
+    selectedCard.value = card;
+    if (card) {
+        form.html_content = card.content;
+    } else {
+        form.html_content = '';
     }
+    dialog.value = true;
+};
+
+// Save card (new or existing)
+const saveCard = () => {
+
+
+    form.post(route('engagement-card.update', selectedCard.value), {
+        preserveScroll: true,
+        onSuccess: () => {
+            dialog.value = false;
+            $q.notify({ type: 'positive', message: 'Card updated successfully!' });
+        },
+    });
 };
 
 
-const saveCard = () => {
-    form.post(route('engagement-card.store', props.data), {
-        preserveScroll: true,
-        onSuccess: () => {
-            dialog.value = false
-            $q.notify({
-                type: 'positive',
-                message:  'Card saved successfully!'
-            })
-        }
-    })
-}
-
-//
-// const saveCard = async () => {
-//     try {
-//         await axios.post(route('engagement-card.store', props.data), {
-//             html_content: editorContent.value,
-//         });
-//         $q.notify({ type: 'positive', message: 'Card saved successfully!' });
-//         dialog.value = false;
-//
-//     } catch (error) {
-//         $q.notify({ type: 'negative', message: 'Failed to save card.' });
-//     }
-// };
-
-// Download PDF helper
-const downloadPdf = async () => {
+// Download PDF for a specific card
+const downloadPdf = async (card) => {
     try {
-        // Request PDF from backend
-        const response = await axios.get(route('engagement-card.download', props.data), {
-            responseType: 'blob'  // important for binary response
+        const response = await axios.get(route('engagement-card.download', card.id), {
+            responseType: 'blob',
         });
-
-        // Create a blob link to download
         const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `EngagementCard_${props.data.id}.pdf`);
+        link.setAttribute('download', `EngagementCard_${card.card_no}.pdf`);
         document.body.appendChild(link);
         link.click();
         link.remove();
-
     } catch (error) {
         $q.notify({ type: 'negative', message: 'Failed to download PDF.' });
     }
 };
 </script>
-
-<style scoped>
-
-</style>

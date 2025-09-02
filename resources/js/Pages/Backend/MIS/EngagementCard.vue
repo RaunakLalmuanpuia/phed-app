@@ -185,7 +185,7 @@
                         round
                         color="primary"
                         icon="download"
-                        @click="downloadPdf(props.row)"
+                        @click="downloadPdf(props.row.engagement_card[0])"
                         aria-label="Generate Card"
                     />
                 </q-td>
@@ -217,30 +217,23 @@
                             />
                             <q-input
                                 filled
-                                v-model="individualForm.card_no"
-                                label="Card Number (optional)"
-                                class="col-12"
-                                :error="individualForm.errors.card_no"
-                            />
-                            <q-input
-                                filled
                                 v-model="individualForm.phed_file_no"
                                 label="PHED File Number"
-                                class="col-12 col-sm-4"
+                                class="col-12 "
                                 :error="individualForm.errors.phed_file_no"
                             />
                             <q-input
                                 filled
                                 v-model="individualForm.approval_dpar"
                                 label="Approval DP&AR"
-                                class="col-12 col-sm-4"
+                                class="col-12"
                                 :error="individualForm.errors.approval_dpar"
                             />
                             <q-input
                                 filled
                                 v-model="individualForm.approval_fin"
                                 label="Approval Finance"
-                                class="col-12 col-sm-4"
+                                class="col-12"
                                 :error="individualForm.errors.approval_fin"
                             />
                         </div>
@@ -280,21 +273,21 @@
                                 filled
                                 v-model="bulkForm.phed_file_no"
                                 label="PHED File Number"
-                                class="col-12 col-sm-4"
+                                class="col-12"
                                 :error="bulkForm.errors.phed_file_no"
                             />
                             <q-input
                                 filled
                                 v-model="bulkForm.approval_dpar"
                                 label="Approval DP&AR"
-                                class="col-12 col-sm-4"
+                                class="col-12"
                                 :error="bulkForm.errors.approval_dpar"
                             />
                             <q-input
                                 filled
                                 v-model="bulkForm.approval_fin"
                                 label="Approval Finance"
-                                class="col-12 col-sm-4"
+                                class="col-12"
                                 :error="bulkForm.errors.approval_fin"
                             />
                         </div>
@@ -510,7 +503,7 @@ const downloadPdf = async (row) => {
         const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `EngagementCard_${row.name}.pdf`);
+        link.setAttribute('download', `EngagementCard_${row.card_no}.pdf`);
         document.body.appendChild(link);
         link.click();
         link.remove();
