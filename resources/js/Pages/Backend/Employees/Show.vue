@@ -35,10 +35,10 @@
                                     text-color="white"
                                     class="stitle"
                                     :label="data?.employment_type?.trim() === 'MR'
-                                        ? 'Muster Roll'
+                                        ? 'Muster Roll Employee'
                                         : data?.employment_type?.trim() === 'PE'
-                                          ? 'Provisional'
-                                          : 'Deleted'"
+                                          ? 'Provisional Employee'
+                                          : 'Deleted Employee'"
                                     style="padding: 8px;"
                                     rounded
                                 />
