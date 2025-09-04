@@ -110,8 +110,7 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
         Route::get('create-pe-employee', [MISController::class, 'createPE'])->middleware('can:create-employee')->name('mis.create-pe-employee');
         Route::get('create-mr-employee', [MISController::class, 'createMR'])->middleware('can:create-employee')->name('mis.create-mr-employee');
 
-        Route::get('remuneration', [MISController::class, 'remuneration'])->middleware('can:generate-remuneration')->name('mis.remuneration');
-        Route::get('json-remuneration', [MISController::class, 'jsonRemuneration'])->middleware('can:generate-remuneration')->name('mis.json-remuneration');
+
 
         Route::get('engagement-card', [MISController::class, 'engagementCard'])->middleware('can:generate-engagement-card')->name('mis.engagement-card');
         Route::get('json-engagement-card', [MISController::class, 'jsonEngagementCard'])->middleware('can:generate-engagement-card')->name('mis.json-engagement-card');
@@ -209,6 +208,12 @@ Route::group(['middleware'=>'auth','prefix'=>'notification'], function () {
 
 //Remuneration
 Route::group(['middleware'=>'auth','prefix' => 'remuneration'], function () {
+    Route::get('details', [RemunerationController::class, 'remunerationDetail'])->middleware('can:generate-remuneration')->name('remuneration.detail');
+    Route::get('json-remuneration', [RemunerationController::class, 'jsonRemunerationDetail'])->middleware('can:generate-remuneration')->name('remuneration.json-detail');
+
+
+    Route::get('summary', [RemunerationController::class, 'remunerationSummary'])->middleware('can:generate-remuneration')->name('remuneration.summary');
+
     Route::post('store/{model}', [RemunerationController::class, 'store'])->middleware('can:create-remuneration')->name('remuneration.store');
     Route::put('update/{model}', [RemunerationController::class, 'update'])->middleware('can:edit-remuneration')->name('remuneration.update');
     Route::post('bulk-update', [RemunerationController::class, 'bulkUpdate'])->middleware('can:bulk-update-remuneration')->name('remuneration.bulk-update');

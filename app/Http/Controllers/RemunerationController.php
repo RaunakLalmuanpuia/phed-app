@@ -3,12 +3,99 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\Office;
 use App\Models\RemunerationDetail;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class RemunerationController extends Controller
 {
     //
+
+    public function remunerationDetail(Request $request){
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('generate-remuneration'),403,'Access Denied');
+
+        $office = Office::whereHas('employees', function($query) {
+            $query->where('employment_type', 'PE');
+        })->get();
+
+
+
+        return Inertia::render('Backend/Remunerations/Detail', [
+            'office' => $office,
+            'canGenerateRemuneration'=>$user->can('generate-remuneration'),
+        ]);
+    }
+
+    public function jsonRemunerationDetail(Request $request)
+    {
+        $perPage = $request->integer('rowsPerPage', 5);
+        $filter  = $request->get('filter', []);
+        $search  = $request->get('search');
+        $officeIds = $filter['offices'] ?? [];
+        $incrementYear = $filter['incrementYear'] ?? null;
+
+        $employees = Employee::with(['office','remunerationDetail'])
+            ->whereIn('office_id', (array) $officeIds)
+            ->where('employment_type', 'PE')
+
+            // 🔹 Filter by Increment Year
+            ->when($incrementYear, function ($q) use ($incrementYear) {
+                $q->whereHas('remunerationDetail', function ($rem) use ($incrementYear) {
+                    $rem->whereYear('next_increment_date', $incrementYear);
+                });
+            })
+
+            // 🔹 Search
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($sub) use ($search) {
+                    $sub->where('name', 'LIKE', "%{$search}%")
+                        ->orWhere('mobile', 'LIKE', "%{$search}%")
+                        ->orWhere('designation', 'LIKE', "%{$search}%")
+                        ->orWhere('date_of_birth', 'LIKE', "%{$search}%")
+                        ->orWhere('name_of_workplace', 'LIKE', "%{$search}%")
+                        ->orWhereHas('remunerationDetail', function ($rem) use ($search) {
+                            $rem->where('remuneration', 'LIKE', "%{$search}%")
+                                ->orWhere('medical_amount', 'LIKE', "%{$search}%")
+                                ->orWhere('total', 'LIKE', "%{$search}%")
+                                ->orWhere('round_total', 'LIKE', "%{$search}%");
+                        });
+                });
+            })
+
+            // 🔹 Sort by closest increment date
+            ->orderByRaw("
+            (
+                SELECT MIN(ABS(DATEDIFF(rd.next_increment_date, CURDATE())))
+                FROM remuneration_details rd
+                WHERE rd.employee_id = employees.id
+            )
+        ");
+
+        return response()->json([
+            'list' => $employees->paginate($perPage),
+        ], 200);
+    }
+
+    public function remunerationSummary(Request $request){
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('generate-remuneration'),403,'Access Denied');
+
+        $office = Office::whereHas('employees', function($query) {
+            $query->where('employment_type', 'PE');
+        })->get();
+
+
+
+        return Inertia::render('Backend/Remunerations/Summary', [
+            'office' => $office,
+            'canGenerateRemuneration'=>$user->can('generate-remuneration'),
+        ]);
+    }
+
+
+
     public function store(Request $request, Employee $model){
 
         $user = auth()->user();
