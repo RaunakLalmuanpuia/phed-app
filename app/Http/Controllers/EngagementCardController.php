@@ -264,6 +264,7 @@ class EngagementCardController extends Controller
         $user = auth()->user();
         abort_if(!$user->hasPermissionTo('delete-engagement-card'),403,'Access Denied');
         $model->delete();
+
         return redirect()->back()->with('success', 'Engagement card deleted successfully.');
     }
 

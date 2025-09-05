@@ -157,13 +157,13 @@
 
             <template v-slot:body-cell-start_date="props">
                 <q-td :props="props">
-                    {{ props.row.engagement_card[0]?.start_date ?? '-' }}
+                    {{ formatDate(props.row.engagement_card[0]?.start_date) ?? '-' }}
                 </q-td>
             </template>
 
             <template v-slot:body-cell-end_date="props">
                 <q-td :props="props">
-                    {{ props.row.engagement_card[0]?.end_date ?? '-' }}
+                    {{ formatDate(props.row.engagement_card[0]?.end_date) ?? '-' }}
                 </q-td>
             </template>
 
@@ -180,6 +180,7 @@
                     />
 
                     <q-btn
+                        v-if="props.row.engagement_card[0]"
                         dense
                         flat
                         round
@@ -187,6 +188,17 @@
                         icon="download"
                         @click="downloadPdf(props.row.engagement_card[0])"
                         aria-label="Generate Card"
+                    />
+
+                    <q-btn
+                        v-if="props.row.engagement_card[0]"
+                        dense
+                        flat
+                        round
+                        color="red"
+                        icon="delete"
+                        @click="deleteEngagementCard(props.row.engagement_card[0].id)"
+                        aria-label="Delete Card"
                     />
                 </q-td>
             </template>
@@ -309,6 +321,10 @@ import { useQuasar } from "quasar";
 import { ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
 
+import useUtils from "@/Compositions/useUtils";
+
+const {formatDate} = useUtils();
+
 defineOptions({ layout: BackendLayout });
 
 const props = defineProps(["office", "canGenerateEngagementCard"]);
@@ -325,6 +341,7 @@ const search = ref("");
 const selectedEmployees = ref([]);
 const q = useQuasar();
 
+const form = useForm({})
 
 const rows = ref([]);
 const loading = ref(false);
@@ -492,6 +509,43 @@ function submitBulkForm() {
     });
 }
 
+function deleteEngagementCard(props) {
+    q.dialog({
+        title: 'Confirm Deletion',
+        message: 'Are you sure you want to delete this Engagement Card?',
+        ok: {
+            label: 'Yes',
+            color: 'primary',
+        },
+        cancel: {
+            label: 'No',
+            color: 'red',
+        },
+    }).onOk(() => {
+        form.delete(route('engagement-card.destroy', props), {
+            onSuccess: () => {
+                q.notify({ type: 'positive', message: 'Engagement card deleted.' });
+                empTable.value?.requestServerInteraction();
+            },
+            onError: (errors) => {
+                Object.values(errors).forEach((error) => {
+                    q.notify({
+                        type: 'negative',
+                        message: error,
+                        position: 'bottom',
+                    });
+                });
+            },
+        });
+
+    }).onCancel(() => {
+        q.notify({
+            type: 'info',
+            message: 'Deletion cancelled.',
+            color: 'negative',
+        });
+    });
+}
 const downloadPdf = async (row) => {
     try {
         // Request PDF from backend using the employee ID or card_no
