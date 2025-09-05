@@ -549,8 +549,9 @@ const module = reactive({
     remunerations: {
         label: 'Remuneration',
         children: [
-            {route_name: 'remuneration.detail', label: 'Details', permission: 'generate-remuneration'},
             {route_name: 'remuneration.summary', label: 'Summary', permission: 'generate-remuneration'},
+            {route_name: 'remuneration.detail', label: 'Details', permission: 'generate-remuneration'},
+
         ]
     },
 

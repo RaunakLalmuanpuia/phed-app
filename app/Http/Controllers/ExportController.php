@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Exports\AllEmployeesExport;
 use App\Exports\MusterRollEmployeesExport;
+use App\Exports\RemunerationExport;
 use App\Models\Office;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Exports\ProvisionalSummaryExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -77,6 +79,16 @@ class ExportController extends Controller
             new AllEmployeesExport($model),
             Str::slug($model->name, '_') . '_all_employees.xlsx'
         );
+    }
+
+    public function exportRemunerationSummary(Request $request){
+
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('export-remuneration-summary'),403,'Access Denied');
+
+        $year =  Carbon::now()->year;
+        return Excel::download(new RemunerationExport($year), "Remuneration-{$year}.xlsx");
+
     }
 
 }

@@ -13,280 +13,79 @@
                     <q-breadcrumbs-el label="Remuneration" :to="route('mis.import')" />
                 </q-breadcrumbs>
             </div>
+
+            <div class="q-gutter-sm">
+                <q-btn label="Export" color="primary"  @click="exportData()" icon="download" />
+            </div>
+
         </div>
-
-        <br />
-
-        <!-- Filters -->
-        <q-card flat>
-            <q-card-section>
-                <div class="q-pa-md">
-                    <q-card flat class="q-mt-md bg-white shadow-1">
-                        <q-card-section>
-                            <div class="text-subtitle1 text-weight-medium text-grey-8 q-mb-md">
-                                Office Filter
-                            </div>
-
-                            <div class="row q-col-gutter-md">
-                                <!-- Office Selector -->
-                                <q-select
-                                    label="Select Office(s)"
-                                    class="col-12 col-sm-6"
-                                    v-model="filters.offices"
-                                    :options="office"
-                                    option-label="name"
-                                    option-value="id"
-                                    emit-value
-                                    map-options
-                                    outlined
-                                    dense
-                                    clearable
-                                    @clear="clearTable"
-                                    @update:model-value="checkOffices"
-                                />
-                                <q-select
-                                    class="col-12 col-sm-3"
-                                    outlined
-                                    dense
-                                    clearable
-                                    label="Increment Year"
-                                    v-model="filters.incrementYear"
-                                    :options="yearOptions"
-                                    emit-value
-                                    map-options
-                                    @clear="clearTable"
-                                />
-
-                            </div>
-                        </q-card-section>
-
-                        <q-separator />
-
-                        <!-- Toolbar -->
-                        <q-card-section class="row items-center justify-between q-gutter-md">
-                            <div class="row q-gutter-sm col-12 col-sm justify-end">
-                                <q-btn
-                                    v-if="canGenerateRemuneration"
-                                    label="Get Employee"
-                                    color="primary"
-                                    @click="fetchEmployees"
-                                />
-                            </div>
-                        </q-card-section>
-                    </q-card>
-                </div>
-            </q-card-section>
-        </q-card>
 
         <br />
 
         <!-- Data Table -->
         <q-table
-            v-if="showTable"
-            ref="empTable"
-            title="Employees Remuneration"
-            :rows="rows"
+            :rows="filteredRows"
             :columns="columns"
-            row-key="id"
-            :loading="loading"
-            v-model:pagination="pagination"
-            :rows-per-page-options="[5, 10, 20, 50]"
-            @request="onRequest"
-            selection="multiple"
-            v-model:selected="selectedEmployees"
+            row-key="office_name"
+            flat
+            bordered
+            :pagination="{ rowsPerPage: 0 }"
         >
 
             <template v-slot:top-right>
-
-                <q-btn class="q-mr-sm"  icon="upload"  v-if="selectedEmployees.length > 0" label="Update" color="primary"  @click="openBulkUpdateDialog" />
-
-                <q-input
-                    dense
-                    outlined
-                    debounce="800"
-                    v-model="search"
-                    placeholder="Search"
-                    class="col-12 col-sm-auto"
-                    clearable
-                    @update:model-value="handleSearch"
-                >
-                    <template #append>
+                <q-input borderless dense debounce="800"
+                         v-model="filter"
+                         bg-color="grey-2"
+                         outlined
+                         clearable
+                         placeholder="Search Office">
+                    <template v-slot:append>
                         <q-icon name="search" />
                     </template>
                 </q-input>
-
-
             </template>
 
 
-
-
-
-            <template v-slot:body-cell-office="props">
+            <template v-slot:body-cell-one_month="props">
                 <q-td :props="props">
-                    {{ props.row.office?.name }}
+                    {{ formatAmount(props.row.one_month) }}
                 </q-td>
             </template>
 
-            <template v-slot:body-cell-remuneration="props">
+            <template v-slot:body-cell-three_months="props">
                 <q-td :props="props">
-                    ₹{{ props.row.remuneration_detail?.remuneration }}
+                    {{ formatAmount(props.row.three_months) }}
                 </q-td>
             </template>
 
-            <template v-slot:body-cell-round_total="props">
+            <template v-slot:body-cell-six_months="props">
                 <q-td :props="props">
-                    ₹{{ props.row.remuneration_detail?.round_total }}
+                    {{ formatAmount(props.row.six_months) }}
                 </q-td>
             </template>
 
-            <template v-slot:body-cell-next_increment_date="props">
+            <template v-slot:body-cell-one_year="props">
                 <q-td :props="props">
-                    {{ formatDate(props.row.remuneration_detail?.next_increment_date) }}
+                    {{ formatAmount(props.row.one_year) }}
                 </q-td>
             </template>
 
-            <template v-slot:body-cell-next_increment_amount="props">
-                <q-td :props="props">
-                    ₹{{ props.row.remuneration_detail?.total }}
-                </q-td>
-            </template>
-
-            <template v-slot:body-cell-actions="props">
-                <q-td :props="props">
-                    <q-btn
-                        dense
-                        flat
-                        round
-                        color="primary"
-                        icon="edit"
-                        @click="openDialog(props.row)"
-                        aria-label="Edit"
-                    />
-                </q-td>
+            <template v-slot:bottom-row>
+                <q-tr class="bg-grey-3 text-bold q-border-t">
+                    <q-td v-for="col in columns" :key="col.name" :class="'text-' + (col.align || 'left')" class="q-pa-xs">
+                        <strong>
+                            <!-- Format only numeric columns -->
+                            <template v-if="['one_month','three_months','six_months','one_year'].includes(col.field)">
+                                {{ formatAmount(totals[col.field]) }}
+                            </template>
+                            <template v-else>
+                                {{ totals[col.field] }}
+                            </template>
+                        </strong>
+                    </q-td>
+                </q-tr>
             </template>
         </q-table>
-
-
-        <q-dialog v-model="showDialog">
-            <q-card style="min-width: 400px">
-                <q-card-section>
-                    <div class="text-h6">Edit Remuneration</div>
-                </q-card-section>
-
-                <q-card-section class="q-gutter-md">
-
-                    <!-- Employee details as side-by-side label + value -->
-                    <div class="row q-mb-sm items-center">
-                        <div class="col-4 text-subtitle2 text-grey-8">Name</div>
-                        <div class="col-8 text-body1">{{ currentRow?.name }}</div>
-                    </div>
-
-                    <div class="row q-mb-sm items-center">
-                        <div class="col-4 text-subtitle2 text-grey-8">Designation</div>
-                        <div class="col-8 text-body1">{{ currentRow?.designation }}</div>
-                    </div>
-
-                    <div class="row q-mb-sm items-center">
-                        <div class="col-4 text-subtitle2 text-grey-8">Office</div>
-                        <div class="col-8 text-body1">{{ currentRow?.office?.name }}</div>
-                    </div>
-
-                    <div class="row q-mb-sm items-center">
-                        <div class="col-4 text-subtitle2 text-grey-8">Current Remuneration (Total)</div>
-                        <div class="col-8 text-body1">Rs {{ currentRow?.remuneration_detail?.total || 0 }}</div>
-                    </div>
-
-                    <div class="row q-mb-sm items-center">
-                        <div class="col-4 text-subtitle2 text-grey-8">Date of Next Increment</div>
-                        <div class="col-8 text-body1">{{ formatDate(currentRow?.remuneration_detail?.next_increment_date) || 0 }}</div>
-                    </div>
-
-                    <!-- Remuneration Input -->
-                    <q-input
-                        label="Remuneration"
-                        type="number"
-                        v-model="form.remuneration"
-                        outlined
-                        dense
-                        :readonly="!editMode"
-
-                    >
-                        <template v-slot:append>
-                            <q-icon
-                                name="edit"
-                                class="cursor-pointer"
-                                @click="enableEdit"
-                            />
-                        </template>
-                    </q-input>
-
-                    <!-- Next Increment Date Input -->
-                    <q-input
-                        label="Next Increment Date"
-                        type="date"
-                        v-model="form.next_increment_date"
-                        outlined
-                        dense
-                        :readonly="!editMode"
-                    />
-                </q-card-section>
-
-                <q-card-actions align="right">
-                    <q-btn flat label="Cancel" v-close-popup @click="cancelEdit" />
-                    <q-btn
-                        color="primary"
-                        label="Update"
-                        :disable="!editMode"
-                        @click="submitForm"
-                    />
-                </q-card-actions>
-            </q-card>
-        </q-dialog>
-
-
-        <q-dialog v-model="showBulkDialog">
-
-
-            <q-card style="min-width: 300px">
-                <q-card-section>
-                    <div class="text-h6">Update Remuneration</div>
-                </q-card-section>
-
-                <q-card-section>
-                    <q-banner class="bg-grey-2 text-body2 q-pa-sm rounded-borders">
-                        Note: When updating the increment date, each selected employee’s
-                        <strong>remuneration</strong> will be set to their
-                        <strong>next increment amount</strong>, and the new increment date will be applied
-                        based on this updated remuneration.
-                    </q-banner>
-                </q-card-section>
-
-                <q-card-section>
-                    <q-input
-                        type="date"
-                        v-model="bulkForm.next_increment_date"
-                        outlined
-                        label="New Increment Date"
-                        dense
-                        :error="!!bulkForm.errors.next_increment_date"
-                        :error-message="bulkForm.errors.next_increment_date"
-                    />
-                </q-card-section>
-
-
-
-                <q-card-actions align="right">
-                    <q-btn flat label="Cancel" v-close-popup @click="cancelBulkEdit" />
-                    <q-btn
-                        color="primary"
-                        label="Update"
-                        :loading="bulkForm.processing"
-                        @click="submitBulkUpdate"
-                    />
-                </q-card-actions>
-            </q-card>
-        </q-dialog>
 
     </q-page>
 </template>
@@ -294,7 +93,7 @@
 <script setup>
 import BackendLayout from "@/Layouts/BackendLayout.vue";
 import { useQuasar } from "quasar";
-import { ref } from "vue";
+import { ref,onMounted, computed } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import useUtils from "@/Compositions/useUtils";
 
@@ -303,231 +102,70 @@ defineOptions({ layout: BackendLayout });
 
 const props = defineProps(["office", "canGenerateRemuneration"]);
 
-const filters = ref({
-    offices: [], // multiple offices
-    incrementYear: "",   // 🔹 new
-});
+const q =useQuasar();
 
-// Generate a range of years (e.g., from 2020 to 2030)
-const startYear = 2020;
-const endYear = 2035;
+const rows = ref([])
+const totals = ref({})
 
-const yearOptions = Array.from(
-    { length: endYear - startYear + 1 },
-    (_, i) => startYear + i
-);
-const search = ref("");
-
-const selectedEmployees = ref([])
-const showBulkDialog = ref(false)
-
-const q = useQuasar();
-const rows = ref([]);
-const loading = ref(false);
+const filter = ref("") // Search box model
 
 
+const columns = [
+    { name: 'office_name', label: 'Office', field: 'office_name', align: 'left' },
+    { name: 'employee_count', label: 'No. of Employees', field: 'employee_count', align: 'center' },
+    { name: 'one_month', label: '1 Month Wages (₹)', field: 'one_month', align: 'right' },
+    { name: 'three_months', label: '3 Months Wages (₹)', field: 'three_months', align: 'right' },
+    { name: 'six_months', label: '6 Months Wages (₹)', field: 'six_months', align: 'right' },
+    { name: 'one_year', label: '1 Year Wages (₹)', field: 'one_year', align: 'right' },
+]
 
-const bulkForm = useForm({
-    employee_ids: [],
-    next_increment_date: ''
+
+// Computed filtered rows
+const filteredRows = computed(() => {
+    if (!filter.value) return rows.value
+    return rows.value.filter(row =>
+        row.office_name.toLowerCase().includes(filter.value.toLowerCase())
+    )
 })
 
-
-const editMode = ref(false);
-const showDialog = ref(false);
-
-const showTable = ref(false);
-const empTable = ref(null);   // declare a ref for your table
-function fetchEmployees() {
-    if (!filters.value.offices || filters.value.offices.length === 0) {
-        q.notify({
-            type: 'negative',
-            message: 'Please select an office'
-        })
-        return
-    }
-
-    if (!filters.value.incrementYear) {
-        q.notify({
-            type: 'negative',
-            message: 'Please enter the increment year'
-        })
-        return
-    }
-
-    showTable.value = true;
-    rows.value = [];
-
-    setTimeout(() => {
-        if (empTable.value) empTable.value.requestServerInteraction();
-    });
+const formatAmount = (val) => {
+    if (val == null) return ''
+    // force number, then format with 2 decimals and Indian grouping
+    return new Intl.NumberFormat('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(val)
 }
 
-function handleSearch () {
-
-    // reset to first page whenever search changes
-    pagination.value.page = 1;
-
-    if (empTable.value) {
-        empTable.value.requestServerInteraction();
-    }
-}
-function clearTable() {
-    rows.value = [];
-    showTable.value = false;
-}
-function checkOffices(val) {
-    if (!val || val.length === 0) {
-        clearTable();
-    }
-}
-
-// Form
-const form = useForm({
-    remuneration: "",
-    next_increment_date: ""
-});
-
-const pagination = ref({
-    sortBy: "next_increment_date",
-    descending: false,
-    page: 1,
-    rowsPerPage: 5,
-    rowsNumber: 0,
-});
-// Table columns
-const columns = [
-    { name: "name", label: "Name", field: "name", align: "left", sortable: true },
-    { name: "designation", label: "Designation", field: "designation", align: "left", sortable: true },
-    { name: "office", label: "Office", field: "office.name", align: "left" },
-    { name: "remuneration", label: "Remuneration", field: "remuneration_detail.remuneration", align: "right" },
-    { name: "round_total", label: "Total", field: "remuneration_detail.round_total", align: "right" },
-    { name: "next_increment_date", label: "Next Increment", field: "remuneration_detail.next_increment_date", align: "left" },
-    { name: "next_increment_amount", label: "Next Increment Amount", field: "remuneration_detail.total", align: "left" },
-    { name: 'actions', label: 'Actions', align: 'center' },
-];
-
-const formRowId = ref(null);
-const currentRow = ref(null);
 
 
-const openDialog = (row) => {
-    currentRow.value = row;
+onMounted(async () => {
+    const response = await axios.get(route('remuneration.json-summary'))
+    rows.value = response.data.data
+    totals.value = response.data.totals
+})
+const exportData = () => {
+    q.loading.show(); // Show loading indicator
 
-    if (row.remuneration_detail) {
-        form.remuneration = row.remuneration_detail.total;
-        form.next_increment_date = row.remuneration_detail.next_increment_date;
-    } else {
-        form.reset();
-    }
-
-    formRowId.value = row.id;
-    showDialog.value = true;
-    editMode.value = false; // 🔹 start as readonly
-};
-function openBulkUpdateDialog () {
-    bulkForm.reset()
-    bulkForm.employee_ids = selectedEmployees.value.map(e => e.id)
-    showBulkDialog.value = true
-}
-
-const enableEdit = () => {
-    editMode.value = true; // enable editing
-};
-
-const cancelEdit = () => {
-    editMode.value = false;
-    showDialog.value = false;
-    form.reset();
-};
-
-const cancelBulkEdit = () => {
-    showBulkDialog.value = false;
-    bulkForm.reset();
-};
-
-function onRequest(props) {
-
-    const { page, rowsPerPage, sortBy, descending } = props.pagination;
-
-    loading.value = true;
-    axios
-        .get(route("remuneration.json-detail"), {
-            params: {
-                filter: { ...filters.value },
-                page,
-                rowsPerPage,
-                search: search.value,
-                sortBy,
-                descending,
-            },
-        })
+    axios.get(route('export.remuneration-summary'), { responseType: 'blob' })
         .then((res) => {
-            const { list } = res.data;
-            const { data, per_page, current_page, total } = list;
-            rows.value = data;
-
-            pagination.value.page = current_page;
-            pagination.value.rowsNumber = total;
-            pagination.value.rowsPerPage = per_page;
+            const fileUrl = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement('a');
+            const currentYear = new Date().getFullYear(); // Get current year
+            link.href = fileUrl;
+            link.setAttribute('download', `remuneration-summary-${currentYear}.xlsx`); // Use current year in filename
+            link.click();
         })
         .catch((err) => {
-            q.notify({ type: "negative", message: err?.response?.data?.message });
+            q.notify({
+                type: 'negative',
+                message: err.response?.data?.message || 'Failed to download file',
+            });
         })
-        .finally(() => (loading.value = false));
-}
-
-const submitForm = () => {
-    if (!formRowId.value) return;
-
-    form.put(route("remuneration.update", formRowId.value), {
-        onSuccess: () => {
-            showDialog.value = false;
-            form.reset();
-            // optionally refresh table
-            if (empTable.value) empTable.value.requestServerInteraction();
-            q.notify({ type: "positive", message: "Remuneration updated successfully." });
-        },
-        onError: (errors) => {
-            Object.values(errors).forEach((error) => {
-                q.notify({
-                    type: 'negative',
-                    message: error,
-                    position: 'bottom',
-                });
-            });
-        },
-    });
+        .finally(() => {
+            q.loading.hide(); // Hide loading indicator
+        });
 };
-
-
-function submitBulkUpdate () {
-    if (!bulkForm.next_increment_date) {
-        q.notify({ type: 'negative', message: 'Please select a new increment date' })
-        return
-    }
-
-    bulkForm.post(route('remuneration.bulk-update'), {
-        preserveScroll: true,
-        onSuccess: () => {
-            q.notify({ type: 'positive', message: 'Increment updated successfully' })
-            showBulkDialog.value = false
-            selectedEmployees.value = []
-            bulkForm.reset();
-            // onRequest({ pagination: pagination.value }) // reload table
-            if (empTable.value) empTable.value.requestServerInteraction();
-        },
-        onError: (errors) => {
-            Object.values(errors).forEach((error) => {
-                q.notify({
-                    type: 'negative',
-                    message: error,
-                    position: 'bottom',
-                });
-            });
-        },
-    })
-}
 
 </script>
 

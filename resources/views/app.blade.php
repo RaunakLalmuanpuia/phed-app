@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
-    <meta name="description" content=" Employees Database Management System - PUBLIC HEALTH ENGINEERING DEPARTMENT : MIZORAM.Developed by Raunak Lalmuanpuia, Software Developer, MSeGS.">
+    <meta name="description" content=" Employees Database Management System - PUBLIC HEALTH ENGINEERING DEPARTMENT : MIZORAM. Developed by Raunak Lalmuanpuia, Software Developer, MSeGS.">
     <meta name="keywords" content="Mizoram, EDMS, PHED, Employees Database, Government of Mizoram">
     <meta name="author" content="Raunak Lalmuanpuia">
 

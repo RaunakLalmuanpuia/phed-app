@@ -95,6 +95,44 @@ class RemunerationController extends Controller
     }
 
 
+    public function jsonRemunerationSummary(){
+        // Fetch all offices with employees and their remuneration
+        $offices = Office::with(['employees.remunerationDetail'])->get();
+
+        // Prepare the rows
+        $rows = $offices->map(function ($office) {
+            $employeeCount = $office->employees->count();
+
+            $oneMonthWages = $office->employees->sum(function ($employee) {
+                return optional($employee->remunerationDetail)->round_total ?? 0;
+            });
+
+            return [
+                'office_name'    => $office->name,
+                'employee_count' => $employeeCount,
+                'one_month'      => $oneMonthWages,
+                'three_months'   => $oneMonthWages * 3,
+                'six_months'     => $oneMonthWages * 6,
+                'one_year'       => $oneMonthWages * 12,
+            ];
+        });
+
+        // Calculate totals
+        $totals = [
+            'office_name'    => 'TOTAL',
+            'employee_count' => $rows->sum('employee_count'),
+            'one_month'      => $rows->sum('one_month'),
+            'three_months'   => $rows->sum('three_months'),
+            'six_months'     => $rows->sum('six_months'),
+            'one_year'       => $rows->sum('one_year'),
+        ];
+
+        return response()->json([
+            'data'   => $rows,
+            'totals' => $totals
+        ]);
+
+    }
 
     public function store(Request $request, Employee $model){
 

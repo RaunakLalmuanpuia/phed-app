@@ -114,10 +114,11 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
     Route::group(['prefix' => 'remuneration'], function () {
 
         Route::get('details', [RemunerationController::class, 'remunerationDetail'])->middleware('can:generate-remuneration')->name('remuneration.detail');
-        Route::get('json-remuneration', [RemunerationController::class, 'jsonRemunerationDetail'])->middleware('can:generate-remuneration')->name('remuneration.json-detail');
+        Route::get('json-remuneration-details', [RemunerationController::class, 'jsonRemunerationDetail'])->middleware('can:generate-remuneration')->name('remuneration.json-detail');
 
 
         Route::get('summary', [RemunerationController::class, 'remunerationSummary'])->middleware('can:generate-remuneration')->name('remuneration.summary');
+        Route::get('json-remuneration-summary', [RemunerationController::class, 'jsonRemunerationSummary'])->middleware('can:generate-remuneration')->name('remuneration.json-summary');
 
         Route::post('store/{model}', [RemunerationController::class, 'store'])->middleware('can:create-remuneration')->name('remuneration.store');
         Route::put('update/{model}', [RemunerationController::class, 'update'])->middleware('can:edit-remuneration')->name('remuneration.update');
@@ -235,4 +236,7 @@ Route::group(['middleware'=>'auth','prefix' => 'export'], function () {
     Route::get('all/{model}', [ExportController::class, 'exportAll'])->middleware('can:export-all')->name('export.all');
     Route::get('provisional/{model}', [ExportController::class, 'exportProvisional'])->middleware('can:export-pe')->name('export.pe');
     Route::get('muster-roll/{model}', [ExportController::class, 'exportMusterRoll'])->middleware('can:export-mr')->name('export.mr');
+
+
+    Route::get('remuneration-summary', [ExportController::class, 'exportRemunerationSummary'])->middleware('can:export-remuneration-summary')->name('export.remuneration-summary');
 });
