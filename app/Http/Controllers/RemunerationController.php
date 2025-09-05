@@ -141,6 +141,7 @@ class RemunerationController extends Controller
 
         $validated = $request->validate([
             'remuneration' => 'required|numeric|min:0',
+            'pay_matrix'=> 'required|string',
             'next_increment_date' => 'required|date'
         ]);
 
@@ -156,6 +157,7 @@ class RemunerationController extends Controller
 
         $validated = $request->validate([
             'remuneration' => 'required|numeric|min:0',
+            'pay_matrix'=> 'required|string',
             'next_increment_date' => 'required|date'
         ]);
 

@@ -16,6 +16,7 @@ const editMode = ref(false);
 // Form
 const form = useForm({
     remuneration: "",
+    pay_matrix:"",
     next_increment_date: ""
 });
 
@@ -25,7 +26,7 @@ const form = useForm({
 const openDialog = (edit = false) => {
     isEdit.value = edit;
     if (edit && props.data.remuneration_detail) {
-        form.remuneration = props.data.remuneration_detail.total;
+        form.remuneration = props.data.remuneration_detail.remuneration;
         form.next_increment_date = props.data.remuneration_detail.next_increment_date;
     } else {
         form.reset();
@@ -127,6 +128,13 @@ const submitForm = () => {
                 </q-item>
 
                 <q-item>
+                    <q-item-section side class="subtitle">Pay Matrix:</q-item-section>
+                    <q-item-section class="text-label">
+                        {{ data.remuneration_detail.pay_matrix ?? 'N/A' }}
+                    </q-item-section>
+                </q-item>
+
+                <q-item>
                     <q-item-section side class="subtitle">Medical Allowance (%):</q-item-section>
                     <q-item-section class="text-label">
                         {{ data.remuneration_detail.medical_percentage }}
@@ -190,6 +198,15 @@ const submitForm = () => {
                         />
                     </template>
                 </q-input>
+
+                <q-input
+                    label="Pay Matrix"
+                    type="text"
+                    v-model="form.pay_matrix"
+                    outlined
+                    dense
+                    :readonly="!editMode"
+                />
                 <q-input
                     label="Next Increment Date"
                     type="date"

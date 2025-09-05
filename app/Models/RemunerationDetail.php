@@ -8,7 +8,7 @@ class RemunerationDetail extends Model
 {
     //
 
-    const MEDICAL_PERCENTAGE = 4; // Example fixed value
+    const MEDICAL_PERCENTAGE = 4;
 
     protected $fillable = [
         'employee_id',
