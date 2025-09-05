@@ -31,7 +31,7 @@
                                 <!-- Office Selector -->
                                 <q-select
                                     label="Select Office(s)"
-                                    class="col-12 col-sm-6"
+                                    class="col-12 col-sm-4"
                                     v-model="filters.offices"
                                     :options="office"
                                     option-label="name"
@@ -45,7 +45,7 @@
                                     @update:model-value="checkOffices"
                                 />
                                 <q-select
-                                    class="col-12 col-sm-3"
+                                    class="col-12 col-sm-4"
                                     outlined
                                     dense
                                     clearable

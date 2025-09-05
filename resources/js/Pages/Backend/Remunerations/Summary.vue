@@ -71,7 +71,7 @@
             </template>
 
             <template v-slot:bottom-row>
-                <q-tr class="bg-grey-3 text-bold q-border-t">
+                <q-tr v-if="!filter" class="bg-grey-3 text-bold q-border-t">
                     <q-td v-for="col in columns" :key="col.name" :class="'text-' + (col.align || 'left')" class="q-pa-xs">
                         <strong>
                             <!-- Format only numeric columns -->
