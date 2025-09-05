@@ -22,12 +22,6 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DocumentController;
 
 
-
-
-
-
-
-
 Route::get('/', function () {
     return Inertia::render('Home');
 })->name('home');
@@ -60,8 +54,8 @@ Route::group(['middleware'=>'auth','prefix' => 'profile'], function () {
 });
 
 
-
 Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
+
     Route::group(['prefix' => 'office'], function () {
         Route::get('', [OfficeController::class, 'index'])->middleware('can:view-office')->name('office.index');
         Route::get('json-index', [OfficeController::class, 'jsonAll'])->middleware('can:view-anyoffice')->name('office.json-index');
@@ -104,13 +98,12 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
     Route::group(['prefix' => 'mis'], function () {
         Route::get('import', [MISController::class, 'import'])->middleware('can:import-employee')->name('mis.import');
         Route::post('import-employee', [MISController::class, 'importEmployee'])->middleware('can:import-employee')->name('mis.import-employee');
+
         Route::get('export', [MISController::class, 'export'])->middleware('can:export-employee')->name('mis.export');
         Route::post('export-employee', [MISController::class, 'exportEmployee'])->middleware('can:export-employee')->name('mis.export-employee');
 
         Route::get('create-pe-employee', [MISController::class, 'createPE'])->middleware('can:create-employee')->name('mis.create-pe-employee');
         Route::get('create-mr-employee', [MISController::class, 'createMR'])->middleware('can:create-employee')->name('mis.create-mr-employee');
-
-
 
         Route::get('engagement-card', [MISController::class, 'engagementCard'])->middleware('can:generate-engagement-card')->name('mis.engagement-card');
         Route::get('json-engagement-card', [MISController::class, 'jsonEngagementCard'])->middleware('can:generate-engagement-card')->name('mis.json-engagement-card');
@@ -118,8 +111,18 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
 
     });
 
+    Route::group(['prefix' => 'remuneration'], function () {
+
+        Route::get('details', [RemunerationController::class, 'remunerationDetail'])->middleware('can:generate-remuneration')->name('remuneration.detail');
+        Route::get('json-remuneration', [RemunerationController::class, 'jsonRemunerationDetail'])->middleware('can:generate-remuneration')->name('remuneration.json-detail');
 
 
+        Route::get('summary', [RemunerationController::class, 'remunerationSummary'])->middleware('can:generate-remuneration')->name('remuneration.summary');
+
+        Route::post('store/{model}', [RemunerationController::class, 'store'])->middleware('can:create-remuneration')->name('remuneration.store');
+        Route::put('update/{model}', [RemunerationController::class, 'update'])->middleware('can:edit-remuneration')->name('remuneration.update');
+        Route::post('bulk-update', [RemunerationController::class, 'bulkUpdate'])->middleware('can:bulk-update-remuneration')->name('remuneration.bulk-update');
+    });
 
 });
 
@@ -177,7 +180,7 @@ Route::group(['middleware'=>'auth','prefix' => 'document'], function () {
 });
 
 
-//Transfer
+//Transfer Employee
 Route::group(['middleware'=>'auth','prefix' => 'transfer'], function () {
     Route::post('store/{model}', [TransferController::class, 'store'])->middleware('can:transfer-employee')->name('transfer.store');
     Route::post('request/{model}', [TransferController::class, 'request'])->middleware('can:request-transfer')->name('transfer.request');
@@ -206,36 +209,14 @@ Route::group(['middleware'=>'auth','prefix'=>'notification'], function () {
 //    Route::post('token/upload', [FcmTokenController::class, 'updateToken'])->name('token.upload');
 });
 
-//Remuneration
-Route::group(['middleware'=>'auth','prefix' => 'remuneration'], function () {
-    Route::get('details', [RemunerationController::class, 'remunerationDetail'])->middleware('can:generate-remuneration')->name('remuneration.detail');
-    Route::get('json-remuneration', [RemunerationController::class, 'jsonRemunerationDetail'])->middleware('can:generate-remuneration')->name('remuneration.json-detail');
-
-
-    Route::get('summary', [RemunerationController::class, 'remunerationSummary'])->middleware('can:generate-remuneration')->name('remuneration.summary');
-
-    Route::post('store/{model}', [RemunerationController::class, 'store'])->middleware('can:create-remuneration')->name('remuneration.store');
-    Route::put('update/{model}', [RemunerationController::class, 'update'])->middleware('can:edit-remuneration')->name('remuneration.update');
-    Route::post('bulk-update', [RemunerationController::class, 'bulkUpdate'])->middleware('can:bulk-update-remuneration')->name('remuneration.bulk-update');
-});
-
 //Engagement Card
 Route::group(['middleware'=>'auth','prefix' => 'engagement-card'], function () {
-//    Route::get('{employee}', [EngagementCardController::class, 'show'])->middleware('can:view-engagement-card')->name('engagement-card.show');
-//    Route::post('store/{employee}', [EngagementCardController::class, 'store'])->middleware('can:store-engagement-card')->name('engagement-card.store');
-
-
     Route::post('update/{model}', [EngagementCardController::class, 'update'])->middleware('can:store-engagement-card')->name('engagement-card.update');
-
     Route::post('generate', [EngagementCardController::class, 'generate'])->middleware('can:generate-engagement-card')->name('engagement-card.generate');
     Route::post('/bulk-generate', [EngagementCardController::class, 'bulkGenerate'])->name('engagement-card.bulk-generate');
-
     Route::get('/download/{model}', [EngagementCardController::class, 'download'])->middleware('can:download-engagement-card')->name('engagement-card.download');
     Route::post('/engagement-card/bulk-download', [EngagementCardController::class, 'bulkDownload'])->name('engagement-card.bulk-download');
-
-
     Route::delete('{model}', [EngagementCardController::class, 'destroy'])->middleware('can:delete-engagement-card')->name('engagement-card.destroy');
-
 });
 
 //Summary

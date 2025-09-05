@@ -24,22 +24,6 @@
 
                 <div class="row q-col-gutter-md">
 
-<!--                    <q-select-->
-<!--                        label="Select Office"-->
-<!--                        class="col-12 col-sm-4"-->
-<!--                        v-model="filters.office"-->
-<!--                        :options="props.offices"-->
-<!--                        option-label="label"-->
-<!--                        option-value="value"-->
-<!--                        emit-value-->
-<!--                        map-options-->
-<!--                        multiple-->
-<!--                        outlined-->
-<!--                        dense-->
-<!--                        clearable-->
-<!--                        @update:model-value="handleSearch"-->
-<!--                    />-->
-
                     <q-select
                         label="Select Designation"
                         class="col-12 col-sm-4"
@@ -169,24 +153,6 @@
                             @click="$inertia.get(route('employee.show',props.row.id))"
                             aria-label="Show user"
                         />
-                        <!--                        <q-btn-->
-                        <!--                            dense-->
-                        <!--                            flat-->
-                        <!--                            round-->
-                        <!--                            color="primary"-->
-                        <!--                            icon="edit"-->
-                        <!--                            @click="$inertia.get(route('employee.edit',props.row.id))"-->
-                        <!--                            aria-label="Edit user"-->
-                        <!--                        />-->
-                        <!--                        <q-btn-->
-                        <!--                            dense-->
-                        <!--                            flat-->
-                        <!--                            round-->
-                        <!--                            color="red"-->
-                        <!--                            icon="delete"-->
-                        <!--                            @click="deleteUser(props.row.id)"-->
-                        <!--                            aria-label="Delete user"-->
-                        <!--                        />-->
                     </q-td>
                 </template>
             </q-table>
@@ -197,7 +163,7 @@
 
 
 <script setup>
-import {onMounted, ref, watch} from 'vue';
+import {onMounted, ref} from 'vue';
 
 import BackendLayout from "@/Layouts/BackendLayout.vue";
 import {useQuasar} from "quasar";
@@ -220,41 +186,6 @@ const columns = [
     { name: 'actions', label: 'Actions', align: 'center' },
 ];
 
-const cards = [
-    {
-        title: 'Total',
-        value: '237',
-        trend: 42,
-        icon: 'person_search',
-        iconColor: 'light-blue-5',
-        bgColor: '#d6f3ff',
-    },
-    {
-        title: 'Muster Roll',
-        value: '21,459',
-        trend: 29,
-        icon: 'person',
-        iconColor: 'indigo-6',
-        bgColor: '#d7d9ff',
-    },
-    {
-        title: 'Provisional',
-        value: '2,137',
-        trend: 23,
-        icon: 'person_add',
-        iconColor: 'red-6',
-        bgColor: '#ffe1e1',
-    },
-    {
-        title: 'Skilled',
-        value: '9,632',
-        trend: -19,
-        icon: 'how_to_reg',
-        iconColor: 'orange-5',
-        bgColor: '#ffe9d6',
-    },
-
-]
 
 const filters = ref({
     office: [],
@@ -262,11 +193,6 @@ const filters = ref({
     designation: null,
     education_qln: null,
 });
-
-
-
-
-
 
 const search = ref('')
 
@@ -281,8 +207,6 @@ const pagination = ref({
     rowsPerPage: 5,
     rowsNumber: 0
 })
-
-
 const handleSearch = () => {
     onRequest({
         pagination: pagination.value,
@@ -355,7 +279,6 @@ onMounted(() => {
         search: filters.value.search
     })
 })
-
 
 </script>
 

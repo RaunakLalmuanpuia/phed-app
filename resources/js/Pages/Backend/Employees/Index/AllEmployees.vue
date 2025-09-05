@@ -16,8 +16,6 @@
             <q-btn label="MR Summary" color="primary" @click="$inertia.get(route('summary.mr'))" />
         </div>
 
-
-
     </div>
     <br/>
 
@@ -208,43 +206,6 @@
           </q-td>
         </template>
 
-        <!-- Actions Cell -->
-<!--        <template v-slot:body-cell-actions="props">-->
-<!--          <q-td :props="props">-->
-<!--            <q-btn-dropdown-->
-<!--                dense-->
-<!--                flat-->
-<!--                round-->
-<!--                color="primary"-->
-<!--                dropdown-icon="more_vert"-->
-<!--                aria-label="Actions"-->
-<!--            >-->
-<!--              <q-list style="min-width: 100px">-->
-<!--                <q-item clickable v-ripple @click="$inertia.get(route('employee.show', props.row.id))">-->
-<!--                  <q-item-section avatar>-->
-<!--                    <q-icon name="visibility" />-->
-<!--                  </q-item-section>-->
-<!--                  <q-item-section>View</q-item-section>-->
-<!--                </q-item>-->
-
-<!--                <q-item clickable v-ripple @click="$inertia.get(route('employee.edit', props.row.id))">-->
-<!--                  <q-item-section avatar>-->
-<!--                    <q-icon name="edit" />-->
-<!--                  </q-item-section>-->
-<!--                  <q-item-section>Edit</q-item-section>-->
-<!--                </q-item>-->
-
-<!--                <q-item clickable v-ripple @click="deleteUser(props.row.id)">-->
-<!--                  <q-item-section avatar>-->
-<!--                    <q-icon name="delete" color="red" />-->
-<!--                  </q-item-section>-->
-<!--                  <q-item-section class="text-red">Delete</q-item-section>-->
-<!--                </q-item>-->
-<!--              </q-list>-->
-<!--            </q-btn-dropdown>-->
-<!--          </q-td>-->
-<!--        </template>-->
-          <!-- Actions Cell -->
           <template v-slot:body-cell-actions="props">
               <q-td :props="props">
                   <q-btn

@@ -25,9 +25,6 @@
 
                             <div class="row q-col-gutter-md">
 
-
-
-
                                 <q-select
                                     label="Select Office"
                                     class="col-12 col-sm-4"

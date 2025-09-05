@@ -122,17 +122,6 @@ const viewDocument = (url) => {
             </template>
           </q-file>
 
-<!--          <q-file-->
-<!--              :model-value="form.supporting_document"-->
-<!--              label="Supporting Document"-->
-<!--              accept=".pdf,.jpg,.jpeg,.png"-->
-<!--              clearable-->
-<!--              outlined-->
-<!--              dense-->
-
-<!--          >-->
-
-<!--          </q-file>-->
         </q-card-section>
 
         <q-card-actions align="right">

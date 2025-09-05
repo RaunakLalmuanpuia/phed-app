@@ -24,17 +24,6 @@ function parseReason(request) {
 
 
 
-function statusColor(status) {
-    switch (status) {
-        case "approved":
-            return "green";
-        case "rejected":
-            return "red";
-        default:
-            return "orange"; // pending
-    }
-}
-
 const approveRequest = (id) => {
     form.post(route('deletion.approve', id), {
         onStart: () => {

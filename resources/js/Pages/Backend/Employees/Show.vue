@@ -118,7 +118,7 @@
                                         </q-item>
 
                                         <q-item v-if=" data?.employment_type?.trim() === 'MR'">
-                                            <q-item-section side class="subtitle">Post Per Qualification:</q-item-section>
+                                            <q-item-section side class="subtitle">Post Selected:</q-item-section>
                                             <q-item-section  class="text-label">{{data?.post_per_qualification}}</q-item-section>
                                         </q-item>
 

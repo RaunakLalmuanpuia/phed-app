@@ -61,23 +61,6 @@
 
                             <div class="row q-col-gutter-md">
 
-
-<!--                                <q-select-->
-<!--                                    label="Select Office"-->
-<!--                                    class="col-12 col-sm-4"-->
-<!--                                    v-model="filters.office"-->
-<!--                                    :options="props.offices"-->
-<!--                                    option-label="label"-->
-<!--                                    option-value="value"-->
-<!--                                    emit-value-->
-<!--                                    map-options-->
-<!--                                    multiple-->
-<!--                                    outlined-->
-<!--                                    dense-->
-<!--                                    clearable-->
-<!--                                    @update:model-value="handleSearch"-->
-<!--                                />-->
-
                                 <q-select
                                     label="Select Employment Type"
                                     class="col-12 col-sm-4"
@@ -222,42 +205,6 @@
                 </template>
 
                 <!-- Actions Cell -->
-                <!--        <template v-slot:body-cell-actions="props">-->
-                <!--          <q-td :props="props">-->
-                <!--            <q-btn-dropdown-->
-                <!--                dense-->
-                <!--                flat-->
-                <!--                round-->
-                <!--                color="primary"-->
-                <!--                dropdown-icon="more_vert"-->
-                <!--                aria-label="Actions"-->
-                <!--            >-->
-                <!--              <q-list style="min-width: 100px">-->
-                <!--                <q-item clickable v-ripple @click="$inertia.get(route('employee.show', props.row.id))">-->
-                <!--                  <q-item-section avatar>-->
-                <!--                    <q-icon name="visibility" />-->
-                <!--                  </q-item-section>-->
-                <!--                  <q-item-section>View</q-item-section>-->
-                <!--                </q-item>-->
-
-                <!--                <q-item clickable v-ripple @click="$inertia.get(route('employee.edit', props.row.id))">-->
-                <!--                  <q-item-section avatar>-->
-                <!--                    <q-icon name="edit" />-->
-                <!--                  </q-item-section>-->
-                <!--                  <q-item-section>Edit</q-item-section>-->
-                <!--                </q-item>-->
-
-                <!--                <q-item clickable v-ripple @click="deleteUser(props.row.id)">-->
-                <!--                  <q-item-section avatar>-->
-                <!--                    <q-icon name="delete" color="red" />-->
-                <!--                  </q-item-section>-->
-                <!--                  <q-item-section class="text-red">Delete</q-item-section>-->
-                <!--                </q-item>-->
-                <!--              </q-list>-->
-                <!--            </q-btn-dropdown>-->
-                <!--          </q-td>-->
-                <!--        </template>-->
-                <!-- Actions Cell -->
                 <template v-slot:body-cell-actions="props">
                     <q-td :props="props">
                         <q-btn
@@ -279,7 +226,7 @@
 
 
 <script setup>
-import {onMounted, ref, watch} from 'vue';
+import {onMounted, ref} from 'vue';
 
 import BackendLayout from "@/Layouts/BackendLayout.vue";
 import {useQuasar} from "quasar";

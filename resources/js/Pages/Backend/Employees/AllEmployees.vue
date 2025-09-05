@@ -125,10 +125,10 @@
 
 
 <script setup>
-import {onMounted, ref, watch,reactive} from 'vue';
+import {reactive} from 'vue';
 
 import BackendLayout from "@/Layouts/BackendLayout.vue";
-import {useQuasar} from "quasar";
+
 import {router} from '@inertiajs/vue3'
 defineOptions({layout:BackendLayout})
 
@@ -178,11 +178,7 @@ const handleSearch=e=>{
         search: state.search
     });
 }
-
-
-
 </script>
-
 
 <style scoped>
 

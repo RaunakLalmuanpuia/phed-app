@@ -24,9 +24,6 @@
                 </div>
 
                 <div class="row q-col-gutter-md">
-
-
-
                     <q-select
                         label="Select Present Skill"
                         class="col-12 col-sm-4"
@@ -39,7 +36,6 @@
                         clearable
                         @update:model-value="handleSearch"
                     />
-
                     <q-select
                         label="Select Education Qln."
                         class="col-12 col-sm-4"
@@ -59,8 +55,6 @@
 
             <q-card-section class="row items-center justify-between q-gutter-md">
                 <div class="row q-gutter-sm col-12 col-sm justify-end">
-
-
                     <q-btn label="Export" icon="desktop_windows" color="primary" @click="exportData" />
                     <q-input
                         dense
@@ -76,12 +70,6 @@
                             <q-icon name="search" />
                         </template>
                     </q-input>
-<!--                    <q-btn-->
-<!--                        label="Add New Employee"-->
-<!--                        icon="add"-->
-<!--                        color="primary"-->
-<!--                        @click="$inertia.get(route('employee.create'))"-->
-<!--                    />-->
                 </div>
             </q-card-section>
 
@@ -138,24 +126,6 @@
                             @click="$inertia.get(route('employee.show',props.row.id))"
                             aria-label="Show user"
                         />
-<!--                        <q-btn-->
-<!--                            dense-->
-<!--                            flat-->
-<!--                            round-->
-<!--                            color="primary"-->
-<!--                            icon="edit"-->
-<!--                            @click="$inertia.get(route('employee.edit',props.row.id))"-->
-<!--                            aria-label="Edit user"-->
-<!--                        />-->
-<!--                        <q-btn-->
-<!--                            dense-->
-<!--                            flat-->
-<!--                            round-->
-<!--                            color="red"-->
-<!--                            icon="delete"-->
-<!--                            @click="deleteUser(props.row.id)"-->
-<!--                            aria-label="Delete user"-->
-<!--                        />-->
                     </q-td>
                 </template>
             </q-table>
@@ -187,41 +157,6 @@ const columns = [
     { name: 'actions', label: 'Actions', align: 'center' },
 ];
 
-const cards = [
-    {
-        title: 'Total',
-        value: '237',
-        trend: 42,
-        icon: 'person_search',
-        iconColor: 'light-blue-5',
-        bgColor: '#d6f3ff',
-    },
-    {
-        title: 'Muster Roll',
-        value: '21,459',
-        trend: 29,
-        icon: 'person',
-        iconColor: 'indigo-6',
-        bgColor: '#d7d9ff',
-    },
-    {
-        title: 'Provisional',
-        value: '2,137',
-        trend: 23,
-        icon: 'person_add',
-        iconColor: 'red-6',
-        bgColor: '#ffe1e1',
-    },
-    {
-        title: 'Skilled',
-        value: '9,632',
-        trend: -19,
-        icon: 'how_to_reg',
-        iconColor: 'orange-5',
-        bgColor: '#ffe9d6',
-    },
-
-]
 
 const filters = ref({
     search:null,
@@ -307,8 +242,6 @@ const exportData = () => {
 };
 
 onMounted(() => {
-    // get initial data from server (1st page)
-    // tableRef.value.requestServerInteraction()
     onRequest({pagination:pagination.value,
         filter:filters.value,
         search: filters.value.search

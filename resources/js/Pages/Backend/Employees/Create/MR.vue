@@ -398,13 +398,6 @@ const type = [
 ]
 
 
-// const submit=e=>{
-//     form.post(route('employee.store'),{
-//             onStart:params => q.loading.show(),
-//             onFinish:params => q.loading.hide()
-//         })
-// }
-
 const submit = () => {
 
     $q.dialog({

@@ -19,4 +19,11 @@ abstract class Controller
 
         return $code;
     }
+
+    protected function getFiscalYear(string $startDate, string $endDate): string
+    {
+        $startYear = \Carbon\Carbon::parse($startDate)->format('Y');
+        $endYear   = \Carbon\Carbon::parse($endDate)->format('Y');
+        return $startYear . '-' . $endYear;
+    }
 }

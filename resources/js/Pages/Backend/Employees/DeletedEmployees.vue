@@ -14,48 +14,6 @@
         <q-card flat >
             <q-card-section>
                 <div class="q-pa-md">
-                    <!-- Dashboard Cards -->
-<!--                    <div class="q-gutter-md row q-col-gutter-md">-->
-<!--                        <q-card-->
-<!--                            flat-->
-<!--                            bordered-->
-<!--                            class="col-12 col-sm bg-white q-px-md q-py-lg shadow-1"-->
-<!--                            v-for="card in cards"-->
-<!--                            :key="card.title"-->
-<!--                        >-->
-<!--                            <div class="row justify-between items-center">-->
-<!--                                <div>-->
-<!--                                    <div class="text-grey-6 text-subtitle1">{{ card.title }}</div>-->
-<!--                                    <div class="text-h5 text-weight-bold">-->
-<!--                                        {{ card.value }}-->
-<!--                                        <span-->
-<!--                                            :class="[-->
-<!--                                          'text-caption',-->
-<!--                                          'text-weight-regular',-->
-<!--                                          card.trend > 0 ? 'text-green' : 'text-red'-->
-<!--                                        ]"-->
-<!--                                        >-->
-<!--                                        (-->
-<!--                                        <span class="text-weight-bold">-->
-<!--                                          {{ card.trend > 0 ? '+ ' : '- ' }}{{ Math.abs(card.trend) }}%-->
-<!--                                        </span>-->
-<!--                                        )-->
-<!--                                      </span>-->
-<!--                                    </div>-->
-<!--                                    <div class="text-caption text-grey-6 q-mt-xs">-->
-<!--                                        Employees-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <q-avatar-->
-<!--                                    size="48px"-->
-<!--                                    :style="{ backgroundColor: card.bgColor }"-->
-<!--                                    text-color="white"-->
-<!--                                >-->
-<!--                                    <q-icon :name="card.icon" :color="card.iconColor" size="20px" />-->
-<!--                                </q-avatar>-->
-<!--                            </div>-->
-<!--                        </q-card>-->
-<!--                    </div>-->
 
                     <!-- Filter + Toolbar -->
                     <q-card flat bordered class="q-mt-md bg-white shadow-1">
@@ -177,24 +135,6 @@
                             @click="$inertia.get(route('employee.show',props.row.id))"
                             aria-label="Show user"
                         />
-                        <!--                        <q-btn-->
-                        <!--                            dense-->
-                        <!--                            flat-->
-                        <!--                            round-->
-                        <!--                            color="primary"-->
-                        <!--                            icon="edit"-->
-                        <!--                            @click="$inertia.get(route('employee.edit',props.row.id))"-->
-                        <!--                            aria-label="Edit user"-->
-                        <!--                        />-->
-                        <!--                        <q-btn-->
-                        <!--                            dense-->
-                        <!--                            flat-->
-                        <!--                            round-->
-                        <!--                            color="red"-->
-                        <!--                            icon="delete"-->
-                        <!--                            @click="deleteUser(props.row.id)"-->
-                        <!--                            aria-label="Delete user"-->
-                        <!--                        />-->
                     </q-td>
                 </template>
             </q-table>
@@ -222,42 +162,6 @@ const columns = [
     { name: 'year', label: 'Year', align: 'left', field: 'year', sortable: false },
     { name: 'actions', label: 'Actions', align: 'center' },
 ];
-
-const cards = [
-    {
-        title: 'Total',
-        value: '237',
-        trend: 42,
-        icon: 'person_search',
-        iconColor: 'light-blue-5',
-        bgColor: '#d6f3ff',
-    },
-    {
-        title: 'Muster Roll',
-        value: '21,459',
-        trend: 29,
-        icon: 'person',
-        iconColor: 'indigo-6',
-        bgColor: '#d7d9ff',
-    },
-    {
-        title: 'Provisional',
-        value: '2,137',
-        trend: 23,
-        icon: 'person_add',
-        iconColor: 'red-6',
-        bgColor: '#ffe1e1',
-    },
-    {
-        title: 'Skilled',
-        value: '9,632',
-        trend: -19,
-        icon: 'how_to_reg',
-        iconColor: 'orange-5',
-        bgColor: '#ffe9d6',
-    },
-
-]
 
 const filters = ref({
     office: null,

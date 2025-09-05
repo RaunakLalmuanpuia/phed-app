@@ -13,14 +13,12 @@ defineOptions({layout:FrontendLayout})
                     <div class="column q-gutter-md">
 
                         <div class="hero-title">Employees Database Management System</div>
-<!--                        <h1 class="hero-title">Manage <span class="text-primary">PHED Employees</span> Efficiently</h1>-->
                         <p class="home-caption">
                             Access employee records, departmental roles, and workplace for the PHED department. Built for speed and simplicity.
                         </p>
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-5">
-
                     <q-img class="q-pa-none" src="images/19209.jpg" />
                 </div>
             </div>
@@ -117,29 +115,6 @@ defineOptions({layout:FrontendLayout})
     line-height: 1.2;
     color: #191c51;
     margin-left: 20px;
-}
-.stat-count{
-    font-family: Poppins,serif;
-    font-size: 40px;
-    font-weight: bold;
-    color: #191c51;
-}
-.stat-caption{
-    font-family: Poppins,serif;
-    font-size: 16px;
-    font-weight: normal;
-    color: #515264;
-}
-.stat-card{
-    padding: 20px;
-    border: solid 1px #ebebeb;
-    background-color: #fff;
-}
-.stat-footer{
-    font-family: Poppins,serif;
-    font-size: 16px;
-    font-weight: normal;
-    color: #9b9b9b;
 }
 .feature-title{
 
