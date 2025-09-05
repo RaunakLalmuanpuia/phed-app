@@ -66,7 +66,7 @@
                 </q-timeline>
             </div>
 
-            <div v-else class="text-subtitle2 text-grey-7 q-pa-md">
+            <div v-else class="text-grey-7 text-center q-pa-md italic">
                 No transfer history found
             </div>
         </q-card-section>

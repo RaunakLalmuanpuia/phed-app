@@ -8,6 +8,9 @@
             </div>
 
             <q-card-section>
+
+
+
                 <div v-if="data.engagement_card && data.engagement_card.length">
                     <q-item
                         v-for="card in data.engagement_card"
@@ -49,6 +52,10 @@
                             </div>
                         </q-item-section>
                     </q-item>
+                </div>
+
+                <div v-else class="text-grey-7 text-center q-pa-md italic">
+                    No engagement card generated.
                 </div>
             </q-card-section>
 

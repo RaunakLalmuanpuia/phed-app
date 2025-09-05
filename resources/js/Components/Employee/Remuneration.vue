@@ -115,7 +115,7 @@ const submitForm = () => {
         </div>
 
         <q-card-section>
-            <div v-if="!data.remuneration_detail" class="text-grey-7 text-center q-pa-md">
+            <div v-if="!data.remuneration_detail" class="text-grey-7 text-center q-pa-md italic">
                 No remuneration data available.
             </div>
 

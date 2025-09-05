@@ -92,7 +92,7 @@ function submitRequest() {
             <!-- Empty State -->
             <div
                 v-if="data.deletion_requests.length === 0"
-                class="text-gray-500 text-center py-10 text-base italic"
+                class="text-grey-7 text-center q-pa-md italic"
             >
                 No deletion requests found.
             </div>

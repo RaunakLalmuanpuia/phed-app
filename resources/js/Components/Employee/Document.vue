@@ -9,8 +9,8 @@
 
 
         <q-card-section>
-            <div v-if="filteredDocuments.length === 0">
-                <p class="text-gray-500 text-center py-5 text-base italic">No documents uploaded</p>
+            <div v-if="filteredDocuments.length === 0" class="text-grey-7 text-center q-pa-md italic">
+                No documents uploaded
             </div>
 
             <div v-if="filteredDocuments.length > 0">
@@ -91,7 +91,7 @@
             <!-- Empty State -->
             <div
                 v-if="data.document_request.length === 0"
-                class="text-gray-500 text-center py-5 text-base italic"
+                class="text-grey-7 text-center q-pa-md italic"
             >
                 No Document update request found.
             </div>
