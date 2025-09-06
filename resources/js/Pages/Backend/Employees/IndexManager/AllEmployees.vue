@@ -7,7 +7,8 @@
             <div>
                 <div class="stitle">All Employee List : <q-chip square v-for="office in offices" :key="office.value" :label="office.label"/></div>
                 <q-breadcrumbs  class="text-dark">
-                    <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
+                    <q-breadcrumbs-el class="cursor-pointer" @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
+                    <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="goBack"/>
                 </q-breadcrumbs>
             </div>
 
@@ -381,7 +382,9 @@ onMounted(() => {
         search: filters.value.search
     });
 });
-
+const goBack = () => {
+    window.history.back()
+}
 
 </script>
 

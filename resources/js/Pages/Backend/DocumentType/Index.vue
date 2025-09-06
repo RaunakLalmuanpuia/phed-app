@@ -4,8 +4,9 @@
             <div>
                 <div class="stitle">Document Types</div>
                 <q-breadcrumbs  class="text-dark">
-                    <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
-                    <q-breadcrumbs-el label="Document Type" :to="route('document-type.index')"/>
+                    <q-breadcrumbs-el class="cursor-pointer" @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
+                    <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="handleBack"/>
+
                 </q-breadcrumbs>
             </div>
 
@@ -46,6 +47,10 @@ const q = useQuasar();
 const {formatDateTime, formatMoney} = useUtils();
 const state = reactive({
 })
+
+const handleBack=e=>{
+    window.history.back();
+}
 
 </script>
 <style scoped>

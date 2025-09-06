@@ -6,6 +6,7 @@
                 <q-breadcrumbs class="text-dark">
                     <q-breadcrumbs-el class="cursor-pointer"  icon="dashboard" label="Dashboard" @click="$inertia.get(route('dashboard'))"/>
                     <q-breadcrumbs-el class="cursor-pointer" label="Profile" @click="$inertia.get(route('profile.edit'))"/>
+                    <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="handleBack"/>
                 </q-breadcrumbs>
             </div>
         </div>

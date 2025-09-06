@@ -4,8 +4,8 @@
             <div>
                 <div class="stitle">Provisional Employees Summary</div>
                 <q-breadcrumbs class="text-dark">
-                    <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
-                    <q-breadcrumbs-el label="PE Summary" :to="route('summary.pe')"/>
+                    <q-breadcrumbs-el class="cursor-pointer" @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
+                    <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="handleBack"/>
                 </q-breadcrumbs>
             </div>
 
@@ -30,7 +30,6 @@
                     <template v-slot:top-right>
                         <q-input borderless dense debounce="800"
                                  v-model="filter"
-                                 bg-color="grey-2"
                                  outlined
                                  clearable
                                   placeholder="Search Office">
@@ -109,6 +108,11 @@ const exportData = () => {
             q.loading.hide(); // Hide loading indicator
         });
 };
+
+const handleBack=e=>{
+    window.history.back();
+}
+
 </script>
 
 

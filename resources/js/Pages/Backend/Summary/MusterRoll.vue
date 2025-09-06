@@ -4,8 +4,8 @@
             <div>
                 <div class="stitle">Muster Roll Employees Summary</div>
                 <q-breadcrumbs class="text-dark">
-                    <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
-                    <q-breadcrumbs-el label="MR Summary" :to="route('summary.mr')"/>
+                    <q-breadcrumbs-el class="cursor-pointer" @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
+                    <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="handleBack"/>
                 </q-breadcrumbs>
             </div>
             <div class="q-gutter-sm">
@@ -28,7 +28,6 @@
                     <template v-slot:top-right>
                         <q-input borderless dense debounce="800"
                                  v-model="filter"
-                                 bg-color="grey-2"
                                  outlined
                                  clearable
                                  placeholder="Search Office">
@@ -116,5 +115,9 @@ const exportData = () => {
             q.loading.hide(); // Hide loading indicator
         });
 };
+const handleBack=e=>{
+    window.history.back();
+}
+
 </script>
 

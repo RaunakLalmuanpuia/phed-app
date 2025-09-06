@@ -9,8 +9,9 @@
                         @click="$inertia.get(route('dashboard'))"
                         icon="dashboard"
                         label="Dashboard"
+                        class="cursor-pointer"
                     />
-                    <q-breadcrumbs-el label="Engagement Card" :to="route('mis.engagement-card')" />
+                    <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="goBack"/>
                 </q-breadcrumbs>
             </div>
         </div>
@@ -606,5 +607,9 @@ const downloadBulkPdf = async () => {
     }
 };
 
+
+const goBack = () => {
+    window.history.back()
+}
 
 </script>

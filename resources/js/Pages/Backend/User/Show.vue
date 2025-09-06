@@ -6,7 +6,7 @@
             <q-breadcrumbs class="text-dark">
                 <q-breadcrumbs-el class="cursor-pointer"  icon="dashboard" label="Dashboard" @click="$inertia.get(route('dashboard'))"/>
                 <q-breadcrumbs-el class="cursor-pointer" label="User Accounts" @click="$inertia.get(route('user.index'))"/>
-                <q-breadcrumbs-el :label="data?.name"/>
+                <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="handleBack"/>
             </q-breadcrumbs>
         </div>
     </div>
@@ -55,4 +55,7 @@ import {useQuasar} from "quasar";
 defineOptions({layout:BackendLayout})
 const props=defineProps(['data']);
 const q = useQuasar();
+const handleBack=e=>{
+    window.history.back();
+}
 </script>

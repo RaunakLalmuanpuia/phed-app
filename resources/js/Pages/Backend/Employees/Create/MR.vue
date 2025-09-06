@@ -6,7 +6,7 @@
                 <q-breadcrumbs class="text-dark">
                     <q-breadcrumbs-el class="cursor-pointer"  icon="dashboard" label="Dashboard" @click="$inertia.get(route('dashboard'))"/>
                     <q-breadcrumbs-el class="cursor-pointer" label="All Employees" @click="$inertia.get(route('employees.all'))"/>
-                    <q-breadcrumbs-el label="New Employee"/>
+                    <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="goBack"/>
                 </q-breadcrumbs>
             </div>
         </div>
@@ -514,6 +514,10 @@ const submit = () => {
                 }
             })
     })
+}
+
+const goBack = () => {
+    window.history.back()
 }
 
 </script>

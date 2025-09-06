@@ -9,8 +9,9 @@
                         @click="$inertia.get(route('dashboard'))"
                         icon="dashboard"
                         label="Dashboard"
+                        class="cursor-pointer"
                     />
-                    <q-breadcrumbs-el label="Remuneration" :to="route('mis.import')" />
+                    <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="goBack"/>
                 </q-breadcrumbs>
             </div>
 
@@ -35,7 +36,6 @@
             <template v-slot:top-right>
                 <q-input borderless dense debounce="800"
                          v-model="filter"
-                         bg-color="grey-2"
                          outlined
                          clearable
                          placeholder="Search Office">
@@ -113,10 +113,10 @@ const filter = ref("") // Search box model
 const columns = [
     { name: 'office_name', label: 'Office', field: 'office_name', align: 'left' },
     { name: 'employee_count', label: 'No. of Employees', field: 'employee_count', align: 'center' },
-    { name: 'one_month', label: '1 Month Wages (₹)', field: 'one_month', align: 'right' },
-    { name: 'three_months', label: '3 Months Wages (₹)', field: 'three_months', align: 'right' },
-    { name: 'six_months', label: '6 Months Wages (₹)', field: 'six_months', align: 'right' },
-    { name: 'one_year', label: '1 Year Wages (₹)', field: 'one_year', align: 'right' },
+    { name: 'one_month', label: 'Wages for 1 Month (₹)', field: 'one_month', align: 'right' },
+    { name: 'three_months', label: 'Wages for 3 Months (₹)', field: 'three_months', align: 'right' },
+    { name: 'six_months', label: 'Wages for 6 Months (₹)', field: 'six_months', align: 'right' },
+    { name: 'one_year', label: 'Wages for 1 Year (₹)', field: 'one_year', align: 'right' },
 ]
 
 
@@ -166,6 +166,11 @@ const exportData = () => {
             q.loading.hide(); // Hide loading indicator
         });
 };
+
+const goBack = () => {
+    window.history.back()
+}
+
 
 </script>
 

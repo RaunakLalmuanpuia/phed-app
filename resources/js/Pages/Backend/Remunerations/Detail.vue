@@ -9,8 +9,9 @@
                         @click="$inertia.get(route('dashboard'))"
                         icon="dashboard"
                         label="Dashboard"
+                        class="cursor-pointer"
                     />
-                    <q-breadcrumbs-el label="Remuneration" :to="route('mis.import')" />
+                    <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="goBack"/>
                 </q-breadcrumbs>
             </div>
         </div>
@@ -528,6 +529,11 @@ function submitBulkUpdate () {
         },
     })
 }
+
+const goBack = () => {
+    window.history.back()
+}
+
 
 </script>
 

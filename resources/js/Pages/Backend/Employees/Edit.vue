@@ -6,7 +6,7 @@
                 <q-breadcrumbs class="text-dark">
                     <q-breadcrumbs-el class="cursor-pointer"  icon="dashboard" label="Dashboard" @click="$inertia.get(route('dashboard'))"/>
                     <q-breadcrumbs-el class="cursor-pointer" label="All Employees" @click="$inertia.get(route('employees.all'))"/>
-                    <q-breadcrumbs-el label="Edit Employee"/>
+                    <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="goBack"/>
                 </q-breadcrumbs>
             </div>
         </div>
@@ -615,5 +615,9 @@ onMounted(() => {
 
 const isAdmin = computed(() => !!usePage().props.roles?.find(item => item === 'Admin'));
 const isManager = computed(() => !!usePage().props.roles?.find(item => item === 'Manager'));
+
+const goBack = () => {
+    window.history.back()
+}
 
 </script>

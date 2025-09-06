@@ -6,7 +6,7 @@
                 <q-breadcrumbs class="text-dark">
                     <q-breadcrumbs-el class="cursor-pointer"  icon="dashboard" label="Dashboard" @click="$inertia.get(route('dashboard'))"/>
                     <q-breadcrumbs-el class="cursor-pointer" label="Offices" @click="$inertia.get(route('office.index'))"/>
-                    <q-breadcrumbs-el label="Edit Office"/>
+                    <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="handleBack"/>
                 </q-breadcrumbs>
             </div>
         </div>
@@ -86,5 +86,10 @@ const submit=e=>{
             onFinish:params => q.loading.hide()
         })
 }
+
+const handleBack=e=>{
+    window.history.back();
+}
+
 
 </script>

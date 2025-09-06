@@ -5,8 +5,8 @@
             <div>
                 <div class="stitle">Muster Roll Employee List</div>
                 <q-breadcrumbs  class="text-dark">
-                    <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
-                    <q-breadcrumbs-el label="All Employees" :to="route('mis.import')"/>
+                    <q-breadcrumbs-el class="cursor-pointer" @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
+                    <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="goBack"/>
                 </q-breadcrumbs>
             </div>
 
@@ -95,6 +95,9 @@ const handleSearch=e=>{
     router.get(route('employees.mr'), {
         search: state.search
     });
+}
+const goBack = () => {
+    window.history.back()
 }
 
 

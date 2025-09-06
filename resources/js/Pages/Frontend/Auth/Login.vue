@@ -1,6 +1,6 @@
 <template>
     <q-page class="container" >
-        <div class="bg-white  q-mt-xl">
+        <div class="bg-white">
             <div class="row ">
                 <div class="col-xs-12 col-sm-6">
                     <div class="flex items-center justify-center">
@@ -49,8 +49,6 @@
                             </div>
                         </q-form>
                     </div>
-
-
 
                 </div>
                 <div v-if="$q.screen.gt.sm" class="col-xs-12 col-sm-6">

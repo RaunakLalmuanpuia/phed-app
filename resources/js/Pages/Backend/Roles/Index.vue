@@ -4,8 +4,8 @@
             <div>
                 <div class="stitle">List of Role</div>
                 <q-breadcrumbs class="text-dark cursor-pointer">
-                    <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
-                    <q-breadcrumbs-el @click="$inertia.get(route('role.index'))"  label="Roles"/>
+                    <q-breadcrumbs-el class="cursor-pointer" @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
+                    <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="handleBack"/>
                 </q-breadcrumbs>
             </div>
         </div>
@@ -44,6 +44,9 @@ const state = reactive({
 })
 
 
+const handleBack=e=>{
+    window.history.back();
+}
 
 
 </script>

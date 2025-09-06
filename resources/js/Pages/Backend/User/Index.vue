@@ -31,7 +31,6 @@
             <template v-slot:top-right>
                 <q-input borderless dense debounce="800"
                          @update:model-value="handleSearch"
-                         bg-color="grey-2"
                          outlined
                          v-model="filter" placeholder="Search">
                     <template v-slot:append>

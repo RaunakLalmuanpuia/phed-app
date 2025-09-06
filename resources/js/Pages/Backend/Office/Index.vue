@@ -4,8 +4,8 @@
             <div>
                 <div class="stitle">Offices</div>
                 <q-breadcrumbs  class="text-dark">
-                    <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
-                    <q-breadcrumbs-el label="Offices" :to="route('office.index')"/>
+                    <q-breadcrumbs-el class="cursor-pointer" @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
+                    <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="handleBack"/>
                 </q-breadcrumbs>
             </div>
 
@@ -31,7 +31,6 @@
             <template v-slot:top-right>
                 <q-input borderless dense debounce="800"
                          @update:model-value="handleSearch"
-                         bg-color="grey-2"
                          outlined
                          v-model="filter" placeholder="Search">
                     <template v-slot:append>
@@ -142,6 +141,9 @@ onMounted(() => {
         filter:filter.value
     })
 })
+const handleBack=e=>{
+    window.history.back();
+}
 
 
 </script>

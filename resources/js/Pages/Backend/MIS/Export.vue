@@ -5,8 +5,8 @@
             <div>
                 <div class="stitle">Export Data</div>
                 <q-breadcrumbs  class="text-dark">
-                    <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
-                    <q-breadcrumbs-el label="Export" :to="route('mis.export')"/>
+                    <q-breadcrumbs-el class="cursor-pointer" @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
+                    <q-breadcrumbs-el  class="cursor-pointer" label="Go Back" @click="goBack"/>
                 </q-breadcrumbs>
             </div>
         </div>
@@ -165,6 +165,9 @@ const submitExport = () => {
                 }
             })
     })
+}
+const goBack = () => {
+    window.history.back()
 }
 </script>
 <style scoped>

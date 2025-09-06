@@ -227,7 +227,10 @@ const submit = (e) => {
     form.is_present_transfer = isPresentTransfer.value // add this line
     form.post(route('transfer.store', props.data), {
         onStart: () => {
-            $q.loading.show()
+            $q.loading.show({
+                boxClass: 'bg-grey-2 text-grey-9',
+                spinnerColor: 'primary', message: 'Creating Transfer...'
+            })
             form.reset();
         },
         onFinish: () => {
@@ -236,6 +239,7 @@ const submit = (e) => {
             form.reset();
         },
         onError: (errors) => {
+            $q.loading.hide()
             // Show all validation errors from backend
             Object.values(errors).forEach((error) => {
                 $q.notify({

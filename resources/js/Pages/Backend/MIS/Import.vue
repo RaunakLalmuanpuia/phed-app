@@ -5,8 +5,8 @@
             <div>
                 <div class="stitle">Import Data</div>
                 <q-breadcrumbs  class="text-dark">
-                    <q-breadcrumbs-el @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
-                    <q-breadcrumbs-el label="Import" :to="route('mis.import')"/>
+                    <q-breadcrumbs-el class="cursor-pointer" @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
+                    <q-breadcrumbs-el  class="cursor-pointer" label="Go Back" @click="goBack"/>
                 </q-breadcrumbs>
             </div>
         </div>
@@ -163,6 +163,9 @@ const submitImport = () => {
                 }
             })
     })
+}
+const goBack = () => {
+    window.history.back()
 }
 </script>
 <style scoped>
