@@ -60,19 +60,30 @@ class UserController extends Controller
         abort_if(!$user->hasPermissionTo('create-user'),403,'Access Denied');
 
 
+        $roles = $request->get('roles', []);
+
         $data=$this->validate($request, [
             'name'=>'required',
             'designation'=>'required',
             'mobile'=>'required|digits:10|unique:users',
             'email'=>'required|email|unique:users',
             'password'=>'required|confirmed',
-            'office_id' => ['required',Rule::exists('offices','id')],
+            'office_id' => [
+                Rule::requiredIf(function () use ($roles) {
+                    // Require office_id if none of the roles is admin
+                    return !in_array('Admin', (array)$roles);
+                }),
+                Rule::exists('offices', 'id'),
+            ],
         ]);
+
         $roles = $request->get('roles');
         $mergedData = array_merge($data, ['password' => Hash::make(Str::random(12))]);
         DB::transaction(function () use ($roles, $request, $mergedData) {
             $user=User::query()->create($mergedData);
-            $user->offices()->sync([$mergedData['office_id']]);
+            if (!empty($mergedData['office_id'])) {
+                $user->offices()->sync([$mergedData['office_id']]);
+            }
             if ($roles) {
                 $user->assignRole($roles);
             }
