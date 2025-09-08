@@ -202,7 +202,9 @@ Route::group(['middleware'=>'auth','prefix' => 'deletion'], function () {
 //Notifications
 Route::group(['middleware'=>'auth','prefix'=>'notification'], function () {
     Route::get('list', [NotificationController::class, 'myNotifications'])->name('notification.list');
-//    Route::get('index', [NotificationMessageController::class, 'index'])->name('notification.index');
+    Route::get('/count', [NotificationController::class, 'count'])->name('notifications.count');
+
+    //    Route::get('index', [NotificationMessageController::class, 'index'])->name('notification.index');
 //    Route::get('create', [NotificationMessageController::class, 'create'])->name('notification.create');
 //    Route::get('{model}/show', [NotificationMessageController::class, 'show'])->name('notification.show');
 //    Route::delete('{model}', [NotificationMessageController::class, 'destroy'])->name('notification.destroy');

@@ -28,8 +28,8 @@
                     </q-btn-dropdown>
 
                     <q-icon size="21px" @click="$inertia.get(route('notification.list'))" class="cursor-pointer" name="notifications">
-<!--                        <q-badge v-if="hasNotification" floating color="negative" rounded/>-->
-                        <q-badge floating color="negative" rounded/>
+                        <q-badge v-if="hasNotification" floating color="negative" rounded/>
+<!--                        <q-badge floating color="negative" rounded/>-->
                     </q-icon>
 
                 </div>
@@ -495,9 +495,9 @@
 </template>
 
 <script setup>
-import {reactive,computed,ref} from 'vue'
+import {reactive,computed,ref, onMounted} from 'vue'
 
-import {usePage} from "@inertiajs/vue3";
+import {usePage, router} from "@inertiajs/vue3";
 import {useQuasar} from "quasar";
 
 
@@ -584,6 +584,27 @@ const checkModules = (module) => {
 
 const isAdmin = computed(() => !!usePage().props.roles?.find(item => item === 'Admin'));
 const isManager = computed(() => !!usePage().props.roles?.find(item => item === 'Manager'));
+
+
+const notificationCount = ref(0);
+
+const hasNotification = computed(() => { return (isAdmin.value || isManager.value) && notificationCount.value > 0; });
+
+async function fetchNotifications() {
+    try {
+        const { data } = await axios.get(route('notifications.count'));
+        notificationCount.value = data.count;
+    } catch (e) {
+        console.error('Failed to fetch notification count', e);
+    }
+}
+
+onMounted(fetchNotifications);
+
+// Update notifications on every navigation
+router.on('navigate', () => {
+    fetchNotifications();
+});
 
 </script>
 

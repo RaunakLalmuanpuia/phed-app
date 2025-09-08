@@ -129,5 +129,66 @@ class NotificationController extends Controller
     }
 
 
+    public function count()
+    {
+        $user = auth()->user();
+        $notificationCount = 0;
+
+        if ($user) {
+            $officeIds = null;
+            $statusFilter = [];
+            $dateLimit = null;
+            $dateColumn = null;
+
+            if ($user->hasRole('Admin')) {
+                // Admin: Only pending, no date filtering
+                $statusFilter = ['pending'];
+                $officeIds = null; // All offices
+                // no date filtering, $dateLimit stays null
+            } elseif ($user->hasRole('Manager')) {
+                // Manager: Only approved/rejected from the last 5 days
+                $statusFilter = ['approved', 'rejected'];
+                $officeIds = $user->offices->pluck('id')->toArray();
+                $dateLimit = now()->subDays(5);
+                $dateColumn = 'approval_date'; // use approval_date for managers
+            }
+
+            if (!empty($statusFilter)) {
+                $filterQuery = function ($q) use ($officeIds, $dateLimit, $dateColumn) {
+                    if ($officeIds) {
+                        $q->whereHas('employee.office', function ($sub) use ($officeIds) {
+                            $sub->whereIn('offices.id', $officeIds);
+                        });
+                    }
+                    if ($dateLimit && $dateColumn) {
+                        $q->where($dateColumn, '>=', $dateLimit);
+                    }
+                };
+
+                $notificationCount += \App\Models\EditRequest::whereIn('approval_status', $statusFilter)
+                    ->where($filterQuery)
+                    ->count();
+
+                $notificationCount += \App\Models\TransferRequest::whereIn('approval_status', $statusFilter)
+                    ->where($filterQuery)
+                    ->count();
+
+                $notificationCount += \App\Models\DeletionRequest::whereIn('approval_status', $statusFilter)
+                    ->where($filterQuery)
+                    ->count();
+
+                $notificationCount += \App\Models\DocumentEditRequest::whereIn('approval_status', $statusFilter)
+                    ->where($filterQuery)
+                    ->count();
+            }
+        }
+
+        return response()->json([
+            'count' => $notificationCount,
+        ]);
+    }
+
+
+
 
 }
