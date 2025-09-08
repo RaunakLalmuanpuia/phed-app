@@ -11,6 +11,9 @@ abstract class Controller
     //
     use AuthorizesRequests, ValidatesRequests;
 
+    /**
+     * Generate Employee Code
+     */
     protected function generateEmployeeCode()
     {
         do {
@@ -19,6 +22,10 @@ abstract class Controller
 
         return $code;
     }
+
+    /**
+     * Compute fiscal year string
+     */
 
     protected function getFiscalYear(string $startDate, string $endDate): string
     {

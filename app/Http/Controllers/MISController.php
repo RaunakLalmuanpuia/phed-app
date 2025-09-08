@@ -157,11 +157,4 @@ class MISController extends Controller
         ], 200);
     }
 
-    /**
-     * Compute fiscal year string
-     */
-
-
-
-
 }

@@ -48,7 +48,7 @@
     <p class="right-align bold">ANNEXURE 1</p>
     <div class="spacer-sm"></div>
 
-    <p class="center bold">No.A.21022/50/2020-E-in-C/PHE/</p>
+    <p class="center bold">{{ $phed_file_no }}</p>
     <div class="spacer-sm"></div>
 
     <p class="center bold">
@@ -84,7 +84,7 @@
 
     <p class="bold">1.&emsp;Name of Post&nbsp;:&nbsp;{{ $post }}</p>
     <p>2.&emsp;Corresponding Pay in the Pay Matrix&nbsp;:&nbsp;{{ $pay_matrix }}</p>
-    <p>3.&emsp;Monthly Lumpsum Remuneration&nbsp;:&nbsp;Rs {{ $remuneration }}/-</p>
+    <p>3.&emsp;Monthly Lumpsum Remuneration&nbsp;:&nbsp; Rs {{ $remuneration }}/-</p>
     <p class="bold">4.&emsp;Period of Engagement&nbsp;:&nbsp;{{ $start_date }} to {{ $end_date }}</p>
 
 
