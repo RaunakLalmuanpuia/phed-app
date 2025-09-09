@@ -281,7 +281,7 @@
                         <div class="col-12 col-sm-6"> <strong>Email:</strong> {{ form.email }} </div>
                         <div class="col-12 col-sm-6"> <strong>Mobile:</strong> {{ form.mobile }} </div>
                         <div class="col-12 col-sm-6"> <strong>Parent Name:</strong> {{ form.parent_name }} </div>
-                        <div class="col-12 col-sm-6"> <strong>Date of Birth:</strong> {{ form.date_of_birth }} </div>
+                        <div class="col-12 col-sm-6"> <strong>Date of Birth:</strong> {{ formatDate(form.date_of_birth) }} </div>
                         <div class="col-12 col-sm-6"> <strong>Education:</strong> {{ form.educational_qln }} </div>
                         <div class="col-12 col-sm-6"> <strong>Technical Qualification:</strong> {{ form.technical_qln }} </div>
                     </div>

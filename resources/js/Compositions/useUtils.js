@@ -5,13 +5,28 @@ export default function () {
         return (new Intl.NumberFormat('en-IN', {style: 'currency', currency: 'INR'}).format(Number(value)));
     }
 
+   // Output-  09 Sep 2025
+    // const formatDate = (value, pattern) => {
+    //     try {
+    //         if (!value) return 'N/A'   // ✅ handle null/undefined/empty
+    //         if (pattern) {
+    //             return date.formatDate(new Date(value), pattern)
+    //         }
+    //         return date.formatDate(new Date(value), 'DD MMM YYYY')
+    //     } catch (er) {
+    //         return 'Invalid Date'
+    //     }
+    // }
+
+    // Output - 09-09-2025
     const formatDate = (value, pattern) => {
         try {
             if (!value) return 'N/A'   // ✅ handle null/undefined/empty
             if (pattern) {
                 return date.formatDate(new Date(value), pattern)
             }
-            return date.formatDate(new Date(value), 'DD MMM YYYY')
+            // Default to dd-mm-yyyy
+            return date.formatDate(new Date(value), 'DD-MM-YYYY')
         } catch (er) {
             return 'Invalid Date'
         }
