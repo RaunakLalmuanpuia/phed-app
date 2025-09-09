@@ -13,9 +13,10 @@
             font-size: 12pt;
             margin: 0;
             background: white;
+            height: 100%;
         }
         .page {
-            min-height: 257mm;
+            /*min-height: 257mm;*/
             box-sizing: border-box;
             padding: 0;
         }
@@ -26,6 +27,9 @@
         .spacer-md { margin-top: 15px; }
         .right-align { text-align: right; }
 
+        .details p {
+            margin-top: 8px; /* adjust as needed */
+        }
         .signature-block {
             width: 200px;
             text-align: center;
@@ -45,7 +49,6 @@
 <body>
 <div class="page">
 
-    <p class="right-align bold">ANNEXURE 1</p>
     <div class="spacer-sm"></div>
 
     <p class="center bold">{{ $phed_file_no }}</p>
@@ -82,15 +85,17 @@
     </p>
     <div class="spacer-md"></div>
 
-    <p class="bold">1.&emsp;Name of Post&nbsp;:&nbsp;{{ $post }}</p>
-    <p>2.&emsp;Corresponding Pay in the Pay Matrix&nbsp;:&nbsp;{{ $pay_matrix }}</p>
-    <p>3.&emsp;Monthly Lumpsum Remuneration&nbsp;:&nbsp; Rs {{ $remuneration }}/-</p>
-    <p class="bold">4.&emsp;Period of Engagement&nbsp;:&nbsp;{{ $start_date }} to {{ $end_date }}</p>
+    <div class="details">
+        <p class="bold">1.&emsp;Name of Post&nbsp;:&nbsp;{{ $post }}</p>
+        <p>2.&emsp;Corresponding Pay in the Pay Matrix&nbsp;:&nbsp;{{ $pay_matrix }}</p>
+        <p>3.&emsp;Monthly Lumpsum Remuneration&nbsp;:&nbsp; Rs {{ $remuneration }}/-</p>
+        <p class="bold">4.&emsp;Period of Engagement&nbsp;:&nbsp;{{ $start_date }} to {{ $end_date }}</p>
+    </div>
 
 
-    <p>5.&emsp;Government’s Approval No. &amp; Date</p>
-    <p style="white-space: pre-wrap; font-weight: bold;">    (a)   DP&amp;AR : {{ $approval_dpar }}</p>
-    <p style="white-space: pre-wrap; font-weight: bold;">    (b)   Finance Department : {{ $approval_fin }}</p>
+    <p style="margin-top: 8px">5.&emsp;Government’s Approval No. &amp; Date</p>
+    <p style="white-space: pre-wrap; font-weight: bold;margin-top: 8px">    (a)   DP&amp;AR : {{ $approval_dpar }}</p>
+    <p style="white-space: pre-wrap; font-weight: bold;margin-top: 8px">    (b)   Finance Department : {{ $approval_fin }}</p>
 
     <div class="spacer-sm"></div>
 
@@ -104,7 +109,8 @@
     </div>
 
     <div class="signature-block">
-        <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/e_in_c_signature.png'))) }}" alt="Signature" />
+        <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/E-in-C-Signature.png'))) }}" alt="Signature" />
+        <p class="bold">(ZODINTHARI)</p>
         <p class="bold">Engineer-in-Chief: PHED</p>
         <p class="bold">Mizoram: Aizawl</p>
     </div>

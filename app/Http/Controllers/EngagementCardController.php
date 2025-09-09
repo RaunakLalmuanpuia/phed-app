@@ -73,7 +73,7 @@ class EngagementCardController extends Controller
             'account_head_2' => '01 - Water Supply',
             'account_head_3' => '001 - Direction & Administration',
             'account_head_4' => '02 - Administration',
-            'account_head_5' => '02 - Establishment of MR Employees',
+            'account_head_5' => '02 - Estt. of Provisional Employees',
             'account_head_6' => '02 - Wages',
         ])->render();
 
@@ -155,7 +155,7 @@ class EngagementCardController extends Controller
                 'account_head_2' => '01 - Water Supply',
                 'account_head_3' => '001 - Direction & Administration',
                 'account_head_4' => '02 - Administration',
-                'account_head_5' => '02 - Establishment of MR Employees',
+                'account_head_5' => '02 - Estt. of Provisional Employees',
                 'account_head_6' => '02 - Wages',
             ])->render();
 
