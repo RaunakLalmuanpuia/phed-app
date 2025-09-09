@@ -128,6 +128,18 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
 });
 
 
+//Manager MIS
+Route::group(['prefix' => 'manager','middleware'=>'auth'], function () {
+
+    Route::group(['prefix' => 'mis'], function () {
+        Route::get('engagement-card', [MISController::class, 'managerEngagementCard'])->middleware('can:download-engagement-card')->name('mis.manager-engagement-card');
+        Route::get('json-engagement-card', [MISController::class, 'jsonManagerEngagementCard'])->middleware('can:download-engagement-card')->name('mis.manager-json-engagement-card');
+
+    });
+
+});
+
+
 //Employee Controller
 Route::group(['middleware'=>'auth','prefix' => 'employees'], function () {
     Route::get('all', [EmployeeController::class, 'allEmployees'])->middleware('can:view-allemployee')->name('employees.all');

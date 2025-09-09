@@ -157,4 +157,86 @@ class MISController extends Controller
         ], 200);
     }
 
+
+    public function managerRemuneration(Request $request){
+
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('view-allemployee'),403,'Access Denied');
+
+        return Inertia::render('Backend/MIS/Manager/Remuneration', [
+            'canViewAllEmployee'=>$user->can('view-allemployee'),
+        ]);
+
+    }
+
+
+    public function managerEngagementCard(Request $request){
+
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('download-engagement-card'),403,'Access Denied');
+
+        $offices = $user->offices()
+            ->get(['offices.name as label', 'offices.id as value'])
+            ->map(function ($office) {
+                return [
+                    'label' => $office->label,
+                    'value' => $office->value,
+                ];
+            });
+
+        return Inertia::render('Backend/MIS/Manager/EngagementCard', [
+            'offices' => $offices,
+            'canDownloadEngagementCard'=>$user->can('download-engagement-card'),
+        ]);
+
+    }
+
+    public function jsonManagerEngagementCard(Request $request)
+    {
+        $user = $request->user();
+
+        $perPage = $request->integer('rowsPerPage', 5);
+        $filter  = $request->get('filter', []);
+        $search  = $request->get('search');
+        $startYear = $filter['startYear']; // always provided
+        $endYear   = $filter['endYear'];   // always provided
+
+        // Compute fiscal year
+        $fiscalYear = $this->getFiscalYear($startYear . '-03-01', $endYear . '-02-28');
+
+        // 🔹 Instead of filter from request, use current user's offices
+        $officeIds = $user->offices()->pluck('offices.id')->toArray();
+
+        $employees = Employee::with([
+            'office',
+            'engagementCard' => function($q) use ($fiscalYear) {
+                // Only load the card for the selected fiscal year
+                $q->where('fiscal_year', $fiscalYear)->latest();
+            }
+        ])
+            ->whereIn('office_id', $officeIds)  // now using user's offices
+            ->where('employment_type', 'PE')
+            ->when($search, function ($q) use ($search, $fiscalYear) {
+                $q->where(function ($sub) use ($search, $fiscalYear) {
+                    $sub->where('name', 'LIKE', "%{$search}%")
+                        ->orWhere('mobile', 'LIKE', "%{$search}%")
+                        ->orWhere('designation', 'LIKE', "%{$search}%")
+                        ->orWhere('date_of_birth', 'LIKE', "%{$search}%")
+                        ->orWhere('name_of_workplace', 'LIKE', "%{$search}%")
+                        ->orWhereHas('engagementCard', function ($card) use ($search, $fiscalYear) {
+                            $card->where('fiscal_year', $fiscalYear)
+                                ->where('card_no', 'LIKE', "%{$search}%");
+                        });
+                });
+            })
+            ->paginate($perPage);
+
+        return response()->json([
+            'list' => $employees,
+        ], 200);
+    }
+
+
+
+
 }

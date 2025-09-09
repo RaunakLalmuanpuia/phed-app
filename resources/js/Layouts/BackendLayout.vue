@@ -29,7 +29,6 @@
 
                     <q-icon size="21px" @click="$inertia.get(route('notification.list'))" class="cursor-pointer" name="notifications">
                         <q-badge v-if="hasNotification" floating color="negative" rounded/>
-<!--                        <q-badge floating color="negative" rounded/>-->
                     </q-icon>
 
                 </div>
@@ -301,8 +300,72 @@
                         </q-item>
                     </template>
                 </q-expansion-item>
-                <q-separator v-if="isAdmin" class="q-my-sm"/>
-<!--                MIS-->
+                <q-separator  class="q-my-sm"/>
+
+<!--                Manager MIS-->
+                <q-expansion-item v-if="checkModules('manager_mis')"
+                                  group="menu"
+                                  :label="module.manager_mis.label"
+                                  :header-class="(
+                              route().current()==='mis.manager.remuneration'
+                             || route().current()==='mis.manager.engagement_card'
+
+                          )
+
+                          ?'active-menu text-accent':''"
+                                  icon="o_credit_card">
+                    <template  #header>
+                        <q-item-section avatar>
+
+                            <q-icon>
+                                <svg v-if="route().current()==='mis.manager.remuneration'
+                             || route().current()==='mis.manager.engagement_card'" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="14" y="7" width="1.5" height="7" fill="#306ADB"/>
+                                    <rect x="18" y="8" width="1.5" height="6" fill="#306ADB"/>
+                                    <rect x="22" y="4" width="1.5" height="10" fill="#306ADB"/>
+                                    <rect x="12" y="14" width="13" height="1.5" fill="#306ADB"/>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 7.93734L4.52 7C3.68053 7 3 7.89543 3 9V21C3 22.1046 3.68053 23 4.52 23L12.5 24L20.48 23C21.3195 23 22 22.1046 22 21V17H20.38V21C20.38 21.2761 20.2099 21.5 20 21.5L12.5 22.5L4.88 21.5C4.67013 21.5 4.5 21.2761 4.5 21V9C4.5 8.72386 4.67013 8.5 4.88 8.5L12 9.43438V7.93734Z" fill="#306ADB"/>
+                                    <rect x="12" y="17" width="1.5" height="6" fill="#306ADB"/>
+                                    <path d="M6.00037 16.4034L6.00038 14.9158L10.6906 15.4994L10.6905 17L6.00037 16.4034Z" fill="#306ADB"/>
+                                    <path d="M6.00037 12.5118L6.00038 11.0242L10.6906 11.6078L10.6905 13.1084L6.00037 12.5118Z" fill="#306ADB"/>
+                                </svg>
+                                <svg v-else width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="14" y="7" width="1.5" height="7" fill="#D81D1D"/>
+                                    <rect x="18" y="8" width="1.5" height="6" fill="#D81D1D"/>
+                                    <rect x="22" y="4" width="1.5" height="10" fill="#D81D1D"/>
+                                    <rect x="12" y="14" width="13" height="1.5" fill="#191C51"/>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 7.93734L4.52 7C3.68053 7 3 7.89543 3 9V21C3 22.1046 3.68053 23 4.52 23L12.5 24L20.48 23C21.3195 23 22 22.1046 22 21V17H20.38V21C20.38 21.2761 20.2099 21.5 20 21.5L12.5 22.5L4.88 21.5C4.67013 21.5 4.5 21.2761 4.5 21V9C4.5 8.72386 4.67013 8.5 4.88 8.5L12 9.43438V7.93734Z" fill="#191C51"/>
+                                    <rect x="12" y="17" width="1.5" height="6" fill="#191C51"/>
+                                    <path d="M5.99988 16.4034L5.99989 14.9158L10.6901 15.4994L10.6901 17L5.99988 16.4034Z" fill="#191C51"/>
+                                    <path d="M5.99988 12.5118L5.99989 11.0242L10.6901 11.6078L10.6901 13.1084L5.99988 12.5118Z" fill="#191C51"/>
+                                </svg>
+                            </q-icon>
+                        </q-item-section>
+                        <q-item-section>
+                            MIS
+                        </q-item-section>
+                    </template>
+                    <template v-for="item in module.manager_mis.children"
+                              :key="item.route_name">
+
+                        <q-item v-if="$page.props.permissions.find(val=>val.name===item.permission)"
+                                :active="route().current()===item.route_name"
+                                active-class="active-item text-accent"
+                                class="nav-item"
+                                clickable
+                                @click="$inertia.get(route(item.route_name))">
+                            <q-item-section avatar class="q-ml-sm">
+                                <q-icon :size="route().current()===item.route_name ? '12px':'9px'"
+                                        name="fiber_manual_record"/>
+                            </q-item-section>
+                            <q-item-section>
+                                <q-item-label>{{ item.label }}</q-item-label>
+                            </q-item-section>
+                        </q-item>
+                    </template>
+                </q-expansion-item>
+
+<!--               Admin MIS-->
                 <q-expansion-item v-if="checkModules('mis')"
                     group="menu"
                     :label="module.reports.label"
@@ -520,6 +583,14 @@ const module = reactive({
         ]
     },
 
+    manager_mis:{
+        label: 'MIS',
+        children: [
+            {route_name: 'mis.manager.remuneration', label: 'Remuneration', permission: 'view-allemployee'},
+            {route_name: 'mis.manager-engagement-card', label: 'Engagement Card', permission: 'download-engagement-card'},
+        ]
+    },
+
     employee: {
         label: 'Employees',
         children: [
@@ -570,7 +641,7 @@ const module = reactive({
 
 
 const MENUS = {
-    Manager: ['manager' ],
+    Manager: ['manager', 'manager_mis' ],
     Admin: ['employee','remunerations', 'mis', 'administration']
 };
 
