@@ -27,20 +27,24 @@
 
         <q-table
             :rows="rows"
-            :columns="[
-                { name: 'sl_no', label: 'Sl.No', field: 'sl_no', align: 'center' },
-                { name: 'name', label: 'Name', field: 'name', align: 'left' },
-                { name: 'designation', label: 'Designation', field: 'designation', align: 'left' },
-                { name: 'remuneration', label: 'Remuneration', field: 'remuneration', align: 'right',
-                  format: formatAmount },
-                { name: 'medical_allowance', label: 'Medical (4%)', field: 'medical_allowance', align: 'right',
-                  format: formatAmount },
-                { name: 'total', label: 'Total', field: 'total', align: 'right', format: formatAmount },
-                { name: 'monthly_rem', label: 'Monthly Rem.', field: 'monthly_rem', align: 'right',
-                  format: formatAmount },
-                { name: 'next_increment', label: 'Next Increment', field: 'next_increment', align: 'center' }
-              ]"
-        />
+            :columns="columns"
+            :filter="filter"
+        row-key="sl_no"
+        >
+            <template v-slot:top-right>
+                <q-input borderless dense debounce="800"
+                         v-model="filter"
+                         outlined
+                         clearable
+                         placeholder="Search Office">
+                    <template v-slot:append>
+                        <q-icon name="search" />
+                    </template>
+                </q-input>
+            </template>
+
+        </q-table>
+
 
 <!--        &lt;!&ndash; Totals &ndash;&gt;-->
 <!--        <div class="q-mt-md text-right">-->
@@ -75,6 +79,31 @@ const totals = ref({})
 
 const filter = ref("") // Search box model
 
+
+const columns = [
+    { name: "sl_no", label: "Sl.No", field: "sl_no", align: "center" },
+    { name: "name", label: "Name", field: "name", align: "left" },
+    { name: "designation", label: "Designation", field: "designation", align: "left" },
+    {
+        name: "remuneration",
+        label: "Remuneration",
+        field: "remuneration",
+        align: "right",
+        format: (val) =>
+            new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val ?? 0),
+    },
+    {
+        name: "medical_allowance",
+        label: "Medical (4%)",
+        field: "medical_allowance",
+        align: "right",
+        format: (val) =>
+            new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val ?? 0),
+    },
+    { name: "total", label: "Total", field: "total", align: "right" },
+    { name: "monthly_rem", label: "Monthly Rem.", field: "monthly_rem", align: "right" },
+    { name: "next_increment", label: "Next Increment", field: "next_increment", align: "center" },
+];
 
 
 
