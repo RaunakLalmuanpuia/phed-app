@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\AllEmployeesExport;
 use App\Exports\MusterRollEmployeesExport;
+use App\Exports\OfficeRemunerationSheet;
 use App\Exports\RemunerationExport;
 use App\Models\Office;
 use Carbon\Carbon;
@@ -89,6 +90,25 @@ class ExportController extends Controller
         $year =  Carbon::now()->year;
         return Excel::download(new RemunerationExport($year), "Remuneration-{$year}.xlsx");
 
+    }
+
+    public function exportOfficeRemuneration(Request $request)
+    {
+        $user = $request->user();
+
+        // Pick the user’s first office (adjust if you allow multiple)
+        $office = $user->offices()->first();
+
+        if (!$office) {
+            return back()->with('error', 'No office assigned to this user.');
+        }
+
+        // Generate a safe filename
+        $currentMonthYear = now()->format('F_Y');
+        $filename = 'remuneration-summary-' . $office->name . '-' . $currentMonthYear . '.xlsx';
+
+        // Return Excel download
+        return Excel::download(new OfficeRemunerationSheet($office), $filename);
     }
 
 }

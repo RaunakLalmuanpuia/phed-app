@@ -586,7 +586,7 @@ const module = reactive({
     manager_mis:{
         label: 'MIS',
         children: [
-            {route_name: 'mis.manager.remuneration', label: 'Remuneration', permission: 'view-allemployee'},
+            {route_name: 'mis.manager-remuneration', label: 'Remuneration', permission: 'view-allemployee'},
             {route_name: 'mis.manager-engagement-card', label: 'Engagement Card', permission: 'download-engagement-card'},
         ]
     },

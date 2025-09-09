@@ -132,8 +132,16 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
 Route::group(['prefix' => 'manager','middleware'=>'auth'], function () {
 
     Route::group(['prefix' => 'mis'], function () {
+
+
+        Route::get('remuneration', [MISController::class, 'managerRemuneration'])->middleware('can:view-allemployee')->name('mis.manager-remuneration');
+        Route::get('json-remuneration', [MISController::class, 'jsonManagerRemuneration'])->middleware('can:view-allemployee')->name('mis.manager-json-remuneration');
+
+
         Route::get('engagement-card', [MISController::class, 'managerEngagementCard'])->middleware('can:download-engagement-card')->name('mis.manager-engagement-card');
         Route::get('json-engagement-card', [MISController::class, 'jsonManagerEngagementCard'])->middleware('can:download-engagement-card')->name('mis.manager-json-engagement-card');
+
+
 
     });
 
@@ -253,4 +261,6 @@ Route::group(['middleware'=>'auth','prefix' => 'export'], function () {
 
 
     Route::get('remuneration-summary', [ExportController::class, 'exportRemunerationSummary'])->middleware('can:export-remuneration-summary')->name('export.remuneration-summary');
+
+    Route::get('office-remuneration', [ExportController::class, 'exportOfficeRemuneration'])->name('export.office-remuneration');
 });

@@ -163,11 +163,87 @@ class MISController extends Controller
         $user = $request->user();
         abort_if(!$user->hasPermissionTo('view-allemployee'),403,'Access Denied');
 
+        $offices = $user->offices()
+            ->get(['offices.name as label', 'offices.id as value'])
+            ->map(function ($office) {
+                return [
+                    'label' => $office->label,
+                    'value' => $office->value,
+                ];
+            });
+
         return Inertia::render('Backend/MIS/Manager/Remuneration', [
+            'offices' => $offices,
             'canViewAllEmployee'=>$user->can('view-allemployee'),
         ]);
 
     }
+
+    public function jsonManagerRemuneration(Request $request)
+    {
+        $user = $request->user();
+
+        // If you allow multiple offices per user, decide which one
+        // Here: pick the first office
+        $office = $user->offices()->first();
+
+        if (!$office) {
+            return response()->json([
+                'message' => 'No office assigned to this user.',
+                'data' => [],
+                'totals' => [],
+            ], 404);
+        }
+
+        // Fetch employees (only PE)
+        $employees = $office->employees()
+            ->where('employment_type', 'PE')
+            ->with('remunerationDetail')
+            ->get();
+
+        $rows = $employees->map(function ($emp, $index) {
+            $rem = optional($emp->remunerationDetail);
+
+            return [
+                'sl_no'            => $index + 1,
+                'name'             => $emp->name,
+                'designation'      => $emp->designation,
+                'remuneration'     => $rem->remuneration ?? 0,
+                'medical_allowance'=> $rem->medical_amount ?? 0,
+                'total'            => $rem->total ?? 0,
+                'monthly_rem'      => $rem->round_total ?? 0,
+                'next_increment'   => $rem->next_increment_date
+                    ? \Carbon\Carbon::parse($rem->next_increment_date)->format('d.m.Y')
+                    : '',
+            ];
+        });
+
+        // Compute totals
+        $totals = [
+            'remuneration'      => $rows->sum('remuneration'),
+            'medical_allowance' => $rows->sum('medical_allowance'),
+            'total'             => $rows->sum('total'),
+            'monthly_rem'       => $rows->sum('monthly_rem'),
+        ];
+
+        $offices = $user->offices()
+            ->get(['offices.name as label', 'offices.id as value'])
+            ->map(function ($office) {
+                return [
+                    'label' => $office->label,
+                    'value' => $office->value,
+                ];
+            });
+
+        return response()->json([
+           'offices' => $offices,
+            'data' => $rows,
+            'totals' => $totals,
+        ], 200);
+    }
+
+
+
 
 
     public function managerEngagementCard(Request $request){

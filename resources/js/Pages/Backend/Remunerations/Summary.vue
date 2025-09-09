@@ -3,7 +3,7 @@
         <!-- Header -->
         <div class="flex items-center justify-between q-pa-md bg-white">
             <div>
-                <div class="stitle">Remuneration Sumary</div>
+                <div class="stitle">Remuneration Summary</div>
                 <q-breadcrumbs class="text-dark">
                     <q-breadcrumbs-el
                         @click="$inertia.get(route('dashboard'))"
