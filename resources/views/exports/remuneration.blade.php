@@ -3,7 +3,7 @@
         <th colspan="7" style="text-align:center; font-weight:bold; padding: 8px;  vertical-align:middle; ">
             <u>
                 REMUNERATION OF PROVISIONAL EMPLOYEES FOR THE MONTH OF<br>
-                {{ $monthsHeader }}, {{ $year }}
+                {{ \Carbon\Carbon::now()->format('F Y') }}
             </u>
         </th>
     </tr>
