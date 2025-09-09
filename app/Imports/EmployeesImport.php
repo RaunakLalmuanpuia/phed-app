@@ -71,7 +71,8 @@ class EmployeesImport implements ToModel, WithStartRow
         if ($this->employment_type === 'PE') {
             $remuneration = $row[$this->columns['remuneration']] ?? null;
             $nextIncrementDate = $this->transformDate($row[$this->columns['next_increment_date']] ?? null);
-            $pay_matrix = $row[$this->columns['pay_matrix']] ?? null;
+            $pay_matrix = $this->formatPayMatrix($row[$this->columns['pay_matrix']] ?? null);
+
 
             if (!empty($remuneration) && !empty($nextIncrementDate)) {
                 $employee->remunerationDetail()->updateOrCreate(
@@ -112,4 +113,26 @@ class EmployeesImport implements ToModel, WithStartRow
             return null;
         }
     }
+
+    protected function formatPayMatrix(?string $level): ?string
+    {
+        if (empty($level)) {
+            return null;
+        }
+
+        // Normalize input (e.g. "Level-1" -> "1")
+        $number = preg_replace('/[^0-9]/', '', $level);
+
+        // Mapping table
+        $mapping = [
+            '1' => 'Level 1 (17,400 - 38,600)',
+            '2' => 'Level 2 (19,900 - 44,400)',
+            '3' => 'Level 3 (21,700 - 48,500)',
+            '4' => 'Level 4 (25,500 - 56,800)',
+            '5' => 'Level 5 (29,200 - 64,700)',
+        ];
+
+        return $mapping[$number] ?? $level; // fallback to original if not found
+    }
+
 }
