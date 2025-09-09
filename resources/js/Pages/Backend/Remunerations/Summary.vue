@@ -111,8 +111,8 @@ const filter = ref("") // Search box model
 
 
 const columns = [
-    { name: 'office_name', label: 'Office', field: 'office_name', align: 'left' },
-    { name: 'employee_count', label: 'No. of Employees', field: 'employee_count', align: 'center' },
+    { name: 'office_name', label: 'Name of Office', field: 'office_name', align: 'left' },
+    { name: 'employee_count', label: 'No. of PE', field: 'employee_count', align: 'center' },
     { name: 'one_month', label: 'Wages for 1 Month (₹)', field: 'one_month', align: 'right' },
     { name: 'three_months', label: 'Wages for 3 Months (₹)', field: 'three_months', align: 'right' },
     { name: 'six_months', label: 'Wages for 6 Months (₹)', field: 'six_months', align: 'right' },

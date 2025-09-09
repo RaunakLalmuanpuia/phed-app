@@ -402,9 +402,9 @@ const columns = [
     { name: "designation", label: "Designation", field: "designation", align: "left", sortable: true },
     { name: "office", label: "Office", field: "office.name", align: "left" },
     { name: "remuneration", label: "Remuneration", field: "remuneration_detail.remuneration", align: "right" },
-    { name: "round_total", label: "Total", field: "remuneration_detail.round_total", align: "right" },
-    { name: "next_increment_date", label: "Next Increment", field: "remuneration_detail.next_increment_date", align: "left" },
-    { name: "next_increment_amount", label: "Next Increment Amount", field: "remuneration_detail.total", align: "left" },
+    { name: "round_total", label: "Total Monthly Remuneration", headerStyle: 'white-space: normal; word-wrap: break-word;', field: "remuneration_detail.round_total", align: "right" },
+    { name: "next_increment_date", label: "Date of Next Increment",headerStyle: 'white-space: normal; word-wrap: break-word;', field: "remuneration_detail.next_increment_date", align: "left" },
+    { name: "next_increment_amount", label: "Remuneration After Increment",headerStyle: 'white-space: normal; word-wrap: break-word;', field: "remuneration_detail.total", align: "left" },
     { name: 'actions', label: 'Actions', align: 'center' },
 ];
 
