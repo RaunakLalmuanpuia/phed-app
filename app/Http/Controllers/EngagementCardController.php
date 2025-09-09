@@ -20,6 +20,7 @@ class EngagementCardController extends Controller
             'start_date'  => 'required|date',
             'end_date'    => 'required|date|after_or_equal:start_date',
             'phed_file_no'=> 'required|string',
+            'letter_date'=> 'required|date',
             'approval_dpar'=> 'required|string',
             'approval_fin' => 'required|string',
         ]);
@@ -65,7 +66,7 @@ class EngagementCardController extends Controller
             'start_date' => Carbon::parse($request->start_date)->format('d-m-Y'),
             'end_date' => Carbon::parse($request->end_date)->format('d-m-Y'),
             'card_no' => $card_no,
-            'date'=> Carbon::parse(now())->format('d.m.Y'),
+            'date'=> Carbon::parse($request->letter_date)->format('d.m.Y'),
             'phed_file_no' => $request->phed_file_no,       // <- added
             'approval_dpar' => $request->approval_dpar,
             'approval_fin' => $request->approval_fin,
@@ -96,6 +97,7 @@ class EngagementCardController extends Controller
             'start_date'     => 'required|date',
             'end_date'       => 'required|date|after_or_equal:start_date',
             'phed_file_no'   => 'required|string',
+            'letter_date'=> 'required|date',
             'approval_dpar'  => 'required|string',
             'approval_fin'   => 'required|string',
         ]);
@@ -147,7 +149,7 @@ class EngagementCardController extends Controller
                 'start_date'     =>  Carbon::parse($request->start_date)->format('d-m-Y'),
                 'end_date'       => Carbon::parse($request->end_date)->format('d-m-Y'),
                 'card_no'        => $card_no,
-                'date'           =>  Carbon::parse(now())->format('d.m.Y'),
+                'date'           =>  Carbon::parse($request->letter_date)->format('d.m.Y'),
                 'phed_file_no'   => $request->phed_file_no,
                 'approval_dpar'  => $request->approval_dpar,
                 'approval_fin'   => $request->approval_fin,

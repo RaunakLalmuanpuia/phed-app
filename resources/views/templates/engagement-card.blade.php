@@ -51,7 +51,7 @@
 
     <div class="spacer-sm"></div>
 
-    <p class="center bold">{{ $phed_file_no }}</p>
+    <p class="center bold">{{ $phed_file_no }} Dt. {{$date}}</p>
     <div class="spacer-sm"></div>
 
     <p class="center bold">

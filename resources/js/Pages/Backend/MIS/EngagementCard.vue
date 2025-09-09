@@ -232,8 +232,16 @@
                                 filled
                                 v-model="individualForm.phed_file_no"
                                 label="PHED File Number"
-                                class="col-12 "
+                                class="col-8 "
                                 :error="individualForm.errors.phed_file_no"
+                            />
+                            <q-input
+                                filled
+                                v-model="individualForm.letter_date"
+                                label="Letter Date"
+                                type="date"
+                                class="col-4 "
+                                :error="individualForm.errors.letter_date"
                             />
                             <q-input
                                 filled
@@ -286,8 +294,16 @@
                                 filled
                                 v-model="bulkForm.phed_file_no"
                                 label="PHED File Number"
-                                class="col-12"
+                                class="col-8"
                                 :error="bulkForm.errors.phed_file_no"
+                            />
+                            <q-input
+                                filled
+                                v-model="bulkForm.letter_date"
+                                label="Letter Date"
+                                type="date"
+                                class="col-4"
+                                :error="bulkForm.errors.letter_date"
                             />
                             <q-input
                                 filled
@@ -441,6 +457,7 @@ const individualForm = useForm({
     end_date: '',
     card_no: '',
     phed_file_no: '',
+    letter_date:'',
     approval_dpar: '',
     approval_fin: '',
 });
@@ -451,6 +468,7 @@ const bulkForm = useForm({
     start_date: '',
     end_date: '',
     phed_file_no: '',
+    letter_date:'',
     approval_dpar: '',
     approval_fin: '',
 });
