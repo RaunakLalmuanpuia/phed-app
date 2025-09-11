@@ -32,6 +32,7 @@
                     </div>
                 </div>
             </div>
+
             <div v-if="!applicant" class="col-xs-12 col-sm-3">
                 <div class="deletion-card q-pa-md count-red">
                     <div class="title-red">Deleted</div>
@@ -43,17 +44,73 @@
                 </div>
             </div>
 
-            <!--            <div v-if="!applicant" class="col-xs-12 col-sm-4">-->
-            <!--                <div class="q-pa-md bg-white">-->
-            <!--                    <div class="title">Skill Category Distribution</div>-->
-            <!--                    <br />-->
-            <!--                    <div class="row q-col-gutter-md">-->
-            <!--                        <div class="col-xs-12">-->
-            <!--                            <PieChart style="height: 320px" :chartData="skillCategoryData" :options="options" />-->
-            <!--                        </div>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
+<!--            <div v-if="!applicant" class="col-xs-12 col-sm-3">-->
+<!--                <div class="notification-card q-pa-md count-notification flex flex-col justify-between h-full">-->
+<!--                    <div class="title-notification mb-2">Notifications</div>-->
+<!--                    <div class="text-caption caption-sm mb-4">Request Types</div>-->
+
+<!--                    &lt;!&ndash; Request Counts &ndash;&gt;-->
+<!--                    <div class="flex flex-col space-y-4">-->
+<!--                        <div v-if="notifications.editRequests > 0" class="flex flex-col items-center">-->
+<!--                            <strong class="count-notification">{{ notifications.editRequests }}</strong>-->
+<!--                            <span class="caption text-center">Edit Requests</span>-->
+<!--                        </div>-->
+<!--                        <div v-if="notifications.transferRequests > 0" class="flex flex-col items-center">-->
+<!--                            <strong class="count-notification">{{ notifications.transferRequests }}</strong>-->
+<!--                            <span class="caption text-center">Transfer Requests</span>-->
+<!--                        </div>-->
+<!--                        <div v-if="notifications.deletionRequests > 0" class="flex flex-col items-center">-->
+<!--                            <strong class="count-notification">{{ notifications.deletionRequests }}</strong>-->
+<!--                            <span class="caption text-center">Deletion Requests</span>-->
+<!--                        </div>-->
+<!--                        <div v-if="notifications.documentEditRequests > 0" class="flex flex-col items-center">-->
+<!--                            <strong class="count-notification">{{ notifications.documentEditRequests }}</strong>-->
+<!--                            <span class="caption text-center">Document Edit Requests</span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+
+            <div v-if="isAdmin" class="col-xs-12 col-sm-6">
+                <div class="notification-card">
+                    <div class="title-notification mb-2">Notifications</div>
+                    <div class="text-caption caption-sm mb-4">Request Types</div>
+
+                    <div class="q-pa-md flex justify-around items-center flex-wrap">
+                        <!-- Edit Requests -->
+                        <div  class="flex flex-col items-center mx-2">
+                            <strong class="count-notification">{{ notifications.editRequests }}</strong>
+                            <span class="caption text-center">Edit <br> Requests</span>
+                        </div>
+
+                        <!-- Transfer Requests -->
+                        <div class="flex flex-col items-center mx-2">
+                            <strong class="count-notification">{{ notifications.transferRequests }}</strong>
+                            <span class="caption text-center">Transfer <br> Requests</span>
+                        </div>
+
+                        <!-- Document Edit Requests -->
+                        <div class="flex flex-col items-center mx-2">
+                            <strong class="count-notification">{{ notifications.documentEditRequests }}</strong>
+                            <span class="caption text-center">Document Edit <br> Requests</span>
+                        </div>
+
+                        <!-- Deletion Requests -->
+                        <div  class="flex flex-col items-center mx-2">
+                            <strong class="count-notification">{{ notifications.deletionRequests }}</strong>
+                            <span class="caption text-center">Deletion <br> Requests</span>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
 
 
             <div class="col-xs-12 col-sm-12">
@@ -68,11 +125,12 @@
 import BackendLayout from "../../Layouts/BackendLayout.vue";
 import OfficeStat from "../../Components/Common/OfficeStat.vue";
 // import OfficeStat from "../../../Components/Common/OfficeStat.vue";
-import { ref, reactive } from 'vue'
+import {ref, reactive, computed} from 'vue'
 import { BarChart, PieChart } from 'vue-chart-3'
+import {usePage} from "@inertiajs/vue3";
 
 defineOptions({layout:BackendLayout})
-const props=defineProps(['totalEmployees','peCount','mrCount','deletedCount'])
+const props=defineProps(['totalEmployees','peCount','mrCount','deletedCount','notifications'])
 
 // Dummy data for employee skill categories
 const skillCategoryData = {
@@ -111,6 +169,9 @@ const state = reactive({
 
 // Assume we're always showing admin view for now
 const applicant = false
+
+const isAdmin = computed(() => !!usePage().props.roles?.find(item => item === 'Admin'));
+
 </script>
 <style scoped>
 .title{
@@ -138,6 +199,11 @@ const applicant = false
 .deletion-card{
     padding: 18px;
     background-color: #fae1e1;
+}
+
+.notification-card{
+    padding: 18px;
+    background-color: #9eead6;
 }
 .count-green{
     font-size: 36px;
@@ -170,6 +236,17 @@ const applicant = false
     letter-spacing: normal;
     text-align: left;
     color: #ed1224;
+}
+
+.count-notification{
+    font-size: 36px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: left;
+    color: #068a67;
 }
 .caption{
     font-size: 16px;
@@ -204,6 +281,14 @@ const applicant = false
     font-weight: bold;
     text-align: left;
     color: #ed1224;
+}
+
+
+.title-notification{
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+    color: #068a67;
 }
 .caption-sm{
     font-size: 12px;

@@ -12,17 +12,51 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
+        $user = auth()->user();
 
         $totalEmployees = Employee::where('employment_type', '!=', 'Deleted')->count();
         $peCount = Employee::where('employment_type', 'PE')->count();
         $mrCount = Employee::where('employment_type', 'MR')->count();
         $deletedCount = Employee::where('employment_type', 'Deleted')->count();
 
+        $notifications = [
+            'editRequests' => 0,
+            'transferRequests' => 0,
+            'deletionRequests' => 0,
+            'documentEditRequests' => 0,
+        ];
+
+        if ($user && $user->hasRole('Admin')) {
+            $statusFilter = ['pending'];
+
+            $filterQuery = function ($q) {
+                // Admin: no additional filtering
+            };
+
+            $notifications['editRequests'] = \App\Models\EditRequest::whereIn('approval_status', $statusFilter)
+                ->where($filterQuery)
+                ->count();
+
+            $notifications['transferRequests'] = \App\Models\TransferRequest::whereIn('approval_status', $statusFilter)
+                ->where($filterQuery)
+                ->count();
+
+            $notifications['deletionRequests'] = \App\Models\DeletionRequest::whereIn('approval_status', $statusFilter)
+                ->where($filterQuery)
+                ->count();
+
+            $notifications['documentEditRequests'] = \App\Models\DocumentEditRequest::whereIn('approval_status', $statusFilter)
+                ->where($filterQuery)
+                ->count();
+        }
+
+
         return inertia('Backend/Dashboard', [
             'totalEmployees' => $totalEmployees,
             'peCount' => $peCount,
             'mrCount' => $mrCount,
             'deletedCount' => $deletedCount,
+            'notifications' => $notifications,
         ]);
     }
     //
