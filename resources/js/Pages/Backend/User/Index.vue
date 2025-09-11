@@ -10,7 +10,7 @@
             </div>
 
             <div class="flex q-gutter-sm">
-                <q-btn @click="$inertia.get(route('user.create'))" color="btn-primary" label="New User"/>
+                <q-btn @click="$inertia.get(route('user.create'))" color="btn-primary" label="New User" :disable="!canCreate" />
             </div>
         </div>
         <br/>
@@ -48,6 +48,7 @@
                     <q-chip v-for="item in props.row?.offices" :label="item.name" square/>
                 </q-td>
             </template>
+
             <template v-slot:body-cell-action="props">
                 <q-td>
                     <q-btn round icon="more_vert">
@@ -55,10 +56,10 @@
                             <q-item clickable @click="$inertia.get(route('user.show',props.row.id))">
                                 <q-item-section>View Detail</q-item-section>
                             </q-item>
-                            <q-item clickable @click="$inertia.get(route('user.edit',props.row.id))">
+                            <q-item clickable @click="$inertia.get(route('user.edit',props.row.id))" :disable="!canEdit">
                                 <q-item-section>Edit</q-item-section>
                             </q-item>
-                            <q-item @click="handleDelete(props.row)" :disable="!canDelete">
+                            <q-item clickable @click="handleDelete(props.row)" :disable="!canDelete">
                                 <q-item-section>Delete</q-item-section>
                             </q-item>
                         </q-menu>
