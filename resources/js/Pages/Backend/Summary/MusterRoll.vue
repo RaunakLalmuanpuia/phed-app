@@ -36,6 +36,28 @@
                             </template>
                         </q-input>
                     </template>
+                    <template v-slot:bottom-row>
+                        <q-tr class="bg-grey-3 text-bold q-border-t">
+                            <!-- First cell label -->
+                            <q-td class="text-left font-bold">
+                                <strong>Total</strong>
+                            </q-td>
+
+                            <!-- Dynamic skill totals in desired order -->
+                            <q-td
+                                v-for="skill in orderedSkills"
+                                :key="skill"
+                                class="text-center font-bold"
+                            >
+                                <strong>{{ getColumnTotal(skill) }}</strong>
+                            </q-td>
+
+                            <!-- Total column -->
+                            <q-td class="text-center font-bold">
+                                <strong>{{ getColumnTotal('total') }}</strong>
+                            </q-td>
+                        </q-tr>
+                    </template>
                 </q-table>
             </q-card-section>
         </q-card>
@@ -90,6 +112,13 @@ columns.push({
     align: 'center',
     sortable: true
 });
+
+const getColumnTotal = (field) => {
+    return props.offices.reduce((sum, row) => {
+        const value = Number(row[field]) || 0;
+        return sum + value;
+    }, 0);
+};
 
 const exportData = () => {
     q.loading.show(); // Show loading indicator (assuming you're using Quasar's loading plugin)
