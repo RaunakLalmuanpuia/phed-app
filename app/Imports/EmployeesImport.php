@@ -30,6 +30,7 @@ class EmployeesImport implements ToModel, WithStartRow
         'next_increment_date'  => 14,
         'address'  => 15,
         'pay_matrix'=>16,
+        'engagement_card_no'=>17,
 
     ];
 
@@ -64,6 +65,7 @@ class EmployeesImport implements ToModel, WithStartRow
                 'date_of_engagement'     => $this->transformDate($row[$this->columns['date_of_engagement']] ?? null),
                 'skill_category'         => $row[$this->columns['skill_category']] ?? null,
                 'skill_at_present'       => $row[$this->columns['present_skill']] ?? null,
+                'engagement_card_no'       => $row[$this->columns['engagement_card_no']] ?? null,
             ]
         );
 

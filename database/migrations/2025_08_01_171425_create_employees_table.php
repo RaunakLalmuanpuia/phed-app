@@ -31,6 +31,7 @@ return new class extends Migration
             $table->date('date_of_engagement')->nullable();
             $table->string('skill_category')->nullable();
             $table->string('skill_at_present')->nullable();
+            $table->string('engagement_card_no')->nullable();
             $table->timestamps();
         });
     }

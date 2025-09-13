@@ -11,7 +11,7 @@ class Employee extends Model
 {
     //
     protected $fillable = ['office_id','avatar','employee_code','name','mobile','email','address','date_of_birth','parent_name','employment_type',
-        'educational_qln','technical_qln', 'designation','name_of_workplace','post_per_qualification','date_of_engagement','skill_category','skill_at_present'];
+        'educational_qln','technical_qln', 'designation','name_of_workplace','post_per_qualification','date_of_engagement','skill_category','skill_at_present','engagement_card_no'];
     public function office(): BelongsTo
     {
         return $this->belongsTo(Office::class);
