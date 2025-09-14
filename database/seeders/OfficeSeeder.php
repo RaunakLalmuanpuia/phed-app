@@ -42,6 +42,13 @@ class OfficeSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'name' => 'AWTDN',
+                'type' => 'Division',
+                'location' => 'Aizawl',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
                 'name' => 'C.E Z-I',
                 'type' => 'Zone',
                 'location' => 'Aizawl',
