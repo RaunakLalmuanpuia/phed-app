@@ -203,6 +203,11 @@
                         <div class="col-8 text-body1">{{ formatDate(currentRow?.remuneration_detail?.next_increment_date) || 0 }}</div>
                     </div>
 
+                    <div class="row q-mb-sm items-center">
+                        <div class="col-4 text-subtitle2 text-grey-8">Pay Matrix</div>
+                        <div class="col-8 text-body1">{{ currentRow?.remuneration_detail?.pay_matrix}}</div>
+                    </div>
+
                     <!-- Remuneration Input -->
                     <q-input
                         label="Remuneration"

@@ -67,6 +67,14 @@ export default function () {
         'Unskilled',
     ];
 
+    const pay_matrix = [
+        'Level 1 (17,400 - 38,600)',
+        'Level 2 (19,900 - 44,400)',
+        'Level 3 (21,700 - 48,500)',
+        'Level 4 (25,500 - 56,800)',
+        'Level 5 (29,200 - 64,700)',
+    ];
+
 
     const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const mobileRegex = /^[0-9]{10}$/;
@@ -75,6 +83,7 @@ export default function () {
         employment_types,
         educationalQualifications,
         skills,
+        pay_matrix,
         formatMoney,
         formatAudioTime,
         formatDate,

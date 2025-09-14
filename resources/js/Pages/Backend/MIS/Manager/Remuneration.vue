@@ -103,18 +103,9 @@ const columns = [
     { name: "total", label: "Total", field: "total", align: "right" },
     { name: "monthly_rem", label: "Monthly Rem.", field: "monthly_rem", align: "right" },
     { name: "next_increment", label: "Next Increment", field: "next_increment", align: "center" },
+    { name: "pay_matrix", label: "Pay Matrix", field: "pay_matrix", align: "center" },
 ];
 
-
-
-const formatAmount = (val) => {
-    if (val == null) return ''
-    // force number, then format with 2 decimals and Indian grouping
-    return new Intl.NumberFormat('en-IN', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    }).format(val)
-}
 
 
 onMounted(async () => {

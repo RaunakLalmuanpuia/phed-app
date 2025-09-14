@@ -215,6 +215,7 @@ class MISController extends Controller
                 'next_increment'   => $rem->next_increment_date
                     ? \Carbon\Carbon::parse($rem->next_increment_date)->format('d.m.Y')
                     : '',
+                'pay_matrix' => $rem->pay_matrix ?? null,
             ];
         });
 

@@ -4,7 +4,7 @@ import { useForm } from "@inertiajs/vue3";
 import useUtils from "@/Compositions/useUtils";
 import {useQuasar} from "quasar";
 const $q = useQuasar();
-const {formatDate} = useUtils();
+const {pay_matrix,formatDate} = useUtils();
 const props = defineProps({
     data: Object, // contains employee and remuneration_detail
     canCreateRemuneration: Boolean,
@@ -27,6 +27,7 @@ const openDialog = (edit = false) => {
     isEdit.value = edit;
     if (edit && props.data.remuneration_detail) {
         form.remuneration = props.data.remuneration_detail.remuneration;
+        form.pay_matrix = props.data.remuneration_detail.pay_matrix;
         form.next_increment_date = props.data.remuneration_detail.next_increment_date;
     } else {
         form.reset();
@@ -199,9 +200,9 @@ const submitForm = () => {
                     </template>
                 </q-input>
 
-                <q-input
+                <q-select
                     label="Pay Matrix"
-                    type="text"
+                    :options=pay_matrix
                     v-model="form.pay_matrix"
                     outlined
                     dense
