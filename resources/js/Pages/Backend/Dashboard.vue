@@ -2,8 +2,8 @@
     <q-page class="container"  padding>
         <div class="row q-col-gutter-md">
 
-            <div v-if="!applicant" class="col-xs-12 col-sm-3">
-                <div class="dealing-card q-pa-md count-warning">
+            <div v-if="!isAdmin" class="col-xs-12 col-sm-3">
+                <div class="dealing-card q-pa-md count-warning cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.manager.all'))">
                     <div class="title-warning">Total Employees</div>
                     <div class="text-caption caption-sm">Current Count</div>
                     <div class="flex items-center">
@@ -12,8 +12,8 @@
                     </div>
                 </div>
             </div>
-            <div v-if="!applicant" class="col-xs-12 col-sm-3">
-                <div class="verification-card q-pa-md count-blue">
+            <div v-if="!isAdmin" class="col-xs-12 col-sm-3">
+                <div class="verification-card q-pa-md count-blue cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.manager.pe'))">
                     <div class="title-blue">Provisional</div>
                     <div class="text-caption caption-sm">Employment Type</div>
                     <div class="flex items-center">
@@ -22,8 +22,8 @@
                     </div>
                 </div>
             </div>
-            <div v-if="!applicant" class="col-xs-12 col-sm-3">
-                <div class="approval-card q-pa-md count-green">
+            <div v-if="!isAdmin" class="col-xs-12 col-sm-3">
+                <div class="approval-card q-pa-md count-green cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.manager.mr'))">
                     <div class="title-green">Muster Roll</div>
                     <div class="text-caption caption-sm">Employment Type</div>
                     <div class="flex items-center">
@@ -33,8 +33,40 @@
                 </div>
             </div>
 
-            <div v-if="!applicant" class="col-xs-12 col-sm-3">
-                <div class="deletion-card q-pa-md count-red">
+
+            <div v-if="isAdmin" class="col-xs-12 col-sm-3">
+                <div class="dealing-card q-pa-md count-warning cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.all'))">
+                    <div class="title-warning">Total Employees</div>
+                    <div class="text-caption caption-sm">Current Count</div>
+                    <div class="flex items-center">
+                        <div class="count-dealing">{{ totalEmployees }}</div>
+                        <div class="caption q-ml-md">Employees</div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="isAdmin" class="col-xs-12 col-sm-3">
+                <div class="verification-card q-pa-md count-blue cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.pe'))">
+                    <div class="title-blue">Provisional</div>
+                    <div class="text-caption caption-sm">Employment Type</div>
+                    <div class="flex items-center">
+                        <div class="count-blue">{{ peCount }}</div>
+                        <div class="caption q-ml-md">Employees</div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="isAdmin" class="col-xs-12 col-sm-3">
+                <div class="approval-card q-pa-md count-green cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.mr'))">
+                    <div class="title-green">Muster Roll</div>
+                    <div class="text-caption caption-sm">Employment Type</div>
+                    <div class="flex items-center">
+                        <div class="count-green">{{ mrCount }}</div>
+                        <div class="caption q-ml-md">Employees</div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="isAdmin" class="col-xs-12 col-sm-3">
+                <div class="deletion-card q-pa-md count-red cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.deleted'))">
                     <div class="title-red">Deleted</div>
                     <div class="text-caption caption-sm">Employment Type</div>
                     <div class="flex items-center">
@@ -44,36 +76,10 @@
                 </div>
             </div>
 
-<!--            <div v-if="!applicant" class="col-xs-12 col-sm-3">-->
-<!--                <div class="notification-card q-pa-md count-notification flex flex-col justify-between h-full">-->
-<!--                    <div class="title-notification mb-2">Notifications</div>-->
-<!--                    <div class="text-caption caption-sm mb-4">Request Types</div>-->
-
-<!--                    &lt;!&ndash; Request Counts &ndash;&gt;-->
-<!--                    <div class="flex flex-col space-y-4">-->
-<!--                        <div v-if="notifications.editRequests > 0" class="flex flex-col items-center">-->
-<!--                            <strong class="count-notification">{{ notifications.editRequests }}</strong>-->
-<!--                            <span class="caption text-center">Edit Requests</span>-->
-<!--                        </div>-->
-<!--                        <div v-if="notifications.transferRequests > 0" class="flex flex-col items-center">-->
-<!--                            <strong class="count-notification">{{ notifications.transferRequests }}</strong>-->
-<!--                            <span class="caption text-center">Transfer Requests</span>-->
-<!--                        </div>-->
-<!--                        <div v-if="notifications.deletionRequests > 0" class="flex flex-col items-center">-->
-<!--                            <strong class="count-notification">{{ notifications.deletionRequests }}</strong>-->
-<!--                            <span class="caption text-center">Deletion Requests</span>-->
-<!--                        </div>-->
-<!--                        <div v-if="notifications.documentEditRequests > 0" class="flex flex-col items-center">-->
-<!--                            <strong class="count-notification">{{ notifications.documentEditRequests }}</strong>-->
-<!--                            <span class="caption text-center">Document Edit Requests</span>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
 
 
             <div v-if="isAdmin" class="col-xs-12 col-sm-6">
-                <div class="notification-card">
+                <div class="notification-card cursor-pointer hover:opacity-80" @click="$inertia.get(route('notification.list'))">
                     <div class="title-notification mb-2">Notifications</div>
                     <div class="text-caption caption-sm mb-4">Request Types</div>
 

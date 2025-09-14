@@ -127,6 +127,11 @@
                         </div>
 
                         <div class="col-12 col-sm-6">
+                            <q-input v-model="form.engagement_card_no" label="Engagement Card No." type="text" outlined dense
+                                     :error="!!form.errors?.engagement_card_no" :error-message="form.errors?.engagement_card_no"
+                            />
+                        </div>
+                        <div class="col-12 col-sm-6">
                             <q-input v-model="form.date_of_engagement" label="Date of Initial Engagement" type="date" outlined dense
                                      :error="!!form.errors?.date_of_engagement" :error-message="form.errors?.date_of_engagement"
                             />
@@ -217,6 +222,7 @@
                         <div class="col-12 col-sm-6"> <strong>Employment Type:</strong> Provisional Employee </div>
                         <div class="col-12 col-sm-6"> <strong>Office:</strong> {{ offices[form.office].name }} </div>
                         <div class="col-12 col-sm-6"> <strong>Designation:</strong> {{ form.designation }} </div>
+                        <div class="col-12 col-sm-6"> <strong>Engagement Card No. :</strong> {{ form.engagement_card_no }} </div>
                         <div class="col-12 col-sm-6"> <strong>Date of Initial Engagement:</strong> {{ formatDate(form.date_of_engagement) }} </div>
                         <div class="col-12 col-sm-6"> <strong>Workplace:</strong> {{ form.name_of_workplace }} </div>
 
@@ -294,6 +300,7 @@ const form=useForm({
     technical_qln:'',
     name_of_workplace:'',
     post_per_qualification:'',
+    engagement_card_no:'',
     date_of_engagement:'',
     skill_category:'',
     skill_at_present:'',
@@ -393,6 +400,7 @@ const submit = () => {
         formData.append('technical_qln', form.technical_qln)
         formData.append('name_of_workplace', form.name_of_workplace)
         formData.append('post_per_qualification', form.post_per_qualification)
+        formData.append('engagement_card_no', form.engagement_card_no)
         formData.append('date_of_engagement', form.date_of_engagement)
         formData.append('skill_category', form.skill_category)
         formData.append('skill_at_present', form.skill_at_present)

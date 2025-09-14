@@ -117,6 +117,11 @@
                                             </q-item-section>
                                         </q-item>
 
+                                        <q-item v-if=" data?.employment_type?.trim() === 'PE'">
+                                            <q-item-section side class="subtitle">Engagement Card No. :</q-item-section>
+                                            <q-item-section  class="text-label">{{data?.engagement_card_no}}</q-item-section>
+                                        </q-item>
+
                                         <q-item v-if=" data?.employment_type?.trim() === 'MR'">
                                             <q-item-section side class="subtitle">Post Selected:</q-item-section>
                                             <q-item-section  class="text-label">{{data?.post_per_qualification}}</q-item-section>
