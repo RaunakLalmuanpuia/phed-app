@@ -95,9 +95,17 @@ class RemunerationController extends Controller
     }
 
 
-    public function jsonRemunerationSummary(){
-        // Fetch all offices with employees and their remuneration
-        $offices = Office::with(['employees.remunerationDetail'])->get();
+    public function jsonRemunerationSummary()
+    {
+        // Fetch only offices that have employees with employment_type = 'PE'
+        $offices = Office::whereHas('employees', function ($query) {
+            $query->where('employment_type', 'PE');
+        })
+            ->with(['employees' => function ($query) {
+                $query->where('employment_type', 'PE')
+                    ->with('remunerationDetail');
+            }])
+            ->get();
 
         // Prepare the rows
         $rows = $offices->map(function ($office) {
@@ -131,8 +139,8 @@ class RemunerationController extends Controller
             'data'   => $rows,
             'totals' => $totals
         ]);
-
     }
+
 
     public function store(Request $request, Employee $model){
 
