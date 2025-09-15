@@ -65,12 +65,12 @@ class EngagementCardController extends Controller
         // Prepare HTML
         $htmlContent = view('templates.engagement-card', [
             'name'           => $employee->name,
-            'dob'            => $employee->date_of_birth,
+            'dob'            => Carbon::parse( $employee->date_of_birth)->format('d-m-Y'),
             'parent_name'    => $employee->parent_name,
             'address'        => $employee->address,
             'post'           => $employee->designation,
             'pay_matrix'     => $employee->remunerationDetail->pay_matrix ?? 'N/A',
-            'remuneration'   => number_format($employee->remunerationDetail->remuneration ?? 0, 0, '.', ','),
+            'remuneration'   => number_format($employee->remunerationDetail->round_total ?? 0, 0, '.', ','),
             'start_date'     => Carbon::parse($request->start_date)->format('d-m-Y'),
             'end_date'       => Carbon::parse($request->end_date)->format('d-m-Y'),
             'card_no'        => $card_no,
@@ -234,12 +234,12 @@ class EngagementCardController extends Controller
             // Prepare HTML content
             $htmlContent = view('templates.engagement-card', [
                 'name'           => $employee->name,
-                'dob'            => $employee->date_of_birth,
+                'dob'            => Carbon::parse( $employee->date_of_birth)->format('d-m-Y'),
                 'parent_name'    => $employee->parent_name,
                 'address'        => $employee->address,
                 'post'           => $employee->designation,
                 'pay_matrix'     => $employee->remunerationDetail->pay_matrix ?? 'N/A',
-                'remuneration'   => number_format($employee->remunerationDetail->remuneration ?? 0, 0, '.', ','),
+                'remuneration'   => number_format($employee->remunerationDetail->round_total ?? 0, 0, '.', ','),
                 'start_date'     => Carbon::parse($request->start_date)->format('d-m-Y'),
                 'end_date'       => Carbon::parse($request->end_date)->format('d-m-Y'),
                 'card_no'        => $card_no,
