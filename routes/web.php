@@ -20,6 +20,8 @@ use App\Http\Controllers\SummaryController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\SchemeController;
+
 
 
 Route::get('/', function () {
@@ -76,6 +78,15 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
         Route::put('update/{model}', [DocumentTypeController::class, 'update'])->middleware('can:edit-document-type')->name('document-type.update');
         Route::get('{model}/show', [DocumentTypeController::class, 'show'])->middleware('can:view-document-type')->name('document-type.show');
         Route::delete('{model}', [DocumentTypeController::class, 'destroy'])->middleware('can:delete-document-type')->name('document-type.destroy');
+    });
+
+    Route::group(['prefix' => 'schemes'], function () {
+        Route::get('', [SchemeController::class, 'index'])->name('scheme.index');
+        Route::get('create', [SchemeController::class, 'create'])->name('scheme.create');
+        Route::post('store', [SchemeController::class, 'store'])->name('scheme.store');
+        Route::get('edit/{model}', [SchemeController::class, 'edit'])->name('scheme.edit');
+        Route::put('update/{model}', [SchemeController::class, 'update'])->name('scheme.update');
+        Route::delete('{model}', [SchemeController::class, 'destroy'])->name('scheme.destroy');
     });
 
     Route::group(['prefix' => 'user'], function () {
