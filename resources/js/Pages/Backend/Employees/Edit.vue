@@ -215,6 +215,32 @@
                                      :rules="[val => !!val || 'Post per Qualification is required']" />
                         </div>
 
+                        <div class="col-12 col-sm-6">
+                            <q-select
+                                v-model="isScheme"
+                                :options="[
+                                    { label: 'Yes', value: true },
+                                    { label: 'No', value: false }
+                                  ]"
+                                label="Does Employee belong to a Scheme? *"
+                                outlined
+                                dense
+                                emit-value
+                                map-options
+                            />
+                        </div>
+
+                        <div v-if="isScheme" class="col-12 col-sm-6">
+                            <div class="col-12 col-sm-6">
+                                <q-select v-model="form.scheme" label="Scheme *" :options="schemes" option-label="name" option-value="id"
+                                          emit-value map-options outlined dense
+                                          :error="!!form.errors?.scheme" :error-message="form.errors?.scheme"
+                                          :rules="[val => !!val || 'Scheme is required']" />
+                            </div>
+
+                        </div>
+
+
 
                     </div>
                     <q-stepper-navigation>
@@ -307,6 +333,9 @@
                         <div v-if="form.employment_type === 'MR'" class="col-12 col-sm-6"> <strong>Skill at Present:</strong> {{ form.skill_at_present }} </div>
                         <div v-if="form.employment_type === 'MR'" class="col-12 col-sm-6"> <strong>Post Selected:</strong> {{ form.post_per_qualification }} </div>
                         <div class="col-12 col-sm-6"> <strong>Workplace:</strong> {{ form.name_of_workplace }} </div>
+
+                        <div v-if="isScheme" class="col-12 col-sm-6"><strong>Scheme:</strong>{{ (props?.schemes || schemes).find(o => String(o.id) === String(form.scheme))?.name || '' }}</div>
+
                     </div>
 
                     <div class="q-mb-md text-h6">Uploaded Documents</div>
@@ -356,13 +385,14 @@ import useUtils from "@/Compositions/useUtils";
 
 const {  educationalQualifications, skills,formatDate } = useUtils();
 defineOptions({layout:BackendLayout})
-const props=defineProps(['documentTypes','offices','data','current_offices']);
+const props=defineProps(['documentTypes','offices','data','current_offices','schemes']);
 const $q = useQuasar();
 
 
 
 const step = ref('1')
 
+const isScheme = ref(!!props.data?.scheme_id || !!props.data?.scheme)
 
 const form=useForm({
     name:props.data?.name,
@@ -382,6 +412,7 @@ const form=useForm({
     date_of_engagement:props.data?.date_of_engagement,
     skill_category:props.data?.skill_category,
     skill_at_present:props.data?.skill_at_present,
+    scheme: props.data?.scheme?.id ?? null,
     documents:[],
     avatar:null,
 })
@@ -513,6 +544,12 @@ const submit = () => {
         formData.append('date_of_engagement', form.date_of_engagement || '')
         formData.append('skill_category', form.skill_category)
         formData.append('skill_at_present', form.skill_at_present)
+
+        if (!isScheme.value) {
+            form.scheme = ''
+        }
+        formData.append('scheme', form.scheme?.id || form.scheme)
+
         if (form.avatar && typeof form.avatar !== 'string') {
             formData.append('avatar', form.avatar)
         }

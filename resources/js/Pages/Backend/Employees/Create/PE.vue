@@ -220,7 +220,7 @@
                     <div class="q-mb-md text-h6">Job Info</div>
                     <div class="row q-col-gutter-sm q-mb-md">
                         <div class="col-12 col-sm-6"> <strong>Employment Type:</strong> Provisional Employee </div>
-                        <div class="col-12 col-sm-6"> <strong>Office:</strong> {{ offices[form.office].name }} </div>
+                        <div class="col-12 col-sm-6"><strong>Office:</strong>{{ (props?.offices || offices).find(o => String(o.id) === String(form.office))?.name || '' }}</div>
                         <div class="col-12 col-sm-6"> <strong>Designation:</strong> {{ form.designation }} </div>
                         <div class="col-12 col-sm-6"> <strong>Engagement Card No. :</strong> {{ form.engagement_card_no }} </div>
                         <div class="col-12 col-sm-6"> <strong>Date of Initial Engagement:</strong> {{ formatDate(form.date_of_engagement) }} </div>

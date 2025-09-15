@@ -136,6 +136,12 @@
                                             <q-item-section side class="subtitle">Skill at Present:</q-item-section>
                                             <q-item-section class="text-label">{{data?.skill_at_present}}</q-item-section>
                                         </q-item>
+
+
+                                        <q-item v-if=" data?.employment_type?.trim() === 'MR' && data?.scheme_id">
+                                            <q-item-section side class="subtitle">Scheme:</q-item-section>
+                                            <q-item-section class="text-label">{{data?.scheme?.name}}</q-item-section>
+                                        </q-item>
                                     </q-list>
 
                                     <div class=" q-mt-lg flex items-center justify-center">

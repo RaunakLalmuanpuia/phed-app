@@ -154,6 +154,32 @@
                                       />
                         </div>
 
+                        <div class="col-12 col-sm-6">
+                            <!-- Toggle: Scheme or not -->
+                            <q-select
+                                v-model="isScheme"
+                                :options="[
+                                  { label: 'Yes', value: true },
+                                  { label: 'No', value: false }
+                                ]"
+                                label="Does Employee belong to a Scheme? *"
+                                outlined
+                                dense
+                                emit-value
+                                map-options
+                            />
+                        </div>
+
+                        <div v-if="isScheme" class="col-12 col-sm-6">
+                            <q-select v-model="form.scheme" label="Scheme *" :options="schemes" option-label="name" option-value="id"
+                                      emit-value map-options outlined dense
+                                      :error="!!form.errors?.scheme" :error-message="form.errors?.scheme"
+                                      :rules="[val => !!val || 'Scheme is required']" />
+                        </div>
+
+
+
+
 
 
                     </div>
@@ -233,13 +259,19 @@
                     <div class="q-mb-md text-h6">Job Info</div>
                     <div class="row q-col-gutter-sm q-mb-md">
                         <div class="col-12 col-sm-6"> <strong>Employment Type:</strong> Muster Roll</div>
-                        <div class="col-12 col-sm-6"> <strong>Office:</strong> {{ offices[form.office].name }} </div>
+<!--                        <div class="col-12 col-sm-6"> <strong>Office:</strong> {{ offices[form.office].name }} </div>-->
+                        <div class="col-12 col-sm-6">
+                            <strong>Office:</strong>
+                            {{ (props?.offices || offices).find(o => String(o.id) === String(form.office))?.name || '' }}
+                        </div>
                         <div class="col-12 col-sm-6"> <strong>Designation:</strong> {{ form.designation }} </div>
                         <div class="col-12 col-sm-6"> <strong>Date of Initial Engagement:</strong> {{ formatDate(form.date_of_engagement) }} </div>
                         <div class="col-12 col-sm-6"> <strong>Skill Category at Initial Engagement:</strong> {{ form.skill_category }} </div>
                         <div class="col-12 col-sm-6"> <strong>Skill at Present:</strong> {{ form.skill_at_present }} </div>
                         <div class="col-12 col-sm-6"> <strong>Post Selected:</strong> {{ form.post_per_qualification }} </div>
                         <div class="col-12 col-sm-6"> <strong>Workplace:</strong> {{ form.name_of_workplace }} </div>
+
+                        <div v-if="isScheme" class="col-12 col-sm-6"><strong>Scheme:</strong>{{ (props?.schemes || schemes).find(o => String(o.id) === String(form.scheme))?.name || '' }}</div>
 
 
                     </div>
@@ -293,9 +325,11 @@ import useUtils from "@/Compositions/useUtils";
 const {  educationalQualifications, skills, formatDate } = useUtils();
 
 defineOptions({layout:BackendLayout})
-const props=defineProps(['documentTypes','offices']);
+const props=defineProps(['documentTypes','offices','schemes']);
 const $q = useQuasar();
 
+
+const isScheme = ref(false);
 
 
 const step = ref('1')
@@ -319,6 +353,7 @@ const form=useForm({
     date_of_engagement:'',
     skill_category:'',
     skill_at_present:'',
+    scheme:'',
     documents:[],
 })
 
@@ -426,6 +461,7 @@ const submit = () => {
         formData.append('date_of_engagement', form.date_of_engagement)
         formData.append('skill_category', form.skill_category)
         formData.append('skill_at_present', form.skill_at_present)
+        formData.append('scheme', form.scheme)
 
 
         // Append documents (assuming object with id as key and File as value)

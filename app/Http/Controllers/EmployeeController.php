@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DocumentType;
 use App\Models\Employee;
 use App\Models\Office;
+use App\Models\Scheme;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,7 +25,8 @@ class EmployeeController extends Controller
         // Offices with at least one employee, plus MR & PE counts
         $offices = Office::withCount([
             'employees as mr_count' => function ($query) {
-                $query->where('employment_type', 'MR');
+                $query->where('employment_type', 'MR')
+                    ->whereNull('scheme_id');
             },
             'employees as pe_count' => function ($query) {
                 $query->where('employment_type', 'PE');
@@ -58,6 +60,7 @@ class EmployeeController extends Controller
 
         $mrCount = $model->employees()
             ->where('employment_type', 'MR')
+            ->whereNull('scheme_id')
             ->count();
 
         // Get distinct designation & education_qln for PE employees in this office
@@ -124,6 +127,7 @@ class EmployeeController extends Controller
         $employees = $model->employees() // ✅ Only employees of this office
         ->with('office')
             ->where('employment_type', '!=', 'Deleted') // ✅ Exclude Deleted
+            ->whereNull('scheme_id') // ✅ Exclude Scheme
             ->when($search, function ($builder) use ($search) {
                 $builder->where(function ($query) use ($search) {
                     $query->where('name', 'LIKE', "%$search%")
@@ -233,7 +237,8 @@ class EmployeeController extends Controller
     public function mrEmployees(Request $request){
         $search = $request->get('search');
         $offices = Office::whereHas('employees', function ($query) {
-            $query->where('employment_type', 'MR'); // ✅ Only PE employees
+            $query->where('employment_type', 'MR')
+            ->whereNull('scheme_id');
         })
             ->withCount(['employees as mr_count' => function ($query) {
                 $query->where('employment_type', 'MR'); // ✅ Count PE employees
@@ -284,6 +289,7 @@ class EmployeeController extends Controller
         $employees = $model->employees() // ✅ Only employees of this office
         ->with('office')
             ->where('employment_type', 'MR')
+            ->whereNull('scheme_id')
             ->when($search, function ($builder) use ($search) {
                 $builder->where(function ($query) use ($search) {
                     $query->where('name', 'LIKE', "%$search%")
@@ -351,7 +357,7 @@ class EmployeeController extends Controller
         $office = Office::all();
         $documentTypes = DocumentType::all(); // get all document types
         return inertia('Backend/Employees/Show', [
-            'data' => $model->load(['office', 'documents.type','transfers.oldOffice','transfers.newOffice',
+            'data' => $model->load(['office', 'documents.type','transfers.oldOffice','transfers.newOffice','scheme',
                 'deletionDetail','deletionRequests', 'remunerationDetail','engagementCard','editRequests.attachments.type',
                 'transferRequests.currentOffice','transferRequests.requestedOffice', 'documentRequest.files.documentType']),
             'office' => $office,
@@ -421,6 +427,7 @@ class EmployeeController extends Controller
             'date_of_engagement' => 'nullable|date',
             'skill_category' => 'nullable|string|max:255',
             'skill_at_present' => 'nullable|string|max:255',
+            'scheme' => 'nullable|exists:schemes,id',
             'documents' => 'nullable|array',
             'documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
@@ -441,10 +448,11 @@ class EmployeeController extends Controller
                 'technical_qln' => $validated['technical_qln'],
                 'name_of_workplace' => $validated['name_of_workplace'],
                 'post_per_qualification' => $validated['post_per_qualification'],
-                'engagement_card_no'=> $validated['engagement_card_no'],
+                'engagement_card_no'=> $validated['engagement_card_no'] ?? null,
                 'date_of_engagement' => $validated['date_of_engagement'],
                 'skill_category' => $validated['skill_category'],
                 'skill_at_present' => $validated['skill_at_present'],
+                'scheme_id' => $validated['scheme'],
             ]);
             if ($request->hasFile('avatar')) {
                 $file = $request->file('avatar');
@@ -505,11 +513,13 @@ class EmployeeController extends Controller
         abort_if(!$user->hasPermissionTo('edit-employee'),403,'Access Denied');
         $documentTypes = DocumentType::all();
         $offices = Office::all();
+        $schemes = Scheme::all();
         return inertia('Backend/Employees/Edit', [
 
-            'data' => $model->load(['office', 'documents.type']),
+            'data' => $model->load(['office', 'scheme','documents.type']),
             'documentTypes' => $documentTypes,
             'offices' => $offices,
+            'schemes' => $schemes,
         ]);
 
     }
@@ -538,6 +548,7 @@ class EmployeeController extends Controller
             'date_of_engagement' => 'nullable|date',
             'skill_category' => 'nullable|string|max:255',
             'skill_at_present' => 'nullable|string|max:255',
+            'scheme' => 'nullable|exists:schemes,id',
             'documents' => 'nullable|array',
             'documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
@@ -574,6 +585,7 @@ class EmployeeController extends Controller
                 'date_of_engagement' => $validated['date_of_engagement'],
                 'skill_category' => $validated['skill_category'],
                 'skill_at_present' => $validated['skill_at_present'],
+                'scheme_id' => $validated['scheme'] ?? null,
                 'avatar' => $model->avatar ?? $model->avatar,
             ]);
 
@@ -640,6 +652,7 @@ class EmployeeController extends Controller
         // Total employees across all offices
         $totalEmployees = Employee::whereIn('office_id', $officeIds)
             ->where('employment_type', '!=', 'Deleted')
+            ->whereNull('scheme_id')
             ->count();
 
         $peCount = Employee::whereIn('office_id', $officeIds)
@@ -648,6 +661,7 @@ class EmployeeController extends Controller
 
         $mrCount = Employee::whereIn('office_id', $officeIds)
             ->where('employment_type', 'MR')
+            ->whereNull('scheme_id')
             ->count();
 
         // Distinct Designations
@@ -673,6 +687,7 @@ class EmployeeController extends Controller
         // Distinct Educational Qualifications
         $educationQlnMr = Employee::whereIn('office_id', $officeIds)
             ->where('employment_type', 'MR')
+            ->whereNull('scheme_id')
             ->select('educational_qln')
             ->distinct()
             ->orderBy('educational_qln')
@@ -684,6 +699,7 @@ class EmployeeController extends Controller
         // Get distinct designation & education_qln for PE employees in this office
         $skills = Employee::whereIn('office_id', $officeIds)
             ->where('employment_type', 'MR')
+            ->whereNull('scheme_id')
             ->select('skill_at_present')
             ->distinct()
             ->orderBy('skill_at_present')
@@ -716,6 +732,7 @@ class EmployeeController extends Controller
         $employees = Employee::with('office')
             ->whereIn('office_id', (array) $officeIds)
             ->where('employment_type', '!=', 'Deleted')
+            ->whereNull('scheme_id')
             ->when($search, fn($q) => $q->where(function ($sub) use ($search) {
                 $sub->where('name', 'LIKE', "%{$search}%")
                     ->orWhere('mobile', 'LIKE', "%{$search}%")
@@ -820,6 +837,7 @@ class EmployeeController extends Controller
         // Get distinct designation & education_qln for PE employees in this office
         $skills = Employee::whereIn('office_id', $offices->pluck('value'))
             ->where('employment_type', 'MR')
+            ->whereNull('scheme_id')
             ->select('skill_at_present')
             ->distinct()
             ->orderBy('skill_at_present')
@@ -829,6 +847,7 @@ class EmployeeController extends Controller
 
         $educationQln = Employee::whereIn('office_id', $offices->pluck('value'))
             ->where('employment_type', 'MR')
+            ->whereNull('scheme_id')
             ->select('educational_qln')
             ->distinct()
             ->orderBy('educational_qln')
@@ -855,6 +874,7 @@ class EmployeeController extends Controller
         $employees = Employee::with(['office'])
             ->whereIn('office_id', (array) $officeIds)
             ->where('employment_type',  'MR')
+            ->whereNull('scheme_id')
             ->when($search, fn($q) => $q->where(function ($sub) use ($search) {
                 $sub->where('name', 'LIKE', "%{$search}%")
                     ->orWhere('mobile', 'LIKE', "%{$search}%")
