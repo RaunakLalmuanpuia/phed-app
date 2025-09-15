@@ -77,6 +77,7 @@ class EmployeeController extends Controller
         // Get distinct designation & education_qln for PE employees in this office
         $skills = $model->employees()
             ->where('employment_type', 'MR')
+            ->whereNull('scheme_id')
             ->select('skill_at_present')
             ->distinct()
             ->orderBy('skill_at_present')
@@ -96,6 +97,7 @@ class EmployeeController extends Controller
 
         $educationQlnMr = $model->employees()
             ->where('employment_type', 'MR')
+            ->whereNull('scheme_id')
             ->select('educational_qln')
             ->distinct()
             ->orderBy('educational_qln')
@@ -256,6 +258,7 @@ class EmployeeController extends Controller
         // Get distinct designation & education_qln for PE employees in this office
         $skills = $model->employees()
             ->where('employment_type', 'MR')
+            ->whereNull('scheme_id')
             ->select('skill_at_present')
             ->distinct()
             ->orderBy('skill_at_present')
@@ -265,6 +268,7 @@ class EmployeeController extends Controller
 
         $educationQln = $model->employees()
             ->where('employment_type', 'MR')
+            ->whereNull('scheme_id')
             ->select('educational_qln')
             ->distinct()
             ->orderBy('educational_qln')
