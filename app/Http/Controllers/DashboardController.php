@@ -16,7 +16,7 @@ class DashboardController extends Controller
 
         $totalEmployees = Employee::where('employment_type', '!=', 'Deleted')->count();
         $peCount = Employee::where('employment_type', 'PE')->count();
-        $mrCount = Employee::where('employment_type', 'MR')->count();
+        $mrCount = Employee::where('employment_type', 'MR')->whereNull('scheme_id')->count();
         $deletedCount = Employee::where('employment_type', 'Deleted')->count();
 
         $notifications = [

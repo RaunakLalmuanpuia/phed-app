@@ -282,6 +282,18 @@ class EmployeeController extends Controller
             'educationQln' => $educationQln,
         ]);
     }
+
+
+    public function schemeEmployees(Request $request){
+
+    }
+    public function indexSchemeEmployees(Scheme $model){
+
+    }
+    public function jsonSchemeEmployees(Request $request, Scheme $model){
+
+    }
+
     public function jsonMrEmployees(Request $request, Office $model)
     {
         $user = auth()->user();
