@@ -522,6 +522,7 @@ const submit = () => {
                                 post_per_qualification: 2,
                                 skill_category: 2,
                                 skill_at_present: 2,
+                                scheme:2,
 
                                 documents: 3,
                             }

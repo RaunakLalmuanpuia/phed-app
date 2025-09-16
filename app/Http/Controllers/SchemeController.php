@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Scheme;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class SchemeController extends Controller
 {
@@ -47,9 +48,12 @@ class SchemeController extends Controller
     public function update(Request $request, Scheme $model)
     {
 
-        $data=$this->validate($request, [
-            'name'=>'required|unique:schemes',
-            'description'=>'required',
+        $data = $this->validate($request, [
+            'name' => [
+                'required',
+                Rule::unique('schemes')->ignore($model->id),
+            ],
+            'description' => 'required',
         ]);
 
         DB::transaction(function () use ($data, $model) {
@@ -59,10 +63,19 @@ class SchemeController extends Controller
         return to_route('scheme.index');
     }
 
-    public function destroy(Request $request,Scheme $model)
+    public function destroy(Request $request, Scheme $model)
     {
+        // Check if the scheme has employees
+        if ($model->employees()->exists()) {
+            return back()->withErrors([
+                'error' => 'Cannot delete scheme because employees are assigned to it.'
+            ]);
+        }
 
+        // Safe to delete
         $model->delete();
-        return to_route('scheme.index');
+
+        return to_route('scheme.index')->with('success', 'Scheme deleted successfully.');
     }
+
 }
