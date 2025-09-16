@@ -14,7 +14,7 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
-        $totalEmployees = Employee::where('employment_type', '!=', 'Deleted')->count();
+        $totalEmployees = Employee::where('employment_type', '!=', 'Deleted')->whereNull('scheme_id')->count();
         $peCount = Employee::where('employment_type', 'PE')->count();
         $mrCount = Employee::where('employment_type', 'MR')->whereNull('scheme_id')->count();
         $deletedCount = Employee::where('employment_type', 'Deleted')->count();
@@ -103,7 +103,7 @@ class DashboardController extends Controller
         $offices = Office::query()
             ->withCount([
                 'employees as pe_count' => fn(Builder $q) => $q->where('employment_type', 'PE'),
-                'employees as mr_count' => fn(Builder $q) => $q->where('employment_type', 'MR'),
+                'employees as mr_count' => fn(Builder $q) => $q->where('employment_type', 'MR')->whereNull('scheme_id'),
 
             ])
             ->get();

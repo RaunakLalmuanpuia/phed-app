@@ -174,6 +174,10 @@ Route::group(['middleware'=>'auth','prefix' => 'employees'], function () {
     Route::get('json-index-mr/{model}', [EmployeeController::class, 'jsonMrEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-mr');
 
 
+    Route::get('scheme', [EmployeeController::class, 'schemeEmployees'])->middleware('can:view-allemployee')->name('employees.scheme');
+    Route::get('index-scheme/{model}', [EmployeeController::class, 'indexSchemeEmployees'])->middleware('can:view-allemployee')->name('employees.index-scheme');
+    Route::get('json-index-scheme/{model}', [EmployeeController::class, 'jsonSchemeEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-scheme');
+
     Route::get('/deleted', [EmployeeController::class, 'deletedEmployees'])->middleware('can:view-allemployee')->name('employees.deleted');
     Route::get('json-index-deleted', [EmployeeController::class, 'jsonDeletedEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-deleted');
 
@@ -269,7 +273,7 @@ Route::group(['middleware'=>'auth','prefix' => 'export'], function () {
     Route::get('all/{model}', [ExportController::class, 'exportAll'])->middleware('can:export-all')->name('export.all');
     Route::get('provisional/{model}', [ExportController::class, 'exportProvisional'])->middleware('can:export-pe')->name('export.pe');
     Route::get('muster-roll/{model}', [ExportController::class, 'exportMusterRoll'])->middleware('can:export-mr')->name('export.mr');
-
+    Route::get('scheme/{model}', [ExportController::class, 'exportScheme'])->middleware('can:export-mr')->name('export.scheme');
 
     Route::get('remuneration-summary', [ExportController::class, 'exportRemunerationSummary'])->middleware('can:export-remuneration-summary')->name('export.remuneration-summary');
 

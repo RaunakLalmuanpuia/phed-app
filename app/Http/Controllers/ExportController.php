@@ -6,7 +6,9 @@ use App\Exports\AllEmployeesExport;
 use App\Exports\MusterRollEmployeesExport;
 use App\Exports\OfficeRemunerationSheet;
 use App\Exports\RemunerationExport;
+use App\Exports\SchemeEmployeesExport;
 use App\Models\Office;
+use App\Models\Scheme;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Exports\ProvisionalSummaryExport;
@@ -110,5 +112,19 @@ class ExportController extends Controller
         // Return Excel download
         return Excel::download(new OfficeRemunerationSheet($office), $filename);
     }
+
+
+    public function exportScheme(Request $request, Scheme $model)
+    {
+        $user = $request->user();
+//        abort_if(!$user->hasPermissionTo('export-scheme'), 403, 'Access Denied');
+
+        return Excel::download(
+            new SchemeEmployeesExport($model),
+            Str::slug($model->name, '_') . '_scheme_employees.xlsx'
+        );
+    }
+
+
 
 }

@@ -597,6 +597,7 @@ const module = reactive({
             {route_name: 'employees.all', label: 'All Employee', permission: 'view-allemployee'},
             {route_name: 'employees.pe', label: 'Provisional Employee', permission: 'view-allemployee'},
             {route_name: 'employees.mr', label: 'Muster Roll Employee', permission: 'view-allemployee'},
+            {route_name: 'employees.scheme', label: 'Scheme Employee', permission: 'view-allemployee'},
             {route_name: 'employees.deleted', label: 'Deleted Employee', permission: 'view-allemployee'},
             // {route_name: 'role.index', label: 'Permissions', permission: 'view-anyrole'},
             // {route_name: 'user.index', label: 'User Accounts', permission: 'view-anyuser'},

@@ -6,6 +6,7 @@ use App\Models\DocumentType;
 use App\Models\Employee;
 use App\Models\Office;
 use App\Models\Scheme;
+use Exception;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,10 +17,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+
 class EmployeeController extends Controller
 {
 
-    public function allEmployees(Request $request){
+    public function allEmployees(Request $request)
+    {
 
         $search = $request->get('search');
         // Offices with at least one employee, plus MR & PE counts
@@ -31,13 +34,13 @@ class EmployeeController extends Controller
             'employees as pe_count' => function ($query) {
                 $query->where('employment_type', 'PE');
             },
-         ])->when($search, function ($query) use ($search) {
-                $query->where('name', 'LIKE', "%{$search}%"); // ✅ search by office name
-         })->get();
+        ])->when($search, function ($query) use ($search) {
+            $query->where('name', 'LIKE', "%{$search}%"); // ✅ search by office name
+        })->get();
 
-        $totalEmployees = Employee::where('employment_type', '!=', 'Deleted')->count();
+        $totalEmployees = Employee::where('employment_type', '!=', 'Deleted')->whereNull('scheme_id')->count();
         $peCount = Employee::where('employment_type', 'PE')->count();
-        $mrCount = Employee::where('employment_type', 'MR')->count();
+        $mrCount = Employee::where('employment_type', 'MR')->whereNull('scheme_id')->count();
         $deletedCount = Employee::where('employment_type', 'Deleted')->count();
         return Inertia::render('Backend/Employees/AllEmployees', [
             'offices' => $offices,
@@ -48,6 +51,7 @@ class EmployeeController extends Controller
             'deletedCount' => $deletedCount,
         ]);
     }
+
     public function indexAllEmployees(Office $model) // shows all employees
     {
         $totalEmployees = $model->employees()
@@ -107,7 +111,7 @@ class EmployeeController extends Controller
 
 
         return Inertia::render('Backend/Employees/Index/AllEmployees', [
-            'office'=>$model,
+            'office' => $model,
             'totalEmployees' => $totalEmployees,
             'peCount' => $peCount,
             'mrCount' => $mrCount,
@@ -117,6 +121,7 @@ class EmployeeController extends Controller
             'educationQlnMr' => $educationQlnMr,
         ]);
     }
+
     public function jsonAllEmployees(Request $request, Office $model)
     {
         $user = auth()->user();
@@ -158,7 +163,9 @@ class EmployeeController extends Controller
             'list' => $employees->paginate($perPage),
         ], 200);
     }
-    public function peEmployees(Request $request){
+
+    public function peEmployees(Request $request)
+    {
         $search = $request->get('search');
         $offices = Office::whereHas('employees', function ($query) {
             $query->where('employment_type', 'PE'); // ✅ Only PE employees
@@ -174,6 +181,7 @@ class EmployeeController extends Controller
             'search' => $search,
         ]);
     }
+
     public function indexPeEmployees(Office $model) // shows PE type
     {
 
@@ -202,6 +210,7 @@ class EmployeeController extends Controller
             'educationQln' => $educationQln,
         ]);
     }
+
     public function jsonPeEmployees(Request $request, Office $model)
     {
 
@@ -214,7 +223,7 @@ class EmployeeController extends Controller
 
 
         $employees = $model->employees() // ✅ Only employees of this office
-        ->with(['office','remunerationDetail'])
+        ->with(['office', 'remunerationDetail'])
             ->where('employment_type', 'PE')
             ->when($search, function ($builder) use ($search) {
                 $builder->where(function ($query) use ($search) {
@@ -225,22 +234,23 @@ class EmployeeController extends Controller
                         ->orWhere('name_of_workplace', 'LIKE', "%$search%");
                 });
             })->when($filter['designation'] ?? null, function ($query, $designation) {
-            $query->where('designation', $designation);
-             })->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
+                $query->where('designation', $designation);
+            })->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
                 $query->where('educational_qln', $educationQln);
             });
-
 
 
         return response()->json([
             'list' => $employees->paginate($perPage),
         ], 200);
     }
-    public function mrEmployees(Request $request){
+
+    public function mrEmployees(Request $request)
+    {
         $search = $request->get('search');
         $offices = Office::whereHas('employees', function ($query) {
             $query->where('employment_type', 'MR')
-            ->whereNull('scheme_id');
+                ->whereNull('scheme_id');
         })
             ->withCount(['employees as mr_count' => function ($query) {
                 $query->where('employment_type', 'MR'); // ✅ Count PE employees
@@ -253,6 +263,7 @@ class EmployeeController extends Controller
             'search' => $search,
         ]);
     }
+
     public function indexMrEmployees(Office $model) // shows MR type
     {
         // Get distinct designation & education_qln for PE employees in this office
@@ -277,22 +288,12 @@ class EmployeeController extends Controller
             ->values();
 
         return Inertia::render('Backend/Employees/Index/MrEmployees', [
-            'office'=>$model,
+            'office' => $model,
             'skills' => $skills,
             'educationQln' => $educationQln,
         ]);
     }
 
-
-    public function schemeEmployees(Request $request){
-
-    }
-    public function indexSchemeEmployees(Scheme $model){
-
-    }
-    public function jsonSchemeEmployees(Request $request, Scheme $model){
-
-    }
 
     public function jsonMrEmployees(Request $request, Office $model)
     {
@@ -325,6 +326,108 @@ class EmployeeController extends Controller
             'list' => $employees->paginate($perPage),
         ], 200);
     }
+
+
+    public function schemeEmployees(Request $request)
+    {
+        $search = $request->get('search');
+
+        $schemes = Scheme::withCount(['employees as mr_count' => function ($query) {
+            $query->where('employment_type', 'MR');
+        }])
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%");
+            })
+            ->get();
+
+        return Inertia::render('Backend/Employees/SchemeEmployees', [
+            'schemes' => $schemes,
+            'search' => $search,
+        ]);
+    }
+
+    public function indexSchemeEmployees(Scheme $model)
+    {
+        // Get distinct skills for MR employees in this scheme
+        $skills = $model->employees()
+            ->where('employment_type', 'MR')
+            ->select('skill_at_present')
+            ->distinct()
+            ->orderBy('skill_at_present')
+            ->pluck('skill_at_present')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+        // Get distinct educational qualifications for MR employees in this scheme
+        $educationQln = $model->employees()
+            ->where('employment_type', 'MR')
+            ->select('educational_qln')
+            ->distinct()
+            ->orderBy('educational_qln')
+            ->pluck('educational_qln')
+            ->map(fn($e) => ['label' => $e, 'value' => $e])
+            ->values();
+
+        $offices = $model->employees()
+            ->where('employment_type', 'MR')
+            ->with('office')
+            ->select('office_id')
+            ->distinct()
+            ->get()
+            ->map(fn($emp) => [
+                'label' => $emp->office?->name,
+                'value' => $emp->office_id
+            ])
+            ->filter(fn($o) => !empty($o['label'])) // remove nulls
+            ->values();
+
+        return Inertia::render('Backend/Employees/Index/SchemeEmployees', [
+            'scheme' => $model,
+            'skills' => $skills,
+            'educationQln' => $educationQln,
+            'offices' => $offices,
+        ]);
+    }
+
+    public function jsonSchemeEmployees(Request $request, Scheme $model)
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
+
+        $perPage = $request->get('rowsPerPage') ?? 5;
+        $filter = $request->get('filter', []);
+        $search = $filter['search'] ?? null;
+
+        $employees = $model->employees() // ✅ Only employees of this scheme
+        ->with(['scheme','office'])
+            ->where('employment_type', 'MR')
+            ->when($search, function ($builder) use ($search) {
+                $builder->where(function ($query) use ($search) {
+                    $query->where('name', 'LIKE', "%$search%")
+                        ->orWhere('mobile', 'LIKE', "%$search%")
+                        ->orWhere('designation', 'LIKE', "%$search%")
+                        ->orWhere('date_of_birth', 'LIKE', "%$search%")
+                        ->orWhere('name_of_workplace', 'LIKE', "%$search%");
+                });
+            })
+            ->when($filter['skill'] ?? null, function ($query, $skill) {
+                $query->where('skill_at_present', $skill);
+            })
+            ->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
+                $query->where('educational_qln', $educationQln);
+            })
+            ->when($filter['office'] ?? null, function ($query, $officeId) {
+                $query->where('office_id', $officeId); // ✅ Office filter
+            });
+
+        return response()->json([
+            'list' => $employees->paginate($perPage),
+        ], 200);
+
+    }
+
+
+
     public function deletedEmployees() // shows PE type
     {
         $office = Office::whereHas('employees')->get(); // ⬅️ Only offices with employees
@@ -333,6 +436,7 @@ class EmployeeController extends Controller
             'office' => $office,
         ]);
     }
+
     public function jsonDeletedEmployees(Request $request)
     {
         $user = auth()->user();
@@ -343,7 +447,7 @@ class EmployeeController extends Controller
         $search = $filter['search'] ?? null; // ✅ extract from filter array
         $employees = Employee::query()
             ->where('employment_type', 'Deleted')
-            ->with(['office','deletionDetail'])
+            ->with(['office', 'deletionDetail'])
             ->when($search, function (Builder $builder) use ($search) {
                 $builder->where(function ($query) use ($search) {
                     $query->where('name', 'LIKE', "%$search%")
@@ -366,6 +470,7 @@ class EmployeeController extends Controller
             'list' => $employees->paginate($perPage),
         ], 200);
     }
+
     public function show(Request $request, Employee $model)
     {
         $user = auth()->user();
@@ -373,39 +478,40 @@ class EmployeeController extends Controller
         $office = Office::all();
         $documentTypes = DocumentType::all(); // get all document types
         return inertia('Backend/Employees/Show', [
-            'data' => $model->load(['office', 'documents.type','transfers.oldOffice','transfers.newOffice','scheme',
-                'deletionDetail','deletionRequests', 'remunerationDetail','engagementCard','editRequests.attachments.type',
-                'transferRequests.currentOffice','transferRequests.requestedOffice', 'documentRequest.files.documentType']),
+            'data' => $model->load(['office', 'documents.type', 'transfers.oldOffice', 'transfers.newOffice', 'scheme',
+                'deletionDetail', 'deletionRequests', 'remunerationDetail', 'engagementCard', 'editRequests.attachments.type',
+                'transferRequests.currentOffice', 'transferRequests.requestedOffice', 'documentRequest.files.documentType']),
             'office' => $office,
             'documentTypes' => $documentTypes,
-            'canDelete'=>$user->can('delete-employee'),
-            'canEdit'=>$user->can('edit-employee'),
-            'canCreate'=>$user->can('create-employee'),
+            'canDelete' => $user->can('delete-employee'),
+            'canEdit' => $user->can('edit-employee'),
+            'canCreate' => $user->can('create-employee'),
 
             'canEditDelete' => $user->can('edit-delete'),
             'canDeleteDocument' => $user->can('delete-document'),
 
-            'canRequestEdit'=>$user->can('request-edit'),
-            'canRequestDelete'=>$user->can('request-delete'),
-            'canRequestTransfer'=>$user->can('request-transfer'),
-            'canRequestDocumentEdit'=>$user->can('request-document-edit'),
+            'canRequestEdit' => $user->can('request-edit'),
+            'canRequestDelete' => $user->can('request-delete'),
+            'canRequestTransfer' => $user->can('request-transfer'),
+            'canRequestDocumentEdit' => $user->can('request-document-edit'),
 
-            'canApproveEdit'=>$user->can('approve-edit'),
-            'canApproveDelete'=>$user->can('approve-delete'),
-            'canApproveTransfer'=>$user->can('approve-transfer'),
-            'canApproveDocumentEdit'=>$user->can('approve-document-edit'),
+            'canApproveEdit' => $user->can('approve-edit'),
+            'canApproveDelete' => $user->can('approve-delete'),
+            'canApproveTransfer' => $user->can('approve-transfer'),
+            'canApproveDocumentEdit' => $user->can('approve-document-edit'),
 
-            'canCreateRemuneration'=>$user->can('create-remuneration'),
+            'canCreateRemuneration' => $user->can('create-remuneration'),
 
-            'canCreateEngagementCard'=>$user->can('store-engagement-card'),
-            'canDownloadEngagementCard'=>$user->can('download-engagement-card'),
-            'canDeleteEngagementCard'=>$user->can('delete-engagement-card'),
+            'canCreateEngagementCard' => $user->can('store-engagement-card'),
+            'canDownloadEngagementCard' => $user->can('download-engagement-card'),
+            'canDeleteEngagementCard' => $user->can('delete-engagement-card'),
 
 
-            'canCreateTransfer'=>$user->can('transfer-employee'),
-            'canDeleteTransfer'=>$user->can('delete-transfer'),
+            'canCreateTransfer' => $user->can('transfer-employee'),
+            'canDeleteTransfer' => $user->can('delete-transfer'),
         ]);
     }
+
     public function create(Request $request)
     {
         $user = auth()->user();
@@ -418,7 +524,9 @@ class EmployeeController extends Controller
             'offices' => $offices,
         ]);
     }
-    public function store(Request $request){
+
+    public function store(Request $request)
+    {
 //        dd($request->all());
 
         $user = auth()->user();
@@ -450,7 +558,7 @@ class EmployeeController extends Controller
 
         $employee = DB::transaction(function () use ($validated, $request) {
             $employee = Employee::create([
-                'employee_code'=> $this->generateEmployeeCode(),
+                'employee_code' => $this->generateEmployeeCode(),
                 'office_id' => $validated['office'],
                 'name' => $validated['name'],
                 'email' => $validated['email'],
@@ -464,7 +572,7 @@ class EmployeeController extends Controller
                 'technical_qln' => $validated['technical_qln'],
                 'name_of_workplace' => $validated['name_of_workplace'],
                 'post_per_qualification' => $validated['post_per_qualification'],
-                'engagement_card_no'=> $validated['engagement_card_no'] ?? null,
+                'engagement_card_no' => $validated['engagement_card_no'] ?? null,
                 'date_of_engagement' => $validated['date_of_engagement'],
                 'skill_category' => $validated['skill_category'],
                 'skill_at_present' => $validated['skill_at_present'],
@@ -491,7 +599,7 @@ class EmployeeController extends Controller
                     if ($file) {
                         $documentType = DocumentType::find($typeId);
                         if (!$documentType) {
-                            throw new \Exception("Invalid document type ID: {$typeId}");
+                            throw new Exception("Invalid document type ID: {$typeId}");
                         }
 
                         $randomString = \Str::random(8); // Laravel helper for random string
@@ -517,33 +625,35 @@ class EmployeeController extends Controller
 
 
         return response()->json([
-            'employee'=>$employee,
-            'message' =>  'Employee Created Successfully!'
+            'employee' => $employee,
+            'message' => 'Employee Created Successfully!'
         ]);
 
 
     }
-    public function edit(Request $request,Employee $model)
+
+    public function edit(Request $request, Employee $model)
     {
         $user = auth()->user();
-        abort_if(!$user->hasPermissionTo('edit-employee'),403,'Access Denied');
+        abort_if(!$user->hasPermissionTo('edit-employee'), 403, 'Access Denied');
         $documentTypes = DocumentType::all();
         $offices = Office::all();
         $schemes = Scheme::all();
         return inertia('Backend/Employees/Edit', [
 
-            'data' => $model->load(['office', 'scheme','documents.type']),
+            'data' => $model->load(['office', 'scheme', 'documents.type']),
             'documentTypes' => $documentTypes,
             'offices' => $offices,
             'schemes' => $schemes,
         ]);
 
     }
+
     public function update(Request $request, Employee $model)
     {
 //        dd($request->all());
         $user = auth()->user();
-        abort_if(!$user->hasPermissionTo('edit-employee'),403,'Access Denied');
+        abort_if(!$user->hasPermissionTo('edit-employee'), 403, 'Access Denied');
 
         $validated = $request->validate([
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:800', // 800KB limit
@@ -569,7 +679,7 @@ class EmployeeController extends Controller
             'documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
-        $employee = DB::transaction(function () use ($validated, $request,$model) {
+        $employee = DB::transaction(function () use ($validated, $request, $model) {
             if ($request->hasFile('avatar')) {
                 $file = $request->file('avatar');
 
@@ -597,14 +707,13 @@ class EmployeeController extends Controller
                 'technical_qln' => $validated['technical_qln'],
                 'name_of_workplace' => $validated['name_of_workplace'],
                 'post_per_qualification' => $validated['post_per_qualification'],
-                'engagement_card_no'=> $validated['engagement_card_no'],
+                'engagement_card_no' => $validated['engagement_card_no'],
                 'date_of_engagement' => $validated['date_of_engagement'],
                 'skill_category' => $validated['skill_category'],
                 'skill_at_present' => $validated['skill_at_present'],
                 'scheme_id' => $validated['scheme'] ?? null,
                 'avatar' => $model->avatar ?? $model->avatar,
             ]);
-
 
 
             // Save documents
@@ -614,7 +723,7 @@ class EmployeeController extends Controller
                         $documentType = DocumentType::find($typeId);
 
                         if (!$documentType) {
-                            throw new \Exception("Invalid document type ID: {$typeId}");
+                            throw new Exception("Invalid document type ID: {$typeId}");
                         }
 
                         $randomString = \Str::random(8);
@@ -642,11 +751,12 @@ class EmployeeController extends Controller
 
 
         return response()->json([
-            'employee'=>$employee,
-            'message' =>  'Employee Edited Successfully!'
+            'employee' => $employee,
+            'message' => 'Employee Edited Successfully!'
         ]);
 
     }
+
     public function managerAll()
     {
         $user = auth()->user();
@@ -735,18 +845,19 @@ class EmployeeController extends Controller
             'skills' => $skills,
         ]);
     }
+
     public function jsonMangerAll(Request $request)
     {
         $user = auth()->user();
         abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
 
         $perPage = $request->integer('rowsPerPage', 5);
-        $filter  = $request->get('filter', []);
-        $search  = $filter['search'] ?? null;
+        $filter = $request->get('filter', []);
+        $search = $filter['search'] ?? null;
         $officeIds = $filter['office'] ?? $user->offices()->pluck('offices.id')->all();
 
         $employees = Employee::with('office')
-            ->whereIn('office_id', (array) $officeIds)
+            ->whereIn('office_id', (array)$officeIds)
             ->where('employment_type', '!=', 'Deleted')
             ->whereNull('scheme_id')
             ->when($search, fn($q) => $q->where(function ($sub) use ($search) {
@@ -768,7 +879,9 @@ class EmployeeController extends Controller
             'list' => $employees->paginate($perPage),
         ], 200);
     }
-    public function managerPe(){
+
+    public function managerPe()
+    {
         $user = auth()->user();
 
         // Offices directly formatted for q-select
@@ -806,19 +919,20 @@ class EmployeeController extends Controller
             'educationQln' => $educationQln,
         ]);
     }
+
     public function jsonMangerPe(Request $request)
     {
         $user = auth()->user();
         abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
 
         $perPage = $request->integer('rowsPerPage', 5);
-        $filter  = $request->get('filter', []);
-        $search  = $filter['search'] ?? null;
+        $filter = $request->get('filter', []);
+        $search = $filter['search'] ?? null;
         $officeIds = $filter['office'] ?? $user->offices()->pluck('offices.id')->all();
 
-        $employees = Employee::with(['office','remunerationDetail'])
-            ->whereIn('office_id', (array) $officeIds)
-            ->where('employment_type',  'PE')
+        $employees = Employee::with(['office', 'remunerationDetail'])
+            ->whereIn('office_id', (array)$officeIds)
+            ->where('employment_type', 'PE')
             ->when($search, fn($q) => $q->where(function ($sub) use ($search) {
                 $sub->where('name', 'LIKE', "%{$search}%")
                     ->orWhere('mobile', 'LIKE', "%{$search}%")
@@ -836,6 +950,7 @@ class EmployeeController extends Controller
             'list' => $employees->paginate($perPage),
         ], 200);
     }
+
     public function managerMr()
     {
 
@@ -877,19 +992,20 @@ class EmployeeController extends Controller
             'educationQln' => $educationQln,
         ]);
     }
+
     public function jsonMangerMr(Request $request)
     {
         $user = auth()->user();
         abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
 
         $perPage = $request->integer('rowsPerPage', 5);
-        $filter  = $request->get('filter', []);
-        $search  = $filter['search'] ?? null;
+        $filter = $request->get('filter', []);
+        $search = $filter['search'] ?? null;
         $officeIds = $filter['office'] ?? $user->offices()->pluck('offices.id')->all();
 
         $employees = Employee::with(['office'])
-            ->whereIn('office_id', (array) $officeIds)
-            ->where('employment_type',  'MR')
+            ->whereIn('office_id', (array)$officeIds)
+            ->where('employment_type', 'MR')
             ->whereNull('scheme_id')
             ->when($search, fn($q) => $q->where(function ($sub) use ($search) {
                 $sub->where('name', 'LIKE', "%{$search}%")
