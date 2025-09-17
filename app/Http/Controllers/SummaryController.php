@@ -66,6 +66,7 @@ class SummaryController extends Controller
 
         // Step 1: get all unique skills for MR employees in desired order
         $skills = Employee::where('employment_type', 'MR')
+            ->whereNull('scheme_id')
             ->select('skill_at_present')
             ->distinct()
             ->pluck('skill_at_present')
@@ -79,10 +80,10 @@ class SummaryController extends Controller
         // Step 2: get offices that have at least one MR employee
         $offices = Office::select('id', 'name')
             ->whereHas('employees', function ($q) {
-                $q->where('employment_type', 'MR');
+                $q->where('employment_type', 'MR')->whereNull('scheme_id');
             })
             ->with(['employees' => function ($q) {
-                $q->where('employment_type', 'MR')
+                $q->where('employment_type', 'MR')->whereNull('scheme_id')
                     ->select('id', 'office_id', 'skill_at_present');
             }])
             ->get()

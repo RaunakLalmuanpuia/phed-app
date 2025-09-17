@@ -121,7 +121,7 @@ class ExportController extends Controller
 
         return Excel::download(
             new SchemeEmployeesExport($model),
-            Str::slug($model->name, '_') . '_scheme_employees.xlsx'
+             'scheme_employees.xlsx'
         );
     }
 
