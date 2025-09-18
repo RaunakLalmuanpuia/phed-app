@@ -1,7 +1,8 @@
 <script setup>
 import FrontendLayout from "../Layouts/FrontendLayout.vue";
-
+import { ref } from "vue";
 defineOptions({layout:FrontendLayout})
+const slide = ref(1);
 </script>
 
 <template>
@@ -9,7 +10,7 @@ defineOptions({layout:FrontendLayout})
 
         <div style="background-color: #f2f9ff" >
             <div class="container row q-col-gutter-md q-py-lg">
-                <div class="col-xs-12 col-sm-7 flex items-center">
+                <div class="col-xs-12 col-sm-5 flex items-center">
                     <div class="column q-gutter-md">
 
                         <div class="hero-title">Employees Database Management System</div>
@@ -18,8 +19,28 @@ defineOptions({layout:FrontendLayout})
                         </p>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-5">
-                    <q-img class="q-pa-none" src="images/19209.jpg" />
+                <div class="col-xs-12 col-sm-7">
+                    <q-carousel
+                        v-model="slide"
+                        swipeable
+                        animated
+                        arrows
+                        navigation
+                        infinite
+                        autoplay
+                        interval="3000"
+                        class="rounded-borders"
+                    >
+                        <q-carousel-slide :name="1" img-src="images/Assets/1.jpg" />
+                        <q-carousel-slide :name="2" img-src="images/Assets/2.jpg" />
+                        <q-carousel-slide :name="3" img-src="images/Assets/3.jpg" />
+                        <q-carousel-slide :name="4" img-src="images/Assets/4.jpg" />
+                        <q-carousel-slide :name="5" img-src="images/Assets/5.jpg" />
+                        <q-carousel-slide :name="6" img-src="images/Assets/6.jpg" />
+                        <q-carousel-slide :name="7" img-src="images/Assets/7.jpg" />
+                        <q-carousel-slide :name="8" img-src="images/Assets/8.jpg" />
+                        <q-carousel-slide :name="9" img-src="images/Assets/9.jpg" />
+                    </q-carousel>
                 </div>
             </div>
         </div>
