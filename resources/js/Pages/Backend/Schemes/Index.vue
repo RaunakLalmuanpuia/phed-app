@@ -11,7 +11,7 @@
             </div>
 
             <div class="flex q-gutter-sm">
-                <q-btn @click="$inertia.get(route('scheme.create'))" color="btn-primary" label="New Scheme"/>
+                <q-btn v-if="canCreate" @click="$inertia.get(route('scheme.create'))" color="btn-primary" label="New Scheme"/>
             </div>
         </div>
         <br/>
@@ -23,8 +23,8 @@
                 </div>
 
                 <div class="flex q-gutter-sm q-py-sm">
-                    <q-btn @click="$inertia.get(route('scheme.edit',item.id))" size="small" icon="arrow_right"/>
-                    <q-btn @click="$inertia.delete(route('scheme.destroy',item.id))" size="small" icon="delete"/>
+                    <q-btn v-if="canEdit" @click="$inertia.get(route('scheme.edit',item.id))" size="small" icon="arrow_right"/>
+                    <q-btn v-if="canDelete" @click="$inertia.delete(route('scheme.destroy',item.id))" size="small" icon="delete"/>
                 </div>
             </q-item>
 
@@ -42,7 +42,7 @@ import useUtils from "@/Compositions/useUtils";
 
 defineOptions({layout: BackendLayout})
 
-const props = defineProps(['list']);
+const props = defineProps(['list','canCreate', 'canEdit','canDelete']);
 const q = useQuasar();
 const {formatDateTime, formatMoney} = useUtils();
 const state = reactive({

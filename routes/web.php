@@ -81,12 +81,12 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
     });
 
     Route::group(['prefix' => 'schemes'], function () {
-        Route::get('', [SchemeController::class, 'index'])->name('scheme.index');
-        Route::get('create', [SchemeController::class, 'create'])->name('scheme.create');
-        Route::post('store', [SchemeController::class, 'store'])->name('scheme.store');
-        Route::get('edit/{model}', [SchemeController::class, 'edit'])->name('scheme.edit');
-        Route::put('update/{model}', [SchemeController::class, 'update'])->name('scheme.update');
-        Route::delete('{model}', [SchemeController::class, 'destroy'])->name('scheme.destroy');
+        Route::get('', [SchemeController::class, 'index'])->middleware('can:view-scheme')->name('scheme.index');
+        Route::get('create', [SchemeController::class, 'create'])->middleware('can:create-scheme')->name('scheme.create');
+        Route::post('store', [SchemeController::class, 'store'])->middleware('can:create-scheme')->name('scheme.store');
+        Route::get('edit/{model}', [SchemeController::class, 'edit'])->middleware('can:edit-scheme')->name('scheme.edit');
+        Route::put('update/{model}', [SchemeController::class, 'update'])->middleware('can:edit-scheme')->name('scheme.update');
+        Route::delete('{model}', [SchemeController::class, 'destroy'])->middleware('can:delete-scheme')->name('scheme.destroy');
     });
 
     Route::group(['prefix' => 'user'], function () {
