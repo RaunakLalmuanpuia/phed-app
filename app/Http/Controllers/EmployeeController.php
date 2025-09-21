@@ -576,7 +576,7 @@ class EmployeeController extends Controller
                 'date_of_engagement' => $validated['date_of_engagement'],
                 'skill_category' => $validated['skill_category'],
                 'skill_at_present' => $validated['skill_at_present'],
-                'scheme_id' => $validated['scheme'],
+                'scheme_id' => $validated['scheme'] ?? null,
             ]);
             if ($request->hasFile('avatar')) {
                 $file = $request->file('avatar');

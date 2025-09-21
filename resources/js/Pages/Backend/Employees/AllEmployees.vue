@@ -103,12 +103,12 @@
                                     <div>
 
                                         <div class="text-h6 text-weight-bold">{{ office.pe_count }}</div>
-                                        <div class="text-caption text-grey-7">Provisional</div>
+                                        <div class="text-caption text-grey-7">PE</div>
                                     </div>
                                     <div>
 
                                         <div class="text-h6 text-weight-bold">{{ office.mr_count }}</div>
-                                        <div class="text-caption text-grey-7">Muster Roll</div>
+                                        <div class="text-caption text-grey-7">MR</div>
                                     </div>
 
                                 </div>

@@ -58,7 +58,7 @@
                                     <div class="stitle">{{ office.name }}</div>
                                     <div class="text-caption text-grey-6 q-mt-xs">{{ office.type }}</div>
                                     <div class="text-h6 text-weight-bold">{{ office.pe_count }}</div>
-                                    <div class="text-caption text-grey-7">Employees</div>
+                                    <div class="text-caption text-grey-7">Provisional Employees</div>
                                 </div>
                             </q-card>
                     </div>

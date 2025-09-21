@@ -86,12 +86,11 @@
     <div class="spacer-md"></div>
 
     <div class="details">
-        <p class="bold">1.&emsp;Name of Post&nbsp;:&nbsp;{{ $post }}</p>
-        <p>2.&emsp;Corresponding Pay in the Pay Matrix&nbsp;:&nbsp;{{ $pay_matrix }}</p>
-        <p>3.&emsp;Monthly Lumpsum Remuneration&nbsp;:&nbsp; Rs {{ $remuneration }}/-</p>
-        <p class="bold">4.&emsp;Period of Engagement&nbsp;:&nbsp;{{ $start_date }} to {{ $end_date }}</p>
+        <p>1.&emsp;Name of Post&nbsp;:&nbsp;<span class="bold">{{ $post }}</span></p>
+        <p>2.&emsp;Corresponding Pay in the Pay Matrix&nbsp;:&nbsp;<span class="bold">{{ $pay_matrix }}</span></p>
+        <p>3.&emsp;Monthly Lumpsum Remuneration&nbsp;:&nbsp; Rs <span class="bold">{{ $remuneration }}</span>/-</p>
+        <p>4.&emsp;Period of Engagement&nbsp;:&nbsp;<span class="bold">{{ $start_date }}</span> to <span class="bold">{{ $end_date }}</span></p>
     </div>
-
 
     <p style="margin-top: 8px">5.&emsp;Government’s Approval No. &amp; Date</p>
     <p style="white-space: pre-wrap; font-weight: bold;margin-top: 8px">    (a)   DP&amp;AR : {{ $approval_dpar }}</p>
@@ -101,11 +100,11 @@
 
     <p>6.&emsp;Debitable head of account&nbsp;:&nbsp;{{ $account_head_1 }}</p>
     <div style="padding-left: 12em; margin-top: 2px;">
-        <p>{{ $account_head_2 }}</p>
-        <p>{{ $account_head_3 }}</p>
-        <p>{{ $account_head_4 }}</p>
-        <p>{{ $account_head_5 }}</p>
-        <p>{{ $account_head_6 }}</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $account_head_2 }}</p>
+        <p>&nbsp;&nbsp;&nbsp;{{ $account_head_3 }}</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $account_head_4 }}</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $account_head_5 }}</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $account_head_6 }}</p>
     </div>
 
     <div class="signature-block">

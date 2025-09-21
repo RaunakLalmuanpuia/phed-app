@@ -371,7 +371,7 @@
 <!--               Admin MIS-->
                 <q-expansion-item v-if="checkModules('mis')"
                     group="menu"
-                    :label="module.reports.label"
+                    :label="module.mis.label"
                     :header-class="(
                               route().current()==='mis.export'
                              || route().current()==='mis.import'
@@ -413,7 +413,7 @@
                             MIS
                         </q-item-section>
                     </template>
-                    <template v-for="item in module.reports.children"
+                    <template v-for="item in module.mis.children"
                               :key="item.route_name">
 
                         <q-item v-if="$page.props.permissions.find(val=>val.name===item.permission)"
@@ -602,12 +602,31 @@ const module = reactive({
             {route_name: 'employees.mr', label: 'Muster Roll Employee', permission: 'view-allemployee'},
             {route_name: 'employees.scheme', label: 'Scheme Employee', permission: 'view-allemployee'},
             {route_name: 'employees.deleted', label: 'Deleted Employee', permission: 'view-allemployee'},
-            // {route_name: 'role.index', label: 'Permissions', permission: 'view-anyrole'},
-            // {route_name: 'user.index', label: 'User Accounts', permission: 'view-anyuser'},
-
 
         ]
     },
+
+
+    remunerations: {
+        label: 'Remuneration',
+        children: [
+            {route_name: 'remuneration.summary', label: 'Summary', permission: 'generate-remuneration'},
+            {route_name: 'remuneration.detail', label: 'Details', permission: 'generate-remuneration'},
+
+        ]
+    },
+
+    mis: {
+        label: 'MIS',
+        children: [
+            {route_name: 'mis.export', label: 'Export', permission: 'export-employee'},
+            {route_name: 'mis.import', label: 'Import', permission: 'import-employee'},
+            {route_name: 'mis.create-pe-employee', label: 'Add PE Employee', permission: 'create-employee'},
+            {route_name: 'mis.create-mr-employee', label: 'Add MR Employee', permission: 'create-employee'},
+            {route_name: 'mis.engagement-card', label: 'Engagement Card', permission: 'generate-engagement-card'},
+        ]
+    },
+
 
     admin: {
         label: 'Administration',
@@ -622,25 +641,9 @@ const module = reactive({
         ]
     },
 
-    remunerations: {
-        label: 'Remuneration',
-        children: [
-            {route_name: 'remuneration.summary', label: 'Summary', permission: 'generate-remuneration'},
-            {route_name: 'remuneration.detail', label: 'Details', permission: 'generate-remuneration'},
 
-        ]
-    },
 
-    reports: {
-        label: 'MIS Reports',
-        children: [
-            {route_name: 'mis.export', label: 'Export', permission: 'export-employee'},
-            {route_name: 'mis.import', label: 'Import', permission: 'import-employee'},
-            {route_name: 'mis.create-pe-employee', label: 'Add PE Employee', permission: 'create-employee'},
-            {route_name: 'mis.create-mr-employee', label: 'Add MR Employee', permission: 'create-employee'},
-            {route_name: 'mis.engagement-card', label: 'Engagement Card', permission: 'generate-engagement-card'},
-        ]
-    },
+
 
 })
 

@@ -68,13 +68,7 @@ class UserController extends Controller
             'mobile'=>'required|digits:10|unique:users',
             'email'=>'required|email|unique:users',
             'password'=>'required|confirmed',
-            'office_id' => [
-                Rule::requiredIf(function () use ($roles) {
-                    // Require office_id if none of the roles is admin
-                    return !in_array('Admin', (array)$roles);
-                }),
-                Rule::exists('offices', 'id'),
-            ],
+            'office_id' => 'nullable',
         ]);
 
         $roles = $request->get('roles');
