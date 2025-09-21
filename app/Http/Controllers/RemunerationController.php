@@ -25,6 +25,10 @@ class RemunerationController extends Controller
         return Inertia::render('Backend/Remunerations/Detail', [
             'office' => $office,
             'canGenerateRemuneration'=>$user->can('generate-remuneration'),
+            'canCreateRemuneration'=>$user->can('create-remuneration'),
+            'canEditRemuneration'=>$user->can('edit-remuneration'),
+            'canBulkUpdateRemuneration'=>$user->can('bulk-update-remuneration'),
+
         ]);
     }
 

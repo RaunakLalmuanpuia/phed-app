@@ -99,7 +99,7 @@
 
             <template v-slot:top-right>
 
-                <q-btn class="q-mr-sm"  icon="upload"  v-if="selectedEmployees.length > 0" label="Update" color="primary"  @click="openBulkUpdateDialog" />
+                <q-btn class="q-mr-sm"  icon="upload"  v-if="selectedEmployees.length > 0 && canBulkUpdateRemuneration" label="Update" color="primary"  @click="openBulkUpdateDialog" />
 
                 <q-input
                     dense
@@ -156,6 +156,7 @@
             <template v-slot:body-cell-actions="props">
                 <q-td :props="props">
                     <q-btn
+                        v-if="canEditRemuneration"
                         dense
                         flat
                         round
@@ -307,7 +308,7 @@ import useUtils from "@/Compositions/useUtils";
 const {formatDate} = useUtils();
 defineOptions({ layout: BackendLayout });
 
-const props = defineProps(["office", "canGenerateRemuneration"]);
+const props = defineProps(["office", "canGenerateRemuneration",'canCreateRemuneration','canEditRemuneration','canBulkUpdateRemuneration']);
 
 const filters = ref({
     offices: [], // multiple offices
@@ -391,7 +392,8 @@ function checkOffices(val) {
 // Form
 const form = useForm({
     remuneration: "",
-    next_increment_date: ""
+    next_increment_date: "",
+    pay_matrix:"",
 });
 
 const pagination = ref({
@@ -423,6 +425,7 @@ const openDialog = (row) => {
     if (row.remuneration_detail) {
         form.remuneration = row.remuneration_detail.total;
         form.next_increment_date = row.remuneration_detail.next_increment_date;
+        form.pay_matrix = row.remuneration_detail.pay_matrix;
     } else {
         form.reset();
     }

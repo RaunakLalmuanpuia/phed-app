@@ -111,7 +111,7 @@
                 <q-btn
                     class="q-mr-sm"
                     icon="picture_as_pdf"
-                    v-if="selectedEmployees.length > 0"
+                    v-if="selectedEmployees.length > 0 && canCreateEngagementCard"
                     label="Generate Cards"
                     color="primary"
                     @click="openBulkGenerateDialog(selectedEmployees)"
@@ -121,7 +121,7 @@
                 <q-btn
                     class="q-mr-sm"
                     icon="download"
-                    v-if="selectedEmployees.length > 0"
+                    v-if="selectedEmployees.length > 0 && canDownloadEngagementCard"
                     label="Download ZIP"
                     color="primary"
                     @click="downloadBulkPdf"
@@ -171,6 +171,7 @@
             <template v-slot:body-cell-actions="props">
                 <q-td :props="props">
                     <q-btn
+                        v-if="canCreateEngagementCard"
                         dense
                         flat
                         round
@@ -181,7 +182,7 @@
                     />
 
                     <q-btn
-                        v-if="props.row.engagement_card[0]"
+                        v-if="props.row.engagement_card[0] && canDownloadEngagementCard"
                         dense
                         flat
                         round
@@ -192,7 +193,7 @@
                     />
 
                     <q-btn
-                        v-if="props.row.engagement_card[0]"
+                        v-if="props.row.engagement_card[0] && canDeleteEngagementCard"
                         dense
                         flat
                         round
@@ -344,7 +345,7 @@ const {formatDate} = useUtils();
 
 defineOptions({ layout: BackendLayout });
 
-const props = defineProps(["office", "canGenerateEngagementCard"]);
+const props = defineProps(["office", "canGenerateEngagementCard",'canCreateEngagementCard','canDownloadEngagementCard','canDeleteEngagementCard']);
 
 const filters = ref({
     offices: [],

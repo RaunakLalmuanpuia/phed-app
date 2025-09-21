@@ -243,7 +243,7 @@
 
                 </q-expansion-item>
 
-                <q-separator v-if="isAdmin" class="q-my-sm"/>
+                <q-separator v-if="!isManager" class="q-my-sm"/>
 
                 <!--                Remunerations-->
                 <q-expansion-item v-if="checkModules('remunerations')"
@@ -651,7 +651,8 @@ const module = reactive({
 
 const MENUS = {
     Manager: ['manager', 'manager_mis' ],
-    Admin: ['employee','remunerations', 'mis', 'administration']
+    Reviewer: ['employee','remunerations', 'mis',],
+    Admin: ['employee','remunerations', 'mis', 'administration'],
 };
 
 
@@ -664,6 +665,8 @@ const checkModules = (module) => {
 
 const isAdmin = computed(() => !!usePage().props.roles?.find(item => item === 'Admin'));
 const isManager = computed(() => !!usePage().props.roles?.find(item => item === 'Manager'));
+
+const isReviewer = computed(() => !!usePage().props.roles?.find(item => item === 'Reviewer'));
 
 
 const notificationCount = ref(0);

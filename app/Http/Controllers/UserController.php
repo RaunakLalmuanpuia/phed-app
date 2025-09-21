@@ -72,7 +72,7 @@ class UserController extends Controller
         ]);
 
         $roles = $request->get('roles');
-        $mergedData = array_merge($data, ['password' => Hash::make(Str::random(12))]);
+        $mergedData = array_merge($data, ['password' => Hash::make($data["password"])]);
         DB::transaction(function () use ($roles, $request, $mergedData) {
             $user=User::query()->create($mergedData);
             if (!empty($mergedData['office_id'])) {

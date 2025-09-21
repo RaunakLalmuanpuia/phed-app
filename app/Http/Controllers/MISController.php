@@ -115,6 +115,10 @@ class MISController extends Controller
         return Inertia::render('Backend/MIS/EngagementCard', [
             'office' => $office,
             'canGenerateEngagementCard'=>$user->can('generate-engagement-card'),
+            'canCreateEngagementCard' => $user->can('store-engagement-card'),
+            'canDownloadEngagementCard' => $user->can('download-engagement-card'),
+            'canDeleteEngagementCard' => $user->can('delete-engagement-card'),
+
         ]);
     }
 

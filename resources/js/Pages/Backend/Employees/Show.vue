@@ -192,7 +192,7 @@
                                 :class="showDocumentUpdateAlert ? 'text-red' : ''"/>
 
                             <q-tab
-                                v-if="isAdmin && canApproveEdit"
+                                v-if="canApproveEdit"
                                 name="edit"
                                 label="Edit Request"
                                 icon="edit"
@@ -203,7 +203,7 @@
                             />
 
                             <q-tab
-                                v-if="isAdmin && canApproveTransfer"
+                                v-if="canApproveTransfer"
                                 name="transfer_request"
                                 label="Transfer Request"
                                 icon="input"
@@ -214,7 +214,7 @@
                             />
 
                             <q-tab
-                                v-if="isAdmin && canApproveDelete"
+                                v-if="canApproveDelete"
                                 name="deletion"
                                 label="Deletion Request"
                                 icon="delete_sweep"
@@ -225,7 +225,7 @@
                             />
 
                             <q-tab
-                                v-if="isManager && canRequestEdit"
+                                v-if="canRequestEdit"
                                 name="request_edit"
                                 label="Request Edit"
                                 icon="edit"
@@ -236,7 +236,7 @@
                             />
 
                             <q-tab
-                                v-if="isManager && canRequestTransfer"
+                                v-if="canRequestTransfer"
                                 name="request_transfer"
                                 label="Request Transfer"
                                 icon="input"
@@ -244,7 +244,7 @@
                             />
 
                             <q-tab
-                                v-if="isManager && canRequestDelete"
+                                v-if="canRequestDelete"
                                 name="request_deletion"
                                 label="Request Deletion"
                                 icon="delete_sweep"
