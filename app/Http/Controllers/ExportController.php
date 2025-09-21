@@ -114,16 +114,28 @@ class ExportController extends Controller
     }
 
 
+//    public function exportScheme(Request $request, Scheme $model)
+//    {
+//        $user = $request->user();
+////        abort_if(!$user->hasPermissionTo('export-scheme'), 403, 'Access Denied');
+//
+//        return Excel::download(
+//            new SchemeEmployeesExport($model),
+//             'scheme_employees.xlsx'
+//        );
+//    }
+
     public function exportScheme(Request $request, Scheme $model)
     {
         $user = $request->user();
-//        abort_if(!$user->hasPermissionTo('export-scheme'), 403, 'Access Denied');
+        // abort_if(!$user->hasPermissionTo('export-scheme'), 403, 'Access Denied');
 
         return Excel::download(
-            new SchemeEmployeesExport($model),
-             'scheme_employees.xlsx'
+            new SchemeEmployeesExport($model, $user),
+            \Str::slug($model->name, '_') . '_scheme_employees.xlsx'
         );
     }
+
 
 
 

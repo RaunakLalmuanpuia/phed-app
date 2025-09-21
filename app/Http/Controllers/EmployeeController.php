@@ -1026,4 +1026,85 @@ class EmployeeController extends Controller
     }
 
 
+    public function managerScheme(Request $request){
+        $user = auth()->user();
+
+        // Offices assigned to this user with MR employees having a scheme
+        $offices = $user->offices()
+            ->with(['employees' => fn($q) => $q->where('employment_type', 'MR')->whereNotNull('scheme_id')->with('scheme')])
+            ->get(['offices.id', 'offices.name']);
+
+        // Get the first scheme from the employees
+        $scheme = $offices
+            ->flatMap(fn($office) => $office->employees)
+            ->pluck('scheme')
+            ->first();
+
+        // Distinct skills for MR employees in user offices (any scheme)
+        $skills = Employee::whereIn('office_id', $offices->pluck('id'))
+            ->where('employment_type', 'MR')
+            ->whereNotNull('scheme_id')
+            ->select('skill_at_present')
+            ->distinct()
+            ->orderBy('skill_at_present')
+            ->pluck('skill_at_present')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+        // Distinct education qualifications
+        $educationQln = Employee::whereIn('office_id', $offices->pluck('id'))
+            ->where('employment_type', 'MR')
+            ->whereNotNull('scheme_id')
+            ->select('educational_qln')
+            ->distinct()
+            ->orderBy('educational_qln')
+            ->pluck('educational_qln')
+            ->map(fn($e) => ['label' => $e, 'value' => $e])
+            ->values();
+
+        return Inertia::render('Backend/Employees/IndexManager/SchemeEmployees', [
+            'skills'       => $skills,
+            'educationQln' => $educationQln,
+            'offices'      => $offices,
+            'scheme'       => $scheme,
+        ]);
+    }
+
+    public function jsonMangerScheme(Request $request){
+
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
+
+        $perPage   = $request->integer('rowsPerPage', 5);
+        $filter    = $request->get('filter', []);
+        $search    = $filter['search'] ?? null;
+
+        // Only user’s offices
+        $officeIds = $filter['office'] ?? $user->offices()->pluck('offices.id')->all();
+
+        $employees = Employee::with(['scheme', 'office'])
+            ->whereIn('office_id', (array) $officeIds)
+            ->where('employment_type', 'MR')
+            ->whereNotNull('scheme_id') // ✅ any scheme
+            ->when($search, function ($builder) use ($search) {
+                $builder->where(function ($query) use ($search) {
+                    $query->where('name', 'LIKE', "%$search%")
+                        ->orWhere('mobile', 'LIKE', "%$search%")
+                        ->orWhere('designation', 'LIKE', "%$search%")
+                        ->orWhere('date_of_birth', 'LIKE', "%$search%")
+                        ->orWhere('name_of_workplace', 'LIKE', "%$search%");
+                });
+            })
+            ->when($filter['skill'] ?? null, function ($query, $skill) {
+                $query->where('skill_at_present', $skill);
+            })
+            ->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
+                $query->where('educational_qln', $educationQln);
+            });
+
+        return response()->json([
+            'list' => $employees->paginate($perPage),
+        ], 200);
+    }
+
 }

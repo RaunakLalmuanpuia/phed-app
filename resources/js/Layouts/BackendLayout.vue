@@ -164,10 +164,10 @@
                     group="menu"
                     :label="module.manager.label"
                     :header-class="(
-                              route().current()==='employees.all'
-                             || route().current()==='employees.mr'
-                             || route().current()==='employees.pe'
-                              || route().current()==='employees.deleted'
+                              route().current()==='employees.manager.all'
+                             || route().current()==='employees.manager.mr'
+                             || route().current()==='employees.manager.pe'
+                             || route().current() ==='employees.manager.scheme'
                              || route().current()==='employee.show'
                               || route().current()==='employee.create'
                               || route().current()==='employee.edit'
@@ -181,10 +181,10 @@
                         <q-item-section avatar>
 
                             <q-icon :active="
-                              route().current()==='employees.all'
-                             || route().current()==='employees.mr'
-                             || route().current()==='employees.pe'
-                              || route().current()==='employees.deleted'
+                              route().current()==='employees.manager.all'
+                             || route().current()==='employees.manager.mr'
+                             || route().current()==='employees.manager.pe'
+                             || route().current() ==='employees.manager.scheme'
                              || route().current()==='employee.show'
                               || route().current()==='employee.create'
                               || route().current()==='employee.edit'
@@ -192,10 +192,10 @@
                         ">
 
                                 <svg
-                                    v-if="route().current()==='employees.all'
-                             || route().current()==='employees.mr'
-                             || route().current()==='employees.pe'
-                              || route().current()==='employees.deleted'
+                                    v-if=" route().current()==='employees.manager.all'
+                             || route().current()==='employees.manager.mr'
+                             || route().current()==='employees.manager.pe'
+                             || route().current() ==='employees.manager.scheme'
                              || route().current()==='employee.show'
                               || route().current()==='employee.create'
                               || route().current()==='employee.edit'"
@@ -583,6 +583,7 @@ const module = reactive({
             {route_name: 'employees.manager.all', label: 'All Employee', permission: 'view-allemployee'},
             {route_name: 'employees.manager.pe', label: 'Provisional Employee', permission: 'view-allemployee'},
             {route_name: 'employees.manager.mr', label: 'Muster Roll Employee', permission: 'view-allemployee'},
+            {route_name: 'employees.manager.scheme', label: 'Scheme Employee', permission: 'view-allemployee'},
         ]
     },
 

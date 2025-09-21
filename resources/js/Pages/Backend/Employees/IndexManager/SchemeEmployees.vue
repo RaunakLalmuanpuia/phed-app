@@ -3,7 +3,7 @@
 
         <div class="flex items-center justify-between q-pa-md bg-white">
             <div>
-                <div class="stitle">Scheme Employee List: {{scheme.name}}</div>
+                <div class="stitle">Scheme Employee List: <q-chip square v-for="office in offices" :key="office.id" :label="office.name"/></div>
                 <q-breadcrumbs  class="text-dark">
                     <q-breadcrumbs-el class="cursor-pointer" @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
                     <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="goBack"/>
@@ -11,6 +11,7 @@
             </div>
 
             <div class="q-gutter-sm">
+
                 <q-btn label="MR Summary" color="primary" @click="$inertia.get(route('summary.mr'))" />
             </div>
         </div>
@@ -24,18 +25,6 @@
                 </div>
 
                 <div class="row q-col-gutter-md">
-                    <q-select
-                        label="Select Office"
-                        class="col-12 col-sm-4"
-                        v-model="filters.office"
-                        :options="offices"
-                        emit-value
-                        map-options
-                        outlined
-                        dense
-                        clearable
-                        @update:model-value="handleSearch"
-                    />
 
                     <q-select
                         label="Select Present Skill"
@@ -49,6 +38,7 @@
                         clearable
                         @update:model-value="handleSearch"
                     />
+
                     <q-select
                         label="Select Education Qln."
                         class="col-12 col-sm-4"
@@ -68,7 +58,10 @@
 
             <q-card-section class="row items-center justify-between q-gutter-md">
                 <div class="row q-gutter-sm col-12 col-sm justify-end">
-                    <q-btn label="Export" icon="desktop_windows" color="primary" @click="exportData" />
+
+
+                    <q-btn label="Export" icon="desktop_windows" color="primary"  @click="exportData" />
+
                     <q-input
                         dense
                         outlined
@@ -89,7 +82,6 @@
             <q-table
                 flat
                 ref="tableRef"
-                :title="scheme.name"
                 :rows="rows"
                 :columns="columns"
                 row-key="id"
@@ -97,7 +89,7 @@
                 :loading="loading"
                 :filter="filters"
                 binary-state-sort
-                :rows-per-page-options="[5,10,15,30,50]"
+                :rows-per-page-options="[1,7,15,30,50]"
                 @request="onRequest"
             >
                 <!-- User Cell -->
@@ -120,21 +112,20 @@
                     </q-td>
                 </template>
 
-                <template v-slot:body-cell-office="props">
+
+
+                <!-- Office Cell -->
+                <template v-slot:body-cell-scheme="props">
                     <q-td :props="props">
-                        <q-chip color="primary" text-color="white" dense>{{ props.row.office?.name }}</q-chip>
+                        <q-chip color="primary" text-color="white" dense>{{ props.row.scheme?.name }}</q-chip>
                     </q-td>
                 </template>
 
-
-                <!-- Date of Engagement Cell -->
                 <template v-slot:body-cell-date_of_engagement="props">
                     <q-td :props="props">
                         {{formatDate(props.row.date_of_engagement)}}
                     </q-td>
                 </template>
-
-
 
                 <!-- Actions Cell -->
                 <template v-slot:body-cell-actions="props">
@@ -148,6 +139,7 @@
                             @click="$inertia.get(route('employee.show',props.row.id))"
                             aria-label="Show user"
                         />
+
                     </q-td>
                 </template>
             </q-table>
@@ -158,35 +150,36 @@
 
 
 <script setup>
-import {onMounted, ref, watch} from 'vue';
+import {onMounted, ref} from 'vue';
 
 import BackendLayout from "@/Layouts/BackendLayout.vue";
 import {useQuasar} from "quasar";
 import useUtils from "@/Compositions/useUtils";
 
-
-defineOptions({layout:BackendLayout})
 const {formatDate} = useUtils();
-const props = defineProps(['scheme','skills','educationQln','offices','canCreate','canEdit','canDelete'])
+defineOptions({layout:BackendLayout})
+
+const props=defineProps(['offices','scheme','skills','educationQln'])
 
 
 const columns = [
     { name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true },
-    { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: true },
     { name: 'designation', label: 'Designation', align: 'left', field: 'designation', sortable: false },
     { name: 'name_of_workplace', label: 'Workplace', align: 'left', field: 'name_of_workplace', sortable: false },
+    { name: 'scheme', label: 'Scheme', align: 'left', field: 'scheme', sortable: false },
     { name: 'skill_at_present', label: 'Skill At Present', align: 'left', field: 'skill_at_present', sortable: true },
-    { name: 'date_of_engagement', label: 'Date of Engagement', align: 'left', field: 'date_of_engagement', sortable: true },
+    { name: 'date_of_engagement', label: 'Initial Engagement', align: 'left', field: 'date_of_engagement', sortable: true },
     { name: 'actions', label: 'Actions', align: 'center' },
 ];
 
-
 const filters = ref({
-    search: null,
+    office: [],
+    search:null,
     skill: null,
     education_qln: null,
-    office: null, // ✅ new office filter
 })
+
+
 
 
 const search = ref('')
@@ -217,7 +210,7 @@ function onRequest (prop) {
     const search = prop.search
 
     loading.value = true
-    axios.get(route('employees.json-index-scheme', props.scheme),{
+    axios.get(route('employees.json-manager-scheme'),{
         params:{
             filter,
             page,
@@ -240,6 +233,7 @@ function onRequest (prop) {
         })
         .finally(()=>loading.value=false)
 }
+
 const exportData = () => {
     q.loading.show();
 
@@ -273,14 +267,17 @@ const exportData = () => {
             q.loading.hide();
         });
 };
+
+
+
+
+
 onMounted(() => {
     onRequest({pagination:pagination.value,
         filter:filters.value,
         search: filters.value.search
     })
 })
-
-
 const goBack = () => {
     window.history.back()
 }
