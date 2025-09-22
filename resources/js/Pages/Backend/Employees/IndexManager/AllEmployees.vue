@@ -244,6 +244,7 @@ const columns = [
     { name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true },
     { name: 'employment_type', label: 'Employment Type', align: 'left', field: 'employment_type', sortable: false },
     { name: 'designation', label: 'Designation', align: 'left', field: 'designation', sortable: false },
+    {name: 'post_assigned', label: 'Post/Work Assigned', align: 'left', field: 'post_assigned', sortable: false},
     { name: 'name_of_workplace', label: 'Workplace', align: 'left', field: 'name_of_workplace', sortable: false },
     { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: true },
     { name: 'actions', label: 'Actions', align: 'center' },
