@@ -118,7 +118,7 @@ class SummaryController extends Controller
         $user = $request->user();
         abort_if(!$user->hasPermissionTo('view-mr-summary'), 403, 'Access Denied');
 
-        $skillOrder = ['Unskilled', 'Semi-Skilled', 'Skilled-I', 'Skilled-II'];
+        $skillOrder = ['Skilled-I','Skilled-II','Semi-Skilled','Unskilled',];
 
         // Step 1: get all unique skills for MR employees in desired order
         $skills = Employee::where('employment_type', 'MR')

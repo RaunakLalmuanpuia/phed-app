@@ -130,7 +130,7 @@ const q = useQuasar();
 const filter = ref(""); // Search box model
 
 // Desired skill order
-const skillOrder = ['Unskilled', 'Semi-Skilled', 'Skilled-I', 'Skilled-II'];
+const skillOrder = ['Skilled-I', 'Skilled-II','Semi-Skilled','Unskilled'];
 
 // Base columns
 const columns = [
