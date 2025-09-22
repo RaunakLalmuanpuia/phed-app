@@ -120,21 +120,37 @@ class MusterRollSummaryExport implements FromView, WithStyles
             'grandTotal' => $this->totals,
         ]);
     }
-
     public function styles(Worksheet $sheet)
     {
-        $lastColumnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(count($this->skills) + 2);
+        // Last column index:
+        // 1 => Sl. No, 2 => Office/Scheme, next N => skills, then Total => N + 3
+        $lastColIndex = count($this->skills) + 3;
+        $lastColumnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($lastColIndex);
 
-        // Bold totals (A, B, and Grand Total)
         $highestRow = $sheet->getHighestRow();
-        $sheet->getStyle("A1:{$lastColumnLetter}{$highestRow}")
-            ->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-        for ($i = 2; $i <= $highestRow; $i++) {
-            $value = $sheet->getCell("A{$i}")->getValue();
-            if (str_contains($value, 'Total')) {
-                $sheet->getStyle("A{$i}:{$lastColumnLetter}{$i}")->getFont()->setBold(true);
+        // Apply thin border to the whole table INCLUDING the last "Total" column
+        $sheet->getStyle("A1:{$lastColumnLetter}{$highestRow}")
+            ->getBorders()
+            ->getAllBorders()
+            ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK);
+
+        // Make header row bold
+        $sheet->getStyle("A1:{$lastColumnLetter}1")->getFont()->setBold(true);
+
+        // Bold any row where column B contains the word "Total" (handles RichText too)
+        for ($row = 2; $row <= $highestRow; $row++) {
+            $cell = $sheet->getCell("B{$row}");
+            $value = $cell->getValue();
+
+            if ($value instanceof \PhpOffice\PhpSpreadsheet\RichText\RichText) {
+                $value = $value->getPlainText();
+            }
+
+            if ($value !== null && stripos((string) $value, 'Total') !== false) {
+                $sheet->getStyle("A{$row}:{$lastColumnLetter}{$row}")->getFont()->setBold(true);
             }
         }
     }
+
 }

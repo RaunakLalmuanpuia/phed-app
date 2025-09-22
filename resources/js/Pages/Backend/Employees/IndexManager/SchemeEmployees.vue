@@ -3,16 +3,19 @@
 
         <div class="flex items-center justify-between q-pa-md bg-white">
             <div>
-                <div class="stitle">Scheme Employee List: <q-chip square v-for="office in offices" :key="office.id" :label="office.name"/></div>
-                <q-breadcrumbs  class="text-dark">
-                    <q-breadcrumbs-el class="cursor-pointer" @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
+                <div class="stitle">Scheme Employee List:
+                    <q-chip square v-for="office in offices" :key="office.id" :label="office.name"/>
+                </div>
+                <q-breadcrumbs class="text-dark">
+                    <q-breadcrumbs-el class="cursor-pointer" @click="$inertia.get(route('dashboard'))" icon="dashboard"
+                                      label="Dashboard"/>
                     <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="goBack"/>
                 </q-breadcrumbs>
             </div>
 
             <div class="q-gutter-sm">
 
-                <q-btn label="MR Summary" color="primary" @click="$inertia.get(route('summary.mr'))" />
+                <q-btn label="MR Summary" color="primary" @click="$inertia.get(route('summary.mr'))"/>
             </div>
         </div>
         <br>
@@ -54,13 +57,13 @@
                 </div>
             </q-card-section>
 
-            <q-separator />
+            <q-separator/>
 
             <q-card-section class="row items-center justify-between q-gutter-md">
                 <div class="row q-gutter-sm col-12 col-sm justify-end">
 
 
-                    <q-btn label="Export" icon="desktop_windows" color="primary"  @click="exportData" />
+                    <q-btn label="Export" icon="desktop_windows" color="primary" @click="exportData"/>
 
                     <q-input
                         dense
@@ -73,7 +76,7 @@
                         @update:model-value="handleSearch"
                     >
                         <template #append>
-                            <q-icon name="search" />
+                            <q-icon name="search"/>
                         </template>
                     </q-input>
                 </div>
@@ -101,7 +104,7 @@
                                     v-if="props.row.avatar"
                                     :src="`/storage/${props.row.avatar}`"
                                 />
-                                <q-icon v-else name="person" size="md" color="primary" />
+                                <q-icon v-else name="person" size="md" color="primary"/>
                             </q-avatar>
                             <div>
                                 <div class="text-body1">{{ props.row.name }}</div>
@@ -113,7 +116,6 @@
                 </template>
 
 
-
                 <!-- Office Cell -->
                 <template v-slot:body-cell-scheme="props">
                     <q-td :props="props">
@@ -123,7 +125,7 @@
 
                 <template v-slot:body-cell-date_of_engagement="props">
                     <q-td :props="props">
-                        {{formatDate(props.row.date_of_engagement)}}
+                        {{ formatDate(props.row.date_of_engagement) }}
                     </q-td>
                 </template>
 
@@ -148,7 +150,6 @@
 </template>
 
 
-
 <script setup>
 import {onMounted, ref} from 'vue';
 
@@ -157,29 +158,33 @@ import {useQuasar} from "quasar";
 import useUtils from "@/Compositions/useUtils";
 
 const {formatDate} = useUtils();
-defineOptions({layout:BackendLayout})
+defineOptions({layout: BackendLayout})
 
-const props=defineProps(['offices','scheme','skills','educationQln'])
+const props = defineProps(['offices', 'scheme', 'skills', 'educationQln'])
 
 
 const columns = [
-    { name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true },
-    { name: 'designation', label: 'Designation', align: 'left', field: 'designation', sortable: false },
-    { name: 'name_of_workplace', label: 'Workplace', align: 'left', field: 'name_of_workplace', sortable: false },
-    { name: 'scheme', label: 'Scheme', align: 'left', field: 'scheme', sortable: false },
-    { name: 'skill_at_present', label: 'Skill At Present', align: 'left', field: 'skill_at_present', sortable: true },
-    { name: 'date_of_engagement', label: 'Initial Engagement', align: 'left', field: 'date_of_engagement', sortable: true },
-    { name: 'actions', label: 'Actions', align: 'center' },
+    {name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true},
+    { name: 'post_assigned', label: 'Post/Work Assigned', align: 'left', field: 'post_assigned', sortable: false },
+    {name: 'name_of_workplace', label: 'Workplace', align: 'left', field: 'name_of_workplace', sortable: false},
+    {name: 'scheme', label: 'Scheme', align: 'left', field: 'scheme', sortable: false},
+    {name: 'skill_at_present', label: 'Skill At Present', align: 'left', field: 'skill_at_present', sortable: true},
+    {
+        name: 'date_of_engagement',
+        label: 'Initial Engagement',
+        align: 'left',
+        field: 'date_of_engagement',
+        sortable: true
+    },
+    {name: 'actions', label: 'Actions', align: 'center'},
 ];
 
 const filters = ref({
     office: [],
-    search:null,
+    search: null,
     skill: null,
     education_qln: null,
 })
-
-
 
 
 const search = ref('')
@@ -204,48 +209,49 @@ const handleSearch = () => {
         search: filters.value.search
     })
 }
-function onRequest (prop) {
-    const { page, rowsPerPage, sortBy, descending } = prop.pagination
+
+function onRequest(prop) {
+    const {page, rowsPerPage, sortBy, descending} = prop.pagination
     const filter = prop.filter
     const search = prop.search
 
     loading.value = true
-    axios.get(route('employees.json-manager-scheme'),{
-        params:{
+    axios.get(route('employees.json-manager-scheme'), {
+        params: {
             filter,
             page,
             rowsPerPage,
             search
         }
     })
-        .then(res=>{
+        .then(res => {
             console.log(res.data);
             const {list} = res.data;
-            const {data,per_page,current_page,total,to,from} = list;
+            const {data, per_page, current_page, total, to, from} = list;
             rows.value = data;
             pagination.value.page = current_page;
             pagination.value.rowsNumber = total;
             pagination.value.rowsPerPage = per_page;
 
         })
-        .catch(err=>{
-            q.notify({type:'negative',message:err?.response?.data?.message})
+        .catch(err => {
+            q.notify({type: 'negative', message: err?.response?.data?.message})
         })
-        .finally(()=>loading.value=false)
+        .finally(() => loading.value = false)
 }
 
 const exportData = () => {
     q.loading.show();
 
     if (!props.scheme) {
-        q.notify({ type: 'negative', message: 'No scheme found to export' });
+        q.notify({type: 'negative', message: 'No scheme found to export'});
         q.loading.hide();
         return;
     }
 
     axios.get(
         route('export.scheme', props.scheme.id), // ✅ pass first scheme ID
-        { responseType: 'blob' }
+        {responseType: 'blob'}
     )
         .then((res) => {
             const fileUrl = window.URL.createObjectURL(new Blob([res.data]));
@@ -269,12 +275,10 @@ const exportData = () => {
 };
 
 
-
-
-
 onMounted(() => {
-    onRequest({pagination:pagination.value,
-        filter:filters.value,
+    onRequest({
+        pagination: pagination.value,
+        filter: filters.value,
         search: filters.value.search
     })
 })

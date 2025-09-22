@@ -11,8 +11,8 @@
         <th>Date of Birth</th>
         <th>Mobile</th>
         <th>Office</th>
+        <th>Post/Work Assigned</th>
         <th>Name of Workplace</th>
-        <th>Name of post/Works</th>
         <th>Date of Initial Engagement</th>
         <th>Skilled Category</th>
         <th>Skilled at present</th>
@@ -29,8 +29,8 @@
             <td>{{ $employee->date_of_birth }}</td>
             <td>{{ $employee->mobile }}</td>
             <td>{{ $employee->office?->name }}</td>
+            <td>{{ $employee->post_assigned }}</td>
             <td>{{ $employee->name_of_workplace }}</td>
-            <td>{{ $employee->designation }}</td>
             <td>{{ $employee->date_of_engagement }}</td>
             <td>{{ $employee->skill_category }}</td>
             <td>{{ $employee->skill_at_present }}</td>

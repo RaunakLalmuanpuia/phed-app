@@ -164,7 +164,7 @@ const props=defineProps(['offices','skills','educationQln'])
 
 const columns = [
     { name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true },
-    { name: 'designation', label: 'Designation', align: 'left', field: 'designation', sortable: false },
+    { name: 'post_assigned', label: 'Post/Work Assigned', align: 'left', field: 'post_assigned', sortable: false },
     { name: 'name_of_workplace', label: 'Workplace', align: 'left', field: 'name_of_workplace', sortable: false },
     { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: false },
     { name: 'skill_at_present', label: 'Skill At Present', align: 'left', field: 'skill_at_present', sortable: true },
