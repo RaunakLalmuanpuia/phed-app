@@ -27,6 +27,24 @@
                     :filter="filter"
                     :pagination="{ rowsPerPage: 0 }"
                 >
+                    <template v-slot:body-cell-name="props">
+                        <q-td
+                            :props="props"
+                            class="sticky-col bg-white z-10"
+                        >
+                            {{ props.row.name }}
+                        </q-td>
+                    </template>
+
+                    <template v-slot:header-cell-name="props">
+                        <q-th
+                            :props="props"
+                            class="sticky-col bg-white z-20"
+                        >
+                            {{ props.col.label }}
+                        </q-th>
+                    </template>
+
                     <template v-slot:top-right>
                         <q-input borderless dense debounce="800"
                                  v-model="filter"
@@ -143,4 +161,12 @@ const handleBack=e=>{
 
 </script>
 
+<style scoped>
+.sticky-col {
+    position: sticky;
+    left: 0;
+    background: white; /* Ensure it doesn’t overlap weirdly */
+    z-index: 1; /* Keep above normal cells */
+}
+</style>
 
