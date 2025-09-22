@@ -253,7 +253,7 @@ class EmployeeController extends Controller
                 ->whereNull('scheme_id');
         })
             ->withCount(['employees as mr_count' => function ($query) {
-                $query->where('employment_type', 'MR'); // ✅ Count PE employees
+                $query->where('employment_type', 'MR')->whereNull('scheme_id'); // ✅ Count PE employees
             }])->when($search, function ($query) use ($search) {
                 $query->where('name', 'LIKE', "%{$search}%"); // ✅ search by office name
             })->get();
