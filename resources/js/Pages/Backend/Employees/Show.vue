@@ -89,10 +89,14 @@
                                             <q-item-section  class="text-label">{{data?.technical_qln}}</q-item-section>
                                         </q-item>
 
-
-                                        <q-item>
-                                            <q-item-section side class="subtitle" >Designation:</q-item-section>
+                                        <q-item v-if=" data?.employment_type?.trim() === 'PE'">
+                                            <q-item-section side class="subtitle">Designation:</q-item-section>
                                             <q-item-section  class="text-label">{{data?.designation}}</q-item-section>
+                                        </q-item>
+
+                                        <q-item v-if=" data?.employment_type?.trim() === 'MR'">
+                                            <q-item-section side class="subtitle">Post/Work Assigned:</q-item-section>
+                                            <q-item-section  class="text-label">{{data?.post_assigned}}</q-item-section>
                                         </q-item>
 
                                         <q-item>

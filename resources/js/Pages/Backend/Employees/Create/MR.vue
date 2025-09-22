@@ -114,8 +114,8 @@
                 <q-step name="2" title="Job Info" icon="work" :done="step > 2">
                     <div class="row q-col-gutter-sm">
                         <div class="col-12 col-sm-6">
-                            <q-input v-model="form.designation" label="Designation *" outlined dense
-                                     :error="!!form.errors?.designation" :error-message="form.errors?.designation"
+                            <q-input v-model="form.post_assigned" label="Post/Work Assigned *" outlined dense
+                                     :error="!!form.errors?.post_assigned" :error-message="form.errors?.post_assigned"
                                      />
                         </div>
                         <div class="col-12 col-sm-6">
@@ -264,7 +264,7 @@
                             <strong>Office:</strong>
                             {{ (props?.offices || offices).find(o => String(o.id) === String(form.office))?.name || '' }}
                         </div>
-                        <div class="col-12 col-sm-6"> <strong>Designation:</strong> {{ form.designation }} </div>
+                        <div class="col-12 col-sm-6"> <strong>Post/Work Assigned:</strong> {{ form.post_assigned }} </div>
                         <div class="col-12 col-sm-6"> <strong>Date of Initial Engagement:</strong> {{ formatDate(form.date_of_engagement) }} </div>
                         <div class="col-12 col-sm-6"> <strong>Skill Category at Initial Engagement:</strong> {{ form.skill_category }} </div>
                         <div class="col-12 col-sm-6"> <strong>Skill at Present:</strong> {{ form.skill_at_present }} </div>
@@ -343,7 +343,7 @@ const form=useForm({
     parent_name:'',
     date_of_birth:'',
     address:'',
-    designation:'',
+    post_assigned:'',
     employment_type:'MR',
     office:'',
     educational_qln:'',
@@ -399,7 +399,7 @@ const nextStep = () => {
         step.value = '2'
     } else if (step.value === '2') {
         if (
-            !form.employment_type ||!form.designation || !form.office || !form.skill_category || !form.skill_at_present || !form.date_of_engagement
+            !form.employment_type ||!form.post_assigned || !form.office || !form.skill_category || !form.skill_at_present || !form.date_of_engagement
 
         ) {
             $q.notify({ type: 'negative', message: 'Please fill all required Job Info fields.' })
@@ -451,7 +451,7 @@ const submit = () => {
         formData.append('parent_name', form.parent_name)
         formData.append('date_of_birth', form.date_of_birth)
         formData.append('address', form.address)
-        formData.append('designation', form.designation)
+        formData.append('post_assigned', form.post_assigned)
         formData.append('employment_type', form.employment_type)
         formData.append('office', form.office)
         formData.append('educational_qln', form.educational_qln)

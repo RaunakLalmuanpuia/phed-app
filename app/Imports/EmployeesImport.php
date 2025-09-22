@@ -47,6 +47,7 @@ class EmployeesImport implements ToModel, WithStartRow
 
     public function model(array $row)
     {
+        $designationValue = $row[$this->columns['designation']] ?? null;
         $employee = Employee::updateOrCreate(
             ['mobile' => $row[$this->columns['mobile']] ?? null],
             [
@@ -59,13 +60,18 @@ class EmployeesImport implements ToModel, WithStartRow
                 'employment_type'        => $this->employment_type,
                 'educational_qln'        => $row[$this->columns['educational_qln']] ?? null,
                 'technical_qln'          => $row[$this->columns['technical_qln']] ?? null,
-                'designation'            => $row[$this->columns['designation']] ?? null,
+
                 'name_of_workplace'      => $row[$this->columns['workplace']] ?? null,
                 'post_per_qualification' => $row[$this->columns['post_per_qln']] ?? null,
                 'date_of_engagement'     => $this->transformDate($row[$this->columns['date_of_engagement']] ?? null),
                 'skill_category'         => $row[$this->columns['skill_category']] ?? null,
                 'skill_at_present'       => $row[$this->columns['present_skill']] ?? null,
                 'engagement_card_no'       => $row[$this->columns['engagement_card_no']] ?? null,
+
+                // conditional assignment
+                'designation'   => $this->employment_type === 'PE' ? $designationValue : null,
+                'post_assigned' => $this->employment_type === 'MR' ? $designationValue : null,
+
             ]
         );
 

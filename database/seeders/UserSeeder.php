@@ -19,6 +19,7 @@ class UserSeeder extends Seeder
         User::query()->upsert([
             ['id'=>1,'name'=>'admin','email'=>'admin@mail.com','mobile'=>'0000000001','password'=>Hash::make('password')],
             ['id'=>2,'name'=>'manager','email'=>'manager@mail.com','mobile'=>'0000000002','password'=>Hash::make('password')],
+            ['id'=>3,'name'=>'reviewer','email'=>'reviewer@mail.com','mobile'=>'0000000003','password'=>Hash::make('password')],
         ], ['id']);
 
 
@@ -27,6 +28,9 @@ class UserSeeder extends Seeder
 
         $manager=User::query()->find(2);
         $manager->assignRole('Manager');
+
+        $manager=User::query()->find(3);
+        $manager->assignRole('Reviewer');
 
     }
 }

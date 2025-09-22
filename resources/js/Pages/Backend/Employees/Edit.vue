@@ -98,6 +98,11 @@
                                      :error="!!form.errors?.technical_qln" :error-message="form.errors?.technical_qln"
                                      :rules="[val => !!val || 'Technical Qualification is required']" />
                         </div>
+                        <div v-if="form.employment_type === 'MR'" class="col-12 col-sm-6">
+                            <q-input v-model="form.post_assigned" label="Post/Work Assigned" outlined dense
+                                     :error="!!form.errors?.post_assigned" :error-message="form.errors?.post_assigned"
+                                     :rules="[val => !!val || 'Post/Work Assigned is required']" />
+                        </div>
                     </div>
                     <div v-if="!isManager" class="row q-col-gutter-sm">
                         <div class="col-12 col-sm-6">
@@ -154,11 +159,19 @@
                                       :error="!!form.errors?.employment_type" :error-message="form.errors?.employment_type"
                                       :rules="[val => !!val || 'Employment Type is required']" />
                         </div>
-                        <div class="col-12 col-sm-6">
+                        <div v-if="form.employment_type === 'PE'" class="col-12 col-sm-6">
                             <q-input v-model="form.designation" label="Designation *" outlined dense
                                      :error="!!form.errors?.designation" :error-message="form.errors?.designation"
                                      :rules="[val => !!val || 'Designation is required']" />
+
                         </div>
+                        <div v-if="form.employment_type === 'MR'" class="col-12 col-sm-6">
+                            <q-input v-model="form.post_assigned" label="Post/Work Assigned *" type="text" outlined dense
+                                     :error="!!form.errors?.post_assigned" :error-message="form.errors?.post_assigned"
+                                     :rules="[val => !!val || 'Post/Work Assigned is required']"
+                            />
+                        </div>
+
                         <div class="col-12 col-sm-6">
                             <q-select v-model="form.office" label="Office *" :options="offices" option-label="name" option-value="id"
                                       emit-value map-options outlined dense
@@ -325,7 +338,8 @@
                     <div class="row q-col-gutter-sm q-mb-md">
                         <div class="col-12 col-sm-6"> <strong>Employment Type:</strong> {{ form.employment_type }} </div>
                         <div class="col-12 col-sm-6"> <strong>Office:</strong>  {{ offices.find(o => o.id === form.office)?.name || '—' }} </div>
-                        <div class="col-12 col-sm-6"> <strong>Designation:</strong> {{ form.designation }} </div>
+                        <div v-if="form.employment_type === 'PE'" class="col-12 col-sm-6"> <strong>Designation:</strong> {{ form.designation }} </div>
+                        <div v-if="form.employment_type === 'MR'" class="col-12 col-sm-6"> <strong>Post/Work Assigned :</strong> {{ form.post_assigned }} </div>
                         <div v-if="form.employment_type === 'PE'" class="col-12 col-sm-6"> <strong>Engagement Card No. :</strong> {{ form.engagement_card_no }} </div>
                         <div class="col-12 col-sm-6"> <strong>Date of Initial Engagement:</strong> {{ formatDate(form.date_of_engagement) }} </div>
 
@@ -402,6 +416,7 @@ const form=useForm({
     date_of_birth:props.data?.date_of_birth,
     address:props.data?.address,
     designation:props.data?.designation,
+    post_assigned:props.data?.post_assigned,
     employment_type:props.data?.employment_type,
     office: props.data?.office?.id ?? null, // pick the ID only
     educational_qln:props.data?.educational_qln,
@@ -473,7 +488,7 @@ const nextStep = () => {
         step.value = !isManager.value ? '2' : '4'
     } else if (step.value === '2') {
         // Base required fields
-        if (!form.employment_type || !form.designation  || !form.office) {
+        if (!form.employment_type || !form.office) {
             $q.notify({ type: 'negative', message: 'Please fill all required Job Info fields.' })
             return
         }
@@ -534,6 +549,7 @@ const submit = () => {
         formData.append('date_of_birth', form.date_of_birth)
         formData.append('address', form.address)
         formData.append('designation', form.designation)
+        formData.append('post_assigned', form.post_assigned)
         formData.append('employment_type', form.employment_type)
         formData.append('office', form.office?.id || form.office)
         formData.append('educational_qln', form.educational_qln)
