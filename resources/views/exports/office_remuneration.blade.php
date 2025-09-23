@@ -38,7 +38,10 @@
             <td style="text-align:right;">{{ number_format($emp['medical_allowance'], 0, '.', ',') }}</td>
             <td style="text-align:right;">{{ number_format($emp['total'], 0, '.', ',') }}</td>
             <td style="text-align:right;">{{ number_format($emp['monthly_rem'], 2, '.', ',') }}</td>
-            <td style="text-align:center;">{{ $emp['next_increment'] }}</td>
+            <td>
+                {{ $emp['next_increment'] ? \Carbon\Carbon::parse($emp['next_increment'])->format('d-m-Y') : '' }}
+            </td>
+
         </tr>
     @endforeach
 </table>

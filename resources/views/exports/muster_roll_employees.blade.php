@@ -26,11 +26,15 @@
         <tr>
             <td>{{ $employee->name }}</td>
             <td>{{ $employee->parent_name }}</td>
-            <td>{{ $employee->date_of_birth }}</td>
+            <td>
+                {{ $employee->date_of_birth ? \Carbon\Carbon::parse($employee->date_of_birth)->format('d-m-Y') : '' }}
+            </td>
             <td>{{ $employee->mobile }}</td>
             <td>{{ $employee->post_assigned }}</td>
             <td>{{ $employee->name_of_workplace }}</td>
-            <td>{{ $employee->date_of_engagement }}</td>
+            <td>
+                {{ $employee->date_of_engagement ? \Carbon\Carbon::parse($employee->date_of_engagement)->format('d-m-Y') : '' }}
+            </td>
             <td>{{ $employee->skill_category }}</td>
             <td>{{ $employee->skill_at_present }}</td>
             <td>{{ $employee->educational_qln }}</td>

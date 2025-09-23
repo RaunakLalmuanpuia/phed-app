@@ -9,9 +9,9 @@
         <th>Name</th>
         <th>Fathers/Mothers Name</th>
         <th>Date of Birth</th>
-        <th>Designation</th>
         <th>Mobile</th>
         <th>Present Address</th>
+        <th>Designation</th>
         <th>Engagement Card No</th>
         <th>Educational Qln</th>
         <th>Technical Qln</th>
@@ -28,11 +28,13 @@
         <tr>
             <td>{{ $employee->name }}</td>
             <td>{{ $employee->parent_name }}</td>
-            <td>{{ $employee->date_of_birth }}</td>
-            <td>{{ $employee->designation }}</td>
+            <td>
+                {{ $employee->date_of_birth ? \Carbon\Carbon::parse($employee->date_of_birth)->format('d-m-Y') : '' }}
+            </td>
             <td>{{ $employee->mobile }}</td>
             <td>{{ $employee->address }}</td>
-            <td>1234</td>
+            <td>{{ $employee->designation }}</td>
+            <td>{{ $employee->engagement_card_no }}</td>
             <td>{{ $employee->educational_qln }}</td>
             <td>{{ $employee->technical_qln }}</td>
             <td>{{ $employee->name_of_workplace }}</td>
@@ -40,7 +42,10 @@
             <td>{{ optional($employee->remunerationDetail)->medical_amount }}</td>
             <td>{{ optional($employee->remunerationDetail)->total }}</td>
             <td>{{ optional($employee->remunerationDetail)->round_total }}</td>
-            <td>{{ optional($employee->remunerationDetail)->next_increment_date }}</td>
+
+            <td>
+                {{ optional($employee->remunerationDetail)->next_increment_date ? \Carbon\Carbon::parse(optional($employee->remunerationDetail)->next_increment_date)->format('d-m-Y') : '' }}
+            </td>
         </tr>
     @endforeach
     </tbody>

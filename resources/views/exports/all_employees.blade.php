@@ -13,7 +13,8 @@
         <th>Present Address</th>
         <th>Employment Type</th>
         <th>Name of Office/Workplace</th>
-        <th>Name of post/Works</th>
+        <th>Designation</th>
+        <th>Post/Work Assigned</th>
         <th>Educational Qln</th>
         <th>Technical Qln</th>
         <th>Date of Initial Engagement</th>
@@ -28,15 +29,20 @@
         <tr>
             <td>{{ $employee->name }}</td>
             <td>{{ $employee->parent_name }}</td>
-            <td>{{ $employee->date_of_birth }}</td>
+            <td>
+                {{ $employee->date_of_birth ? \Carbon\Carbon::parse($employee->date_of_birth)->format('d-m-Y') : '' }}
+            </td>
             <td>{{ $employee->mobile }}</td>
             <td>{{ $employee->address }}</td>
             <td>{{ $employee->employment_type }}</td>
             <td>{{ $employee->name_of_workplace }}</td>
             <td>{{ $employee->designation }}</td>
+            <td>{{ $employee->post_assigned }}</td>
             <td>{{ $employee->educational_qln }}</td>
             <td>{{ $employee->technical_qln }}</td>
-            <td>{{ $employee->date_of_engagement }}</td>
+            <td>
+                {{ $employee->date_of_engagement ? \Carbon\Carbon::parse($employee->date_of_engagement)->format('d-m-Y') : '' }}
+            </td>
             <td>{{ $employee->skill_category }}</td>
             <td>{{ $employee->skill_at_present }}</td>
             <td>{{ $employee->post_per_qualification }}</td>
