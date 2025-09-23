@@ -11,7 +11,7 @@ const showDialog = ref(false)
 const form = useForm({
   reason: props.deletion.reason || '',
   seniority_list: props.deletion.seniority_list || '',
-  year: props.deletion.year || '',
+  year: props.deletion.year || new Date().getFullYear(),
   remark: props.deletion.remark || '',
   supporting_document: null,
 })
@@ -97,7 +97,26 @@ const viewDocument = (url) => {
 
       <q-form @submit.prevent="submit">
         <q-card-section class="q-gutter-md">
-          <q-input v-model="form.reason" label="Reason" outlined dense required />
+            <q-select
+                v-model="form.reason"
+                label="Reason"
+                outlined
+                dense
+                required
+                :options="[
+                        'Expired',
+                        'Resigned',
+                        'Dismissed',
+                        'Regularised',
+                        'Others (Specify the reasons to Remarks)',
+                        'Overage (Retired)'
+                      ]"
+                :error="!!form.errors.reason"
+                :error-message="form.errors.reason"
+                :rules="[
+                        val => !!val || 'Reason is required'
+                     ]"
+            />
           <q-input v-model="form.seniority_list" label="Seniority List" outlined dense />
           <q-input v-model="form.year" label="Year" outlined dense type="number" />
           <q-input v-model="form.remark" label="Remark" outlined dense type="textarea" />

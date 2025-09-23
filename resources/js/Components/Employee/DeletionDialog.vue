@@ -10,8 +10,27 @@
 
         <q-form @submit.prevent="submitForm">
           <q-card-section class="q-gutter-md">
+              <q-select
+                  v-model="form.reason"
+                  label="Reason"
+                  outlined
+                  dense
+                  required
+                  :options="[
+                        'Expired',
+                        'Resigned',
+                        'Dismissed',
+                        'Regularised',
+                        'Others (Specify the reasons to Remarks)',
+                        'Overage (Retired)'
+                      ]"
+                  :error="!!form.errors.reason"
+                  :error-message="form.errors.reason"
+                  :rules="[
+                        val => !!val || 'Reason is required'
+                     ]"
+              />
             <q-input v-model="form.seniority_list" label="Seniority List" dense outlined type="number" />
-            <q-input v-model="form.reason" label="Reason" dense outlined required />
             <q-input v-model="form.year" label="Year" dense outlined type="number" />
             <q-input v-model="form.remark" label="Remark" type="textarea" dense outlined />
             <q-file v-model="form.supporting_document" label="Supporting Document"  dense outlined />

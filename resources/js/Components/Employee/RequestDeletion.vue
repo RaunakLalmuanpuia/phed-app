@@ -1,7 +1,7 @@
 <script setup>
 import {computed, ref} from "vue";
-import { useForm, router } from "@inertiajs/vue3";
-import { useQuasar } from "quasar";
+import {useForm, router} from "@inertiajs/vue3";
+import {useQuasar} from "quasar";
 import useUtils from "@/Compositions/useUtils";
 
 const {formatDate, formatDateTime} = useUtils();
@@ -13,7 +13,7 @@ const $q = useQuasar();
 const form = useForm({
     reason: "",
     seniority_list: "",
-    year: "",
+    year: new Date().getFullYear(),
     remark: "",
     supporting_document: null,
 });
@@ -24,6 +24,7 @@ const latestRequestPending = computed(() =>
 
 // Dialog state
 const showDialog = ref(false);
+
 function parseReason(request) {
     try {
         return JSON.parse(request.reason);
@@ -86,7 +87,7 @@ function submitRequest() {
             </div>
         </q-card-section>
 
-        <q-separator />
+        <q-separator/>
 
         <q-card-section>
             <!-- Empty State -->
@@ -209,15 +210,22 @@ function submitRequest() {
             </q-card-section>
 
             <q-card-section>
-                <q-input
+                <q-select
                     v-model="form.reason"
                     label="Reason"
-                    type="textarea"
                     outlined
+                    :options="[
+                        'Expired',
+                        'Resigned',
+                        'Dismissed',
+                        'Regularised',
+                        'Others (Specify the reasons to Remarks)',
+                        'Overage (Retired)'
+                      ]"
                     :error="!!form.errors.reason"
                     :error-message="form.errors.reason"
                     :rules="[
-                         val=>!!val || 'Reason is required'
+                        val => !!val || 'Reason is required'
                      ]"
                 />
                 <q-input
@@ -253,7 +261,7 @@ function submitRequest() {
             </q-card-section>
 
             <q-card-actions align="right">
-                <q-btn flat label="Cancel" color="grey" @click="showDialog = false" />
+                <q-btn flat label="Cancel" color="grey" @click="showDialog = false"/>
                 <q-btn
                     label="Submit"
                     color="negative"
