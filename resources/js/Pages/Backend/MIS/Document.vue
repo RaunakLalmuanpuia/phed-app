@@ -134,6 +134,18 @@
                 </q-card-section>
 
                 <q-card-section class="q-gutter-md">
+
+                    <div class="row q-mb-sm items-center">
+                        <div class="col-4 text-subtitle2 text-grey-8">Name</div>
+                        <div class="col-8 text-body1">{{ currentRow?.name }}</div>
+                    </div>
+
+                    <div class="row q-mb-sm items-center">
+                        <div class="col-4 text-subtitle2 text-grey-8">Employment Type</div>
+                        <div class="col-8 text-body1">{{ currentRow?.employment_type }}</div>
+                    </div>
+
+                    <q-separator/>
                     <div
                         class="col-12 col-sm-6"
                         v-for="(type, index) in documentTypes"
