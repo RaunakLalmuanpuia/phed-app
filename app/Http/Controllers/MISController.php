@@ -190,6 +190,7 @@ class MISController extends Controller
 
         $employees = Employee::with(['office','documents.type'])
             ->whereIn('office_id', (array) $officeIds)
+            ->where('employment_type', '!=', 'Deleted')
 
             ->when($search, function ($q) use ($search) {
                 $q->where(function ($sub) use ($search) {
