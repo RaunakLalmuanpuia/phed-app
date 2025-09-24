@@ -102,7 +102,6 @@ class MISController extends Controller
 
     }
 
-
     public function engagementCard(Request $request){
         $user = $request->user();
         abort_if(!$user->hasPermissionTo('generate-engagement-card'),403,'Access Denied');
@@ -121,7 +120,6 @@ class MISController extends Controller
 
         ]);
     }
-
 
     public function jsonEngagementCard(Request $request)
     {
@@ -164,6 +162,51 @@ class MISController extends Controller
         ], 200);
     }
 
+
+    public function employeeDocument(Request $request){
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('update-document'),403,'Access Denied');
+
+        $office = Office::all();
+        $documentTypes = DocumentType::all();
+
+        return Inertia::render('Backend/MIS/Document', [
+            'office' => $office,
+            'documentTypes' => $documentTypes,
+            'canUpdateDocument'=>$user->can('update-document'),
+        ]);
+    }
+
+
+    public function jsonEmployeeDocument(Request $request){
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('update-document'),403,'Access Denied');
+
+        $perPage = $request->integer('rowsPerPage', 5);
+        $filter  = $request->get('filter', []);
+        $search  = $request->get('search');
+        $officeIds = $filter['offices'] ?? [];
+
+
+        $employees = Employee::with(['office','documents.type'])
+            ->whereIn('office_id', (array) $officeIds)
+
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($sub) use ($search) {
+                    $sub->where('name', 'LIKE', "%{$search}%")
+                        ->orWhere('mobile', 'LIKE', "%{$search}%")
+                        ->orWhere('designation', 'LIKE', "%{$search}%")
+                        ->orWhere('date_of_birth', 'LIKE', "%{$search}%")
+                        ->orWhere('name_of_workplace', 'LIKE', "%{$search}%");
+                });
+            })
+            ->paginate($perPage);
+
+        return response()->json([
+            'list' => $employees,
+        ], 200);
+
+    }
 
     public function managerRemuneration(Request $request){
 

@@ -8,6 +8,7 @@ use App\Models\DocumentType;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class DocumentController extends Controller
 {
@@ -85,9 +86,6 @@ class DocumentController extends Controller
     }
 
 
-
-
-
     // Reject request
     public function reject(Request $request,DocumentEditRequest $model)
     {
@@ -102,6 +100,49 @@ class DocumentController extends Controller
 
         return redirect()->back()->with('success', 'Document update request rejected.');
 
+    }
+
+    public function updateEmployeeDocument(Request $request, Employee $model)
+    {
+        $validated = $request->validate([
+            'documents' => 'nullable|array',
+            'documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ]);
+
+        if ($request->hasFile('documents')) {
+            foreach ($request->file('documents') as $typeId => $file) {
+                if ($file) {
+                    $documentType = DocumentType::find($typeId);
+                    if (!$documentType) {
+                        return response()->json([
+                            'message' => "Invalid document type ID: {$typeId}"
+                        ], 422);
+                    }
+
+                    $randomString = \Str::random(8);
+                    $extension = $file->getClientOriginalExtension();
+                    $generatedName = $documentType->name . '_' . $randomString . '.' . $extension;
+
+                    $path = $file->storeAs('documents', $generatedName, 'public');
+
+                    $model->documents()->updateOrCreate(
+                        ['document_type_id' => $typeId],
+                        [
+                            'type' => $documentType->name,
+                            'name' => $generatedName,
+                            'mime' => $file->getClientMimeType(),
+                            'path' => $path,
+                            'upload_date' => now(),
+                        ]
+                    );
+                }
+            }
+        }
+
+        return response()->json([
+            'employee' => $model->load('documents.type'),
+            'message' => 'Employee Document Updated Successfully!'
+        ]);
     }
 
     public function deleteEmployeeDocument(Request $request, Document $model)
@@ -122,4 +163,6 @@ class DocumentController extends Controller
 
 
     }
+
+
 }

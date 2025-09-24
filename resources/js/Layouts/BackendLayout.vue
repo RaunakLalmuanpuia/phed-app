@@ -625,6 +625,7 @@ const module = reactive({
             {route_name: 'mis.create-pe-employee', label: 'Add PE Employee', permission: 'create-employee'},
             {route_name: 'mis.create-mr-employee', label: 'Add MR Employee', permission: 'create-employee'},
             {route_name: 'mis.engagement-card', label: 'Engagement Card', permission: 'generate-engagement-card'},
+            {route_name: 'mis.employee-document', label: 'Employees Document', permission: 'update-document'},
         ]
     },
 

@@ -120,6 +120,10 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
         Route::get('json-engagement-card', [MISController::class, 'jsonEngagementCard'])->middleware('can:generate-engagement-card')->name('mis.json-engagement-card');
 
 
+        Route::get('employee-document', [MISController::class, 'employeeDocument'])->middleware('can:update-document')->name('mis.employee-document');
+        Route::get('json-employee-document', [MISController::class, 'jsonEmployeeDocument'])->middleware('can:update-document')->name('mis.json-employee-document');
+
+
     });
 
     Route::group(['prefix' => 'remuneration'], function () {
@@ -216,6 +220,7 @@ Route::group(['middleware'=>'auth','prefix' => 'document'], function () {
     Route::post('request/{model}', [DocumentController::class, 'request'])->middleware('can:request-document-edit')->name('document.request');
     Route::post('approve/{model}', [DocumentController::class, 'approve'])->middleware('can:approve-document-edit')->name('document.approve');
     Route::post('reject/{model}', [DocumentController::class, 'reject'])->middleware('can:approve-document-edit')->name('document.reject');
+    Route::post('update/{model}', [DocumentController::class, 'updateEmployeeDocument'])->middleware('can:update-document')->name('document.update');
     Route::delete('{model}', [DocumentController::class, 'deleteEmployeeDocument'])->middleware('can:delete-document')->name('document.destroy');
 });
 

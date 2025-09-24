@@ -77,6 +77,12 @@ class DocumentTypeController extends Controller
         $user = auth()->user();
         abort_if(!$user->hasPermissionTo('delete-document-type'),403,'Access Denied');
 
+        if ($model->documents()->exists()) {
+            return back()->withErrors([
+                'error' => 'Cannot delete this document type because it is linked to existing employee documents.'
+            ]);
+        }
+
         // Check if deleting is going to cause data loss!!
         $model->delete();
         return to_route('document-type.index');

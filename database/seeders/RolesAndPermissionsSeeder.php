@@ -34,7 +34,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'view-engagement-card','store-engagement-card','download-engagement-card',
             'view-pe-summary','view-mr-summary',
             'export-pe-summary', 'export-mr-summary','export-pe','export-mr','export-all','export-remuneration-summary',
-            'generate-remuneration', 'generate-engagement-card','delete-engagement-card',
+            'generate-remuneration', 'generate-engagement-card','delete-engagement-card','update-document',
         ];
 
         // Create permissions
@@ -62,7 +62,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'view-engagement-card','store-engagement-card','download-engagement-card',
                 'view-pe-summary','view-mr-summary',
                 'export-pe-summary', 'export-mr-summary','export-pe','export-mr','export-all','export-remuneration-summary',
-                'generate-remuneration', 'generate-engagement-card','delete-engagement-card',
+                'generate-remuneration', 'generate-engagement-card','delete-engagement-card','update-document',
                 ],
 
             'Reviewer'=>[
