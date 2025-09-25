@@ -116,6 +116,26 @@
 
             </template>
 
+            <!-- User Cell -->
+            <template v-slot:body-cell-employee="props">
+                <q-td :props="props">
+                    <div class="flex items-center gap-3">
+                        <q-avatar>
+                            <q-img
+                                v-if="props.row.avatar"
+                                :src="`/storage/${props.row.avatar}`"
+                            />
+                            <q-icon v-else name="person" size="md" color="primary"/>
+                        </q-avatar>
+                        <div>
+                            <div class="text-body1">{{ props.row.name }}</div>
+                            <div class="text-caption text-grey">{{ props.row.mobile }}</div>
+                            <div class="text-caption text-grey">{{ formatDate(props.row.date_of_birth) }}</div>
+                        </div>
+                    </div>
+                </q-td>
+            </template>
+
 
             <template v-slot:body-cell-office="props">
                 <q-td :props="props">
@@ -141,54 +161,99 @@
 
 
         <q-dialog v-model="showDialog">
-            <q-card style="min-width: 400px">
+            <q-card style="min-width: 750px">
+
                 <q-card-section>
-                    <div class="text-h6">Update Document</div>
+                    <div class="text-lg font-bold">Update Docment</div>
                 </q-card-section>
 
                 <q-card-section class="q-gutter-md">
 
-                    <div class="row q-mb-sm items-center">
-                        <div class="col-4 text-subtitle2 text-grey-8">Name</div>
-                        <div class="col-8 text-body1">{{ currentRow?.name }}</div>
-                    </div>
+                        <!-- Grid: Left = Existing, Right = New Input -->
+                        <div class="grid grid-cols-2 gap-4 items-start relative">
+                            <!-- Left: Existing Value -->
+                            <div>
 
-                    <div class="row q-mb-sm items-center">
-                        <div class="col-4 text-subtitle2 text-grey-8">Employment Type</div>
-                        <div class="col-8 text-body1">{{ currentRow?.employment_type }}</div>
-                    </div>
+                                <div class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Name</div>
+                                    <div class="col-8 text-body1">{{ currentRow?.name }}</div>
+                                </div>
 
+                                <div class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Parent Name</div>
+                                    <div class="col-8 text-body1">{{ currentRow?.parent_name }}</div>
+                                </div>
+
+                                <div class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Date of Birth</div>
+                                    <div class="col-8 text-body1">{{ formatDate(currentRow?.date_of_birth) }}</div>
+                                </div>
+
+                                <div class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Present Address</div>
+                                    <div class="col-8 text-body1">{{ currentRow?.address }}</div>
+                                </div>
+
+                                <div v-if="currentRow?.employment_type === 'PE'" class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Employment Type</div>
+                                    <div class="col-8 text-body1">Provisional Employee</div>
+                                </div>
+
+                                <div v-if="currentRow?.employment_type === 'MR'" class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Employment Type</div>
+                                    <div class="col-8 text-body1">Muster Roll Employee</div>
+                                </div>
+
+                                <div v-if="currentRow?.employment_type === 'PE'" class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Designation</div>
+                                    <div class="col-8 text-body1">{{ currentRow?.designation }}</div>
+                                </div>
+
+                                <div v-if="currentRow?.employment_type === 'MR'" class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Post/Work Assigned</div>
+                                    <div class="col-8 text-body1">{{ currentRow?.post_assigned }}</div>
+                                </div>
+                            </div>
+
+                            <!-- Vertical Separator -->
+                            <div class="absolute top-0 bottom-0 left-1/2 w-px bg-gray-300"></div>
+
+                            <!-- Right: New Input -->
+                            <div>
+                                <div
+                                    class="col-12 col-sm-6"
+                                    v-for="(type, index) in documentTypes"
+                                    :key="type.id"
+                                >
+                                    <div class="text-subtitle2 q-mb-xs">{{ type.name }}</div>
+                                    <q-file
+                                        filled
+                                        :model-value="form.documents[type.id]?.file || null"
+                                        @update:model-value="val => updateDocument(type.id, val)"
+                                        label="Upload File"
+                                        accept=".pdf,.jpg,.jpeg,.png"
+                                        clearable
+                                        class="full-width"
+
+                                    >
+                                        <template v-if="form.documents[type.id]?.url" v-slot:append>
+                                            <q-btn
+                                                round
+                                                dense
+                                                flat
+                                                icon="visibility"
+                                                @click="viewDocument(form.documents[type.id].url)"
+                                                class="q-ml-sm"
+                                            />
+                                        </template>
+                                    </q-file>
+
+
+                                </div>
+                            </div>
+                        </div>
                     <q-separator/>
-                    <div
-                        class="col-12 col-sm-6"
-                        v-for="(type, index) in documentTypes"
-                        :key="type.id"
-                    >
-                        <div class="text-subtitle2 q-mb-xs">{{ type.name }}</div>
-                        <q-file
-                            filled
-                            :model-value="form.documents[type.id]?.file || null"
-                            @update:model-value="val => updateDocument(type.id, val)"
-                            label="Upload File"
-                            accept=".pdf,.jpg,.jpeg,.png"
-                            clearable
-                            class="full-width"
 
-                        >
-                            <template v-if="form.documents[type.id]?.url" v-slot:append>
-                                <q-btn
-                                    round
-                                    dense
-                                    flat
-                                    icon="visibility"
-                                    @click="viewDocument(form.documents[type.id].url)"
-                                    class="q-ml-sm"
-                                />
-                            </template>
-                        </q-file>
-
-
-                    </div>
 
                 </q-card-section>
 
@@ -214,11 +279,15 @@ import BackendLayout from "@/Layouts/BackendLayout.vue";
 import { useQuasar } from "quasar";
 import { ref } from "vue";
 import {router, useForm} from "@inertiajs/vue3";
+
 import useUtils from "@/Compositions/useUtils";
+
 
 defineOptions({ layout: BackendLayout });
 
 const props = defineProps(["office", 'documentTypes',"canUpdateDocument"]);
+
+const {formatDate} = useUtils();
 
 const filters = ref({
     offices: [], // multiple offices
@@ -294,7 +363,7 @@ const pagination = ref({
 });
 // Table columns
 const columns = [
-    { name: "name", label: "Name", field: "name", align: "left", sortable: true },
+    {name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true},
     { name: "employment_type", label: "Employment Type", field: "employment_type", align: "left", sortable: true },
     { name: "designation", label: "Designation", field: "designation", align: "left", sortable: true },
     { name: "post_assigned", label: "Post Assigned", field: "post_assigned", align: "left", sortable: true },
