@@ -282,6 +282,7 @@ Route::group(['middleware'=>'auth','prefix' => 'export'], function () {
     Route::get('all/{model}', [ExportController::class, 'exportAll'])->middleware('can:export-all')->name('export.all');
     Route::get('provisional/{model}', [ExportController::class, 'exportProvisional'])->middleware('can:export-pe')->name('export.pe');
     Route::get('muster-roll/{model}', [ExportController::class, 'exportMusterRoll'])->middleware('can:export-mr')->name('export.mr');
+    Route::get('deleted', [ExportController::class, 'exportDeleted'])->middleware('can:export-deleted')->name('export.deleted');
     Route::get('scheme/{model}', [ExportController::class, 'exportScheme'])->name('export.scheme');
 
     Route::get('remuneration-summary', [ExportController::class, 'exportRemunerationSummary'])->middleware('can:export-remuneration-summary')->name('export.remuneration-summary');

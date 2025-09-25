@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\AllEmployeesExport;
+use App\Exports\DeletedEmployeesExport;
 use App\Exports\MusterRollEmployeesExport;
 use App\Exports\OfficeRemunerationSheet;
 use App\Exports\RemunerationExport;
@@ -68,6 +69,15 @@ class ExportController extends Controller
             new MusterRollEmployeesExport($model),
             Str::slug($model->name, '_') . '_muster_roll_employees.xlsx'
         );
+    }
+
+    public function exportDeleted(Request $request){
+
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('export-deleted'),403,'Access Denied');
+
+        $export = new DeletedEmployeesExport();
+        return Excel::download($export, 'Deleted_Employees.xlsx');
     }
 
     public function exportAll(Request $request, Office $model){
