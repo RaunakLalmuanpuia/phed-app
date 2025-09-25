@@ -191,7 +191,9 @@ class MISController extends Controller
         $employees = Employee::with(['office','documents.type'])
             ->whereIn('office_id', (array) $officeIds)
             ->where('employment_type', '!=', 'Deleted')
-
+            ->when($filter['type'] ?? null, function ($query, $type) {
+                $query->where('employment_type', $type);
+            })
             ->when($search, function ($q) use ($search) {
                 $q->where(function ($sub) use ($search) {
                     $sub->where('name', 'LIKE', "%{$search}%")
@@ -201,6 +203,7 @@ class MISController extends Controller
                         ->orWhere('name_of_workplace', 'LIKE', "%{$search}%");
                 });
             })
+            ->orderBy('name', 'asc')
             ->paginate($perPage);
 
         return response()->json([

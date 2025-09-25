@@ -46,6 +46,19 @@
                                     @update:model-value="checkOffices"
                                 />
 
+                                <q-select
+                                    label="Select Employment Type"
+                                    class="col-12 col-sm-4"
+                                    v-model="filters.type"
+                                    :options="type"
+                                    emit-value
+                                    map-options
+                                    outlined
+                                    dense
+                                    clearable
+                                    @update:model-value="handleSearch"
+                                />
+
                             </div>
                         </q-card-section>
 
@@ -209,8 +222,14 @@ const props = defineProps(["office", 'documentTypes',"canUpdateDocument"]);
 
 const filters = ref({
     offices: [], // multiple offices
+    type: null,
+
 
 });
+const type = [
+    {label: 'MR', value: 'MR'},
+    {label: 'PE', value: 'PE'},
+]
 
 const search = ref("");
 
