@@ -89,12 +89,12 @@
                                             <q-item-section  class="text-label">{{data?.technical_qln}}</q-item-section>
                                         </q-item>
 
-                                        <q-item v-if=" data?.employment_type?.trim() === 'PE'">
+                                        <q-item v-if=" data?.employment_type?.trim() === 'PE' || data?.designation">
                                             <q-item-section side class="subtitle">Designation:</q-item-section>
                                             <q-item-section  class="text-label">{{data?.designation}}</q-item-section>
                                         </q-item>
 
-                                        <q-item v-if=" data?.employment_type?.trim() === 'MR'">
+                                        <q-item v-if=" data?.employment_type?.trim() === 'MR' || data?.post_assigned">
                                             <q-item-section side class="subtitle">Post/Work Assigned:</q-item-section>
                                             <q-item-section  class="text-label">{{data?.post_assigned}}</q-item-section>
                                         </q-item>
@@ -121,28 +121,28 @@
                                             </q-item-section>
                                         </q-item>
 
-                                        <q-item v-if=" data?.employment_type?.trim() === 'PE'">
+                                        <q-item v-if=" data?.employment_type?.trim() === 'PE' || data?.designation">
                                             <q-item-section side class="subtitle">Engagement Card No. :</q-item-section>
                                             <q-item-section  class="text-label">{{data?.engagement_card_no}}</q-item-section>
                                         </q-item>
 
-                                        <q-item v-if=" data?.employment_type?.trim() === 'MR'">
+                                        <q-item v-if=" data?.employment_type?.trim() === 'MR' || data?.post_assigned">
                                             <q-item-section side class="subtitle">Post Selected:</q-item-section>
                                             <q-item-section  class="text-label">{{data?.post_per_qualification}}</q-item-section>
                                         </q-item>
 
-                                        <q-item v-if=" data?.employment_type?.trim() === 'MR'">
+                                        <q-item v-if=" data?.employment_type?.trim() === 'MR' || data?.post_assigned">
                                             <q-item-section side class="subtitle">Skill Category:</q-item-section>
                                             <q-item-section  class="text-label">{{data?.skill_category}}</q-item-section>
                                         </q-item>
 
-                                        <q-item v-if=" data?.employment_type?.trim() === 'MR'">
+                                        <q-item v-if=" data?.employment_type?.trim() === 'MR' || data?.post_assigned">
                                             <q-item-section side class="subtitle">Skill at Present:</q-item-section>
                                             <q-item-section class="text-label">{{data?.skill_at_present}}</q-item-section>
                                         </q-item>
 
 
-                                        <q-item v-if=" data?.employment_type?.trim() === 'MR' && data?.scheme_id">
+                                        <q-item v-if=" data?.employment_type?.trim() === 'MR' && data?.scheme_id || data?.post_assigned">
                                             <q-item-section side class="subtitle">Scheme:</q-item-section>
                                             <q-item-section class="text-label">{{data?.scheme?.name}}</q-item-section>
                                         </q-item>

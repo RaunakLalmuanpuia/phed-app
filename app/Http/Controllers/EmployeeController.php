@@ -462,8 +462,10 @@ class EmployeeController extends Controller
                     $q->where('id', $officeId);
                 });
             })
-            ->when($filter['skill'] ?? null, function (Builder $query, $skill) {
-                $query->where('skill_at_present', $skill);
+            ->when($filter['reason'] ?? null, function (Builder $query, $reason) {
+                $query->whereHas('deletionDetail', function (Builder $q) use ($reason) {
+                    $q->where('reason', $reason);
+                });
             });
 
         return response()->json([

@@ -39,31 +39,28 @@
                                     clearable
                                     @update:model-value="handleSearch"
                                 />
+
                                 <q-select
-                                    label="Select Skill"
-                                    class="col-12 col-sm-4"
-                                    v-model="filters.skill"
-                                    :options="skills"
-                                    emit-value
-                                    map-options
-                                    outlined
-                                    dense
-                                    clearable
-                                    @update:model-value="handleSearch"
-                                />
-                                <q-input
                                     dense
                                     outlined
                                     debounce="300"
-                                    v-model="filters.search"
-                                    placeholder="Search"
+                                    v-model="filters.reason"
+                                    :options="[
+                                    'Expired',
+                                    'Resigned',
+                                    'Dismissed',
+                                    'Regularised',
+                                    'Others',
+                                    'Overage (Retired)'
+                                  ]"
+                                    label="Select Reason"
                                     class="col-12 col-sm-4"
+                                    emit-value
+                                    map-options
+                                    clearable
                                     @update:model-value="handleSearch"
                                 >
-                                    <template #append>
-                                        <q-icon name="search" />
-                                    </template>
-                                </q-input>
+                                </q-select>
                             </div>
                         </q-card-section>
 
@@ -93,6 +90,26 @@
                 :rows-per-page-options="[1,7,15,30,50]"
                 @request="onRequest"
             >
+
+                <template v-slot:top-right>
+
+                    <q-input
+                        dense
+                        outlined
+                        debounce="800"
+                        v-model="search"
+                        placeholder="Search"
+                        class="col-12 col-sm-auto"
+                        clearable
+                        @update:model-value="handleSearch"
+                    >
+                        <template #append>
+                            <q-icon name="search" />
+                        </template>
+                    </q-input>
+
+
+                </template>
                 <!-- User Cell -->
                 <template v-slot:body-cell-employee="props">
                     <q-td :props="props">
@@ -110,6 +127,12 @@
                                 <div class="text-caption text-grey">{{ props.row.date_of_birth }}</div>
                             </div>
                         </div>
+                    </q-td>
+                </template>
+
+                <template v-slot:body-cell-type="props">
+                    <q-td :props="props">
+                        {{ props.row.designation ? 'Provisional' : 'Muster Roll' }}
                     </q-td>
                 </template>
 
@@ -167,6 +190,9 @@ const props=defineProps(['office','canCreate','canEdit','canDelete'])
 
 const columns = [
     { name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true },
+    { name: 'type', label: 'Employment Type', align: 'left', field: 'type', sortable: true },
+    { name: 'designation', label: 'Designation', align: 'left', field: 'designation', sortable: true },
+    { name: 'post_assigned', label: 'Post/Work Assigned', align: 'left', field: 'post_assigned', sortable: true },
     { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: true },
     { name: 'reason', label: 'Reason', align: 'left', field: 'reason', sortable: false },
     { name: 'year', label: 'Year', align: 'left', field: 'year', sortable: false },
@@ -176,16 +202,17 @@ const columns = [
 
 const filters = ref({
     office: null,
-    skill: null,
-    search:null,
+    reason : null,
 })
 
 
+const reasonOptions = [
+    { label: 'Transfer', value: 'transfer' },
+    { label: 'Retirement', value: 'retirement' },
+    { label: 'Resignation', value: 'resignation' },
+    { label: 'Other', value: 'other' }
+];
 
-const skills = [
-    { label: 'Skilled', value: 'skilled' },
-    { label: 'Unskilled', value: 'unskilled' },
-]
 
 
 const search = ref('')
