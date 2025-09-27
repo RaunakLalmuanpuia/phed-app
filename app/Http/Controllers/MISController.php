@@ -194,6 +194,15 @@ class MISController extends Controller
             ->when($filter['type'] ?? null, function ($query, $type) {
                 $query->where('employment_type', $type);
             })
+            ->when($filter['scheme'] ?? null, function ($query, $scheme) {
+                if ($scheme === 'yes') {
+                    // Scheme is true - employees with scheme_id NOT NULL
+                    $query->whereNotNull('scheme_id');
+                } else {
+                    // Scheme is false - employees with scheme_id NULL
+                    $query->whereNull('scheme_id');
+                }
+            })
             ->when($search, function ($q) use ($search) {
                 $q->where(function ($sub) use ($search) {
                     $sub->where('name', 'LIKE', "%{$search}%")

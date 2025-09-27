@@ -56,6 +56,21 @@
                                     outlined
                                     dense
                                     clearable
+                                    @clear="clearTable"
+                                    @update:model-value="handleSearch"
+                                />
+
+                                <q-select
+                                    v-if="filters.type === 'MR'"
+                                    label="Is Scheme?"
+                                    class="col-12 col-sm-4"
+                                    v-model="filters.scheme"
+                                    :options="scheme"
+                                    emit-value
+                                    map-options
+                                    outlined
+                                    dense
+                                    clearable
                                     @update:model-value="handleSearch"
                                 />
 
@@ -292,12 +307,17 @@ const {formatDate} = useUtils();
 const filters = ref({
     offices: [], // multiple offices
     type: null,
-
+    scheme:null,
 
 });
 const type = [
     {label: 'MR', value: 'MR'},
     {label: 'PE', value: 'PE'},
+]
+
+const scheme = [
+    { label: 'No', value: 'no' },
+    { label: 'Yes', value: 'yes' },
 ]
 
 const search = ref("");
