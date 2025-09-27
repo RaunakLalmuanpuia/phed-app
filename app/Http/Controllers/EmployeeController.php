@@ -768,6 +768,24 @@ class EmployeeController extends Controller
 
     }
 
+    public function destroy(Employee $model)
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('delete-employee'), 403, 'Access Denied');
+
+        $model->delete();
+        return response()->json(['message' => 'Employee deleted successfully.']);
+    }
+
+    public function restore($model)
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('delete-employee'), 403, 'Access Denied');
+
+        $employee = Employee::onlyTrashed()->findOrFail($model); // ✅ include soft-deleted
+        $employee->restore();
+        return response()->json(['message' => 'Employee restored successfully.']);
+    }
     public function managerAll()
     {
         $user = auth()->user();
@@ -1119,6 +1137,56 @@ class EmployeeController extends Controller
 
         return response()->json([
             'list' => $employees->paginate($perPage),
+        ], 200);
+    }
+
+
+
+
+    public function trashedEmployees() // shows PE type
+    {
+        $office = Office::whereHas('employees', function ($query) {
+            $query->onlyTrashed(); // 🔥 only offices with trashed employees
+        })->get();
+
+        return Inertia::render('Backend/Employees/Index/TrashedEmployees', [
+            'office' => $office,
+        ]);
+    }
+
+    public function jsonTrashedEmployees(Request $request)
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
+
+        $perPage = $request->get('rowsPerPage', 5);
+        $filter  = $request->get('filter', []);
+        $search  = $filter['search'] ?? null;
+
+        $employees = Employee::onlyTrashed()
+            ->with(['office', 'deletionDetail'])
+            ->when($search, function (Builder $builder, $search) {
+                $builder->where(function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('mobile', 'like', "%{$search}%")
+                        ->orWhere('designation', 'like', "%{$search}%")
+                        ->orWhere('date_of_birth', 'like', "%{$search}%")
+                        ->orWhere('name_of_workplace', 'like', "%{$search}%");
+                });
+            })
+            ->when($filter['office'] ?? null, function (Builder $query, $officeId) {
+                $query->where('office_id', $officeId);
+            })
+            ->when($filter['reason'] ?? null, function (Builder $query, $reason) {
+                $query->whereHas('deletionDetail', function (Builder $q) use ($reason) {
+                    $q->where('reason', $reason);
+                });
+            })
+            ->orderBy('name', 'asc')
+            ->paginate($perPage);
+
+        return response()->json([
+            'list' => $employees,
         ], 200);
     }
 

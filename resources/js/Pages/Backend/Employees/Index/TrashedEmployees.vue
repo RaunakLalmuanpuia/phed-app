@@ -3,7 +3,7 @@
 
         <div class="flex items-center justify-between q-pa-md bg-white">
             <div>
-                <div class="stitle">Deleted Employee List</div>
+                <div class="stitle">Trashed Employee List</div>
                 <q-breadcrumbs  class="text-dark">
                     <q-breadcrumbs-el class="cursor-pointer" @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
                     <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="goBack"/>
@@ -12,74 +12,11 @@
         </div>
         <br>
         <q-card flat >
-            <q-card-section>
-                <div class="q-pa-md">
-
-
-                    <!-- Filter + Toolbar -->
-                    <q-card flat bordered class="q-mt-md bg-white shadow-1">
-                        <q-card-section>
-                            <div class="text-subtitle1 text-weight-medium text-grey-8 q-mb-md">
-                                Search Filter
-                            </div>
-
-                            <div class="row q-col-gutter-md">
-
-                                <q-select
-                                    label="Select Office"
-                                    class="col-12 col-sm-4"
-                                    v-model="filters.office"
-                                    :options="office"
-                                    option-label="name"
-                                    option-value="id"
-                                    emit-value
-                                    map-options
-                                    outlined
-                                    dense
-                                    clearable
-                                    @update:model-value="handleSearch"
-                                />
-
-                                <q-select
-                                    dense
-                                    outlined
-                                    debounce="300"
-                                    v-model="filters.reason"
-                                    :options="[
-                                    'Expired',
-                                    'Resigned',
-                                    'Dismissed',
-                                    'Regularised',
-                                    'Others',
-                                    'Overage (Retired)'
-                                  ]"
-                                    label="Select Reason"
-                                    class="col-12 col-sm-4"
-                                    emit-value
-                                    map-options
-                                    clearable
-                                    @update:model-value="handleSearch"
-                                >
-                                </q-select>
-                            </div>
-                        </q-card-section>
-
-                    </q-card>
-                </div>
-            </q-card-section>
-
-            <q-card-section class="row items-center justify-between q-gutter-md">
-                <div class="row q-gutter-sm col-12 col-sm justify-end">
-
-                    <q-btn label="Export" icon="desktop_windows" color="primary" @click="exportData"/>
-
-                </div>
-            </q-card-section>
 
             <q-table
                 flat
                 ref="tableRef"
-                title="List of Deleted Employees"
+                title="List of Trashed Employees"
                 :rows="rows"
                 :columns="columns"
                 row-key="id"
@@ -162,20 +99,10 @@
                             dense
                             flat
                             round
-                            color="primary"
-                            icon="visibility"
-                            @click="$inertia.get(route('employee.show',props.row.id))"
-                            aria-label="Show user"
-                        />
-
-                        <q-btn
-                            dense
-                            flat
-                            round
-                            color="negative"
-                            icon="delete"
-                            @click="trashEmployee(props.row)"
-                            aria-label="Show user"
+                            color="green"
+                            icon="restore"
+                            @click="restoreEmployee(props.row)"
+                            aria-label="Restore Employee"
                         />
 
                     </q-td>
@@ -216,15 +143,6 @@ const filters = ref({
 })
 
 
-const reasonOptions = [
-    { label: 'Transfer', value: 'transfer' },
-    { label: 'Retirement', value: 'retirement' },
-    { label: 'Resignation', value: 'resignation' },
-    { label: 'Other', value: 'other' }
-];
-
-
-
 const search = ref('')
 
 const q = useQuasar();
@@ -254,7 +172,7 @@ function onRequest (props) {
     const search = props.search
 
     loading.value = true
-    axios.get(route('employees.json-index-deleted'),{
+    axios.get(route('employees.json-index-trashed'),{
         params:{
             filter,
             page,
@@ -285,71 +203,45 @@ onMounted(() => {
     })
 })
 
-
-const trashEmployee = (employee) => {
+const restoreEmployee = (employee) => {
     q.dialog({
-        title: 'Confirm',
-        message: `Are you sure you want to move <b>${employee.name}</b> to trash?`,
+        title: 'Confirm Restore',
+        message: `Are you sure you want to restore <b>${employee.name}</b>?`,
         html: true,
         cancel: true,
         persistent: true,
         ok: {
-            label: 'Yes, Move to Trash',
-            color: 'negative'
+            label: 'Yes, Restore',
+            color: 'positive'
         },
     }).onOk(async () => {
         try {
-            await axios.delete(route('employee.destroy', employee))
+            await axios.put(route('employee.restore',employee))
 
             q.notify({
                 type: 'positive',
-                message: `Employee ${employee.name} moved to trash`
+                message: `Employee ${employee.name} restored successfully`
             })
 
-            // 🔄 Refresh table after delete
+            // Refresh table after restore
             onRequest({
                 pagination: pagination.value,
                 filter: filters.value,
-                search: filters.value.search
+                search: search.value
             })
         } catch (error) {
             q.notify({
                 type: 'negative',
-                message: 'Failed to move employee to trash. Please try again.'
+                message: error.response?.data?.message || 'Failed to restore employee'
             })
         }
     })
 }
 
+
 const goBack = () => {
     window.history.back()
 }
-
-
-const exportData = () => {
-    q.loading.show(); // Show loading indicator (assuming you're using Quasar's loading plugin)
-
-    // Make a GET request to the URL with responseType as 'blob'
-    axios.get(route('export.deleted'), { responseType: 'blob' })
-        .then((res) => {
-            // Create an object URL from the response data and trigger a download
-            const fileUrl = window.URL.createObjectURL(new Blob([res.data]));
-            const link = document.createElement('a');
-            link.href = fileUrl;
-            link.setAttribute('download', Date.now() + '.xlsx'); // Set a dynamic file name
-            link.click();
-        })
-        .catch((err) => {
-            // Show an error notification if something goes wrong
-            q.notify({
-                type: 'negative',
-                message: err.response?.data?.message || 'Failed to download file',
-            });
-        })
-        .finally(() => {
-            q.loading.hide(); // Hide loading indicator
-        });
-};
 
 
 </script>

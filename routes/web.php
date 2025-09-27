@@ -199,12 +199,19 @@ Route::group(['middleware'=>'auth','prefix' => 'employees'], function () {
     Route::get('manager-scheme', [EmployeeController::class, 'managerScheme'])->middleware('can:view-allemployee')->name('employees.manager.scheme');
     Route::get('json-manager-scheme', [EmployeeController::class, 'jsonMangerScheme'])->middleware('can:view-allemployee')->name('employees.json-manager-scheme');
 
+    Route::get('/trashed', [EmployeeController::class, 'trashedEmployees'])->middleware('can:view-allemployee')->name('employees.trashed');
+    Route::get('json-index-trashed', [EmployeeController::class, 'jsonTrashedEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-trashed');
+
+
 
     Route::get('{model}/show', [EmployeeController::class, 'show'])->middleware('can:view-employee')->name('employee.show');
     Route::get('create', [EmployeeController::class, 'create'])->middleware('can:create-employee')->name('employee.create');
     Route::post('store', [EmployeeController::class, 'store'])->middleware('can:create-employee')->name('employee.store');
     Route::get('edit/{model}', [EmployeeController::class, 'edit'])->middleware('can:edit-employee')->name('employee.edit');
     Route::post('update/{model}', [EmployeeController::class, 'update'])->middleware('can:edit-employee')->name('employee.update');
+    Route::delete('/delete/{model}', [EmployeeController::class, 'destroy'])->middleware('can:delete-employee')->name('employee.destroy');
+    Route::put('/restore/{model}', [EmployeeController::class, 'restore'])->middleware('can:delete-employee')->name('employee.restore');
+
 });
 
 
