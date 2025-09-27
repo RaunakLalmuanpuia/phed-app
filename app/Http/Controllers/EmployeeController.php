@@ -156,7 +156,8 @@ class EmployeeController extends Controller
                 $query->where('educational_qln', $educationQln);
             })->when($filter['education_qln_mr'] ?? null, function ($query, $educationQln) {
                 $query->where('educational_qln', $educationQln);
-            });
+            })
+            ->orderBy('name', 'asc');
 
 
         return response()->json([
@@ -237,7 +238,8 @@ class EmployeeController extends Controller
                 $query->where('designation', $designation);
             })->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
                 $query->where('educational_qln', $educationQln);
-            });
+            })
+            ->orderBy('name', 'asc');
 
 
         return response()->json([
@@ -320,7 +322,8 @@ class EmployeeController extends Controller
                 $query->where('skill_at_present', $skill);
             })->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
                 $query->where('educational_qln', $educationQln);
-            });
+            })
+            ->orderBy('name', 'asc');
 
         return response()->json([
             'list' => $employees->paginate($perPage),
@@ -418,7 +421,8 @@ class EmployeeController extends Controller
             })
             ->when($filter['office'] ?? null, function ($query, $officeId) {
                 $query->where('office_id', $officeId); // ✅ Office filter
-            });
+            })
+            ->orderBy('name', 'asc');
 
         return response()->json([
             'list' => $employees->paginate($perPage),
@@ -466,7 +470,8 @@ class EmployeeController extends Controller
                 $query->whereHas('deletionDetail', function (Builder $q) use ($reason) {
                     $q->where('reason', $reason);
                 });
-            });
+            })
+            ->orderBy('name', 'asc');
 
         return response()->json([
             'list' => $employees->paginate($perPage),
@@ -879,7 +884,8 @@ class EmployeeController extends Controller
                 $query->where('designation', $designation);
             })->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
                 $query->where('educational_qln', $educationQln);
-            });
+            })
+            ->orderBy('name', 'asc');
 
         return response()->json([
             'list' => $employees->paginate($perPage),
@@ -950,7 +956,8 @@ class EmployeeController extends Controller
                 $query->where('designation', $designation);
             })->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
                 $query->where('educational_qln', $educationQln);
-            });
+            })
+            ->orderBy('name', 'asc');
 
         return response()->json([
             'list' => $employees->paginate($perPage),
@@ -1024,7 +1031,8 @@ class EmployeeController extends Controller
                 $query->where('skill_at_present', $skill);
             })->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
                 $query->where('educational_qln', $educationQln);
-            });
+            })
+            ->orderBy('name', 'asc');
 
         return response()->json([
             'list' => $employees->paginate($perPage),
@@ -1106,7 +1114,8 @@ class EmployeeController extends Controller
             })
             ->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
                 $query->where('educational_qln', $educationQln);
-            });
+            })
+            ->orderBy('name', 'asc');
 
         return response()->json([
             'list' => $employees->paginate($perPage),

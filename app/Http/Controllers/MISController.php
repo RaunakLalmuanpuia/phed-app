@@ -155,6 +155,7 @@ class MISController extends Controller
                         });
                 });
             })
+            ->orderBy('name', 'asc')
             ->paginate($perPage);
 
         return response()->json([
@@ -369,6 +370,7 @@ class MISController extends Controller
                         });
                 });
             })
+            ->orderBy('name', 'asc')
             ->paginate($perPage);
 
         return response()->json([
