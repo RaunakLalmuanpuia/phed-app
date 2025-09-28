@@ -39,7 +39,7 @@ class DocumentController extends Controller
             $extension = $file->getClientOriginalExtension();
             $generatedName = $docType->name . '_' . $randomString . '.' . $extension;
 
-            $path = $file->storeAs('edit_request_documents', $generatedName, 'public');
+            $path = $file->storeAs('document_edit_request', $generatedName, 'public');
 
             $requestRecord->files()->create([
                 'document_type_id' => $documentTypeId,
@@ -60,6 +60,17 @@ class DocumentController extends Controller
         abort_if(!$user->hasPermissionTo('approve-document-edit'),403,'Access Denied');
         // Loop through all files attached to this request
         foreach ($model->files as $file) {
+
+            $fileName = $file->name;
+
+            // New storage path under employee_documents/
+            $newPath = 'documents/' . $fileName;
+
+            // Copy file from edit_request_documents → employee_documents
+            if (Storage::disk('public')->exists($file->path)) {
+                Storage::disk('public')->copy($file->path, $newPath);
+            }
+
             // update or create the document for the employee and document type
             Document::updateOrCreate(
                 [
@@ -69,7 +80,7 @@ class DocumentController extends Controller
                 [
                     'name' => $file->name,
                     'mime' => $file->mime,
-                    'path' => $file->path,
+                    'path' => $newPath,
                     'type' => $file->type,
                     'upload_date' => now(),
                 ]

@@ -7,6 +7,7 @@ use App\Models\EditRequest;
 use App\Models\EditRequestDocument;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class EditRequestController extends Controller
 {
@@ -124,13 +125,26 @@ class EditRequestController extends Controller
 
         // Save documents from request attachments into employee documents
         foreach ($model->attachments as $attachment) {
+
+            // Keep the same filename
+            $fileName = $attachment->name;
+
+            // New storage path under employee_documents/
+            $newPath = 'documents/' . $fileName;
+
+            // Copy file from edit_request_documents → employee_documents
+            if (Storage::disk('public')->exists($attachment->path)) {
+                Storage::disk('public')->copy($attachment->path, $newPath);
+            }
+
+
             $employee->documents()->updateOrCreate(
                 [
                     'document_type_id' => $attachment->document_type_id
                 ],
                 [
                     'name'        => $attachment->name,
-                    'path'        => $attachment->path,   // already uploaded by q-file
+                    'path'        => $newPath,
                     'mime'        => $attachment->mime,
                     'upload_date' => now(),
                     'type' => $attachment->document_type_id,
