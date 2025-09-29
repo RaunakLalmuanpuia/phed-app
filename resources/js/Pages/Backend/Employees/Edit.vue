@@ -5,7 +5,7 @@
                 <div class="stitle">Edit Employee</div>
                 <q-breadcrumbs class="text-dark">
                     <q-breadcrumbs-el class="cursor-pointer"  icon="dashboard" label="Dashboard" @click="$inertia.get(route('dashboard'))"/>
-                    <q-breadcrumbs-el class="cursor-pointer" label="All Employees" @click="$inertia.get(route('employees.all'))"/>
+                    <q-breadcrumbs-el class="cursor-pointer" label="All Employees"  @click="$inertia.get(isManager ? route('employees.manager.all') : route('employees.all'))"/>
                     <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="goBack"/>
                 </q-breadcrumbs>
             </div>

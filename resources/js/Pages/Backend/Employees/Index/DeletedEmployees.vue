@@ -155,6 +155,23 @@
                     </q-td>
                 </template>
 
+                <template v-slot:body-cell-supporting_document="props">
+                    <q-td :props="props">
+                        <span v-if="props.row.deletion_detail?.supporting_document">
+                          <q-btn
+                              dense
+                              flat
+                              round
+                              color="primary"
+                              icon="attachment"
+                              :href="`/storage/${props.row.deletion_detail.supporting_document}`"
+                              target="_blank"
+                          />
+                        </span>
+                        <span v-else>N/A</span>
+                    </q-td>
+                </template>
+
                 <!-- Actions Cell -->
                 <template v-slot:body-cell-actions="props">
                     <q-td :props="props">
@@ -206,6 +223,7 @@ const columns = [
     { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: true },
     { name: 'reason', label: 'Reason', align: 'left', field: 'reason', sortable: false },
     { name: 'year', label: 'Year', align: 'left', field: 'year', sortable: false },
+    { name: 'supporting_document', label: 'Document', align: 'center', field: 'supporting_document', sortable: false },
     { name: 'actions', label: 'Actions', align: 'center' },
 ];
 
