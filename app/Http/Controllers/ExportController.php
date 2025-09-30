@@ -106,6 +106,10 @@ class ExportController extends Controller
 
     public function exportOfficeRemuneration(Request $request)
     {
+
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('export-remuneration-summary'),403,'Access Denied');
+
         $user = $request->user();
 
         // Pick the user’s first office (adjust if you allow multiple)

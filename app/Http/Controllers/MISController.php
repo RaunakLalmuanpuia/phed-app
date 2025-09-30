@@ -239,6 +239,7 @@ class MISController extends Controller
         return Inertia::render('Backend/MIS/Manager/Remuneration', [
             'offices' => $offices,
             'canViewAllEmployee'=>$user->can('view-allemployee'),
+            'canExportRemunerationSummary'=>$user->can('export-remuneration-summary'),
         ]);
 
     }

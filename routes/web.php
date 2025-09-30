@@ -294,5 +294,5 @@ Route::group(['middleware'=>'auth','prefix' => 'export'], function () {
 
     Route::get('remuneration-summary', [ExportController::class, 'exportRemunerationSummary'])->middleware('can:export-remuneration-summary')->name('export.remuneration-summary');
 
-    Route::get('office-remuneration', [ExportController::class, 'exportOfficeRemuneration'])->name('export.office-remuneration');
+    Route::get('office-remuneration', [ExportController::class, 'exportOfficeRemuneration'])->middleware('can:export-remuneration-summary')->name('export.office-remuneration');
 });

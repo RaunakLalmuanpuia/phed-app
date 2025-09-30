@@ -68,7 +68,13 @@ class RolesAndPermissionsSeeder extends Seeder
             'Reviewer'=>[
                 'view-employee','view-allemployee',
                 'export-pe-summary', 'export-mr-summary','export-pe','export-mr','export-all',
+            ],
+
+            'Viewer'=>[
+                'view-employee','view-allemployee','download-engagement-card'
             ]
+
+
         ];
 
         // Create roles and assign permissions

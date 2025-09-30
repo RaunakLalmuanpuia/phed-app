@@ -16,7 +16,7 @@
             </div>
 
             <div class="q-gutter-sm">
-                <q-btn label="Export" color="primary"  @click="exportData()" icon="download" />
+                <q-btn label="Export" color="primary" v-if="canExportRemunerationSummary"  @click="exportData()" icon="download" />
             </div>
 
         </div>
@@ -70,7 +70,7 @@ import useUtils from "@/Compositions/useUtils";
 const {formatDate} = useUtils();
 defineOptions({ layout: BackendLayout });
 
-const props = defineProps(["offices", "canGenerateRemuneration"]);
+const props = defineProps(["offices", "canGenerateRemuneration",'canExportRemunerationSummary']);
 
 const q =useQuasar();
 

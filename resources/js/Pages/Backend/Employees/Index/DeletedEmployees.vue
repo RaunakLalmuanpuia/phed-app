@@ -219,7 +219,6 @@ const columns = [
     { name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true },
     { name: 'type', label: 'Employment Type', align: 'left', field: 'type', sortable: true },
     { name: 'designation', label: 'Designation', align: 'left', field: 'designation', sortable: true },
-    { name: 'post_assigned', label: 'Post/Work Assigned', align: 'left', field: 'post_assigned', sortable: true },
     { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: true },
     { name: 'reason', label: 'Reason', align: 'left', field: 'reason', sortable: false },
     { name: 'year', label: 'Year', align: 'left', field: 'year', sortable: false },

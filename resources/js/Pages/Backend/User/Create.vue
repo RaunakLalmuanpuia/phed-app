@@ -174,7 +174,7 @@ const form=useForm({
 })
 
 const showOffice = computed(() =>
-    form.roles.some(r => r.value === 'Manager')
+    form.roles.some(r => r.value === 'Manager'|| r.value === 'Viewer')
 );
 
 const submit=e=>{

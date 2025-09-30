@@ -243,7 +243,7 @@
 
                 </q-expansion-item>
 
-                <q-separator v-if="!isManager" class="q-my-sm"/>
+                <q-separator v-if="!isManager && !isViewer" class="q-my-sm"/>
 
                 <!--                Remunerations-->
                 <q-expansion-item v-if="checkModules('remunerations')"
@@ -655,6 +655,7 @@ const MENUS = {
     Manager: ['manager', 'manager_mis' ],
     Reviewer: ['employee','remunerations', 'mis',],
     Admin: ['employee','remunerations', 'mis', 'administration'],
+    Viewer: ['manager', 'manager_mis' ],
 };
 
 
@@ -670,6 +671,7 @@ const isManager = computed(() => !!usePage().props.roles?.find(item => item === 
 
 const isReviewer = computed(() => !!usePage().props.roles?.find(item => item === 'Reviewer'));
 
+const isViewer = computed(() => !!usePage().props.roles?.find(item => item === 'Viewer'));
 
 const notificationCount = ref(0);
 
