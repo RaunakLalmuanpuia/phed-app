@@ -33,7 +33,14 @@
             <q-input v-model="form.seniority_list" label="Seniority List" dense outlined type="number" />
             <q-input v-model="form.year" label="Year" dense outlined type="number" />
             <q-input v-model="form.remark" label="Remark" type="textarea" dense outlined />
-            <q-file v-model="form.supporting_document" label="Supporting Document"  dense outlined />
+
+              <q-file v-model="form.supporting_document" label="Supporting Document"  dense outlined required
+                    :error="!!form.errors.supporting_document"
+                    :error-message="form.errors.supporting_document"
+                    :rules="[
+                        val => !!val || 'Supporting Document is required'
+                     ]"
+            />
           </q-card-section>
 
           <q-card-actions align="right" class="q-pa-sm">

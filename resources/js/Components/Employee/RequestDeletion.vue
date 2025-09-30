@@ -45,6 +45,15 @@ function submitRequest() {
         return; // stop submission
     }
 
+    if (!form.supporting_document) {
+        $q.notify({
+            type: 'negative',
+            message: 'Supporting Document is required',
+            position: 'bottom',
+        });
+        return; // stop submission
+    }
+
     form.post(route("deletion.request", props.data), {
         preserveScroll: true,
         onSuccess: () => {

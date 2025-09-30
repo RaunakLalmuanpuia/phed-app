@@ -22,7 +22,7 @@ class DeletionController extends Controller
             'reason' => 'required|string|max:255',
             'year' => 'nullable|integer',
             'remark' => 'nullable|string',
-            'supporting_document' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
+            'supporting_document' => 'required|file|mimes:pdf,jpg,jpeg,png',
         ]);
 
         if ($request->hasFile('supporting_document')) {
@@ -79,7 +79,7 @@ class DeletionController extends Controller
             'seniority_list' => 'nullable|string',
             'year' => 'nullable|integer',
             'remark' => 'nullable|string',
-            'supporting_document' => 'nullable|file|max:2048',
+            'supporting_document' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
         // Handle file upload if exists
