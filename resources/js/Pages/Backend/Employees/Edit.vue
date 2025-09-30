@@ -5,7 +5,7 @@
                 <div class="stitle">Edit Employee</div>
                 <q-breadcrumbs class="text-dark">
                     <q-breadcrumbs-el class="cursor-pointer"  icon="dashboard" label="Dashboard" @click="$inertia.get(route('dashboard'))"/>
-                    <q-breadcrumbs-el class="cursor-pointer" label="All Employees"  @click="$inertia.get(isManager ? route('employees.manager.all') : route('employees.all'))"/>
+                    <q-breadcrumbs-el class="cursor-pointer" label="All Employees"  @click="$inertia.get(isManagerOrViewer ? route('employees.manager.all') : route('employees.all'))"/>
                     <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="goBack"/>
                 </q-breadcrumbs>
             </div>
@@ -65,7 +65,7 @@
                     </div>
 
 
-                    <div v-if="isManager" class="row q-col-gutter-sm">
+                    <div v-if="isManagerOrViewer" class="row q-col-gutter-sm">
                         <div class="col-12 col-sm-6">
                             <q-input v-model="form.name" label="Name" disable outlined dense :error="!!form.errors?.name"
                                      :error-message="form.errors?.name" :rules="[val => !!val || 'Name is required']" />
@@ -104,7 +104,7 @@
                                      :rules="[val => !!val || 'Post/Work Assigned is required']" />
                         </div>
                     </div>
-                    <div v-if="!isManager" class="row q-col-gutter-sm">
+                    <div v-if="!isManagerOrViewer " class="row q-col-gutter-sm">
                         <div class="col-12 col-sm-6">
                             <q-input v-model="form.name" label="Name" outlined dense :error="!!form.errors?.name"
                                      :error-message="form.errors?.name" :rules="[val => !!val || 'Name is required']" />
@@ -151,7 +151,7 @@
                 </q-step>
 
                 <!-- Step 2: Job Info -->
-                <q-step v-if="!isManager" name="2" title="Job Info" icon="work" :done="step > 2">
+                <q-step v-if="!isManagerOrViewer" name="2" title="Job Info" icon="work" :done="step > 2">
                     <div class="row q-col-gutter-sm">
                         <div class="col-12 col-sm-6">
                             <q-select v-model="form.employment_type" label="Employment Type *" :options="type"
@@ -264,7 +264,7 @@
                 </q-step>
 
                 <!--                Step 3: Document upload-->
-                <q-step v-if="!isManager" name="3" title="Upload Documents" icon="cloud_upload" :done="step > 3">
+                <q-step v-if="!isManagerOrViewer" name="3" title="Upload Documents" icon="cloud_upload" :done="step > 3">
                     <div class="row q-col-gutter-sm">
                         <div
                             class="col-12 col-sm-6"
@@ -485,7 +485,7 @@ const nextStep = () => {
             return
         }
         // If admin → go to Step 2, else skip directly to Step 3
-        step.value = !isManager.value ? '2' : '4'
+        step.value = !isManagerOrViewer.value ? '2' : '4'
     } else if (step.value === '2') {
         // Base required fields
         if (!form.employment_type || !form.office) {
@@ -512,10 +512,10 @@ const nextStep = () => {
 const prevStep = () => {
     if (step.value === '4') {
         // If admin → back to Step 3, else back to Step 1
-        step.value = !isManager.value ? '3' : '1'
+        step.value = !isManagerOrViewer.value ? '3' : '1'
     } else if (step.value === '3') {
         // If admin → back to Step 2, else back to Step 1
-        step.value = !isManager.value ? '2' : '1'
+        step.value = !isManagerOrViewer.value ? '2' : '1'
     } else if (step.value === '2') {
         step.value = '1'
     }
@@ -679,6 +679,11 @@ onMounted(() => {
 const isAdmin = computed(() => !!usePage().props.roles?.find(item => item === 'Admin'));
 const isManager = computed(() => !!usePage().props.roles?.find(item => item === 'Manager'));
 
+const isViewer = computed(() => !!usePage().props.roles?.find(item => item === 'Viewer'));
+
+
+// Optional: You might want a combined computed property for convenience
+const isManagerOrViewer = computed(() => isManager.value || isViewer.value);
 const goBack = () => {
     window.history.back()
 }
