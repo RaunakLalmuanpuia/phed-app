@@ -24,6 +24,9 @@ class EmployeeController extends Controller
     public function allEmployees(Request $request)
     {
 
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
+
         $search = $request->get('search');
         // Offices with at least one employee, plus MR & PE counts
         $offices = Office::withCount([
@@ -54,6 +57,9 @@ class EmployeeController extends Controller
 
     public function indexAllEmployees(Office $model) // shows all employees
     {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
+
         $totalEmployees = $model->employees()
             ->where('employment_type', '!=', 'Deleted')
             ->count();
@@ -127,6 +133,7 @@ class EmployeeController extends Controller
         $user = auth()->user();
         abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
 
+
         $perPage = $request->get('rowsPerPage') ?? 5;
         $filter = $request->get('filter', []);
         $search = $filter['search'] ?? null; // ✅ extract from filter array
@@ -167,6 +174,9 @@ class EmployeeController extends Controller
 
     public function peEmployees(Request $request)
     {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-pe-employee'), 403, 'Access Denied');
+
         $search = $request->get('search');
         $offices = Office::whereHas('employees', function ($query) {
             $query->where('employment_type', 'PE'); // ✅ Only PE employees
@@ -185,6 +195,8 @@ class EmployeeController extends Controller
 
     public function indexPeEmployees(Office $model) // shows PE type
     {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-pe-employee'), 403, 'Access Denied');
 
         // Get distinct designation & education_qln for PE employees in this office
         $designations = $model->employees()
@@ -214,9 +226,9 @@ class EmployeeController extends Controller
 
     public function jsonPeEmployees(Request $request, Office $model)
     {
-
         $user = auth()->user();
-        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
+        abort_if(!$user->hasPermissionTo('view-pe-employee'), 403, 'Access Denied');
+
 
         $perPage = $request->get('rowsPerPage') ?? 5;
         $filter = $request->get('filter', []);
@@ -249,6 +261,10 @@ class EmployeeController extends Controller
 
     public function mrEmployees(Request $request)
     {
+
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-mr-employee'), 403, 'Access Denied');
+
         $search = $request->get('search');
         $offices = Office::whereHas('employees', function ($query) {
             $query->where('employment_type', 'MR')
@@ -268,6 +284,10 @@ class EmployeeController extends Controller
 
     public function indexMrEmployees(Office $model) // shows MR type
     {
+
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-mr-employee'), 403, 'Access Denied');
+
         // Get distinct designation & education_qln for PE employees in this office
         $skills = $model->employees()
             ->where('employment_type', 'MR')
@@ -300,7 +320,7 @@ class EmployeeController extends Controller
     public function jsonMrEmployees(Request $request, Office $model)
     {
         $user = auth()->user();
-        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
+        abort_if(!$user->hasPermissionTo('view-mr-employee'), 403, 'Access Denied');
 
         $perPage = $request->get('rowsPerPage') ?? 5;
         $filter = $request->get('filter', []);
@@ -333,6 +353,10 @@ class EmployeeController extends Controller
 
     public function schemeEmployees(Request $request)
     {
+
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-scheme-employee'), 403, 'Access Denied');
+
         $search = $request->get('search');
 
         $schemes = Scheme::withCount(['employees as mr_count' => function ($query) {
@@ -351,6 +375,10 @@ class EmployeeController extends Controller
 
     public function indexSchemeEmployees(Scheme $model)
     {
+
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-scheme-employee'), 403, 'Access Denied');
+
         // Get distinct skills for MR employees in this scheme
         $skills = $model->employees()
             ->where('employment_type', 'MR')
@@ -395,6 +423,9 @@ class EmployeeController extends Controller
     public function jsonSchemeEmployees(Request $request, Scheme $model)
     {
         $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-scheme-employee'), 403, 'Access Denied');
+
+        $user = auth()->user();
         abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
 
         $perPage = $request->get('rowsPerPage') ?? 5;
@@ -434,6 +465,10 @@ class EmployeeController extends Controller
 
     public function deletedEmployees() // shows PE type
     {
+
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-deleted-employee'), 403, 'Access Denied');
+
         $office = Office::whereHas('employees')->get(); // ⬅️ Only offices with employees
 
         return Inertia::render('Backend/Employees/Index/DeletedEmployees', [
@@ -443,8 +478,10 @@ class EmployeeController extends Controller
 
     public function jsonDeletedEmployees(Request $request)
     {
+
         $user = auth()->user();
-        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
+        abort_if(!$user->hasPermissionTo('view-deleted-employee'), 403, 'Access Denied');
+
 
         $perPage = $request->get('rowsPerPage') ?? 5;
         $filter = $request->get('filter', []);
@@ -788,6 +825,10 @@ class EmployeeController extends Controller
     }
     public function managerAll()
     {
+
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
+
         $user = auth()->user();
 
         // Offices directly formatted for q-select
@@ -913,6 +954,9 @@ class EmployeeController extends Controller
     public function managerPe()
     {
         $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-pe-employee'), 403, 'Access Denied');
+
+        $user = auth()->user();
 
         // Offices directly formatted for q-select
         $offices = $user->offices()
@@ -953,7 +997,7 @@ class EmployeeController extends Controller
     public function jsonMangerPe(Request $request)
     {
         $user = auth()->user();
-        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
+        abort_if(!$user->hasPermissionTo('view-pe-employee'), 403, 'Access Denied');
 
         $perPage = $request->integer('rowsPerPage', 5);
         $filter = $request->get('filter', []);
@@ -984,6 +1028,9 @@ class EmployeeController extends Controller
 
     public function managerMr()
     {
+
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-mr-employee'), 403, 'Access Denied');
 
         $user = auth()->user();
 
@@ -1027,7 +1074,7 @@ class EmployeeController extends Controller
     public function jsonMangerMr(Request $request)
     {
         $user = auth()->user();
-        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
+        abort_if(!$user->hasPermissionTo('view-mr-employee'), 403, 'Access Denied');
 
         $perPage = $request->integer('rowsPerPage', 5);
         $filter = $request->get('filter', []);
@@ -1059,6 +1106,10 @@ class EmployeeController extends Controller
 
 
     public function managerScheme(Request $request){
+
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-scheme-employee'), 403, 'Access Denied');
+
         $user = auth()->user();
 
         // Offices assigned to this user with MR employees having a scheme
@@ -1105,7 +1156,8 @@ class EmployeeController extends Controller
     public function jsonMangerScheme(Request $request){
 
         $user = auth()->user();
-        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
+        abort_if(!$user->hasPermissionTo('view-scheme-employee'), 403, 'Access Denied');
+
 
         $perPage   = $request->integer('rowsPerPage', 5);
         $filter    = $request->get('filter', []);
@@ -1141,10 +1193,72 @@ class EmployeeController extends Controller
     }
 
 
+    public function managerDeleted()
+    {
 
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-deleted-employee'), 403, 'Access Denied');
+
+        $user = auth()->user();
+
+        // Offices directly formatted for q-select
+        $offices = $user->offices()
+            ->get(['offices.name as label', 'offices.id as value'])
+            ->map(function ($office) {
+                return [
+                    'label' => $office->label,
+                    'value' => $office->value,
+                ];
+            });
+
+        return inertia('Backend/Employees/IndexManager/DeletedEmployees', [
+            'offices' => $offices,
+        ]);
+    }
+
+    public function jsonMangerDeleted(Request $request)
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-deleted-employee'), 403, 'Access Denied');
+
+        $perPage = $request->integer('rowsPerPage', 5);
+        $filter = $request->get('filter', []);
+        $search = $filter['search'] ?? null;
+        $officeIds = $filter['office'] ?? $user->offices()->pluck('offices.id')->all();
+
+        $employees = Employee::with(['office','deletionDetail'])
+            ->whereIn('office_id', (array)$officeIds)
+            ->where('employment_type', 'Deleted')
+            ->when($search, fn($q) => $q->where(function ($sub) use ($search) {
+                $sub->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('mobile', 'LIKE', "%{$search}%")
+                    ->orWhere('designation', 'LIKE', "%{$search}%")
+                    ->orWhere('date_of_birth', 'LIKE', "%{$search}%")
+                    ->orWhere('name_of_workplace', 'LIKE', "%{$search}%");
+            }))
+            ->when($filter['reason'] ?? null, function (Builder $query, $reason) {
+                $query->whereHas('deletionDetail', function (Builder $q) use ($reason) {
+                    $q->where('reason', $reason);
+                });
+            })
+            ->when($filter['year'] ?? null, function (Builder $query, $year) {
+                $query->whereHas('deletionDetail', function (Builder $q) use ($year) {
+                    $q->where('year', $year);
+                });
+            })
+            ->orderBy('name', 'asc');
+
+        return response()->json([
+            'list' => $employees->paginate($perPage),
+        ], 200);
+    }
 
     public function trashedEmployees() // shows PE type
     {
+
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-trashed-employee'), 403, 'Access Denied');
+
         $office = Office::whereHas('employees', function ($query) {
             $query->onlyTrashed(); // 🔥 only offices with trashed employees
         })->get();
@@ -1157,7 +1271,7 @@ class EmployeeController extends Controller
     public function jsonTrashedEmployees(Request $request)
     {
         $user = auth()->user();
-        abort_if(!$user->hasPermissionTo('view-allemployee'), 403, 'Access Denied');
+        abort_if(!$user->hasPermissionTo('view-trashed-employee'), 403, 'Access Denied');
 
         $perPage = $request->get('rowsPerPage', 5);
         $filter  = $request->get('filter', []);

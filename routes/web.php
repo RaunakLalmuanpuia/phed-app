@@ -132,8 +132,8 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
         Route::get('json-remuneration-details', [RemunerationController::class, 'jsonRemunerationDetail'])->middleware('can:generate-remuneration')->name('remuneration.json-detail');
 
 
-        Route::get('summary', [RemunerationController::class, 'remunerationSummary'])->middleware('can:generate-remuneration')->name('remuneration.summary');
-        Route::get('json-remuneration-summary', [RemunerationController::class, 'jsonRemunerationSummary'])->middleware('can:generate-remuneration')->name('remuneration.json-summary');
+        Route::get('summary', [RemunerationController::class, 'remunerationSummary'])->middleware('can:view-remuneration')->name('remuneration.summary');
+        Route::get('json-remuneration-summary', [RemunerationController::class, 'jsonRemunerationSummary'])->middleware('can:view-remuneration')->name('remuneration.json-summary');
 
         Route::post('store/{model}', [RemunerationController::class, 'store'])->middleware('can:create-remuneration')->name('remuneration.store');
         Route::put('update/{model}', [RemunerationController::class, 'update'])->middleware('can:edit-remuneration')->name('remuneration.update');
@@ -149,8 +149,8 @@ Route::group(['prefix' => 'manager','middleware'=>'auth'], function () {
     Route::group(['prefix' => 'mis'], function () {
 
 
-        Route::get('remuneration', [MISController::class, 'managerRemuneration'])->middleware('can:view-allemployee')->name('mis.manager-remuneration');
-        Route::get('json-remuneration', [MISController::class, 'jsonManagerRemuneration'])->middleware('can:view-allemployee')->name('mis.manager-json-remuneration');
+        Route::get('remuneration', [MISController::class, 'managerRemuneration'])->middleware('can:view-remuneration')->name('mis.manager-remuneration');
+        Route::get('json-remuneration', [MISController::class, 'jsonManagerRemuneration'])->middleware('can:view-remuneration')->name('mis.manager-json-remuneration');
 
 
         Route::get('engagement-card', [MISController::class, 'managerEngagementCard'])->middleware('can:download-engagement-card')->name('mis.manager-engagement-card');
@@ -169,38 +169,42 @@ Route::group(['middleware'=>'auth','prefix' => 'employees'], function () {
     Route::get('index-all/{model}', [EmployeeController::class, 'indexAllEmployees'])->middleware('can:view-allemployee')->name('employees.index-all');
     Route::get('json-index-all/{model}', [EmployeeController::class, 'jsonAllEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-all');
 
-    Route::get('pe', [EmployeeController::class, 'peEmployees'])->middleware('can:view-allemployee')->name('employees.pe');
-    Route::get('index-pe/{model}', [EmployeeController::class, 'indexPeEmployees'])->middleware('can:view-allemployee')->name('employees.index-pe');
-    Route::get('json-index-pe/{model}', [EmployeeController::class, 'jsonPeEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-pe');
+    Route::get('pe', [EmployeeController::class, 'peEmployees'])->middleware('can:view-pe-employee')->name('employees.pe');
+    Route::get('index-pe/{model}', [EmployeeController::class, 'indexPeEmployees'])->middleware('can:view-pe-employee')->name('employees.index-pe');
+    Route::get('json-index-pe/{model}', [EmployeeController::class, 'jsonPeEmployees'])->middleware('can:view-pe-employee')->name('employees.json-index-pe');
 
-    Route::get('mr', [EmployeeController::class, 'mrEmployees'])->middleware('can:view-allemployee')->name('employees.mr');
-    Route::get('index-mr/{model}', [EmployeeController::class, 'indexMrEmployees'])->middleware('can:view-allemployee')->name('employees.index-mr');
-    Route::get('json-index-mr/{model}', [EmployeeController::class, 'jsonMrEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-mr');
+    Route::get('mr', [EmployeeController::class, 'mrEmployees'])->middleware('can:view-mr-employee')->name('employees.mr');
+    Route::get('index-mr/{model}', [EmployeeController::class, 'indexMrEmployees'])->middleware('can:view-mr-employee')->name('employees.index-mr');
+    Route::get('json-index-mr/{model}', [EmployeeController::class, 'jsonMrEmployees'])->middleware('can:view-mr-employee')->name('employees.json-index-mr');
 
 
-    Route::get('scheme', [EmployeeController::class, 'schemeEmployees'])->middleware('can:view-allemployee')->name('employees.scheme');
-    Route::get('index-scheme/{model}', [EmployeeController::class, 'indexSchemeEmployees'])->middleware('can:view-allemployee')->name('employees.index-scheme');
-    Route::get('json-index-scheme/{model}', [EmployeeController::class, 'jsonSchemeEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-scheme');
+    Route::get('scheme', [EmployeeController::class, 'schemeEmployees'])->middleware('can:view-scheme-employee')->name('employees.scheme');
+    Route::get('index-scheme/{model}', [EmployeeController::class, 'indexSchemeEmployees'])->middleware('can:view-scheme-employee')->name('employees.index-scheme');
+    Route::get('json-index-scheme/{model}', [EmployeeController::class, 'jsonSchemeEmployees'])->middleware('can:view-scheme-employee')->name('employees.json-index-scheme');
 
-    Route::get('/deleted', [EmployeeController::class, 'deletedEmployees'])->middleware('can:view-allemployee')->name('employees.deleted');
-    Route::get('json-index-deleted', [EmployeeController::class, 'jsonDeletedEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-deleted');
+    Route::get('/deleted', [EmployeeController::class, 'deletedEmployees'])->middleware('can:view-deleted-employee')->name('employees.deleted');
+    Route::get('json-index-deleted', [EmployeeController::class, 'jsonDeletedEmployees'])->middleware('can:view-deleted-employee')->name('employees.json-index-deleted');
 
 
     Route::get('manager-all', [EmployeeController::class, 'managerAll'])->middleware('can:view-allemployee')->name('employees.manager.all');
     Route::get('json-manager-all', [EmployeeController::class, 'jsonMangerAll'])->middleware('can:view-allemployee')->name('employees.json-manager-all');
 
-    Route::get('manager-pe', [EmployeeController::class, 'managerPe'])->middleware('can:view-allemployee')->name('employees.manager.pe');
-    Route::get('json-manager-pe', [EmployeeController::class, 'jsonMangerPe'])->middleware('can:view-allemployee')->name('employees.json-manager-pe');
+    Route::get('manager-pe', [EmployeeController::class, 'managerPe'])->middleware('can:view-pe-employee')->name('employees.manager.pe');
+    Route::get('json-manager-pe', [EmployeeController::class, 'jsonMangerPe'])->middleware('can:view-pe-employee')->name('employees.json-manager-pe');
 
-    Route::get('manager-mr', [EmployeeController::class, 'managerMr'])->middleware('can:view-allemployee')->name('employees.manager.mr');
-    Route::get('json-manager-mr', [EmployeeController::class, 'jsonMangerMr'])->middleware('can:view-allemployee')->name('employees.json-manager-mr');
+    Route::get('manager-mr', [EmployeeController::class, 'managerMr'])->middleware('can:view-mr-employee')->name('employees.manager.mr');
+    Route::get('json-manager-mr', [EmployeeController::class, 'jsonMangerMr'])->middleware('can:view-mr-employee')->name('employees.json-manager-mr');
 
 
-    Route::get('manager-scheme', [EmployeeController::class, 'managerScheme'])->middleware('can:view-allemployee')->name('employees.manager.scheme');
-    Route::get('json-manager-scheme', [EmployeeController::class, 'jsonMangerScheme'])->middleware('can:view-allemployee')->name('employees.json-manager-scheme');
+    Route::get('manager-scheme', [EmployeeController::class, 'managerScheme'])->middleware('can:view-scheme-employee')->name('employees.manager.scheme');
+    Route::get('json-manager-scheme', [EmployeeController::class, 'jsonMangerScheme'])->middleware('can:view-scheme-employee')->name('employees.json-manager-scheme');
 
-    Route::get('/trashed', [EmployeeController::class, 'trashedEmployees'])->middleware('can:view-allemployee')->name('employees.trashed');
-    Route::get('json-index-trashed', [EmployeeController::class, 'jsonTrashedEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-trashed');
+
+    Route::get('manager-deleted', [EmployeeController::class, 'managerDeleted'])->middleware('can:view-deleted-employee')->name('employees.manager.deleted');
+    Route::get('json-manager-deleted', [EmployeeController::class, 'jsonMangerDeleted'])->middleware('can:view-deleted-employee')->name('employees.json-manager-deleted');
+
+    Route::get('/trashed', [EmployeeController::class, 'trashedEmployees'])->middleware('can:view-trashed-employee')->name('employees.trashed');
+    Route::get('json-index-trashed', [EmployeeController::class, 'jsonTrashedEmployees'])->middleware('can:view-trashed-employee')->name('employees.json-index-trashed');
 
 
 

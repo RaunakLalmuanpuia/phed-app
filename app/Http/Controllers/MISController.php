@@ -225,7 +225,7 @@ class MISController extends Controller
     public function managerRemuneration(Request $request){
 
         $user = $request->user();
-        abort_if(!$user->hasPermissionTo('view-allemployee'),403,'Access Denied');
+        abort_if(!$user->hasPermissionTo('view-remuneration'),403,'Access Denied');
 
         $offices = $user->offices()
             ->get(['offices.name as label', 'offices.id as value'])
@@ -246,6 +246,9 @@ class MISController extends Controller
 
     public function jsonManagerRemuneration(Request $request)
     {
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('view-remuneration'),403,'Access Denied');
+
         $user = $request->user();
 
         // If you allow multiple offices per user, decide which one

@@ -84,7 +84,7 @@ class RemunerationController extends Controller
 
     public function remunerationSummary(Request $request){
         $user = $request->user();
-        abort_if(!$user->hasPermissionTo('generate-remuneration'),403,'Access Denied');
+        abort_if(!$user->hasPermissionTo('view-remuneration'),403,'Access Denied');
 
         $office = Office::whereHas('employees', function($query) {
             $query->where('employment_type', 'PE');
@@ -99,8 +99,11 @@ class RemunerationController extends Controller
     }
 
 
-    public function jsonRemunerationSummary()
+    public function jsonRemunerationSummary(Request $request)
     {
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('view-remuneration'),403,'Access Denied');
+
         // Fetch only offices that have employees with employment_type = 'PE'
         $offices = Office::whereHas('employees', function ($query) {
             $query->where('employment_type', 'PE');

@@ -581,16 +581,17 @@ const module = reactive({
         label: 'Employees',
         children: [
             {route_name: 'employees.manager.all', label: 'All Employee', permission: 'view-allemployee'},
-            {route_name: 'employees.manager.pe', label: 'Provisional Employee', permission: 'view-allemployee'},
-            {route_name: 'employees.manager.mr', label: 'Muster Roll Employee', permission: 'view-allemployee'},
-            {route_name: 'employees.manager.scheme', label: 'Scheme Employee', permission: 'view-allemployee'},
+            {route_name: 'employees.manager.pe', label: 'Provisional Employee', permission: 'view-pe-employee'},
+            {route_name: 'employees.manager.mr', label: 'Muster Roll Employee', permission: 'view-mr-employee'},
+            {route_name: 'employees.manager.scheme', label: 'Scheme Employee', permission: 'view-scheme-employee'},
+            {route_name: 'employees.manager.deleted', label: 'Deleted Employee', permission: 'view-deleted-employee'},
         ]
     },
 
     manager_mis:{
         label: 'MIS',
         children: [
-            {route_name: 'mis.manager-remuneration', label: 'Remuneration', permission: 'view-allemployee'},
+            {route_name: 'mis.manager-remuneration', label: 'Remuneration', permission: 'view-remuneration'},
             {route_name: 'mis.manager-engagement-card', label: 'Engagement Card', permission: 'download-engagement-card'},
         ]
     },
@@ -599,11 +600,11 @@ const module = reactive({
         label: 'Employees',
         children: [
             {route_name: 'employees.all', label: 'All Employee', permission: 'view-allemployee'},
-            {route_name: 'employees.pe', label: 'Provisional Employee', permission: 'view-allemployee'},
-            {route_name: 'employees.mr', label: 'Muster Roll Employee', permission: 'view-allemployee'},
-            {route_name: 'employees.scheme', label: 'Scheme Employee', permission: 'view-allemployee'},
-            {route_name: 'employees.deleted', label: 'Deleted Employee', permission: 'view-allemployee'},
-
+            {route_name: 'employees.pe', label: 'Provisional Employee', permission: 'view-pe-employee'},
+            {route_name: 'employees.mr', label: 'Muster Roll Employee', permission: 'view-mr-employee'},
+            {route_name: 'employees.scheme', label: 'Scheme Employee', permission: 'view-scheme-employee'},
+            {route_name: 'employees.deleted', label: 'Deleted Employee', permission: 'view-deleted-employee'},
+            {route_name: 'employees.trashed', label: 'Trashed Employees', permission: 'view-trashed-employee'},
         ]
     },
 
@@ -611,7 +612,7 @@ const module = reactive({
     remunerations: {
         label: 'Remuneration',
         children: [
-            {route_name: 'remuneration.summary', label: 'Summary', permission: 'generate-remuneration'},
+            {route_name: 'remuneration.summary', label: 'Summary', permission: 'view-remuneration'},
             {route_name: 'remuneration.detail', label: 'Details', permission: 'generate-remuneration'},
 
         ]
@@ -636,7 +637,7 @@ const module = reactive({
             {route_name: 'office.index', label: 'Offices', permission: 'view-office'},
             {route_name: 'document-type.index', label: 'Document Type', permission: 'view-any-document-type'},
             {route_name: 'scheme.index', label: 'Schemes', permission: 'view-any-document-type'},
-            {route_name: 'employees.trashed', label: 'Trashed Employees', permission: 'view-allemployee'},
+
             {route_name: 'role.index', label: 'Permissions', permission: 'view-anyrole'},
             {route_name: 'user.index', label: 'User Accounts', permission: 'view-anyuser'},
 
