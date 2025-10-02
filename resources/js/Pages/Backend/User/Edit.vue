@@ -165,14 +165,34 @@ const form=useForm({
 const showOffice = computed(() =>
     form.roles.some(r => r.value === 'Manager' || r.value === 'Viewer' )
 );
-const submit=e=>{
-    form.transform(data => ({...data,
-        office_ids: data?.offices?.map(item=>item.value),
-        roles:data.roles.map(item=>item.value)}))
-    .put(route('user.update',props.data.id),{
-        onStart:params => q.loading.show(),
-        onFinish:params => q.loading.hide()
+// const submit=e=>{
+//     form.transform(data => ({...data,
+//         office_ids: data?.offices?.map(item=>item.value),
+//         roles:data.roles.map(item=>item.value)}))
+//     .put(route('user.update',props.data.id),{
+//         onStart:params => q.loading.show(),
+//         onFinish:params => q.loading.hide()
+//     })
+// }
+
+const submit = e => {
+    form.transform(data => {
+        const hasManagerOrViewer = data.roles.some(
+            r => r.value === 'Manager' || r.value === 'Viewer'
+        )
+
+        return {
+            ...data,
+            office_ids: hasManagerOrViewer
+                ? data?.offices?.map(item => item.value)
+                : null,   // or [] if you want to clear offices
+            roles: data.roles.map(item => item.value)
+        }
     })
+        .put(route('user.update', props.data.id), {
+            onStart: () => q.loading.show(),
+            onFinish: () => q.loading.hide()
+        })
 }
 const handleBack=e=>{
     window.history.back();

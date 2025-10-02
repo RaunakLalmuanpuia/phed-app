@@ -107,6 +107,7 @@ class UserController extends Controller
         $user = auth()->user();
         abort_if(!$user->hasPermissionTo('edit-user'),403,'Access Denied');
 
+//        dd($request->all());
         $data=$this->validate($request, [
             'name'=>'required',
             'designation'=>'required',
@@ -120,7 +121,7 @@ class UserController extends Controller
             $model->update($data);
             $model->offices()->sync($data['office_ids']);
             if ($roles) {
-                $model->assignRole($roles);
+                $model->syncRoles($roles);
 
             }
             if ($password) {
