@@ -78,7 +78,7 @@
 
 
 
-            <div v-if="isAdmin" class="col-xs-12 col-sm-6">
+            <div v-if="isAdmin || isReviewer" class="col-xs-12 col-sm-6">
                 <div class="notification-card cursor-pointer hover:opacity-80" @click="$inertia.get(route('notification.list'))">
                     <div class="title-notification mb-2">Notifications</div>
                     <div class="text-caption caption-sm mb-4">Request Types</div>
@@ -177,6 +177,8 @@ const state = reactive({
 const applicant = false
 
 const isAdmin = computed(() => !!usePage().props.roles?.find(item => item === 'Admin'));
+
+const isReviewer = computed(() => !!usePage().props.roles?.find(item => item === 'Reviewer'));
 
 </script>
 <style scoped>
