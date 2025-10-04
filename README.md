@@ -1,24 +1,15 @@
-# ⚡ Laravel + Vue 3 + Vite + Inertia.js + Quasar Boilerplate
+#  Employees Database Management System
 
-A modern and powerful Laravel starter template featuring:
-
-- 🚀 **Laravel** for robust backend development  
-- 🌐 **Vue 3** as the reactive frontend framework  
-- ⚡ **Vite** for lightning-fast frontend bundling  
-- 🔗 **Inertia.js** to bridge Laravel and Vue seamlessly  
-- ✨ **Quasar Framework** for rich UI components  
+## PUBLIC HEALTH ENGINEERING DEPARTMENT : MIZORAM
+ 
 
 ---
 
 ## 📦 Features
 
-- 🔧 Laravel 10+ with Authentication
-- 🧠 Vue 3 with Composition API
-- 🌀 Inertia.js for SPA-like performance
-- 💨 Tailwind CSS (optional)
-- 🪄 Quasar components for beautiful UI
-- 🎯 Vite for instant hot-module reload
-- 🧪 Pre-configured for fast development
+- Quickly search and view employee details such as name, designation, contact, and posting office.
+- All updates are logged and monitored. This ensures transparency and accountability across the offices.
+- Grant or revoke account-level access to the platform based on users roles and permissions.
 
 ---
 
@@ -40,17 +31,4 @@ A modern and powerful Laravel starter template featuring:
 
 ##  Production Build
     npm run build
-
-
----
-
-## 📦 More Useful Packages
-
-### 1. Install Laravel API/Sanctum
-    php artisan install:api
-
-### 2. Install Laravel Spatie-Roles and Permissions
-     composer require spatie/laravel-permission
-
----
 
