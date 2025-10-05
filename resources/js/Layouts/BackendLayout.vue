@@ -605,6 +605,7 @@ const module = reactive({
             {route_name: 'employees.scheme', label: 'Scheme Employee', permission: 'view-scheme-employee'},
             {route_name: 'employees.deleted', label: 'Deleted Employee', permission: 'view-deleted-employee'},
             {route_name: 'employees.trashed', label: 'Trashed Employees', permission: 'view-trashed-employee'},
+            {route_name: 'employees.master', label: 'Master Employees', permission: 'view-master-employee'},
         ]
     },
 

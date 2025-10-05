@@ -206,6 +206,8 @@ Route::group(['middleware'=>'auth','prefix' => 'employees'], function () {
     Route::get('/trashed', [EmployeeController::class, 'trashedEmployees'])->middleware('can:view-trashed-employee')->name('employees.trashed');
     Route::get('json-index-trashed', [EmployeeController::class, 'jsonTrashedEmployees'])->middleware('can:view-trashed-employee')->name('employees.json-index-trashed');
 
+    Route::get('/master', [EmployeeController::class, 'masterEmployees'])->middleware('can:view-master-employee')->name('employees.master');
+    Route::get('json-index-master', [EmployeeController::class, 'jsonMasterEmployees'])->middleware('can:view-master-employee')->name('employees.json-index-master');
 
 
     Route::get('{model}/show', [EmployeeController::class, 'show'])->middleware('can:view-employee')->name('employee.show');

@@ -1304,4 +1304,47 @@ class EmployeeController extends Controller
         ], 200);
     }
 
+
+    public function masterEmployees() // shows PE type
+    {
+
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-master-employee'), 403, 'Access Denied');
+
+        $office = Office::whereHas('employees')->get();
+
+        return Inertia::render('Backend/Employees/Index/MasterEmployees', [
+            'office' => $office,
+        ]);
+    }
+
+    public function jsonMasterEmployees(Request $request)
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-master-employee'), 403, 'Access Denied');
+
+        $perPage = $request->get('rowsPerPage', 5);
+        $filter  = $request->get('filter', []);
+        $search  = $filter['search'] ?? null;
+
+        $employees = Employee::with(['office'])
+            ->when($search, function (Builder $builder, $search) {
+                $builder->where(function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('mobile', 'like', "%{$search}%")
+                        ->orWhere('date_of_birth', 'like', "%{$search}%")
+                        ->orWhere('parent_name', 'like', "%{$search}%");
+                });
+            })
+            ->when($filter['office'] ?? null, function (Builder $query, $officeId) {
+                $query->where('office_id', $officeId);
+            })
+            ->orderBy('name', 'asc')
+            ->paginate($perPage);
+
+        return response()->json([
+            'list' => $employees,
+        ], 200);
+    }
+
 }
