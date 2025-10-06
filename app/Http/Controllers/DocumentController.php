@@ -115,7 +115,9 @@ class DocumentController extends Controller
 
     public function updateEmployeeDocument(Request $request, Employee $model)
     {
+//        dd($request);
         $validated = $request->validate([
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:10240', // 800KB limit
             'documents' => 'nullable|array',
             'documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
@@ -148,6 +150,20 @@ class DocumentController extends Controller
                     );
                 }
             }
+        }
+
+        if ($request->hasFile('avatar')) {
+            $file = $request->file('avatar');
+
+            $randomString = \Str::random(8);
+            $extension = $file->getClientOriginalExtension();
+            $generatedName = 'avatar_' . $randomString . '.' . $extension;
+
+            // Store the avatar in the 'pictures' directory (public disk)
+            $avatarPath = $file->storeAs('pictures', $generatedName, 'public');
+            // Store path relative to 'storage' (e.g., for public URL access)
+            $model->avatar = $avatarPath;
+            $model->update();
         }
 
         return response()->json([

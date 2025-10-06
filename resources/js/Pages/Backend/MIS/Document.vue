@@ -148,6 +148,7 @@
                             <div class="text-caption text-grey">{{ formatDate(props.row.date_of_birth) }}</div>
                         </div>
                     </div>
+                    {{}}
                 </q-td>
             </template>
 
@@ -235,6 +236,58 @@
 
                             <!-- Right: New Input -->
                             <div>
+
+
+                                <div class="q-pa-md">
+                                    <div class="row items-center q-gutter-md">
+                                        <!-- Profile Image Preview -->
+                                        <div class="rounded-borders overflow-hidden" style="background-color: #8a82f7;">
+                                            <q-img
+                                                :src="previewUrl"
+                                                alt="Profile Photo"
+                                                style="width: 120px; height: 120px"
+                                                img-class="object-cover"
+                                            />
+                                        </div>
+
+                                        <!-- Buttons & Info -->
+                                        <div class="column q-gutter-sm">
+                                            <div class="row q-gutter-md">
+                                                <q-btn
+                                                    label="Upload new Photo"
+                                                    color="primary"
+                                                    @click="triggerFileInput"
+                                                    class="text-weight-medium"
+                                                    rounded
+                                                    unelevated
+                                                />
+                                                <q-btn
+                                                    label="Reset"
+                                                    color="grey-4"
+                                                    text-color="dark"
+                                                    @click="resetPhoto"
+                                                    class="text-weight-medium"
+                                                    rounded
+                                                    unelevated
+                                                />
+                                            </div>
+                                            <p class="text-subtitle2 text-grey-7">
+                                                Allowed JPG, GIF or PNG. Max size of 800K
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Hidden file input -->
+                                    <input
+                                        ref="fileInput"
+                                        type="file"
+                                        accept="image/*"
+                                        class="hidden"
+                                        @change="handleFileChange"
+                                    />
+                                </div>
+
+
                                 <div
                                     class="col-12 col-sm-6"
                                     v-for="(type, index) in documentTypes"
@@ -369,9 +422,44 @@ function checkOffices(val) {
     }
 }
 
+const fileInput = ref(null)
+const defaultUrl = 'https://storage.googleapis.com/a1aa/image/089155c9-d1c1-4945-5728-c9bdb3576171.jpg'
+
+
+
+function triggerFileInput() {
+    fileInput.value?.click()
+}
+
+function handleFileChange(event) {
+    const file = event.target.files[0]
+    if (file && file.size <= 800 * 1024) {
+        const reader = new FileReader()
+        reader.onload = () => {
+            previewUrl.value = reader.result
+        }
+        form.avatar = file
+        reader.readAsDataURL(file)
+    } else {
+        alert('File too large or invalid type. Max size: 800KB.')
+    }
+}
+
+function resetPhoto() {
+    previewUrl.value = props.data?.avatar
+        ? `/storage/${props.data.avatar}`
+        : defaultUrl
+    form.avatar = null
+    fileInput.value.value = null
+}
+
+// ✅ Use reactive URL that changes on edit or file upload
+const previewUrl = ref('')
+
 // Form
 const form = useForm({
     documents:[],
+    avatar:null,
 });
 
 const pagination = ref({
@@ -412,6 +500,12 @@ const openDialog = (row) => {
                 file: null // user may replace it
             }
         });
+    }
+
+    if (row?.avatar) {
+        previewUrl.value = `/storage/${row.avatar}` // Laravel public storage path
+    } else {
+        previewUrl.value = defaultUrl
     }
 
     showDialog.value = true;
@@ -465,6 +559,9 @@ const submitForm = () => {
             formData.append(`documents[${typeId}]`, doc.file);
         }
     });
+    if (form.avatar && typeof form.avatar !== 'string') {
+        formData.append('avatar', form.avatar)
+    }
 
     axios.post(route('document.update', formRowId.value), formData, {
         headers: { 'Content-Type': 'multipart/form-data' }

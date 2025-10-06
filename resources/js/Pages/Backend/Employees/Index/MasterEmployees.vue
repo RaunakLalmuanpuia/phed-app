@@ -23,7 +23,7 @@
                 :loading="loading"
                 :filter="filters"
                 binary-state-sort
-                :rows-per-page-options="[1,7,15,30,50]"
+                :rows-per-page-options="[5,10,15,30,50]"
                 @request="onRequest"
             >
 
@@ -151,7 +151,7 @@ const pagination = ref({
     sortBy: 'desc',
     descending: false,
     page: 1,
-    rowsPerPage: 5,
+    rowsPerPage: 50,
     rowsNumber: 0
 })
 
