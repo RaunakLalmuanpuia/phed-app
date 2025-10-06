@@ -34,7 +34,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'view-remuneration','create-remuneration', 'edit-remuneration','delete-remuneration','bulk-update-remuneration',
             'view-engagement-card','store-engagement-card','download-engagement-card',
             'view-pe-summary','view-mr-summary',
-            'export-pe-summary', 'export-mr-summary','export-pe','export-mr','export-all','export-deleted','export-remuneration-summary',
+            'export-pe-summary', 'export-mr-summary','export-pe','export-mr','export-all','export-deleted','export-remuneration-summary','export-master','export-scheme',
             'generate-remuneration', 'generate-engagement-card','delete-engagement-card','update-document','view-trashed-employee',
         ];
 
@@ -64,7 +64,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'view-remuneration','create-remuneration', 'edit-remuneration','delete-remuneration','bulk-update-remuneration',
                 'view-engagement-card','store-engagement-card','download-engagement-card',
                 'view-pe-summary','view-mr-summary',
-                'export-pe-summary', 'export-mr-summary','export-pe','export-mr','export-all','export-deleted','export-remuneration-summary',
+                'export-pe-summary', 'export-mr-summary','export-pe','export-mr','export-all','export-deleted','export-remuneration-summary','export-master','export-scheme',
                 'generate-remuneration', 'generate-engagement-card','delete-engagement-card','update-document','view-trashed-employee','view-master-employee',
                 ],
 

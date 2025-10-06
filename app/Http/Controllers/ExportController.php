@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\AllEmployeesExport;
 use App\Exports\DeletedEmployeesExport;
+use App\Exports\MasterEmployeesExport;
 use App\Exports\MusterRollEmployeesExport;
 use App\Exports\OfficeRemunerationSheet;
 use App\Exports\RemunerationExport;
@@ -142,7 +143,7 @@ class ExportController extends Controller
     public function exportScheme(Request $request, Scheme $model)
     {
         $user = $request->user();
-        // abort_if(!$user->hasPermissionTo('export-scheme'), 403, 'Access Denied');
+         abort_if(!$user->hasPermissionTo('export-scheme'), 403, 'Access Denied');
 
         return Excel::download(
             new SchemeEmployeesExport($model, $user),
@@ -150,6 +151,14 @@ class ExportController extends Controller
         );
     }
 
+    public function exportMaster(Request $request){
+
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('export-master'),403,'Access Denied');
+
+        $export = new MasterEmployeesExport();
+        return Excel::download($export, 'Master_Employees.xlsx');
+    }
 
 
 

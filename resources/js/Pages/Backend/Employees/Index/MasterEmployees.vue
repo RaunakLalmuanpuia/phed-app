@@ -29,13 +29,15 @@
 
                 <template v-slot:top-right>
 
+                    <q-btn  label="Export" icon="desktop_windows" color="primary" @click="exportData"/>
+
                     <q-input
                         dense
                         outlined
                         debounce="800"
                         v-model="search"
                         placeholder="Search"
-                        class="col-12 col-sm-auto"
+                        class="q-ml-sm col-12 col-sm-auto"
                         clearable
                         @update:model-value="handleSearch"
                     >
@@ -201,6 +203,31 @@ onMounted(() => {
     })
 })
 
+
+const exportData = () => {
+    q.loading.show(); // Show loading indicator (assuming you're using Quasar's loading plugin)
+
+    // Make a GET request to the URL with responseType as 'blob'
+    axios.get(route('export.master'), { responseType: 'blob' })
+        .then((res) => {
+            // Create an object URL from the response data and trigger a download
+            const fileUrl = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement('a');
+            link.href = fileUrl;
+            link.setAttribute('download', Date.now() + '.xlsx'); // Set a dynamic file name
+            link.click();
+        })
+        .catch((err) => {
+            // Show an error notification if something goes wrong
+            q.notify({
+                type: 'negative',
+                message: err.response?.data?.message || 'Failed to download file',
+            });
+        })
+        .finally(() => {
+            q.loading.hide(); // Hide loading indicator
+        });
+};
 
 const goBack = () => {
     window.history.back()
