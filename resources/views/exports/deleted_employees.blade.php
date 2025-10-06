@@ -24,13 +24,15 @@
     <tbody>
     @foreach($employees as $employee)
         @php
-            // Decide employment type
-            if (!is_null($employee->designation)) {
+            if (!empty($employee->designation) && $employee->designation !== 'null') {
+                // Case 1: Has designation
                 $employmentType = 'Provisional';
-            } elseif (!is_null($employee->post_assigned)) {
+            } elseif (!empty($employee->post_assigned) && $employee->post_assigned !== 'null') {
+                // Case 2: No designation, but has post assigned
                 $employmentType = 'Muster Roll';
             } else {
-                $employmentType = $employee->employment_type; // fallback
+                // Case 3: Fallback
+                $employmentType = $employee->employment_type ;
             }
         @endphp
 

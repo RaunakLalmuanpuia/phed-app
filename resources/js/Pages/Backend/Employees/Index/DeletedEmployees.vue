@@ -132,7 +132,11 @@
 
                 <template v-slot:body-cell-type="props">
                     <q-td :props="props">
-                        {{ props.row.designation ? 'Provisional' : 'Muster Roll' }}
+                        {{
+                            props.row.designation && props.row.designation !== 'null'
+                                ? 'Provisional'
+                                : 'Muster Roll'
+                        }}
                     </q-td>
                 </template>
 
