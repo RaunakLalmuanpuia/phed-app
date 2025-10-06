@@ -21,12 +21,21 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\SchemeController;
+use App\Http\Controllers\PageController;
+
 
 
 
 Route::get('/', function () {
     return Inertia::render('Home');
 })->name('home');
+
+Route::group(['prefix'=>'page'], function () {
+    Route::get('contact',[PageController::class,'contact'])->name('page.contact');
+    Route::get('privacy',[PageController::class,'privacy'])->name('page.privacy');
+    Route::get('term',[PageController::class,'term'])->name('page.term');
+
+});
 
 //Auth Controller
 Route::get('login', [AuthController::class, 'create'])->name('login');

@@ -39,7 +39,7 @@
         <q-drawer width="250"  class="print-hide bg-transparent"  v-model="leftDrawerOpen" side="left">
             <q-list class="bg-transparent full-height">
 
-                <div @click="$inertia.get(route('home'))"  class="column items-center q-gutter-md q-pa-lg bg-secondary text-white">
+                <div @click="$inertia.get(route('home'))"  class="column items-center q-gutter-md q-pa-lg bg-secondary text-white cursor-pointer">
                     <q-img src="/images/phed_logo.png" width="46px"/>
                     <div style="line-height: 1" class="text-lg text-grey-7 text-black-medium text-center">
                         PHED Department

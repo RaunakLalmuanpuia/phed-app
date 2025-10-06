@@ -3,7 +3,7 @@
 
         <q-header height-hint="90"  :class="classObject">
             <q-toolbar  class="container flex justify-between items-center" style="height: 80px">
-                <div class="flex items-center q-gutter-sm">
+                <div class="flex items-center q-gutter-sm cursor-pointer" @click="$inertia.get(route('home'))">
                     <q-img width="60px" src="/images/phed_logo.png" />
                     <p v-if="$q.screen.gt.sm" class="text-primary">PUBLIC HEALTH ENGINEERING DEPARTMENT : MIZORAM</p>
                 </div>
@@ -29,6 +29,18 @@
                         <div>Mizoram State e-Governance Society</div>
                     </div>
                 </div>
+
+
+
+                <div class="column items-end">
+                    <div>© 2025 EDMS-PHED (GoM). All rights reserved</div>
+                    <div class="flex q-gutter-sm">
+                        <a class="footer-link" :href="route('page.contact')">Contact Us</a>
+                        <a class="footer-link" :href="route('page.privacy')">Privacy Policy</a>
+                        <a class="footer-link" :href="route('page.term')">Terms and condition</a>
+                    </div>
+                </div>
+
 
             </q-toolbar>
         </q-footer>
@@ -71,5 +83,11 @@ const handleScroll=detail=>{
 }
 .text-footer{
     color: #686B9A;
+}
+
+.footer-link{
+    text-decoration: none;
+    color: #686B9A;
+    font-size: 12px;
 }
 </style>
