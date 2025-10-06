@@ -10,6 +10,7 @@
 
                 <div class="flex items-center q-gutter-md">
                     <a v-if="$q.screen.gt.sm && $page.props.auth?.user"  class="nav-link" :href="route('dashboard')">Dashboard</a>
+                    <q-btn v-if="!$page.props.auth?.user" square @click="$inertia.get(route('bio.index'))" class="login-btn" outline label="View Bio" no-caps/>
                     <q-btn v-if="!$page.props.auth?.user" square @click="$inertia.get(route('login'))" class="login-btn" outline label="Login" no-caps/>
                     <q-btn v-if="$page.props.auth?.user" square @click="$inertia.delete(route('login.destroy'))" class="login-btn" outline label="Logout" no-caps/>
                 </div>

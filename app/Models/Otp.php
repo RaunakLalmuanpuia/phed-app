@@ -11,7 +11,7 @@ class Otp extends Model
     use HasFactory;
 
     const MOBILE = 'Mobile';
-    const EMAIL = 'Email';
+
 
     protected $fillable = ['recipient', 'otp', 'type','used'];
 }

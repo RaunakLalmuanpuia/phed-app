@@ -22,6 +22,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\SchemeController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\BioController;
 
 
 
@@ -30,10 +31,20 @@ Route::get('/', function () {
     return Inertia::render('Home');
 })->name('home');
 
+//Pages
 Route::group(['prefix'=>'page'], function () {
     Route::get('contact',[PageController::class,'contact'])->name('page.contact');
     Route::get('privacy',[PageController::class,'privacy'])->name('page.privacy');
     Route::get('term',[PageController::class,'term'])->name('page.term');
+
+});
+
+//Bio
+Route::group(['prefix'=>'bio'], function () {
+    Route::get('index',[BioController::class,'index'])->name('bio.index');
+    Route::post('send-otp', [BioController::class, 'sendOtp'])->name('bio.send');
+    Route::post('verify-otp', [BioController::class, 'verifyOtp'])->name('bio.verify');
+    Route::post('show',[BioController::class,'show'])->name('bio.show');
 
 });
 
