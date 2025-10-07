@@ -9,7 +9,7 @@
 
                         <div>
                             <p class="login-title">Employee Bio</p>
-                            <q-stepper class="q-gutter-sm q-my-lg q-pa-lg"
+                            <q-stepper
                                 v-model="step"
                                 vertical
                                 color="accent"
@@ -74,7 +74,7 @@
 
                 </div>
                 <div class="col-xs-12 col-sm-6">
-                    <q-img height="480" width="580" src="images/login.png"/>
+                    <q-img height="480" width="580" src="images/phed_logo.png"/>
                 </div>
             </div>
 
