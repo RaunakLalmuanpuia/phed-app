@@ -1,7 +1,17 @@
 <template>
     <q-page class="container q-pa-md" padding>
-        <h1 class="q-ma-none stitle">Employee Bio</h1>
-        {{employee}}
+
+        <div class="flex items-center justify-between q-pa-md bg-white">
+            <div>
+                <div class="stitle">Employee Bio</div>
+                <q-breadcrumbs class="text-dark">
+                    <q-breadcrumbs-el class="cursor-pointer" @click="$inertia.get(route('home'))" icon="dashboard" label="Home"/>
+                    <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="handleBack"/>
+                </q-breadcrumbs>
+            </div>
+        </div>
+
+        <br/>
 
         <q-card flat >
             <q-card-section>
@@ -145,19 +155,10 @@
                         </q-card>
                     </div>
 
-
-
                     <!-- Right Panel -->
                     <div class="col-12 col-md-8">
 
-                        <!-- Tabs -->
-
-
-
-<!--                        Documents-->
-
-
-                        <q-card class="q-mt-md">
+                        <q-card class="q-pa-md">
                             <q-card-section class="flex items-center justify-between">
                                 <div class="stitle text-lg font-bold">Uploaded Documents</div>
                             </q-card-section>
@@ -422,7 +423,7 @@
 
 <script setup>
 import FrontendLayout from "@/Layouts/FrontendLayout.vue";
-import {computed} from "vue";
+import {computed, ref} from "vue";
 import useUtils from "../../../Compositions/useUtils.js";
 import axios from "axios";
 
@@ -433,7 +434,7 @@ defineOptions({
 })
 
 const props=defineProps(['data',]);
-
+const search = ref('')
 
 const filteredDocuments = computed(() => {
     if (!props.data?.documents) return [];
@@ -456,7 +457,7 @@ const sortedTransfers = computed(() => {
 
 const downloadPdf = async (card) => {
     try {
-        const response = await axios.get(route('engagement-card.download', card.id), {
+        const response = await axios.get(route('bio.download-engagement-card', card.id), {
             responseType: 'blob',
         });
         const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
@@ -470,5 +471,8 @@ const downloadPdf = async (card) => {
         $q.notify({ type: 'negative', message: 'Failed to download PDF.' });
     }
 };
+const handleBack=e=>{
+    window.history.back();
+}
 
 </script>

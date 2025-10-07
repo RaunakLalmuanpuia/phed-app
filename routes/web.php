@@ -44,8 +44,8 @@ Route::group(['prefix'=>'bio'], function () {
     Route::get('index',[BioController::class,'index'])->name('bio.index');
     Route::post('send-otp', [BioController::class, 'sendOtp'])->name('bio.send');
     Route::post('verify-otp', [BioController::class, 'verifyOtp'])->name('bio.verify');
-    Route::post('show',[BioController::class,'show'])->name('bio.show');
-
+    Route::get('show/{employee:mobile}', [BioController::class, 'show'])->name('bio.show');
+    Route::get('/download/{model}', [BioController::class, 'downloadEngagementCard'])->name('bio.download-engagement-card');
 });
 
 //Auth Controller

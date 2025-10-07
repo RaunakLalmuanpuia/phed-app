@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\EngagementCard;
 use App\Models\Otp;
 use App\Models\User;
+use App\Util\AppUtil;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -56,6 +59,8 @@ class BioController extends Controller
 
         // (Optional) Send OTP via SMS gateway here
 
+        AppUtil::sendOtp($otp, $data['userId']);
+
         return response()->json([
             'message' => 'OTP sent to ' . $data['userId'],
             'type' => 'BIO'
@@ -103,24 +108,39 @@ class BioController extends Controller
         return response()->json([
             'message' => 'OTP verified successfully.',
             'data' => $verified,
-            'employee_id' => $employee->id,
+            'mobile' => $employee->mobile,
         ]);
     }
 
-    public function show(Request $request)
+    public function show(Employee $employee)
     {
-        $request->validate([
-            'employee_id' => 'required|integer|exists:employees,id',
+        $employee->load([
+            'office', 'documents.type', 'transfers.oldOffice', 'transfers.newOffice',
+            'scheme', 'deletionDetail', 'remunerationDetail', 'engagementCard',
         ]);
-
-        $employee = Employee::with(['office', 'documents.type', 'transfers.oldOffice', 'transfers.newOffice', 'scheme',
-            'deletionDetail', 'remunerationDetail', 'engagementCard',])
-        ->where('id', $request->employee_id)->first();
 
         return inertia('Frontend/Bio/Show', [
             'data' => $employee
         ]);
     }
 
+
+    public function downloadEngagementCard(EngagementCard $model)
+    {
+
+        if (!$model) {
+            abort(404, 'Engagement card not found.');
+        }
+
+        $pdf = Pdf::loadHTML($model->content)
+            ->setPaper('A4', 'portrait')
+            ->setOptions([
+                'isRemoteEnabled' => true,
+                'isHtml5ParserEnabled' => true,
+            ]);
+
+        return $pdf->download("EngagementCard_{$model->card_no}.pdf");
+
+    }
 
 }

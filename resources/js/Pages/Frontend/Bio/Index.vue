@@ -2,7 +2,7 @@
     <q-page class="container" >
 
         <div class="bg-white  q-mt-xl">
-            <div class="row ">
+            <div class="row">
                 <div class="col-xs-12 col-sm-6">
 
                     <div class="flex items-center justify-center">
@@ -118,9 +118,9 @@ const handleVerify=e=>{
         ...verifyForm
     })
         .then(res=>{
-            const employee_id = res.data.employee_id
-            if (employee_id) {
-                router.visit(route('bio.show'), { method: 'post', data: { employee_id } });
+            const mobile  = res.data.mobile
+            if (mobile ) {
+                router.visit(route('bio.show', { employee: mobile }))
             } else {
                 verifyForm.errors['otp'] = ['Invalid Otp']
             }
