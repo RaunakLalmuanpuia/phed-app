@@ -1,7 +1,7 @@
 <template>
     <q-page class="container" >
 
-        <div class="bg-white  q-mt-xl">
+        <div class="bg-white">
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
 
@@ -9,7 +9,7 @@
 
                         <div>
                             <p class="login-title">Employee Bio</p>
-                            <q-stepper
+                            <q-stepper class="q-gutter-sm q-my-lg q-pa-lg"
                                 v-model="step"
                                 vertical
                                 color="accent"
@@ -22,7 +22,7 @@
                                     :done="step > 1">
                                     <q-form style="max-width: 750px"  class="column q-gutter-sm q-my-lg" @submit="handleSend">
 
-                                        <span class="text-caption text-grey-7 text-weight-medium">Enter your registered email or mobile no</span>
+                                        <span class="text-caption text-grey-7 text-weight-medium">Enter your registered mobile no</span>
                                         <q-input placeholder="Mobile"
                                                  dense
                                                  v-model="form.userId"
@@ -31,8 +31,8 @@
                                                  :error="!!form.errors?.userId"
                                                  :error-message="form.errors?.userId?.toString()"
                                                  :rules="[
-                                 val=>!!val || 'Mobile is required'
-                             ]"/>
+                                             val=>!!val || 'Mobile is required'
+                                         ]"/>
 
                                         <div class="flex">
                                             <q-btn class="sized-btn" color="btn-primary" type="submit" rounded label="Send OTP" no-caps/>
@@ -74,7 +74,7 @@
 
                 </div>
                 <div class="col-xs-12 col-sm-6">
-                    <q-img height="480" width="580" src="images/20944201.jpg"/>
+                    <q-img height="480" width="580" src="images/login.png"/>
                 </div>
             </div>
 
