@@ -73,8 +73,8 @@
                     </div>
 
                 </div>
-                <div class="col-xs-12 col-sm-6">
-                    <q-img height="480" width="580" src="images/phed_logo.png"/>
+                <div v-if="$q.screen.gt.sm" class="col-xs-12 col-sm-6">
+                    <q-img height="480" width="580" src="/images/phed_logo.png"/>
                 </div>
             </div>
 

@@ -24,7 +24,7 @@
         <q-footer  class="bg-secondary text-footer q-py-md">
             <q-toolbar class="container flex justify-between items-center">
                 <div class="flex q-gutter-sm items-center">
-                    <img src="images/msegs.png"/>
+                    <img src="/images/msegs.png"/>
                     <div>
                         <div>Crafted with care by</div>
                         <div>Mizoram State e-Governance Society</div>
