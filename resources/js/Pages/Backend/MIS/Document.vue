@@ -204,7 +204,7 @@
                                     <div class="col-8 text-body1">Muster Roll Employee</div>
                                 </div>
 
-                                <div class="row q-mb-sm items-center">
+                                <div v-if="currentRow?.employment_type === 'MR'" class="row q-mb-sm items-center">
                                     <div class="col-4 text-subtitle2 text-grey-8">Is Scheme</div>
                                     <div class="col-8 text-body1"> {{ currentRow?.scheme_id ? 'Yes' : 'No' }}</div>
                                 </div>
