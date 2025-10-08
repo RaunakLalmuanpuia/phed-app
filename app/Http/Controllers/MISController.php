@@ -189,7 +189,7 @@ class MISController extends Controller
         $officeIds = $filter['offices'] ?? [];
 
 
-        $employees = Employee::with(['office','documents.type'])
+        $employees = Employee::with(['office','documents.type','scheme'])
             ->whereIn('office_id', (array) $officeIds)
             ->where('employment_type', '!=', 'Deleted')
             ->when($filter['type'] ?? null, function ($query, $type) {

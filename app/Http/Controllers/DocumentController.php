@@ -117,10 +117,31 @@ class DocumentController extends Controller
     {
 //        dd($request);
         $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'mobile' => ['required', 'string', 'max:20', Rule::unique('employees', 'mobile')->ignore($model->id)],
+            'parent_name' => 'required|string|max:255',
+            'date_of_birth' => 'required|date',
+            'address' => 'required|string|max:255',
+            'designation' => 'nullable|string|max:255',
+            'post_assigned' => 'nullable|string|max:255',
+            'educational_qln' => 'required|string|max:255',
+            'technical_qln' => 'nullable|string|max:255',
+            'name_of_workplace' => 'nullable|string|max:255',
+            'post_per_qualification' => 'nullable|string|max:255',
+            'engagement_card_no' => 'nullable|string|max:255',
+            'date_of_engagement' => 'nullable|date',
+            'skill_category' => 'nullable|string|max:255',
+            'skill_at_present' => 'nullable|string|max:255',
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:10240', // 800KB limit
             'documents' => 'nullable|array',
             'documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
+
+
+        // ✅ Update employee basic details
+        $model->update($validated);
+
 
         if ($request->hasFile('documents')) {
             foreach ($request->file('documents') as $typeId => $file) {
@@ -165,6 +186,8 @@ class DocumentController extends Controller
             $model->avatar = $avatarPath;
             $model->update();
         }
+
+
 
         return response()->json([
             'employee' => $model->load('documents.type'),

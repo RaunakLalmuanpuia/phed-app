@@ -180,7 +180,7 @@
             <q-card style="min-width: 750px">
 
                 <q-card-section>
-                    <div class="text-lg font-bold">Update Docment</div>
+                    <div class="text-lg font-bold">Update Document</div>
                 </q-card-section>
 
                 <q-card-section class="q-gutter-md">
@@ -189,25 +189,9 @@
                         <div class="grid grid-cols-2 gap-4 items-start relative">
                             <!-- Left: Existing Value -->
                             <div>
-
                                 <div class="row q-mb-sm items-center">
-                                    <div class="col-4 text-subtitle2 text-grey-8">Name</div>
-                                    <div class="col-8 text-body1">{{ currentRow?.name }}</div>
-                                </div>
-
-                                <div class="row q-mb-sm items-center">
-                                    <div class="col-4 text-subtitle2 text-grey-8">Parent Name</div>
-                                    <div class="col-8 text-body1">{{ currentRow?.parent_name }}</div>
-                                </div>
-
-                                <div class="row q-mb-sm items-center">
-                                    <div class="col-4 text-subtitle2 text-grey-8">Date of Birth</div>
-                                    <div class="col-8 text-body1">{{ formatDate(currentRow?.date_of_birth) }}</div>
-                                </div>
-
-                                <div class="row q-mb-sm items-center">
-                                    <div class="col-4 text-subtitle2 text-grey-8">Present Address</div>
-                                    <div class="col-8 text-body1">{{ currentRow?.address }}</div>
+                                    <div class="col-4 text-subtitle2 text-grey-8">Office</div>
+                                    <div class="col-8 text-body1"> {{currentRow?.office.name}}</div>
                                 </div>
 
                                 <div v-if="currentRow?.employment_type === 'PE'" class="row q-mb-sm items-center">
@@ -220,15 +204,173 @@
                                     <div class="col-8 text-body1">Muster Roll Employee</div>
                                 </div>
 
+                                <div class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Is Scheme</div>
+                                    <div class="col-8 text-body1"> {{ currentRow?.scheme_id ? 'Yes' : 'No' }}</div>
+                                </div>
+
+                                <div
+                                    class="row q-mb-sm items-center"
+                                    v-if="currentRow?.scheme_id"
+                                >
+                                    <div class="col-4 text-subtitle2 text-grey-8">Scheme</div>
+                                    <div class="col-8 text-body1">
+                                        {{ currentRow?.scheme?.name }}
+                                    </div>
+                                </div>
+
+                                <div class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Name</div>
+                                    <div class="col-8 text-body1">
+                                        <q-input v-model="form.name"  outlined dense :error="!!form.errors?.name"
+                                                 :error-message="form.errors?.name" />
+
+                                    </div>
+                                </div>
+
+                                <div class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Email</div>
+                                    <div class="col-8 text-body1">
+                                        <q-input v-model="form.email" type="email" outlined dense
+                                                 :error="!!form.errors?.email" :error-message="form.errors?.email" />
+                                    </div>
+                                </div>
+
+                                <div class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Contact</div>
+                                    <div class="col-8 text-body1">
+                                        <q-input v-model="form.mobile" mask="##########" outlined dense
+                                                 :error="!!form.errors?.mobile" :error-message="form.errors?.mobile"
+                                                 />
+                                    </div>
+                                </div>
+
+                                <div class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Parent Name</div>
+                                    <div class="col-8 text-body1">
+                                        <q-input v-model="form.parent_name" outlined dense
+                                                 :error="!!form.errors?.parent_name" :error-message="form.errors?.parent_name"
+                                                 />
+                                    </div>
+                                </div>
+
+                                <div class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Date of Birth</div>
+                                    <div class="col-8 text-body1">
+                                        <q-input v-model="form.date_of_birth" type="date" outlined dense
+                                                                           :error="!!form.errors?.date_of_birth" :error-message="form.errors?.date_of_birth"
+                                                                            /></div>
+                                </div>
+
+                                <div class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Present Address</div>
+                                    <div class="col-8 text-body1">
+                                        <q-input v-model="form.address" outlined dense
+                                                 :error="!!form.errors?.address" :error-message="form.errors?.address"
+                                                  />
+                                    </div>
+                                </div>
+                                <div class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Education Qln.</div>
+                                    <div class="col-8 text-body1">
+                                        <q-select v-model="form.educational_qln" :options="educationalQualifications" outlined dense
+                                                  emit-value map-options :error="!!form.errors?.educational_qln" :error-message="form.errors?.educational_qln"
+                                                   />
+                                    </div>
+                                </div>
+
+                                <div class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Technical Qln.</div>
+                                    <div class="col-8 text-body1">
+                                        <q-input v-model="form.technical_qln"  outlined dense
+                                                 :error="!!form.errors?.technical_qln" :error-message="form.errors?.technical_qln"
+                                                 :rules="[val => !!val || 'Technical Qualification is required']" />
+                                    </div>
+                                </div>
+
+
                                 <div v-if="currentRow?.employment_type === 'PE'" class="row q-mb-sm items-center">
                                     <div class="col-4 text-subtitle2 text-grey-8">Designation</div>
-                                    <div class="col-8 text-body1">{{ currentRow?.designation }}</div>
+                                    <div class="col-8 text-body1">
+                                        <q-input v-model="form.designation" label="Designation *" outlined dense
+                                                 :error="!!form.errors?.designation" :error-message="form.errors?.designation"
+                                                 :rules="[val => !!val || 'Designation is required']" />
+
+                                    </div>
                                 </div>
 
                                 <div v-if="currentRow?.employment_type === 'MR'" class="row q-mb-sm items-center">
                                     <div class="col-4 text-subtitle2 text-grey-8">Post/Work Assigned</div>
-                                    <div class="col-8 text-body1">{{ currentRow?.post_assigned }}</div>
+                                    <div class="col-8 text-body1">
+                                        <q-input v-model="form.post_assigned" type="text" outlined dense
+                                                 :error="!!form.errors?.post_assigned" :error-message="form.errors?.post_assigned"
+                                                 :rules="[val => !!val || 'Post/Work Assigned is required']"/>
+                                    </div>
                                 </div>
+
+                                <div class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Workplace</div>
+                                    <div class="col-8 text-body1">
+                                        <q-input v-model="form.name_of_workplace" outlined dense
+                                                 :error="!!form.errors?.name_of_workplace" :error-message="form.errors?.name_of_workplace"
+                                        />
+
+                                    </div>
+                                </div>
+
+                                <div class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Date of Initial Engagement</div>
+                                    <div class="col-8 text-body1">
+                                        <q-input v-model="form.date_of_engagement" type="date" outlined dense
+                                                 :error="!!form.errors?.date_of_engagement" :error-message="form.errors?.date_of_engagement"
+                                        />
+                                    </div>
+                                </div>
+
+
+                                <div v-if="currentRow?.employment_type === 'PE'" class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Engagement Card No.</div>
+                                    <div class="col-8 text-body1">
+                                        <q-input v-model="form.engagement_card_no" type="text" outlined dense
+                                                 :error="!!form.errors?.engagement_card_no" :error-message="form.errors?.engagement_card_no"
+                                        />
+
+                                    </div>
+                                </div>
+
+                                <div v-if="currentRow?.employment_type === 'MR'" class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Skill Category at Initial Engagement</div>
+                                    <div class="col-8 text-body1">
+                                        <q-select v-model="form.skill_category" :options="skills"
+                                                  emit-value map-options outlined dense
+                                                  :error="!!form.errors?.skill_category" :error-message="form.errors?.skill_category"
+                                        />
+
+                                    </div>
+                                </div>
+
+                                <div v-if="currentRow?.employment_type === 'MR'" class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Skill Category at Present</div>
+                                    <div class="col-8 text-body1">
+                                        <q-select v-model="form.skill_at_present" :options="skills"
+                                                  emit-value map-options outlined dense
+                                                  :error="!!form.errors?.skill_at_present" :error-message="form.errors?.skill_at_present"
+                                                  />
+
+                                    </div>
+                                </div>
+
+                                <div v-if="currentRow?.employment_type === 'MR'" class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Post Selected</div>
+                                    <div class="col-8 text-body1">
+                                        <q-input v-model="form.post_per_qualification" label="Post Selected" outlined dense
+                                                 :error="!!form.errors?.post_per_qualification" :error-message="form.errors?.post_per_qualification"
+                                        />
+
+                                    </div>
+                                </div>
+
+
                             </div>
 
                             <!-- Vertical Separator -->
@@ -286,7 +428,6 @@
                                         @change="handleFileChange"
                                     />
                                 </div>
-
 
                                 <div
                                     class="col-12 col-sm-6"
@@ -355,7 +496,32 @@ defineOptions({ layout: BackendLayout });
 
 const props = defineProps(["office", 'documentTypes',"canUpdateDocument"]);
 
-const {formatDate} = useUtils();
+const {educationalQualifications, skills,formatDate} = useUtils();
+const q = useQuasar();
+
+// Form
+const form = useForm({
+    name:"",
+    email:"",
+    mobile:"",
+    parent_name:"",
+    date_of_birth:"",
+    address:"",
+    designation:"",
+    post_assigned:"",
+    employment_type:"",
+    educational_qln:"",
+    technical_qln:"",
+    name_of_workplace:"",
+    post_per_qualification:"",
+    engagement_card_no: "",
+    date_of_engagement:"",
+    skill_category:"",
+    skill_at_present:"",
+    documents:[],
+    avatar:null,
+});
+
 
 const filters = ref({
     offices: [], // multiple offices
@@ -375,10 +541,6 @@ const scheme = [
 
 const search = ref("");
 
-
-
-
-const q = useQuasar();
 const rows = ref([]);
 const loading = ref(false);
 
@@ -456,11 +618,6 @@ function resetPhoto() {
 // ✅ Use reactive URL that changes on edit or file upload
 const previewUrl = ref('')
 
-// Form
-const form = useForm({
-    documents:[],
-    avatar:null,
-});
 
 const pagination = ref({
     sortBy: "name",
@@ -487,6 +644,23 @@ const openDialog = (row) => {
     currentRow.value = row;
     formRowId.value = row.id;
 
+    form.name = row.name;
+    form.email = row.email;
+    form.mobile = row.mobile;
+    form.parent_name = row.parent_name;
+    form.date_of_birth = row.date_of_birth;
+    form.address = row.address;
+    form.designation = row.designation;
+    form.post_assigned = row.post_assigned;
+
+    form.technical_qln = row.technical_qln;
+    form.educational_qln = row.educational_qln;
+    form.name_of_workplace = row.name_of_workplace;
+    form.post_per_qualification = row.post_per_qualification;
+    form.engagement_card_no = row.engagement_card_no;
+    form.date_of_engagement = row.date_of_engagement;
+    form.skill_category = row.skill_category;
+    form.skill_at_present = row.skill_at_present
     // Reset before filling
     form.documents = [];
 
@@ -553,6 +727,23 @@ const submitForm = () => {
 
     const formData = new FormData();
 
+    formData.append('name', form.name || '')
+    formData.append('email', form.email || '')
+    formData.append('mobile', form.mobile || '')
+    formData.append('parent_name', form.parent_name || '')
+    formData.append('date_of_birth', form.date_of_birth || '')
+    formData.append('address', form.address || '')
+    formData.append('designation', form.designation || '')
+    formData.append('post_assigned', form.post_assigned || '')
+    formData.append('educational_qln', form.educational_qln || '')
+    formData.append('technical_qln', form.technical_qln || '')
+    formData.append('name_of_workplace', form.name_of_workplace || '')
+    formData.append('post_per_qualification', form.post_per_qualification || '')
+    formData.append('engagement_card_no', form.engagement_card_no || '')
+    formData.append('date_of_engagement', form.date_of_engagement || '')
+    formData.append('skill_category', form.skill_category || '')
+    formData.append('skill_at_present', form.skill_at_present || '')
+
     // Append only new files
     Object.entries(form.documents).forEach(([typeId, doc]) => {
         if (doc?.file) {
@@ -581,7 +772,7 @@ const submitForm = () => {
             showDialog.value = false;
 
             // Reset form
-            form.documents = [];
+            form.reset();
             formRowId.value = null;
         })
         .catch((err) => {
