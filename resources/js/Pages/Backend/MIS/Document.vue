@@ -177,7 +177,7 @@
 
 
         <q-dialog v-model="showDialog">
-            <q-card style="min-width: 750px">
+            <q-card style="min-width: 900px">
 
                 <q-card-section>
                     <div class="text-lg font-bold">Update Document</div>
@@ -257,7 +257,7 @@
                                 <div class="row q-mb-sm items-center">
                                     <div class="col-4 text-subtitle2 text-grey-8">Date of Birth</div>
                                     <div class="col-8 text-body1">
-                                        <q-input v-model="form.date_of_birth" type="date" outlined dense
+                                        <q-input v-model="form.date_of_birth" label="MM/DD/YYYY" type="date" outlined dense
                                                                            :error="!!form.errors?.date_of_birth" :error-message="form.errors?.date_of_birth"
                                                                             /></div>
                                 </div>
@@ -321,7 +321,7 @@
                                 <div class="row q-mb-sm items-center">
                                     <div class="col-4 text-subtitle2 text-grey-8">Date of Initial Engagement</div>
                                     <div class="col-8 text-body1">
-                                        <q-input v-model="form.date_of_engagement" type="date" outlined dense
+                                        <q-input v-model="form.date_of_engagement" label="MM/DD/YYYY" type="date" outlined dense
                                                  :error="!!form.errors?.date_of_engagement" :error-message="form.errors?.date_of_engagement"
                                         />
                                     </div>
