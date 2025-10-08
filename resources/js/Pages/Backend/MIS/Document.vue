@@ -284,7 +284,7 @@
                                     <div class="col-8 text-body1">
                                         <q-input v-model="form.technical_qln"  outlined dense
                                                  :error="!!form.errors?.technical_qln" :error-message="form.errors?.technical_qln"
-                                                 :rules="[val => !!val || 'Technical Qualification is required']" />
+                                                  />
                                     </div>
                                 </div>
 
@@ -292,9 +292,9 @@
                                 <div v-if="currentRow?.employment_type === 'PE'" class="row q-mb-sm items-center">
                                     <div class="col-4 text-subtitle2 text-grey-8">Designation</div>
                                     <div class="col-8 text-body1">
-                                        <q-input v-model="form.designation" label="Designation *" outlined dense
+                                        <q-input v-model="form.designation" outlined dense
                                                  :error="!!form.errors?.designation" :error-message="form.errors?.designation"
-                                                 :rules="[val => !!val || 'Designation is required']" />
+                                                  />
 
                                     </div>
                                 </div>
@@ -304,7 +304,7 @@
                                     <div class="col-8 text-body1">
                                         <q-input v-model="form.post_assigned" type="text" outlined dense
                                                  :error="!!form.errors?.post_assigned" :error-message="form.errors?.post_assigned"
-                                                 :rules="[val => !!val || 'Post/Work Assigned is required']"/>
+                                                />
                                     </div>
                                 </div>
 
