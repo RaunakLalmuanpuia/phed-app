@@ -623,7 +623,7 @@ const pagination = ref({
     sortBy: "name",
     descending: false,
     page: 1,
-    rowsPerPage: 5,
+    rowsPerPage: 50,
     rowsNumber: 0,
 });
 // Table columns
