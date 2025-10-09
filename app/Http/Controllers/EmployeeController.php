@@ -702,20 +702,20 @@ class EmployeeController extends Controller
         abort_if(!$user->hasPermissionTo('edit-employee'), 403, 'Access Denied');
 
         $validated = $request->validate([
-            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:800', // 800KB limit
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:5120', // 800KB limit
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'mobile' => ['required', 'string', 'max:20', Rule::unique('employees', 'mobile')->ignore($model->id)],
-            'parent_name' => 'required|string|max:255',
-            'date_of_birth' => 'required|date',
+            'parent_name' => 'nullable|string|max:255',
+            'date_of_birth' => 'nullable|date',
             'address' => 'nullable|string|max:255',
             'designation' => 'nullable|string|max:255',
             'post_assigned' => 'nullable|string|max:255',
             'employment_type' => ['required', Rule::in(['MR', 'PE', 'Deleted'])],
             'office' => 'required|exists:offices,id',
-            'educational_qln' => 'required|string|max:255',
+            'educational_qln' => 'nullable|string|max:255',
             'technical_qln' => 'nullable|string|max:255',
-            'name_of_workplace' => 'required|string|max:255',
+            'name_of_workplace' => 'nullable|string|max:255',
             'post_per_qualification' => 'nullable|string|max:255',
             'engagement_card_no' => 'nullable|string|max:255',
             'date_of_engagement' => 'nullable|date',

@@ -478,8 +478,8 @@ const viewDocument = (url) => {
 const nextStep = () => {
     if (step.value === '1') {
         if (
-            !form.name || !form.mobile || !form.parent_name ||
-            !form.date_of_birth || !form.educational_qln
+            !form.name || !form.mobile ||
+            !form.date_of_birth
         ) {
             $q.notify({ type: 'negative', message: 'Please fill all required Personal Info fields.' })
             return
