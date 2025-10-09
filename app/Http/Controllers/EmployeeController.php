@@ -708,7 +708,7 @@ class EmployeeController extends Controller
             'mobile' => ['required', 'string', 'max:20', Rule::unique('employees', 'mobile')->ignore($model->id)],
             'parent_name' => 'required|string|max:255',
             'date_of_birth' => 'required|date',
-            'address' => 'required|string|max:255',
+            'address' => 'nullable|string|max:255',
             'designation' => 'nullable|string|max:255',
             'post_assigned' => 'nullable|string|max:255',
             'employment_type' => ['required', Rule::in(['MR', 'PE', 'Deleted'])],
