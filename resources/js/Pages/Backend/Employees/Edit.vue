@@ -83,25 +83,21 @@
 
                         <div class="col-12 col-sm-6">
                             <q-input v-model="form.address" label="Address" outlined dense
-                                     :error="!!form.errors?.address" :error-message="form.errors?.address"
-                                     :rules="[val => !!val || 'Address is required']" />
+                                     :error="!!form.errors?.address" :error-message="form.errors?.address"/>
                         </div>
 
                         <div class="col-12 col-sm-6">
                             <q-input v-model="form.name_of_workplace" label="Workplace" outlined dense
-                                     :error="!!form.errors?.name_of_workplace" :error-message="form.errors?.name_of_workplace"
-                                     :rules="[val => !!val || 'Workplace is required']" />
+                                     :error="!!form.errors?.name_of_workplace" :error-message="form.errors?.name_of_workplace"/>
                         </div>
 
                         <div class="col-12 col-sm-6">
                             <q-input v-model="form.technical_qln" label="Technical Qualification" outlined dense
-                                     :error="!!form.errors?.technical_qln" :error-message="form.errors?.technical_qln"
-                                     :rules="[val => !!val || 'Technical Qualification is required']" />
+                                     :error="!!form.errors?.technical_qln" :error-message="form.errors?.technical_qln"/>
                         </div>
                         <div v-if="form.employment_type === 'MR'" class="col-12 col-sm-6">
                             <q-input v-model="form.post_assigned" label="Post/Work Assigned" outlined dense
-                                     :error="!!form.errors?.post_assigned" :error-message="form.errors?.post_assigned"
-                                     :rules="[val => !!val || 'Post/Work Assigned is required']" />
+                                     :error="!!form.errors?.post_assigned" :error-message="form.errors?.post_assigned" />
                         </div>
                     </div>
                     <div v-if="!isManagerOrViewer " class="row q-col-gutter-sm">
@@ -130,8 +126,7 @@
                         </div>
                         <div class="col-12 col-sm-6">
                             <q-input v-model="form.address" label="Address" outlined dense
-                                     :error="!!form.errors?.address" :error-message="form.errors?.address"
-                                     :rules="[val => !!val || 'Address is required']" />
+                                     :error="!!form.errors?.address" :error-message="form.errors?.address"/>
                         </div>
                         <div class="col-12 col-sm-6">
                             <q-select v-model="form.educational_qln" :options="educationalQualifications" label="Educational Qualification *" outlined dense
@@ -140,8 +135,7 @@
                         </div>
                         <div class="col-12 col-sm-6">
                             <q-input v-model="form.technical_qln" label="Technical Qualification" outlined dense
-                                     :error="!!form.errors?.technical_qln" :error-message="form.errors?.technical_qln"
-                                     :rules="[val => !!val || 'Technical Qualification is required']" />
+                                     :error="!!form.errors?.technical_qln" :error-message="form.errors?.technical_qln"/>
                         </div>
                     </div>
                     <q-stepper-navigation>
@@ -328,6 +322,7 @@
                         <div class="col-12 col-sm-6"> <strong>Mobile:</strong> {{ form.mobile }} </div>
                         <div class="col-12 col-sm-6"> <strong>Parent Name:</strong> {{ form.parent_name }} </div>
                         <div class="col-12 col-sm-6"> <strong>Date of Birth:</strong> {{ formatDate(form.date_of_birth) }} </div>
+                        <div class="col-12 col-sm-6"> <strong>Present Address:</strong> {{ form.address }} </div>
                         <div class="col-12 col-sm-6"> <strong>Education:</strong> {{ form.educational_qln }} </div>
                         <div class="col-12 col-sm-6"> <strong>Technical Qualification:</strong> {{ form.technical_qln }} </div>
                     </div>
