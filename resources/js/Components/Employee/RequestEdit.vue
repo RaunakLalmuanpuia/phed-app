@@ -220,21 +220,38 @@ const parseChanges = (changes) => {
     </q-card>
 
     <!-- Request Edit Dialog -->
-    <q-dialog v-model="showDialog" >
-        <q-card style="min-width: 700px">
+
+    <q-dialog v-model="showDialog" persistent>
+        <q-card
+            class="q-pa-md"
+            style="width: 95vw; max-width: 800px; max-height: 90vh; overflow-y: auto;"
+        >
+            <!-- Header -->
             <q-card-section>
-                <div class="text-lg font-bold">Request Edit</div>
+                <div class="text-h6 text-weight-bold text-primary">Request Edit</div>
             </q-card-section>
 
-            <q-card-section>
-                <!-- Loop through editable fields -->
-                <div v-for="(label, field) in fieldLabels" :key="field" class="mb-6">
-                    <!-- Grid: Left = Existing, Right = New Input -->
-                    <div class="grid grid-cols-2 gap-4 items-start relative">
-                        <!-- Left: Existing Value -->
+            <!-- Fields -->
+            <q-card-section class="q-gutter-md">
+                <div
+                    v-for="(label, field) in fieldLabels"
+                    :key="field"
+                    class="q-mb-lg"
+                >
+                    <!-- Responsive Grid -->
+                    <div
+                        class="grid gap-4 items-start relative"
+                        :class="{
+            'grid-cols-2': $q.screen.gt.sm,   // 2 columns on tablet & desktop
+            'grid-cols-1': !$q.screen.gt.sm, // 1 column on mobile
+          }"
+                    >
+                        <!-- Existing Value -->
                         <div>
-                            <div class="text-sm font-bold mb-1">Existing {{ label }}:</div>
-                            <div class="q-mt-md">
+                            <div class="text-sm text-weight-bold q-mb-xs">
+                                Existing {{ label }}:
+                            </div>
+                            <div class="q-mt-sm text-body2">
                                 {{
                                     field === "date_of_birth"
                                         ? formatDate(props.data[field])
@@ -243,12 +260,17 @@ const parseChanges = (changes) => {
                             </div>
                         </div>
 
-                        <!-- Vertical Separator -->
-                        <div class="absolute top-0 bottom-0 left-1/2 w-px bg-gray-300"></div>
+                        <!-- Vertical Divider (only for large screens) -->
+                        <div
+                            v-if="$q.screen.gt.sm"
+                            class="absolute top-0 bottom-0 left-1/2 w-px bg-grey-4"
+                        ></div>
 
-                        <!-- Right: New Input -->
+                        <!-- New Input -->
                         <div>
-                            <div class="text-sm font-bold mb-1">New {{ label }}:</div>
+                            <div class="text-sm text-weight-bold q-mb-xs">
+                                New {{ label }}:
+                            </div>
 
                             <q-input
                                 v-if="field === 'date_of_birth'"
@@ -258,7 +280,6 @@ const parseChanges = (changes) => {
                                 dense
                             />
 
-                            <!-- Educational Qualification dropdown -->
                             <q-select
                                 v-else-if="field === 'educational_qln'"
                                 v-model="form.requested_changes[field]"
@@ -270,7 +291,6 @@ const parseChanges = (changes) => {
                                 map-options
                             />
 
-                            <!-- Default input -->
                             <q-input
                                 v-else
                                 v-model="form.requested_changes[field]"
@@ -278,42 +298,42 @@ const parseChanges = (changes) => {
                                 dense
                             />
 
-                            <!-- Required docs for this field -->
+                            <!-- Required Documents -->
                             <div
                                 v-if="form.requested_changes[field]"
-                                class="border rounded p-4 bg-gray-50 q-mt-md"
+                                class="q-mt-md q-pa-sm bg-grey-1 rounded-borders"
                             >
-                                <div class="text-sm font-bold mb-2">
+                                <div class="text-sm text-weight-bold q-mb-sm">
                                     Required Documents for {{ label }}:
                                 </div>
 
-                                <div v-for="docName in fieldToDocuments[field]" :key="docName" class="mb-3">
+                                <div
+                                    v-for="docName in fieldToDocuments[field]"
+                                    :key="docName"
+                                    class="q-mb-sm"
+                                >
                                     <q-file
                                         filled
                                         v-model="form.documents[docName]"
                                         :label="docName"
                                         accept=".pdf,.jpg,.jpeg,.png"
                                         clearable
-                                        class="q-mt-md"
+                                        dense
                                     />
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Separator between fields -->
+                    <!-- Separator -->
                     <q-separator spaced class="q-my-md" />
                 </div>
             </q-card-section>
 
-            <q-card-actions align="right">
-                <q-btn
-                    flat
-                    label="Clear"
-                    color="red"
-                    @click="clearForm"
-                />
-                <q-btn flat label="Cancel" v-close-popup />
+            <!-- Actions -->
+            <q-card-actions align="right" class="q-pt-none">
+                <q-btn flat label="Clear" color="negative" @click="clearForm" />
+                <q-btn flat label="Cancel" color="grey" v-close-popup />
                 <q-btn
                     label="Submit"
                     color="primary"
@@ -324,5 +344,111 @@ const parseChanges = (changes) => {
             </q-card-actions>
         </q-card>
     </q-dialog>
+
+
+    <!--    <q-dialog v-model="showDialog" >-->
+<!--        <q-card style="min-width: 700px">-->
+<!--            <q-card-section>-->
+<!--                <div class="text-lg font-bold">Request Edit</div>-->
+<!--            </q-card-section>-->
+
+<!--            <q-card-section>-->
+<!--                &lt;!&ndash; Loop through editable fields &ndash;&gt;-->
+<!--                <div v-for="(label, field) in fieldLabels" :key="field" class="mb-6">-->
+<!--                    &lt;!&ndash; Grid: Left = Existing, Right = New Input &ndash;&gt;-->
+<!--                    <div class="grid grid-cols-2 gap-4 items-start relative">-->
+<!--                        &lt;!&ndash; Left: Existing Value &ndash;&gt;-->
+<!--                        <div>-->
+<!--                            <div class="text-sm font-bold mb-1">Existing {{ label }}:</div>-->
+<!--                            <div class="q-mt-md">-->
+<!--                                {{-->
+<!--                                    field === "date_of_birth"-->
+<!--                                        ? formatDate(props.data[field])-->
+<!--                                        : props.data[field] || "—"-->
+<!--                                }}-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Vertical Separator &ndash;&gt;-->
+<!--                        <div class="absolute top-0 bottom-0 left-1/2 w-px bg-gray-300"></div>-->
+
+<!--                        &lt;!&ndash; Right: New Input &ndash;&gt;-->
+<!--                        <div>-->
+<!--                            <div class="text-sm font-bold mb-1">New {{ label }}:</div>-->
+
+<!--                            <q-input-->
+<!--                                v-if="field === 'date_of_birth'"-->
+<!--                                v-model="form.requested_changes[field]"-->
+<!--                                type="date"-->
+<!--                                outlined-->
+<!--                                dense-->
+<!--                            />-->
+
+<!--                            &lt;!&ndash; Educational Qualification dropdown &ndash;&gt;-->
+<!--                            <q-select-->
+<!--                                v-else-if="field === 'educational_qln'"-->
+<!--                                v-model="form.requested_changes[field]"-->
+<!--                                :options="educationalQualifications"-->
+<!--                                label="Select Qualification"-->
+<!--                                outlined-->
+<!--                                dense-->
+<!--                                emit-value-->
+<!--                                map-options-->
+<!--                            />-->
+
+<!--                            &lt;!&ndash; Default input &ndash;&gt;-->
+<!--                            <q-input-->
+<!--                                v-else-->
+<!--                                v-model="form.requested_changes[field]"-->
+<!--                                outlined-->
+<!--                                dense-->
+<!--                            />-->
+
+<!--                            &lt;!&ndash; Required docs for this field &ndash;&gt;-->
+<!--                            <div-->
+<!--                                v-if="form.requested_changes[field]"-->
+<!--                                class="border rounded p-4 bg-gray-50 q-mt-md"-->
+<!--                            >-->
+<!--                                <div class="text-sm font-bold mb-2">-->
+<!--                                    Required Documents for {{ label }}:-->
+<!--                                </div>-->
+
+<!--                                <div v-for="docName in fieldToDocuments[field]" :key="docName" class="mb-3">-->
+<!--                                    <q-file-->
+<!--                                        filled-->
+<!--                                        v-model="form.documents[docName]"-->
+<!--                                        :label="docName"-->
+<!--                                        accept=".pdf,.jpg,.jpeg,.png"-->
+<!--                                        clearable-->
+<!--                                        class="q-mt-md"-->
+<!--                                    />-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Separator between fields &ndash;&gt;-->
+<!--                    <q-separator spaced class="q-my-md" />-->
+<!--                </div>-->
+<!--            </q-card-section>-->
+
+<!--            <q-card-actions align="right">-->
+<!--                <q-btn-->
+<!--                    flat-->
+<!--                    label="Clear"-->
+<!--                    color="red"-->
+<!--                    @click="clearForm"-->
+<!--                />-->
+<!--                <q-btn flat label="Cancel" v-close-popup />-->
+<!--                <q-btn-->
+<!--                    label="Submit"-->
+<!--                    color="primary"-->
+<!--                    :loading="form.processing"-->
+<!--                    :disable="!hasChanges"-->
+<!--                    @click="submitRequest"-->
+<!--                />-->
+<!--            </q-card-actions>-->
+<!--        </q-card>-->
+<!--    </q-dialog>-->
 
 </template>

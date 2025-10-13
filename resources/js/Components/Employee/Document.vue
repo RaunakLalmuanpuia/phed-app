@@ -185,22 +185,65 @@
         </q-card-section>
     </q-card>
 
-    <q-dialog v-model="showDialog">
-        <q-card style="min-width: 600px">
+<!--    <q-dialog v-model="showDialog">-->
+<!--        <q-card style="min-width: 600px">-->
+<!--            <q-card-section>-->
+<!--                <div class="text-lg font-bold">Request Document Update</div>-->
+
+
+<!--            </q-card-section>-->
+
+<!--            <q-card-section>-->
+<!--                &lt;!&ndash; Document Type Select &ndash;&gt;-->
+<!--                <div-->
+<!--                    v-for="dt in documentTypes"-->
+<!--                    :key="dt.id"-->
+<!--                    class="mb-4"-->
+<!--                >-->
+<!--                    <div class="font-semibold mb-1">{{ dt.name }}</div>-->
+<!--                    <q-file-->
+<!--                        v-model="form.files[dt.id]"-->
+<!--                        filled-->
+<!--                        dense-->
+<!--                        label="Choose file"-->
+<!--                        accept=".pdf,.jpg,.jpeg,.png"-->
+<!--                    />-->
+<!--                </div>-->
+<!--            </q-card-section>-->
+
+<!--            <q-card-actions align="right">-->
+<!--                <q-btn flat label="Cancel" color="grey" v-close-popup />-->
+<!--                <q-btn-->
+<!--                    label="Submit Request"-->
+<!--                    color="primary"-->
+<!--                    :loading="form.processing"-->
+<!--                    :disable="isSubmitDisabled"-->
+<!--                    @click="submit"-->
+<!--                />-->
+<!--            </q-card-actions>-->
+<!--        </q-card>-->
+<!--    </q-dialog>-->
+
+    <q-dialog v-model="showDialog" persistent>
+        <q-card
+            class="q-pa-md"
+            style="width: 90vw; max-width: 600px"
+        >
+            <!-- Header -->
             <q-card-section>
-                <div class="text-lg font-bold">Request Document Update</div>
-
-
+                <div class="text-h6 text-weight-bold text-primary">
+                    Request Document Update
+                </div>
             </q-card-section>
 
+            <!-- File Inputs -->
             <q-card-section>
-                <!-- Document Type Select -->
                 <div
                     v-for="dt in documentTypes"
                     :key="dt.id"
-                    class="mb-4"
+                    class="column"
                 >
-                    <div class="font-semibold mb-1">{{ dt.name }}</div>
+                    <div class="text-subtitle2 text-weight-medium q-mb-xs">{{ dt.name }}</div>
                     <q-file
                         v-model="form.files[dt.id]"
                         filled
@@ -211,7 +254,8 @@
                 </div>
             </q-card-section>
 
-            <q-card-actions align="right">
+            <!-- Actions -->
+            <q-card-actions align="right" class="q-pt-none">
                 <q-btn flat label="Cancel" color="grey" v-close-popup />
                 <q-btn
                     label="Submit Request"
@@ -223,6 +267,7 @@
             </q-card-actions>
         </q-card>
     </q-dialog>
+
 </template>
 
 <script setup>
