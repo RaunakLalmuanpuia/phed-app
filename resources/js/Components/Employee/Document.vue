@@ -239,7 +239,7 @@
             <!-- File Inputs -->
             <q-card-section>
                 <div
-                    v-for="dt in documentTypes"
+                    v-for="dt in filteredDocumentTypes"
                     :key="dt.id"
                     class="column"
                 >
@@ -290,6 +290,13 @@ const filteredDocuments = computed(() => {
         );
     });
 });
+
+const filteredDocumentTypes = computed(() => {
+    return props.documentTypes.filter(
+        dt => !dt.name.toLowerCase().includes("mr sheet")
+    );
+});
+
 
 
 // Computed property to check if at least one file is uploaded
