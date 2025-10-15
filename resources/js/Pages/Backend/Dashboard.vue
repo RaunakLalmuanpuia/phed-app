@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div v-if="!isAdmin" class="col-xs-12 col-sm-3">
-                <div class="scheme-card q-pa-md count-scheme cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.deleted'))">
+                <div class="scheme-card q-pa-md count-scheme cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.manager.scheme'))">
                     <div class="title-scheme">Scheme</div>
                     <div class="text-caption caption-sm">Employment Type</div>
                     <div class="flex items-center">
@@ -76,7 +76,7 @@
 
 
             <div v-if="isAdmin" class="col-xs-12 col-sm-3">
-                <div class="scheme-card q-pa-md count-scheme cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.deleted'))">
+                <div class="scheme-card q-pa-md count-scheme cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.scheme'))">
                     <div class="title-scheme">Scheme</div>
                     <div class="text-caption caption-sm">Employment Type</div>
                     <div class="flex items-center">
