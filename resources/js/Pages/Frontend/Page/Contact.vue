@@ -11,6 +11,7 @@
                 <p><strong>Phone:</strong> 0389-2322244 </p>
                 <p><strong>Email:</strong> <a href="mailto:eincphedmz@gmail.com" class="text-blue-500 hover:underline">eincphedmz@gmail.com</a></p>
                 <!--                <p><strong>Website:</strong> <a href="https://tax.mizoram.gov.in" class="text-blue-500 hover:underline" target="_blank">tax.mizoram.gov.in</a></p>-->
+                <p><strong>Website:</strong> <a href="https://phed.mizoram.gov.in" class="text-blue-500 hover:underline" target="_blank">phed.mizoram.gov.in</a></p>
                 <p><strong>Office Hours:</strong> Monday to Friday, 9:30 AM – 5:00 PM</p>
             </div>
 
