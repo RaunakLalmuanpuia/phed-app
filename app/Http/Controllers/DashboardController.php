@@ -14,9 +14,10 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
-        $totalEmployees = Employee::where('employment_type', '!=', 'Deleted')->whereNull('scheme_id')->count();
+        $totalEmployees = Employee::where('employment_type', '!=', 'Deleted')->count();
         $peCount = Employee::where('employment_type', 'PE')->count();
         $mrCount = Employee::where('employment_type', 'MR')->whereNull('scheme_id')->count();
+        $schemeCount = Employee::where('employment_type', '!=', 'Deleted')->whereNotNull('scheme_id')->count();
         $deletedCount = Employee::where('employment_type', 'Deleted')->count();
 
         $notifications = [
@@ -55,6 +56,7 @@ class DashboardController extends Controller
             'totalEmployees' => $totalEmployees,
             'peCount' => $peCount,
             'mrCount' => $mrCount,
+            'schemeCount' => $schemeCount,
             'deletedCount' => $deletedCount,
             'notifications' => $notifications,
         ]);

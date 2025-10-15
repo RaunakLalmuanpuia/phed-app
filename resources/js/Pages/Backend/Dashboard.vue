@@ -65,6 +65,18 @@
                 </div>
             </div>
 
+
+            <div v-if="isAdmin" class="col-xs-12 col-sm-3">
+                <div class="scheme-card q-pa-md count-scheme cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.deleted'))">
+                    <div class="title-scheme">Scheme</div>
+                    <div class="text-caption caption-sm">Employment Type</div>
+                    <div class="flex items-center">
+                        <div class="count-scheme">{{ schemeCount }}</div>
+                        <div class="caption q-ml-md">Employees</div>
+                    </div>
+                </div>
+            </div>
+
             <div v-if="isAdmin" class="col-xs-12 col-sm-3">
                 <div class="deletion-card q-pa-md count-red cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.deleted'))">
                     <div class="title-red">Deleted</div>
@@ -136,7 +148,7 @@ import { BarChart, PieChart } from 'vue-chart-3'
 import {usePage} from "@inertiajs/vue3";
 
 defineOptions({layout:BackendLayout})
-const props=defineProps(['totalEmployees','peCount','mrCount','deletedCount','notifications'])
+const props=defineProps(['totalEmployees','peCount','mrCount','schemeCount','deletedCount','notifications'])
 
 // Dummy data for employee skill categories
 const skillCategoryData = {
@@ -209,6 +221,13 @@ const isReviewer = computed(() => !!usePage().props.roles?.find(item => item ===
     background-color: #fae1e1;
 }
 
+
+
+.scheme-card{
+    padding: 18px;
+    background-color: #faf2e1;
+}
+
 .notification-card{
     padding: 18px;
     background-color: #9eead6;
@@ -235,6 +254,18 @@ const isReviewer = computed(() => !!usePage().props.roles?.find(item => item ===
     text-align: left;
     color: #1266ed;
 }
+
+.count-scheme{
+    font-size: 36px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: left;
+    color: #d3b11f;
+}
+
 .count-red{
     font-size: 36px;
     font-weight: 600;
@@ -289,6 +320,14 @@ const isReviewer = computed(() => !!usePage().props.roles?.find(item => item ===
     font-weight: bold;
     text-align: left;
     color: #ed1224;
+}
+
+
+.title-scheme{
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+    color: #d3b11f;
 }
 
 
