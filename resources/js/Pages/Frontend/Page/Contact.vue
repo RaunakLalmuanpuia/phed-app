@@ -3,7 +3,7 @@
         <h1 class="q-ma-none stitle">Contact Us </h1>
 
         <div class="space-y-8 ">
-            <!-- Mizoram State e-Governance Society -->
+            <!-- Public Health Engineering Department -->
             <div class="border-b pb-4" style="padding-top: 15px">
                 <h2 class="q-ma-none stitle">Establishment Cell, Engineer-in-Chief Office</h2>
                 <h2 class="q-ma-none stitle">Public Health Engineering Department,  Government of Mizoram</h2>
@@ -15,7 +15,7 @@
                 <p><strong>Office Hours:</strong> Monday to Friday, 9:30 AM – 5:00 PM</p>
             </div>
 
-            <!-- Taxation Department -->
+            <!-- Mizoram State e-Governance Society -->
             <div style="padding-top: 15px">
                 <h2 class="q-ma-none stitle">Mizoram State e-Governance Society (MSeGS)</h2>
                 <p class="text-gray-600">Old Secretariat building - I, Treasury Square
