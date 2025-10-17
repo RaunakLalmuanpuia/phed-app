@@ -76,6 +76,17 @@
                                 download
                                 title="Download Document"
                             />
+                            <q-btn
+                                v-if="canRequestDocumentDelete"
+                                icon="delete_outline"
+                                :disable="latestDocumentDeleteRequestPending"
+                                flat
+                                dense
+                                round
+                                color="negative"
+                                title="Request Delete"
+                                @click="requestDeleteDocument(doc)"
+                            />
                         </td>
                     </tr>
                     <tr v-if="filteredDocuments.length === 0">
@@ -88,6 +99,7 @@
         <q-separator/>
 
         <q-card-section>
+            <div class="stitle text-lg font-bold q-mb-md">Document Update Request</div>
             <!-- Empty State -->
             <div
                 v-if="data.document_request.length === 0"
@@ -183,46 +195,79 @@
                 </q-card>
             </div>
         </q-card-section>
+
+
+        <q-card-section>
+            <div class="stitle text-lg font-bold q-mb-md">Document Delete Request</div>
+            <!-- Empty State -->
+            <div
+                v-if="data.document_delete_request.length === 0"
+                class="text-grey-7 text-center q-pa-md italic"
+            >
+                No delete requests found.
+            </div>
+
+            <!-- Requests List -->
+            <div v-else class="flex flex-col gap-6">
+                <q-card
+                    v-for="req in data.document_delete_request"
+                    :key="req.id"
+                    class="rounded-xl border border-gray-100 hover:shadow-md transition duration-200"
+                >
+                    <q-card-section>
+                        <!-- Header Info -->
+                        <div class="flex flex-wrap justify-between items-center mb-4">
+                            <div>
+                                <b class="text-gray-600">Status:</b>
+                                <span
+                                    class="ml-1 font-medium capitalize"
+                                    :class="{
+                          'text-yellow-600': req.approval_status === 'pending',
+                          'text-green-600': req.approval_status === 'approved',
+                          'text-red-600': req.approval_status === 'rejected'
+                        }"
+                                >
+                        {{ req.approval_status }}
+                    </span>
+                            </div>
+                            <div class="text-gray-600">
+                                <b>Requested On:</b> {{ formatDate(req.request_date) }}
+                            </div>
+                        </div>
+
+                        <!-- Document Details in one line -->
+                        <div class="text-gray-700">
+                            <b>Document:</b> {{ req.document_type_name || 'N/A' }}
+                        </div>
+                    </q-card-section>
+
+                    <!-- Actions (only when pending) -->
+                    <q-card-actions
+                        align="right"
+                        v-if="req.approval_status === 'pending' && canApproveDocumentDelete"
+                        class="px-4 pb-4"
+                    >
+                        <q-btn
+                            label="Approve"
+                            color="positive"
+                            unelevated
+                            class="rounded-lg"
+                            @click="approveDeleteRequest(req.id)"
+                        />
+                        <q-btn
+                            label="Reject"
+                            color="negative"
+                            flat
+                            class="rounded-lg"
+                            @click="rejectDeleteRequest(req.id)"
+                        />
+                    </q-card-actions>
+                </q-card>
+            </div>
+
+        </q-card-section>
+
     </q-card>
-
-<!--    <q-dialog v-model="showDialog">-->
-<!--        <q-card style="min-width: 600px">-->
-<!--            <q-card-section>-->
-<!--                <div class="text-lg font-bold">Request Document Update</div>-->
-
-
-<!--            </q-card-section>-->
-
-<!--            <q-card-section>-->
-<!--                &lt;!&ndash; Document Type Select &ndash;&gt;-->
-<!--                <div-->
-<!--                    v-for="dt in documentTypes"-->
-<!--                    :key="dt.id"-->
-<!--                    class="mb-4"-->
-<!--                >-->
-<!--                    <div class="font-semibold mb-1">{{ dt.name }}</div>-->
-<!--                    <q-file-->
-<!--                        v-model="form.files[dt.id]"-->
-<!--                        filled-->
-<!--                        dense-->
-<!--                        label="Choose file"-->
-<!--                        accept=".pdf,.jpg,.jpeg,.png"-->
-<!--                    />-->
-<!--                </div>-->
-<!--            </q-card-section>-->
-
-<!--            <q-card-actions align="right">-->
-<!--                <q-btn flat label="Cancel" color="grey" v-close-popup />-->
-<!--                <q-btn-->
-<!--                    label="Submit Request"-->
-<!--                    color="primary"-->
-<!--                    :loading="form.processing"-->
-<!--                    :disable="isSubmitDisabled"-->
-<!--                    @click="submit"-->
-<!--                />-->
-<!--            </q-card-actions>-->
-<!--        </q-card>-->
-<!--    </q-dialog>-->
 
     <q-dialog v-model="showDialog" persistent>
         <q-card
@@ -274,7 +319,7 @@
 import {computed, ref, watch} from "vue";
 import { useForm } from "@inertiajs/vue3";
 import {useQuasar} from "quasar";
-const props=defineProps(['data', 'office','documentTypes','canDeleteDocument','canApproveDocumentEdit','canRequestDocumentEdit']);
+const props=defineProps(['data', 'office','documentTypes','canDeleteDocument','canApproveDocumentEdit','canRequestDocumentEdit', 'canRequestDocumentDelete','canApproveDocumentDelete']);
 const $q = useQuasar();
 const search = ref('')
 const showDialog = ref(false);
@@ -319,9 +364,17 @@ const latestRequestPending = computed(() =>
     props.data.document_request?.slice(-1)[0]?.approval_status === 'pending'
 );
 
+const latestDocumentDeleteRequestPending = computed(() =>
+    props.data.document_delete_request?.slice(-1)[0]?.approval_status === 'pending'
+);
+
 const form = useForm({
     files: {} // { [document_type_id]: File }
 });
+
+const deleteForm = useForm({
+    document_id:''
+})
 
 const submit = () => {
     form.post(route("document.request", props.data), {
@@ -428,6 +481,54 @@ const deleteDocument = (doc) => {
         })
     })
 }
+const requestDeleteDocument = (doc) => {
+    $q.dialog({
+        title: 'Confirm Delete Request',
+        message: `Do you want to request deletion of "${doc.type?.name}"?`,
+        cancel: true,
+        persistent: true
+    }).onOk(() => {
+        deleteForm.document_id = doc.id; // set the form field first
+
+        deleteForm.post(route('document.requestDelete', props.data), {
+            onStart: () => $q.loading.show(),
+            onFinish: () => $q.loading.hide(),
+            onSuccess: () => {
+                $q.notify({
+                    type: 'positive',
+                    message: 'Delete request submitted successfully.'
+                });
+                deleteForm.reset();
+            },
+            onError: (errors) => {
+                Object.values(errors).forEach((error) => {
+                    $q.notify({ type: 'negative', message: error });
+                });
+            }
+        });
+    });
+};
+
+const approveDeleteRequest = (id) => {
+    deleteForm.post(route('document.approveDelete', id), {
+        onStart: () => $q.loading.show(),
+        onFinish: () => $q.loading.hide(),
+        onSuccess: () => {
+            $q.notify({ type: 'positive', message: 'Delete request approved and document deleted.' });
+        },
+    });
+};
+
+const rejectDeleteRequest = (id) => {
+    deleteForm.post(route('document.rejectDelete', id), {
+        onStart: () => $q.loading.show(),
+        onFinish: () => $q.loading.hide(),
+        onSuccess: () => {
+            $q.notify({ type: 'info', message: 'Delete request rejected.' });
+        },
+    });
+};
+
 </script>
 
 <style scoped>

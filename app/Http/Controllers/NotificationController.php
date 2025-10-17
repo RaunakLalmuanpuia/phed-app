@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DocumentDeleteRequest;
 use App\Models\DocumentEditRequest;
 use App\Models\EditRequest;
 use App\Models\TransferRequest;
@@ -114,11 +115,33 @@ class NotificationController extends Controller
             })
             ->toArray();
 
+        $documentDeleteRequests = DocumentDeleteRequest::with('employee.office')
+            ->when($officeIds, function ($q) use ($officeIds) {
+                $q->whereHas('employee.office', function ($q) use ($officeIds) {
+                    $q->whereIn('offices.id', $officeIds);
+                });
+            })
+            ->whereIn('approval_status', $statusFilter)
+            ->get()
+            ->map(function ($req) {
+                return [
+                    'id' => "edit-" . $req->id,
+                    'type' => 'Document Delete Request',
+                    'employee_name' => $req->employee->name,
+                    'employee_id' => $req->employee->id,
+                    'office' => $req->employee->office->name ?? '-',
+                    'created_at' => $req->request_date,
+                    'status' => $req->approval_status,
+                ];
+            })
+            ->toArray();
+
         // 🔹 Merge all and sort
         $notifications = collect($editRequests)
             ->merge($transferRequests)
             ->merge($deletionRequests)
             ->merge($documentUpdateRequests)
+            ->merge($documentDeleteRequests)
             ->sortByDesc('created_at')
             ->values()
             ->all();
@@ -178,6 +201,10 @@ class NotificationController extends Controller
                     ->count();
 
                 $notificationCount += \App\Models\DocumentEditRequest::whereIn('approval_status', $statusFilter)
+                    ->where($filterQuery)
+                    ->count();
+
+                $notificationCount += \App\Models\DocumentDeleteRequest::whereIn('approval_status', $statusFilter)
                     ->where($filterQuery)
                     ->count();
             }

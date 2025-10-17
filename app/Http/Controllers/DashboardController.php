@@ -25,6 +25,7 @@ class DashboardController extends Controller
             'transferRequests' => 0,
             'deletionRequests' => 0,
             'documentEditRequests' => 0,
+            'documentDeleteRequests'=>0,
         ];
 
         if ($user && $user->hasRole('Admin')) {
@@ -47,6 +48,9 @@ class DashboardController extends Controller
                 ->count();
 
             $notifications['documentEditRequests'] = \App\Models\DocumentEditRequest::whereIn('approval_status', $statusFilter)
+                ->where($filterQuery)
+                ->count();
+            $notifications['documentDeleteRequests'] = \App\Models\DocumentDeleteRequest::whereIn('approval_status', $statusFilter)
                 ->where($filterQuery)
                 ->count();
         }

@@ -255,6 +255,11 @@ Route::group(['middleware'=>'auth','prefix' => 'document'], function () {
     Route::post('reject/{model}', [DocumentController::class, 'reject'])->middleware('can:approve-document-edit')->name('document.reject');
     Route::post('update/{model}', [DocumentController::class, 'updateEmployeeDocument'])->middleware('can:update-document')->name('document.update');
     Route::delete('{model}', [DocumentController::class, 'deleteEmployeeDocument'])->middleware('can:delete-document')->name('document.destroy');
+
+    Route::post('{model}/request-delete', [DocumentController::class, 'requestDelete'])->name('document.requestDelete');
+    Route::post('delete/{model}/approve', [DocumentController::class, 'approveDelete'])->name('document.approveDelete');
+    Route::post('delete/{model}/reject', [DocumentController::class, 'rejectDelete'])->name('document.rejectDelete');
+
 });
 
 

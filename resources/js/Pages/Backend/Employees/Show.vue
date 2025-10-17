@@ -258,7 +258,8 @@
 
 
                         <Document v-if="tab === 'document'" :data="data"  :documentTypes="documentTypes" :canDeleteDocument="canDeleteDocument"
-                                  :canApproveDocumentEdit="canApproveDocumentEdit" :canRequestDocumentEdit="canRequestDocumentEdit"/>
+                                  :canApproveDocumentEdit="canApproveDocumentEdit" :canRequestDocumentEdit="canRequestDocumentEdit"
+                                    :canRequestDocumentDelete = 'canRequestDocumentDelete' :canApproveDocumentDelete="canApproveDocumentDelete"/>
 
                         <EditRequest v-if="tab === 'edit'" :data="data" />
                         <TransferRequest v-if="tab === 'transfer_request'" :data="data" :office="office" />
@@ -327,7 +328,7 @@ defineOptions({layout:BackendLayout})
 
 const props=defineProps(['data','office','documentTypes','canCreate','canEdit','canDelete','canCreateRemuneration','canCreateTransfer','canDeleteDocument',
     'canDeleteTransfer','canCreateEngagementCard', 'canDownloadEngagementCard','canDeleteEngagementCard','canRequestEdit','canRequestDelete','canRequestTransfer',
-    'canApproveEdit','canApproveTransfer','canApproveDelete','canEditDelete','canRequestDocumentEdit','canApproveDocumentEdit']);
+    'canApproveEdit','canApproveTransfer','canApproveDelete','canEditDelete','canRequestDocumentEdit','canApproveDocumentEdit', 'canRequestDocumentDelete','canApproveDocumentDelete']);
 
 const tab = ref('document')
 

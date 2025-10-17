@@ -30,6 +30,11 @@ class Employee extends Model
         return $this->hasMany(DocumentEditRequest::class);
     }
 
+
+    public function documentDeleteRequest(): HasMany {
+        return $this->hasMany(DocumentDeleteRequest::class);
+    }
+
     public function transfers(): HasMany {
         return $this->hasMany(Transfer::class);
     }

@@ -517,6 +517,7 @@ class EmployeeController extends Controller
 
     public function show(Request $request, Employee $model)
     {
+
         $user = auth()->user();
         abort_if(!$user->hasPermissionTo('view-employee'), 403, 'Access Denied');
         $office = Office::all();
@@ -524,7 +525,7 @@ class EmployeeController extends Controller
         return inertia('Backend/Employees/Show', [
             'data' => $model->load(['office', 'documents.type', 'transfers.oldOffice', 'transfers.newOffice', 'scheme',
                 'deletionDetail', 'deletionRequests', 'remunerationDetail', 'engagementCard', 'editRequests.attachments.type',
-                'transferRequests.currentOffice', 'transferRequests.requestedOffice', 'documentRequest.files.documentType']),
+                'transferRequests.currentOffice', 'transferRequests.requestedOffice', 'documentRequest.files.documentType','documentDeleteRequest.document']),
             'office' => $office,
             'documentTypes' => $documentTypes,
             'canDelete' => $user->can('delete-employee'),
@@ -553,6 +554,10 @@ class EmployeeController extends Controller
 
             'canCreateTransfer' => $user->can('transfer-employee'),
             'canDeleteTransfer' => $user->can('delete-transfer'),
+
+
+            'canRequestDocumentDelete' => $user->can('request-document-delete'),
+            'canApproveDocumentDelete' => $user->can('approve-document-delete'),
         ]);
     }
 

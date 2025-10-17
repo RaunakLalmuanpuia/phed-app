@@ -99,7 +99,7 @@
 
 
 
-            <div v-if="isAdmin || isReviewer" class="col-xs-12 col-sm-6">
+            <div v-if="isAdmin || isReviewer" class="col-xs-12 col-sm-8">
                 <div class="notification-card cursor-pointer hover:opacity-80" @click="$inertia.get(route('notification.list'))">
                     <div class="title-notification mb-2">Notifications</div>
                     <div class="text-caption caption-sm mb-4">Request Types</div>
@@ -121,6 +121,12 @@
                         <div class="flex flex-col items-center mx-2">
                             <strong class="count-notification">{{ notifications.documentEditRequests }}</strong>
                             <span class="caption text-center">Document Edit <br> Requests</span>
+                        </div>
+
+                        <!-- Document Delete Requests -->
+                        <div class="flex flex-col items-center mx-2">
+                            <strong class="count-notification">{{ notifications.documentDeleteRequests }}</strong>
+                            <span class="caption text-center">Document Delete <br> Requests</span>
                         </div>
 
                         <!-- Deletion Requests -->

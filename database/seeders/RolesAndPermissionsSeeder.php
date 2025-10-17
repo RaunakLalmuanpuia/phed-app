@@ -22,7 +22,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $permissions = [
             'request-edit', 'request-delete', 'request-transfer','request-document-edit',
             'approve-edit', 'approve-delete', 'approve-transfer', 'approve-document-edit',
-            'transfer-employee','delete-transfer',
+            'transfer-employee','delete-transfer','request-document-delete','approve-document-delete',
             'view-allemployee','view-pe-employee','view-mr-employee','view-scheme-employee','view-deleted-employee','view-master-employee',
             'view-employee','create-employee','delete-employee','edit-employee','edit-delete','delete-document',
             'view-anyuser','view-user','create-user','delete-user','edit-user',

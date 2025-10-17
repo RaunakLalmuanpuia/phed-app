@@ -6,6 +6,7 @@ use App\Models\Document;
 use App\Models\DocumentEditRequest;
 use App\Models\DocumentType;
 use App\Models\Employee;
+use App\Models\DocumentDeleteRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -212,6 +213,74 @@ class DocumentController extends Controller
         return redirect()->back()->with('success', 'Document deleted successfully.');
 
 
+    }
+
+    public function requestDelete(Request $request, Employee $model)
+    {
+
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('request-document-delete'), 403, 'Access Denied');
+
+        $validated = $request->validate([
+            'document_id' => ['required', 'exists:documents,id'],
+        ]);
+
+        // Load the document with its type
+        $document = Document::with('type')->findOrFail($validated['document_id']);
+
+        // Prevent multiple pending delete requests for same document
+        $alreadyPending = DocumentDeleteRequest::where('document_id', $validated['document_id'])
+            ->where('approval_status', 'pending')
+            ->exists();
+
+        if ($alreadyPending) {
+            return redirect()->back()->with('warning', 'Delete request already pending for this document.');
+        }
+
+        DocumentDeleteRequest::create([
+            'employee_id' => $model->id,
+            'document_type_name' => $document->type,
+            'document_id' => $validated['document_id'],
+            'request_date' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Document delete request submitted!');
+    }
+
+    public function approveDelete(Request $request, DocumentDeleteRequest $model)
+    {
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('approve-document-delete'), 403, 'Access Denied');
+
+        $document = $model->document;
+
+        if ($document && Storage::disk('public')->exists($document->path)) {
+            Storage::disk('public')->delete($document->path);
+        }
+
+        $document->delete();
+
+        $model->update([
+            'approval_status' => 'approved',
+            'approval_date' => now(),
+        ]);
+
+
+        return redirect()->back()->with('success', 'Document deleted successfully.');
+    }
+
+
+    public function rejectDelete(Request $request, DocumentDeleteRequest $model)
+    {
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('approve-document-delete'), 403, 'Access Denied');
+
+        $model->update([
+            'approval_status' => 'rejected',
+            'approval_date' => now(),
+        ]);
+
+        return redirect()->back()->with('info', 'Document delete request rejected.');
     }
 
 
