@@ -482,6 +482,14 @@ const deleteDocument = (doc) => {
     })
 }
 const requestDeleteDocument = (doc) => {
+    if (doc.type?.name === 'MR Sheet/A-Roll') {
+        $q.notify({
+            type: 'negative',
+            message: 'Delete request is not allowed for MR Sheet/A-Roll.'
+        });
+        return;
+    }
+
     $q.dialog({
         title: 'Confirm Delete Request',
         message: `Do you want to request deletion of "${doc.type?.name}"?`,
