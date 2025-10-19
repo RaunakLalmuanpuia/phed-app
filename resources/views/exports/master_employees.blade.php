@@ -1,7 +1,7 @@
 <table>
     <thead>
     <tr>
-        <th colspan="13" style="text-align: center; font-weight: bold; font-size: 16px;">
+        <th colspan="22" style="text-align: center; font-weight: bold; font-size: 16px;">
             Master Employees List
         </th>
     </tr>
@@ -16,6 +16,9 @@
         <th>Post/Work Assigned</th>
         <th>Is Scheme</th>
         <th>Is Deleted</th>
+        @foreach($documentTypes as $docType)
+            <th>{{ $docType->name }}</th>
+        @endforeach
     </tr>
     </thead>
     <tbody>
@@ -31,6 +34,10 @@
                 // Case 3: Fallback
                 $employmentType = $employee->employment_type ;
             }
+
+            // Get uploaded document type IDs
+        $uploadedTypes = $employee->documents->pluck('document_type_id')->toArray();
+
         @endphp
 
         <tr>
@@ -46,6 +53,10 @@
             <td>{{ $employee->post_assigned }}</td>
             <td>{{ $employee->scheme_id ? 'Yes' : 'No' }}</td>
             <td> {{ $employee->employment_type === 'Deleted' ? 'Yes' : 'No' }}</td>
+            @foreach($documentTypes as $docType)
+                <td>{{ in_array($docType->id, $uploadedTypes) ? 'Yes' : 'No' }}</td>
+            @endforeach
+
         </tr>
     @endforeach
     </tbody>
