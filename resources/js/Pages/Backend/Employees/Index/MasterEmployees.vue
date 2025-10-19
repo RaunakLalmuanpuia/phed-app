@@ -147,9 +147,6 @@ const filters = ref({
 
 
 const getEmployeeType = (row) => {
-    if (row.employment_type === 'Deleted') {
-        return 'Deleted';
-    }
 
     // Workcharge → has designation AND date_of_retirement
     if (row.designation && row.date_of_retirement) {

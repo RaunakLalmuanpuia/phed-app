@@ -132,11 +132,7 @@
 
                 <template v-slot:body-cell-type="props">
                     <q-td :props="props">
-                        {{
-                            props.row.designation && props.row.designation !== 'null'
-                                ? 'Provisional'
-                                : 'Muster Roll'
-                        }}
+                        {{ getEmployeeType(props.row) }}
                     </q-td>
                 </template>
 
@@ -236,6 +232,21 @@ const filters = ref({
     reason : null,
 })
 
+const getEmployeeType = (row) => {
+
+    // Workcharge → has designation AND date_of_retirement
+    if (row.designation && row.date_of_retirement) {
+        return 'Work Charge';
+    }
+
+    // Provisional → has designation but no retirement date
+    if (row.designation && !row.date_of_retirement) {
+        return 'Provisional';
+    }
+
+    // Muster Roll → no designation
+    return 'Muster Roll';
+};
 
 const reasonOptions = [
     { label: 'Transfer', value: 'transfer' },

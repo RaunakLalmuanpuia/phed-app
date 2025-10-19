@@ -24,21 +24,25 @@
     <tbody>
     @foreach($employees as $employee)
         @php
-            if (!empty($employee->designation) && $employee->designation !== 'null') {
-                // Case 1: Has designation
+            // ✅ Apply combined logic
+            if (!empty($employee->designation) && !empty($employee->date_of_retirement)) {
+                // Case 1: Work Charge
+                $employmentType = 'Work Charge';
+            } elseif (!empty($employee->designation) && empty($employee->date_of_retirement)) {
+                // Case 2: Provisional
                 $employmentType = 'Provisional';
-            } elseif (!empty($employee->post_assigned) && $employee->post_assigned !== 'null') {
-                // Case 2: No designation, but has post assigned
+            } elseif (empty($employee->designation) && !empty($employee->post_assigned)) {
+                // Case 3: Muster Roll (Based on post_assigned)
                 $employmentType = 'Muster Roll';
             } else {
-                // Case 3: Fallback
-                $employmentType = $employee->employment_type ;
+                // Case 4: Fallback
+                $employmentType = $employee->employment_type;
             }
 
-            // Get uploaded document type IDs
-        $uploadedTypes = $employee->documents->pluck('document_type_id')->toArray();
-
+            // ✅ Get uploaded document type IDs (keeping your second logic)
+            $uploadedTypes = $employee->documents->pluck('document_type_id')->toArray();
         @endphp
+
 
         <tr>
             <td>{{ $employee->name }}</td>

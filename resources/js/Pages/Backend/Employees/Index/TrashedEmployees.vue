@@ -69,7 +69,7 @@
 
                 <template v-slot:body-cell-type="props">
                     <q-td :props="props">
-                        {{ props.row.designation ? 'Provisional' : 'Muster Roll' }}
+                        {{ getEmployeeType(props.row) }}
                     </q-td>
                 </template>
 
@@ -156,6 +156,23 @@ const pagination = ref({
     rowsPerPage: 5,
     rowsNumber: 0
 })
+
+const getEmployeeType = (row) => {
+
+    // Workcharge → has designation AND date_of_retirement
+    if (row.designation && row.date_of_retirement) {
+        return 'Work Charge';
+    }
+
+    // Provisional → has designation but no retirement date
+    if (row.designation && !row.date_of_retirement) {
+        return 'Provisional';
+    }
+
+    // Muster Roll → no designation
+    return 'Muster Roll';
+};
+
 
 
 const handleSearch = () => {
