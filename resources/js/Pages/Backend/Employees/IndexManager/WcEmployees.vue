@@ -3,41 +3,70 @@
 
         <div class="flex items-center justify-between q-pa-md bg-white">
             <div>
-                <div class="stitle">Master Employee List</div>
+                <div class="stitle">Work Charge Employee List: <q-chip square v-for="office in offices" :key="office.value" :label="office.label"/></div>
                 <q-breadcrumbs  class="text-dark">
                     <q-breadcrumbs-el class="cursor-pointer" @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
                     <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="goBack"/>
                 </q-breadcrumbs>
             </div>
+            <div class="q-gutter-sm">
+                <q-btn label="WC Summary" color="primary" @click="$inertia.get(route('summary.wc'))" />
+            </div>
         </div>
-        <br>
-        <q-card flat >
-            <q-table
-                flat
-                ref="tableRef"
-                title="Master Employees"
-                :rows="rows"
-                :columns="columns"
-                row-key="id"
-                v-model:pagination="pagination"
-                :loading="loading"
-                :filter="filters"
-                binary-state-sort
-                :rows-per-page-options="[5,10,15,30,50]"
-                @request="onRequest"
-            >
+        <br/>
 
-                <template v-slot:top-right>
+        <q-card flat bordered>
 
-                    <q-btn  label="Export" icon="desktop_windows" color="primary" @click="exportData"/>
+            <q-card-section>
+                <div class="text-subtitle1 text-weight-medium text-grey-8 q-mb-md">
+                    Search Filter
+                </div>
 
+                <div class="row q-col-gutter-md">
+
+                    <q-select
+                        label="Select Designation"
+                        class="col-12 col-sm-4"
+                        v-model="filters.designation"
+                        :options="designations"
+                        emit-value
+                        map-options
+                        outlined
+                        dense
+                        clearable
+                        @update:model-value="handleSearch"
+                    />
+
+                    <q-select
+                        label="Select Education Qln."
+                        class="col-12 col-sm-4"
+                        v-model="filters.education_qln"
+                        :options="educationQln"
+                        emit-value
+                        map-options
+                        outlined
+                        dense
+                        clearable
+                        @update:model-value="handleSearch"
+                    />
+                </div>
+            </q-card-section>
+
+            <q-separator />
+
+            <q-card-section class="row items-center justify-between q-gutter-md">
+                <div class="row q-gutter-sm col-12 col-sm justify-end">
+
+
+
+                    <q-btn label="Export" icon="desktop_windows" color="primary"   @click="exportData" />
                     <q-input
                         dense
                         outlined
-                        debounce="800"
-                        v-model="search"
+                        debounce="300"
+                        v-model="filters.search"
                         placeholder="Search"
-                        class="q-ml-sm col-12 col-sm-auto"
+                        class="col-12 col-sm-auto"
                         clearable
                         @update:model-value="handleSearch"
                     >
@@ -45,9 +74,22 @@
                             <q-icon name="search" />
                         </template>
                     </q-input>
+                </div>
+            </q-card-section>
 
-
-                </template>
+            <q-table
+                flat
+                ref="tableRef"
+                :rows="rows"
+                :columns="columns"
+                row-key="id"
+                v-model:pagination="pagination"
+                :loading="loading"
+                :filter="filters"
+                binary-state-sort
+                :rows-per-page-options="[1,7,15,30,50]"
+                @request="onRequest"
+            >
                 <!-- User Cell -->
                 <template v-slot:body-cell-employee="props">
                     <q-td :props="props">
@@ -62,7 +104,7 @@
                             <div>
                                 <div class="text-body1">{{ props.row.name }}</div>
                                 <div class="text-caption text-grey">{{ props.row.mobile }}</div>
-                                <div class="text-caption text-grey">{{ props.row.date_of_birth }}</div>
+                                <div class="text-caption text-grey">{{ formatDate(props.row.date_of_birth) }}</div>
                             </div>
                         </div>
                     </q-td>
@@ -70,31 +112,25 @@
 
 
 
-
-                <!-- Office Cell -->
                 <template v-slot:body-cell-office="props">
                     <q-td :props="props">
                         <q-chip color="primary" text-color="white" dense>{{ props.row.office?.name }}</q-chip>
                     </q-td>
                 </template>
 
-                <template v-slot:body-cell-type="props">
+
+                <template v-slot:body-cell-date_of_engagement="props">
                     <q-td :props="props">
-                        {{ getEmployeeType(props.row) }}
+                        {{ formatDate(props.row.date_of_engagement) }}
                     </q-td>
                 </template>
 
-                <template v-slot:body-cell-is_scheme="props">
+                <template v-slot:body-cell-date_of_retirement="props">
                     <q-td :props="props">
-                        {{ props.row.scheme_id ? 'Yes' : 'No' }}
+                        {{ formatDate(props.row.date_of_retirement) }}
                     </q-td>
                 </template>
 
-                <template v-slot:body-cell-is_deleted="props">
-                    <q-td :props="props">
-                        {{ props.row.employment_type === 'Deleted' ? 'Yes' : 'No' }}
-                    </q-td>
-                </template>
 
                 <!-- Actions Cell -->
                 <template v-slot:body-cell-actions="props">
@@ -108,7 +144,6 @@
                             @click="$inertia.get(route('employee.show',props.row.id))"
                             aria-label="Show user"
                         />
-
                     </q-td>
                 </template>
             </q-table>
@@ -119,52 +154,35 @@
 
 
 <script setup>
-import {onMounted, ref, watch} from 'vue';
+import {onMounted, ref} from 'vue';
 
 import BackendLayout from "@/Layouts/BackendLayout.vue";
 import {useQuasar} from "quasar";
+import useUtils from "@/Compositions/useUtils";
 
+const {formatDate} = useUtils();
 defineOptions({layout:BackendLayout})
 
-const props=defineProps(['office'])
+const props = defineProps(['offices', 'designations', 'educationQln',]);
+
 
 
 const columns = [
     { name: 'employee', label: 'Employee', align: 'left', field: 'employee', sortable: true },
-    { name: 'office', label: 'Office', align: 'left', field: 'office', sortable: true },
-    { name: 'type', label: 'Employment Type', align: 'left', field: 'type', sortable: true },
-    { name: 'designation', label: 'Designation', align: 'left', field: 'designation', sortable: true },
-    { name: 'post_assigned', label: 'Post/Work Assigned', align: 'left', field: 'post_assigned', sortable: true },
-    { name: 'is_scheme', label: 'Is Scheme', align: 'left', field: 'is_scheme', sortable: true },
-    { name: 'is_deleted', label: 'Is Deleted', align: 'left', field: 'is_deleted', sortable: true },
+    { name: 'designation', label: 'Designation', align: 'left', field: 'designation', sortable: false },
+    { name: 'date_of_engagement', label: 'Date of Joining', align: 'left', field: 'date_of_engagement', sortable: false },
+    { name: 'date_of_retirement', label: 'Date of Retirement', align: 'left', field: 'date_of_retirement', sortable: false },
+    { name: 'name_of_workplace', label: 'Workplace', align: 'left', field: 'name_of_workplace', sortable: false },
     { name: 'actions', label: 'Actions', align: 'center' },
 ];
 
 
 const filters = ref({
-    office: null,
-})
-
-
-const getEmployeeType = (row) => {
-    if (row.employment_type === 'Deleted') {
-        return 'Deleted';
-    }
-
-    // Workcharge → has designation AND date_of_retirement
-    if (row.designation && row.date_of_retirement) {
-        return 'Work Charge';
-    }
-
-    // Provisional → has designation but no retirement date
-    if (row.designation && !row.date_of_retirement) {
-        return 'Provisional';
-    }
-
-    // Muster Roll → no designation
-    return 'Muster Roll';
-};
-
+    office: [],
+    search: null,
+    designation: null,
+    education_qln: null,
+});
 
 const search = ref('')
 
@@ -176,26 +194,23 @@ const pagination = ref({
     sortBy: 'desc',
     descending: false,
     page: 1,
-    rowsPerPage: 50,
+    rowsPerPage: 5,
     rowsNumber: 0
 })
-
-
 const handleSearch = () => {
-    filters.value.search = search.value
     onRequest({
         pagination: pagination.value,
         filter: filters.value,
         search: filters.value.search
     })
 }
-function onRequest (props) {
-    const { page, rowsPerPage, sortBy, descending } = props.pagination
-    const filter = props.filter
-    const search = props.search
+function onRequest (prop) {
+    const { page, rowsPerPage, sortBy, descending } = prop.pagination
+    const filter = prop.filter
+    const search = prop.search
 
     loading.value = true
-    axios.get(route('employees.json-index-master'),{
+    axios.get(route('employees.json-manager-wc'),{
         params:{
             filter,
             page,
@@ -218,7 +233,36 @@ function onRequest (props) {
         })
         .finally(()=>loading.value=false)
 }
+const exportData = () => {
+    q.loading.show();
 
+    // Pick first office
+    const firstOffice = props.offices?.length ? props.offices[0] : null;
+
+    axios.get(
+        route('export.wc', firstOffice?.value),   // <-- pass ID only
+        { responseType: 'blob' }
+    )
+        .then((res) => {
+            const fileUrl = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement('a');
+            link.href = fileUrl;
+            link.setAttribute(
+                'download',
+                (firstOffice?.label || 'employees').replace(/\s+/g, '_') + '_wc_employees.xlsx'
+            );
+            link.click();
+        })
+        .catch((err) => {
+            q.notify({
+                type: 'negative',
+                message: err.response?.data?.message || 'Failed to download file',
+            });
+        })
+        .finally(() => {
+            q.loading.hide();
+        });
+};
 onMounted(() => {
     onRequest({pagination:pagination.value,
         filter:filters.value,
@@ -226,36 +270,9 @@ onMounted(() => {
     })
 })
 
-
-const exportData = () => {
-    q.loading.show(); // Show loading indicator (assuming you're using Quasar's loading plugin)
-
-    // Make a GET request to the URL with responseType as 'blob'
-    axios.get(route('export.master'), { responseType: 'blob' })
-        .then((res) => {
-            // Create an object URL from the response data and trigger a download
-            const fileUrl = window.URL.createObjectURL(new Blob([res.data]));
-            const link = document.createElement('a');
-            link.href = fileUrl;
-            link.setAttribute('download', Date.now() + '.xlsx'); // Set a dynamic file name
-            link.click();
-        })
-        .catch((err) => {
-            // Show an error notification if something goes wrong
-            q.notify({
-                type: 'negative',
-                message: err.response?.data?.message || 'Failed to download file',
-            });
-        })
-        .finally(() => {
-            q.loading.hide(); // Hide loading indicator
-        });
-};
-
 const goBack = () => {
     window.history.back()
 }
-
 
 </script>
 

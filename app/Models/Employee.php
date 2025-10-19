@@ -13,7 +13,7 @@ class Employee extends Model
     use SoftDeletes;
     //
     protected $fillable = ['office_id','avatar','employee_code','name','mobile','email','address','date_of_birth','parent_name','employment_type',
-        'educational_qln','technical_qln', 'designation','post_assigned','name_of_workplace','post_per_qualification','date_of_engagement','skill_category','skill_at_present','engagement_card_no','scheme_id'];
+        'educational_qln','technical_qln', 'designation','post_assigned','name_of_workplace','post_per_qualification','date_of_engagement','date_of_retirement','skill_category','skill_at_present','engagement_card_no','scheme_id'];
     public function office(): BelongsTo
     {
         return $this->belongsTo(Office::class);

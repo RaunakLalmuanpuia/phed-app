@@ -59,6 +59,87 @@ class SummaryController extends Controller
         ]);
     }
 
+    public function workChargeSummary(Request $request)
+    {
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('view-wc-summary'), 403, 'Access Denied');
+
+        // Step 1: Designation → Group mapping (predefined)
+        $designationGroups = [
+            'Junior Engineer'          => 'B',
+            'Overseer-II'              => 'B',
+            'Telephone Operator G-II'  => 'B',
+            'Trained/SA'               => 'C',
+            'Plumber'                  => 'C',
+            'Asst.Plumber'             => 'C',
+            'Pump Operator'            => 'C',
+            'Asst. Plant Operator'     => 'C',
+            'Asst. Operator'           => 'C',
+            'Asst. Mechanic'           => 'C',
+            'Mechanic G-III'           => 'C',
+            'Asst. Driller'            => 'C',
+            'Hand Pump Mechanic'       => 'C',
+            'Asst.Hand Pump Mechanic'  => 'C',
+            'Driver'                   => 'C',
+            'Telephone Operator G-III' => 'C',
+            'Asst. Telephone Operator' => 'C',
+            'Store Keeper'             => 'C',
+            'Electrician G-III'        => 'C',
+            'Carpenter'                => 'C',
+            'Khalasi'                  => 'D',
+            'Unskilled Work Assistant' => 'D',
+            'Water Chowkidar'          => 'D',
+            'Chowkidar'                => 'D',
+            'Conductor'                => 'D',
+            'Handyman'                 => 'D',
+        ];
+
+        // Step 2: Fetch all WC employees and offices
+        $offices = Office::select('id', 'name')
+            ->whereHas('employees', fn($q) => $q->where('employment_type', 'WC'))
+            ->with(['employees' => fn($q) => $q->where('employment_type', 'WC')
+                ->select('id', 'office_id', 'designation')])
+            ->get();
+
+        // Step 3: Find all unique WC designations from DB
+        $dbDesignations = Employee::where('employment_type', 'WC')
+            ->pluck('designation')
+            ->unique()
+            ->toArray();
+
+        // Step 4: Merge (so that missing designations also show up)
+        $allDesignations = array_unique(array_merge(array_keys($designationGroups), $dbDesignations));
+
+        // Step 5: Build table rows
+        $rows = collect($allDesignations)->map(function ($designation, $index) use ($offices, $designationGroups) {
+            $row = [
+                'sl' => $index + 1,
+                'name_of_post' => $designation,
+                'group' => $designationGroups[$designation] ?? '—', // default if not found
+            ];
+
+            $total = 0;
+            foreach ($offices as $office) {
+                $count = $office->employees
+                    ->where('designation', $designation)
+                    ->count();
+
+                $row[$office->name] = $count;
+                $total += $count;
+            }
+
+            $row['total'] = $total;
+            return $row;
+        })->values(); // reset index
+
+        return inertia('Backend/Summary/WorkCharge', [
+            'offices' => $offices->pluck('name')->toArray(),
+            'rows' => $rows->toArray(),
+        ]);
+    }
+
+
+
 //    public function musterRollSummary(Request $request){
 //        $user = $request->user();
 //        abort_if(!$user->hasPermissionTo('view-mr-summary'),403,'Access Denied');

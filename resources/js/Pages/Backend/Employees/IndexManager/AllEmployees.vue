@@ -13,6 +13,7 @@
             </div>
 
             <div class="q-gutter-sm">
+                <q-btn label="WC Summary" color="primary" @click="$inertia.get(route('summary.wc'))" />
                 <q-btn label="PE Summary" color="primary" @click="$inertia.get(route('summary.pe'))" />
                 <q-btn label="MR Summary" color="primary" @click="$inertia.get(route('summary.mr'))" />
             </div>
@@ -79,7 +80,20 @@
                                     label="Select Designation"
                                     class="col-12 col-sm-4"
                                     v-model="filters.designation"
-                                    :options="designations"
+                                    :options="designationsPe"
+                                    emit-value
+                                    map-options
+                                    outlined
+                                    dense
+                                    clearable
+                                    @update:model-value="handleSearch"
+                                />
+                                <q-select
+                                    v-if="filters.type === 'WC'"
+                                    label="Select Designation"
+                                    class="col-12 col-sm-4"
+                                    v-model="filters.designation"
+                                    :options="designationsWc"
                                     emit-value
                                     map-options
                                     outlined
@@ -102,10 +116,24 @@
                                 />
 
                                 <q-select
+                                    v-if="filters.type === 'WC'"
+                                    label="Select Education Qln."
+                                    class="col-12 col-sm-4"
+                                    v-model="filters.educational_qln"
+                                    :options="educationQlnWc"
+                                    emit-value
+                                    map-options
+                                    outlined
+                                    dense
+                                    clearable
+                                    @update:model-value="handleSearch"
+                                />
+
+                                <q-select
                                     v-if="filters.type === 'PE'"
                                     label="Select Education Qln."
                                     class="col-12 col-sm-4"
-                                    v-model="filters.education_qln_pe"
+                                    v-model="filters.educational_qln"
                                     :options="educationQlnPe"
                                     emit-value
                                     map-options
@@ -119,7 +147,7 @@
                                     v-if="filters.type === 'MR'"
                                     label="Select Education Qln."
                                     class="col-12 col-sm-4"
-                                    v-model="filters.education_qln_mr"
+                                    v-model="filters.educational_qln"
                                     :options="educationQlnMr"
                                     emit-value
                                     map-options
@@ -236,7 +264,7 @@ import useUtils from "@/Compositions/useUtils";
 const {formatDate} = useUtils();
 defineOptions({layout:BackendLayout})
 
-const props=defineProps(['offices','totalEmployees','peCount','mrCount','designations','educationQlnPe','educationQlnMr','skills'])
+const props=defineProps(['offices','totalEmployees','wcCount','peCount','mrCount','designationsPe','designationsWc','educationQlnWc','educationQlnPe','educationQlnMr','skills'])
 
 console.log(props.offices)
 
@@ -259,11 +287,11 @@ const cards = [
         bgColor: '#d6f3ff',
     },
     {
-        title: 'Muster Roll',
-        value: props.mrCount,
-        icon: 'how_to_reg',
-        iconColor: 'indigo-6',
-        bgColor: '#d7d9ff',
+        title: 'Work Charge',
+        value: props.wcCount,
+        icon: 'person',
+        iconColor: 'red-6',
+        bgColor: '#ffe1e1',
     },
     {
         title: 'Provisional',
@@ -272,6 +300,14 @@ const cards = [
         iconColor: 'orange-5',
         bgColor: '#ffe9d6',
     },
+    {
+        title: 'Muster Roll',
+        value: props.mrCount,
+        icon: 'how_to_reg',
+        iconColor: 'indigo-6',
+        bgColor: '#d7d9ff',
+    },
+
 
 ]
 
@@ -281,13 +317,13 @@ const filters = ref({
     skill: null,
     search:null,
     designation: null,
-    education_qln_pe: null,
-    education_qln_mr: null,
+    educational_qln: null,
 })
 
 const type = [
     { label: 'MR', value: 'MR' },
     { label: 'PE', value: 'PE' },
+    { label: 'WC', value: 'WC' },
 ]
 
 

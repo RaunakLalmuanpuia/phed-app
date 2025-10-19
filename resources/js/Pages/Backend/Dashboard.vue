@@ -13,6 +13,17 @@
                 </div>
             </div>
             <div v-if="!isAdmin" class="col-xs-12 col-sm-3">
+                <div class="purple-card q-pa-md count-purple cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.manager.wc'))">
+                    <div class="title-purple">Work Charge</div>
+                    <div class="text-caption caption-sm">Employment Type</div>
+                    <div class="flex items-center">
+                        <div class="count-purple">{{ wcCount }}</div>
+                        <div class="caption q-ml-md">Employees</div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="!isAdmin" class="col-xs-12 col-sm-3">
                 <div class="verification-card q-pa-md count-blue cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.manager.pe'))">
                     <div class="title-blue">Provisional</div>
                     <div class="text-caption caption-sm">Employment Type</div>
@@ -43,7 +54,20 @@
                 </div>
             </div>
 
-            <div v-if="isAdmin" class="col-xs-12 col-sm-3">
+            <div v-if="!isAdmin" class="col-xs-12 col-sm-3">
+                <div class="deletion-card q-pa-md count-red cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.manager.deleted'))">
+                    <div class="title-red">Deleted</div>
+                    <div class="text-caption caption-sm">Employment Type</div>
+                    <div class="flex items-center">
+                        <div class="count-red">{{ deletedCount }}</div>
+                        <div class="caption q-ml-md">Employees</div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div v-if="isAdmin || isReviewer" class="col-xs-12 col-sm-3">
                 <div class="dealing-card q-pa-md count-warning cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.all'))">
                     <div class="title-warning">Total Employees</div>
                     <div class="text-caption caption-sm">Current Count</div>
@@ -53,7 +77,18 @@
                     </div>
                 </div>
             </div>
-            <div v-if="isAdmin" class="col-xs-12 col-sm-3">
+
+            <div v-if="isAdmin || isReviewer" class="col-xs-12 col-sm-3">
+                <div class="purple-card q-pa-md count-purple cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.wc'))">
+                    <div class="title-purple">Work Charge</div>
+                    <div class="text-caption caption-sm">Employment Type</div>
+                    <div class="flex items-center">
+                        <div class="count-purple">{{ wcCount }}</div>
+                        <div class="caption q-ml-md">Employees</div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="isAdmin || isReviewer" class="col-xs-12 col-sm-3">
                 <div class="verification-card q-pa-md count-blue cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.pe'))">
                     <div class="title-blue">Provisional</div>
                     <div class="text-caption caption-sm">Employment Type</div>
@@ -63,7 +98,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="isAdmin" class="col-xs-12 col-sm-3">
+            <div v-if="isAdmin || isReviewer" class="col-xs-12 col-sm-3">
                 <div class="approval-card q-pa-md count-green cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.mr'))">
                     <div class="title-green">Muster Roll</div>
                     <div class="text-caption caption-sm">Employment Type</div>
@@ -75,7 +110,7 @@
             </div>
 
 
-            <div v-if="isAdmin" class="col-xs-12 col-sm-3">
+            <div v-if="isAdmin || isReviewer" class="col-xs-12 col-sm-3">
                 <div class="scheme-card q-pa-md count-scheme cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.scheme'))">
                     <div class="title-scheme">Scheme</div>
                     <div class="text-caption caption-sm">Employment Type</div>
@@ -86,7 +121,7 @@
                 </div>
             </div>
 
-            <div v-if="isAdmin" class="col-xs-12 col-sm-3">
+            <div v-if="isAdmin || isReviewer" class="col-xs-12 col-sm-3">
                 <div class="deletion-card q-pa-md count-red cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.deleted'))">
                     <div class="title-red">Deleted</div>
                     <div class="text-caption caption-sm">Employment Type</div>
@@ -99,7 +134,7 @@
 
 
 
-            <div v-if="isAdmin || isReviewer" class="col-xs-12 col-sm-8">
+            <div v-if="isAdmin || isReviewer" class="col-xs-12">
                 <div class="notification-card cursor-pointer hover:opacity-80" @click="$inertia.get(route('notification.list'))">
                     <div class="title-notification mb-2">Notifications</div>
                     <div class="text-caption caption-sm mb-4">Request Types</div>
@@ -163,7 +198,7 @@ import { BarChart, PieChart } from 'vue-chart-3'
 import {usePage} from "@inertiajs/vue3";
 
 defineOptions({layout:BackendLayout})
-const props=defineProps(['totalEmployees','peCount','mrCount','schemeCount','deletedCount','notifications'])
+const props=defineProps(['totalEmployees','wcCount','peCount','mrCount','schemeCount','deletedCount','notifications'])
 
 // Dummy data for employee skill categories
 const skillCategoryData = {
@@ -237,6 +272,10 @@ const isReviewer = computed(() => !!usePage().props.roles?.find(item => item ===
 }
 
 
+.purple-card{
+    padding: 18px;
+    background-color: #ecd2fc;
+}
 
 .scheme-card{
     padding: 18px;
@@ -252,6 +291,13 @@ const isReviewer = computed(() => !!usePage().props.roles?.find(item => item ===
     font-weight: 600;
     line-height: normal;
     color: #29ad3d;
+}
+
+.count-purple{
+    font-size: 36px;
+    font-weight: 600;
+    line-height: normal;
+    color: #a859d9;
 }
 .count-warning{
     font-size: 36px;
@@ -316,6 +362,12 @@ const isReviewer = computed(() => !!usePage().props.roles?.find(item => item ===
     font-weight: bold;
     text-align: left;
     color: #29ad3d;
+}
+.title-purple{
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+    color: #a859d9;
 }
 .title-warning{
     font-size: 24px;

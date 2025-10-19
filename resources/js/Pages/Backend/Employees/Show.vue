@@ -38,6 +38,8 @@
                                         ? 'Muster Roll Employee'
                                         : data?.employment_type?.trim() === 'PE'
                                           ? 'Provisional Employee'
+                                          : data?.employment_type?.trim() === 'WC'
+                                              ? 'Work Charge Employee'
                                           : 'Deleted Employee'"
                                     style="padding: 8px;"
                                     rounded
@@ -89,7 +91,7 @@
                                             <q-item-section  class="text-label">{{data?.technical_qln}}</q-item-section>
                                         </q-item>
 
-                                        <q-item v-if=" data?.employment_type?.trim() === 'PE' || (data?.designation && data?.designation !== 'null')">
+                                        <q-item v-if=" data?.employment_type?.trim() === 'PE' || data?.employment_type?.trim() === 'WC' || (data?.designation && data?.designation !== 'null')">
                                             <q-item-section side class="subtitle">Designation:</q-item-section>
                                             <q-item-section  class="text-label">{{data?.designation}}</q-item-section>
                                         </q-item>
@@ -121,7 +123,14 @@
                                             </q-item-section>
                                         </q-item>
 
-                                        <q-item v-if=" data?.employment_type?.trim() === 'PE' || (data?.designation && data?.designation !== 'null')">
+                                        <q-item v-if=" data?.employment_type?.trim() === 'WC' || (data?.date_of_retirement && data?.date_of_retirement !== 'null')">
+                                            <q-item-section side class="subtitle">Date of Retirement:</q-item-section>
+                                            <q-item-section class="text-label">
+                                                {{ formatDate(data?.date_of_retirement) || 'N/A' }}
+                                            </q-item-section>
+                                        </q-item>
+
+                                        <q-item v-if=" data?.employment_type?.trim() === 'PE' || (data?.engagement_card_no && data?.engagement_card_no !== 'null')">
                                             <q-item-section side class="subtitle">Engagement Card No. :</q-item-section>
                                             <q-item-section  class="text-label">{{data?.engagement_card_no}}</q-item-section>
                                         </q-item>

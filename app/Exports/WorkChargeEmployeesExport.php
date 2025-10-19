@@ -6,7 +6,7 @@ use App\Models\Employee;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 
-class AllEmployeesExport implements FromView
+class WorkChargeEmployeesExport implements FromView
 {
     protected $office;
 
@@ -17,10 +17,11 @@ class AllEmployeesExport implements FromView
 
     public function view(): View
     {
-        $employees = Employee::where('office_id', $this->office->id)->where('employment_type', '!=', 'Deleted')
-            ->whereNull('scheme_id')->get();
+        $employees = Employee::where('office_id', $this->office->id)
+            ->where('employment_type', 'WC')
+            ->get();
 
-        return view('exports.all_employees', [
+        return view('exports.work_charge_employees', [
             'office'     => $this->office,
             'employees'  => $employees,
         ]);

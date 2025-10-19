@@ -12,6 +12,7 @@
             </div>
 
             <div class="q-gutter-sm">
+                <q-btn label="WC Summary" color="primary" @click="$inertia.get(route('summary.wc'))"/>
                 <q-btn label="PE Summary" color="primary" @click="$inertia.get(route('summary.pe'))"/>
                 <q-btn label="MR Summary" color="primary" @click="$inertia.get(route('summary.mr'))"/>
             </div>
@@ -79,7 +80,20 @@
                                     label="Select Designation"
                                     class="col-12 col-sm-4"
                                     v-model="filters.designation"
-                                    :options="designations"
+                                    :options="designationsPe"
+                                    emit-value
+                                    map-options
+                                    outlined
+                                    dense
+                                    clearable
+                                    @update:model-value="handleSearch"
+                                />
+                                <q-select
+                                    v-if="filters.type === 'WC'"
+                                    label="Select Designation"
+                                    class="col-12 col-sm-4"
+                                    v-model="filters.designation"
+                                    :options="designationsWc"
                                     emit-value
                                     map-options
                                     outlined
@@ -235,7 +249,7 @@ import useUtils from "@/Compositions/useUtils";
 const {formatDate} = useUtils();
 defineOptions({layout: BackendLayout})
 
-const props = defineProps(['office', 'totalEmployees', 'peCount', 'mrCount', 'deletedCount', 'designations', 'skills', 'educationQlnPe', 'educationQlnMr'])
+const props = defineProps(['office', 'totalEmployees','wcCount', 'peCount', 'mrCount', 'deletedCount','designationsWc', 'designationsPe', 'skills', 'educationQlnPe', 'educationQlnMr'])
 
 
 const columns = [
@@ -257,11 +271,11 @@ const cards = [
         bgColor: '#d6f3ff',
     },
     {
-        title: 'Muster Roll',
-        value: props.mrCount,
-        icon: 'how_to_reg',
-        iconColor: 'indigo-6',
-        bgColor: '#d7d9ff',
+        title: 'Work Charge',
+        value: props.wcCount,
+        icon: 'person',
+        iconColor: 'red-6',
+        bgColor: '#ffe1e1',
     },
     {
         title: 'Provisional',
@@ -270,6 +284,14 @@ const cards = [
         iconColor: 'orange-5',
         bgColor: '#ffe9d6',
     },
+    {
+        title: 'Muster Roll',
+        value: props.mrCount,
+        icon: 'how_to_reg',
+        iconColor: 'indigo-6',
+        bgColor: '#d7d9ff',
+    },
+
 
 ]
 
@@ -284,6 +306,7 @@ const filters = ref({
 const type = [
     {label: 'MR', value: 'MR'},
     {label: 'PE', value: 'PE'},
+    {label: 'WC', value: 'WC'},
 ]
 
 

@@ -15,6 +15,7 @@ class DashboardController extends Controller
         $user = auth()->user();
 
         $totalEmployees = Employee::where('employment_type', '!=', 'Deleted')->count();
+        $wcCount = Employee::where('employment_type', 'WC')->count();
         $peCount = Employee::where('employment_type', 'PE')->count();
         $mrCount = Employee::where('employment_type', 'MR')->whereNull('scheme_id')->count();
         $schemeCount = Employee::where('employment_type', '!=', 'Deleted')->whereNotNull('scheme_id')->count();
@@ -60,6 +61,7 @@ class DashboardController extends Controller
             'totalEmployees' => $totalEmployees,
             'peCount' => $peCount,
             'mrCount' => $mrCount,
+            'wcCount' => $wcCount,
             'schemeCount' => $schemeCount,
             'deletedCount' => $deletedCount,
             'notifications' => $notifications,
@@ -108,6 +110,7 @@ class DashboardController extends Controller
     public function officeStatistics(){
         $offices = Office::query()
             ->withCount([
+                'employees as wc_count' => fn(Builder $q) => $q->where('employment_type', 'WC'),
                 'employees as pe_count' => fn(Builder $q) => $q->where('employment_type', 'PE'),
                 'employees as mr_count' => fn(Builder $q) => $q->where('employment_type', 'MR')->whereNull('scheme_id'),
 
@@ -115,13 +118,22 @@ class DashboardController extends Controller
             ->get();
 
         $labels = $offices->pluck('name');
+        $wcCounts = $offices->pluck('wc_count');
         $mrCounts = $offices->pluck('mr_count');
         $peCounts = $offices->pluck('pe_count');
 
         return response()->json([
             'labels' => $labels,
             'datasets' => [
+                [
+                    'label' => 'Work Charge (WC)',
+                    'data' => $wcCounts,
+                    'backgroundColor' => '#a859d9',
+                    'barThickness' => 8,
+                    'borderRadius' => 4,
+                    'categoryPercentage' => 0.6, // ⬅️ Lower = more space between bars
 
+                ],
                 [
                     'label' => 'Provisional (PE)',
                     'data' => $peCounts,

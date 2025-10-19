@@ -130,9 +130,14 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
         Route::get('import', [MISController::class, 'import'])->middleware('can:import-employee')->name('mis.import');
         Route::post('import-employee', [MISController::class, 'importEmployee'])->middleware('can:import-employee')->name('mis.import-employee');
 
+
+        Route::get('import-work-charge', [MISController::class, 'importWorkCharge'])->middleware('can:import-employee')->name('mis.import-work-charge');
+        Route::post('import-employee', [MISController::class, 'importWorkChargeEmployee'])->middleware('can:import-employee')->name('mis.import-work-charge-employee');
+
         Route::get('export', [MISController::class, 'export'])->middleware('can:export-employee')->name('mis.export');
         Route::post('export-employee', [MISController::class, 'exportEmployee'])->middleware('can:export-employee')->name('mis.export-employee');
 
+        Route::get('create-wc-employee', [MISController::class, 'createWC'])->middleware('can:create-employee')->name('mis.create-wc-employee');
         Route::get('create-pe-employee', [MISController::class, 'createPE'])->middleware('can:create-employee')->name('mis.create-pe-employee');
         Route::get('create-mr-employee', [MISController::class, 'createMR'])->middleware('can:create-employee')->name('mis.create-mr-employee');
 
@@ -189,6 +194,11 @@ Route::group(['middleware'=>'auth','prefix' => 'employees'], function () {
     Route::get('index-all/{model}', [EmployeeController::class, 'indexAllEmployees'])->middleware('can:view-allemployee')->name('employees.index-all');
     Route::get('json-index-all/{model}', [EmployeeController::class, 'jsonAllEmployees'])->middleware('can:view-allemployee')->name('employees.json-index-all');
 
+
+    Route::get('wc', [EmployeeController::class, 'wcEmployees'])->middleware('can:view-wc-employee')->name('employees.wc');
+    Route::get('index-wc/{model}', [EmployeeController::class, 'indexWcEmployees'])->middleware('can:view-wc-employee')->name('employees.index-wc');
+    Route::get('json-index-wc/{model}', [EmployeeController::class, 'jsonWcEmployees'])->middleware('can:view-wc-employee')->name('employees.json-index-wc');
+
     Route::get('pe', [EmployeeController::class, 'peEmployees'])->middleware('can:view-pe-employee')->name('employees.pe');
     Route::get('index-pe/{model}', [EmployeeController::class, 'indexPeEmployees'])->middleware('can:view-pe-employee')->name('employees.index-pe');
     Route::get('json-index-pe/{model}', [EmployeeController::class, 'jsonPeEmployees'])->middleware('can:view-pe-employee')->name('employees.json-index-pe');
@@ -208,6 +218,10 @@ Route::group(['middleware'=>'auth','prefix' => 'employees'], function () {
 
     Route::get('manager-all', [EmployeeController::class, 'managerAll'])->middleware('can:view-allemployee')->name('employees.manager.all');
     Route::get('json-manager-all', [EmployeeController::class, 'jsonMangerAll'])->middleware('can:view-allemployee')->name('employees.json-manager-all');
+
+
+    Route::get('manager-wc', [EmployeeController::class, 'managerWc'])->middleware('can:view-wc-employee')->name('employees.manager.wc');
+    Route::get('json-manager-wc', [EmployeeController::class, 'jsonMangerWc'])->middleware('can:view-wc-employee')->name('employees.json-manager-wc');
 
     Route::get('manager-pe', [EmployeeController::class, 'managerPe'])->middleware('can:view-pe-employee')->name('employees.manager.pe');
     Route::get('json-manager-pe', [EmployeeController::class, 'jsonMangerPe'])->middleware('can:view-pe-employee')->name('employees.json-manager-pe');
@@ -306,6 +320,7 @@ Route::group(['middleware'=>'auth','prefix' => 'engagement-card'], function () {
 
 //Summary
 Route::group(['middleware'=>'auth','prefix' => 'summary'], function () {
+    Route::get('work-charge', [SummaryController::class, 'workChargeSummary'])->middleware('can:view-wc-summary')->name('summary.wc');
     Route::get('provisional', [SummaryController::class, 'provisionalSummary'])->middleware('can:view-pe-summary')->name('summary.pe');
     Route::get('muster-roll', [SummaryController::class, 'musterRollSummary'])->middleware('can:view-mr-summary')->name('summary.mr');
 
@@ -314,10 +329,12 @@ Route::group(['middleware'=>'auth','prefix' => 'summary'], function () {
 //Export
 Route::group(['middleware'=>'auth','prefix' => 'export'], function () {
 
+    Route::get('summary-work-charge', [ExportController::class, 'exportWorkChargeSummary'])->middleware('can:export-wc-summary')->name('export.summary-wc');
     Route::get('summary-provisional', [ExportController::class, 'exportProvisionalSummary'])->middleware('can:export-pe-summary')->name('export.summary-pe');
     Route::get('summary-muster-roll', [ExportController::class, 'exportMusterRollSummary'])->middleware('can:export-mr-summary')->name('export.summary-mr');
 
     Route::get('all/{model}', [ExportController::class, 'exportAll'])->middleware('can:export-all')->name('export.all');
+    Route::get('work-charge/{model}', [ExportController::class, 'exportWorkCharge'])->middleware('can:export-wc')->name('export.wc');
     Route::get('provisional/{model}', [ExportController::class, 'exportProvisional'])->middleware('can:export-pe')->name('export.pe');
     Route::get('muster-roll/{model}', [ExportController::class, 'exportMusterRoll'])->middleware('can:export-mr')->name('export.mr');
     Route::get('deleted', [ExportController::class, 'exportDeleted'])->middleware('can:export-deleted')->name('export.deleted');

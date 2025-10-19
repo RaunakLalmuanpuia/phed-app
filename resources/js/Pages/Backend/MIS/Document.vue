@@ -194,6 +194,11 @@
                                     <div class="col-8 text-body1"> {{currentRow?.office.name}}</div>
                                 </div>
 
+                                <div v-if="currentRow?.employment_type === 'WC'" class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Employment Type</div>
+                                    <div class="col-8 text-body1">Work Charge Employee</div>
+                                </div>
+
                                 <div v-if="currentRow?.employment_type === 'PE'" class="row q-mb-sm items-center">
                                     <div class="col-4 text-subtitle2 text-grey-8">Employment Type</div>
                                     <div class="col-8 text-body1">Provisional Employee</div>
@@ -289,7 +294,7 @@
                                 </div>
 
 
-                                <div v-if="currentRow?.employment_type === 'PE'" class="row q-mb-sm items-center">
+                                <div v-if="currentRow?.employment_type === 'PE' || currentRow?.employment_type === 'WC'"  class="row q-mb-sm items-center">
                                     <div class="col-4 text-subtitle2 text-grey-8">Designation</div>
                                     <div class="col-8 text-body1">
                                         <q-input v-model="form.designation" outlined dense
@@ -323,6 +328,15 @@
                                     <div class="col-8 text-body1">
                                         <q-input v-model="form.date_of_engagement" label="MM/DD/YYYY" type="date" outlined dense
                                                  :error="!!form.errors?.date_of_engagement" :error-message="form.errors?.date_of_engagement"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div v-if="currentRow?.employment_type === 'WC'" class="row q-mb-sm items-center">
+                                    <div class="col-4 text-subtitle2 text-grey-8">Date of Retirement</div>
+                                    <div class="col-8 text-body1">
+                                        <q-input v-model="form.date_of_retirement" label="MM/DD/YYYY" type="date" outlined dense
+                                                 :error="!!form.errors?.date_of_retirement" :error-message="form.errors?.date_of_retirement"
                                         />
                                     </div>
                                 </div>
@@ -516,6 +530,7 @@ const form = useForm({
     post_per_qualification:"",
     engagement_card_no: "",
     date_of_engagement:"",
+    date_of_retirement:"",
     skill_category:"",
     skill_at_present:"",
     documents:[],
@@ -532,6 +547,7 @@ const filters = ref({
 const type = [
     {label: 'MR', value: 'MR'},
     {label: 'PE', value: 'PE'},
+    {label: 'WC', value: 'WC'},
 ]
 
 const scheme = [
@@ -659,6 +675,7 @@ const openDialog = (row) => {
     form.post_per_qualification = row.post_per_qualification;
     form.engagement_card_no = row.engagement_card_no;
     form.date_of_engagement = row.date_of_engagement;
+    form.date_of_retirement = row.date_of_retirement;
     form.skill_category = row.skill_category;
     form.skill_at_present = row.skill_at_present
     // Reset before filling
@@ -741,6 +758,7 @@ const submitForm = () => {
     formData.append('post_per_qualification', form.post_per_qualification || '')
     formData.append('engagement_card_no', form.engagement_card_no || '')
     formData.append('date_of_engagement', form.date_of_engagement || '')
+    formData.append('date_of_retirement', form.date_of_retirement || '')
     formData.append('skill_category', form.skill_category || '')
     formData.append('skill_at_present', form.skill_at_present || '')
 

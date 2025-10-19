@@ -49,6 +49,7 @@ export default function () {
     const employment_types = [
         'MR',
         'PE',
+        'WC',
         'Deleted',
     ];
 

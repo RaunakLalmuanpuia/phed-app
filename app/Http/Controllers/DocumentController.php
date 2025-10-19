@@ -132,6 +132,7 @@ class DocumentController extends Controller
             'post_per_qualification' => 'nullable|string|max:255',
             'engagement_card_no' => 'nullable|string|max:255',
             'date_of_engagement' => 'nullable|date',
+            'date_of_retirement' => 'nullable|date',
             'skill_category' => 'nullable|string|max:255',
             'skill_at_present' => 'nullable|string|max:255',
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:10240', // 800KB limit

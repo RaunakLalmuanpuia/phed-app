@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\WorkchargeEmployeesImport;
 use App\Models\DocumentType;
 use App\Models\Employee;
 use App\Models\Office;
@@ -13,6 +14,22 @@ use App\Imports\EmployeesImport;
 use Carbon\Carbon;
 class MISController extends Controller
 {
+
+
+    public function createWC(Request $request){
+
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('create-employee'),403,'Access Denied');
+
+        $documentTypes = DocumentType::all();
+        $offices = Office::all();
+
+        return Inertia::render('Backend/Employees/Create/WC', [
+            'documentTypes' => $documentTypes,
+            'offices' => $offices,
+            'canCreate'=>$user->can('create-employee'),
+        ]);
+    }
 
     public function createPE(Request $request){
 
@@ -72,6 +89,34 @@ class MISController extends Controller
 
         return redirect()->back()->with('message','Employee data imported successfully');
 
+    }
+
+    public function importWorkCharge(Request $request){
+
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('import-employee'),403,'Access Denied');
+
+        $office = Office::all();
+
+        return Inertia::render('Backend/MIS/ImportWorkCharge', [
+            'office' => $office,
+            'canImport'=>$user->can('import-employee'),
+        ]);
+    }
+
+    public function importWorkChargeEmployee(Request $request)
+    {
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('import-employee'), 403, 'Access Denied');
+
+        $request->validate([
+            'document' => 'required|file|mimes:xlsx,csv,xls',
+            'office' => 'required|integer|exists:offices,id',
+        ]);
+
+        Excel::import(new WorkchargeEmployeesImport($request->office), $request->file('document'));
+
+        return redirect()->back()->with('message', 'Work-Charge employee data imported successfully');
     }
 
     public function export(Request $request){

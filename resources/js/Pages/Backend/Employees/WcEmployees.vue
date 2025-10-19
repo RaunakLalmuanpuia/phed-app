@@ -3,7 +3,7 @@
 
         <div class="flex items-center justify-between q-pa-md bg-white">
             <div>
-                <div class="stitle">Provisional Employee List</div>
+                <div class="stitle">Work Charge Employee List</div>
                 <q-breadcrumbs  class="text-dark">
                     <q-breadcrumbs-el class="cursor-pointer" @click="$inertia.get(route('dashboard'))" icon="dashboard" label="Dashboard"/>
                     <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="goBack"/>
@@ -45,23 +45,23 @@
                 </div>
 
                 <div class="q-pa-md">
-                        <!-- Office Cards -->
+                    <!-- Office Cards -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 q-mb-md">
                         <q-card
-                                flat
-                                bordered
-                                class="bg-white q-px-md q-py-lg shadow-1 cursor-pointer"
-                                v-for="office in offices"
-                                @click="$inertia.get(route('employees.index-pe', office))"
-                                :key="office.title"
-                            >
-                                <div>
-                                    <div class="stitle">{{ office.name }}</div>
-                                    <div class="text-caption text-grey-6 q-mt-xs">{{ office.type }}</div>
-                                    <div class="text-h6 text-weight-bold">{{ office.pe_count }}</div>
-                                    <div class="text-caption text-grey-7">Provisional Employees</div>
-                                </div>
-                            </q-card>
+                            flat
+                            bordered
+                            class="bg-white q-px-md q-py-lg shadow-1 cursor-pointer"
+                            v-for="office in offices"
+                            @click="$inertia.get(route('employees.index-wc', office))"
+                            :key="office.title"
+                        >
+                            <div>
+                                <div class="stitle">{{ office.name }}</div>
+                                <div class="text-caption text-grey-6 q-mt-xs">{{ office.type }}</div>
+                                <div class="text-h6 text-weight-bold">{{ office.wc_count }}</div>
+                                <div class="text-caption text-grey-7">Work Charge Employees</div>
+                            </div>
+                        </q-card>
                     </div>
 
                 </div>
@@ -96,7 +96,7 @@ const state=reactive({
 })
 
 const handleSearch=e=>{
-    router.get(route('employees.pe'), {
+    router.get(route('employees.wc'), {
         search: state.search
     });
 }

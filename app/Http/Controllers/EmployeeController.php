@@ -37,11 +37,15 @@ class EmployeeController extends Controller
             'employees as pe_count' => function ($query) {
                 $query->where('employment_type', 'PE');
             },
+            'employees as wc_count' => function ($query) {
+                $query->where('employment_type', 'WC');
+            },
         ])->when($search, function ($query) use ($search) {
             $query->where('name', 'LIKE', "%{$search}%"); // ✅ search by office name
         })->get();
 
         $totalEmployees = Employee::where('employment_type', '!=', 'Deleted')->whereNull('scheme_id')->count();
+        $wcCount = Employee::where('employment_type', 'WC')->count();
         $peCount = Employee::where('employment_type', 'PE')->count();
         $mrCount = Employee::where('employment_type', 'MR')->whereNull('scheme_id')->count();
         $deletedCount = Employee::where('employment_type', 'Deleted')->count();
@@ -49,6 +53,7 @@ class EmployeeController extends Controller
             'offices' => $offices,
             'search' => $search,
             'totalEmployees' => $totalEmployees,
+            'wcCount' => $wcCount,
             'peCount' => $peCount,
             'mrCount' => $mrCount,
             'deletedCount' => $deletedCount,
@@ -64,6 +69,10 @@ class EmployeeController extends Controller
             ->where('employment_type', '!=', 'Deleted')
             ->count();
 
+        $wcCount = $model->employees()
+            ->where('employment_type', 'WC')
+            ->count();
+
         $peCount = $model->employees()
             ->where('employment_type', 'PE')
             ->count();
@@ -74,8 +83,18 @@ class EmployeeController extends Controller
             ->count();
 
         // Get distinct designation & education_qln for PE employees in this office
-        $designations = $model->employees()
+        $designationsPe = $model->employees()
             ->where('employment_type', 'PE')
+            ->select('designation')
+            ->distinct()
+            ->orderBy('designation')
+            ->pluck('designation')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+        // Get distinct designation & education_qln for WC employees in this office
+        $designationsWc = $model->employees()
+            ->where('employment_type', 'WC')
             ->select('designation')
             ->distinct()
             ->orderBy('designation')
@@ -121,7 +140,9 @@ class EmployeeController extends Controller
             'totalEmployees' => $totalEmployees,
             'peCount' => $peCount,
             'mrCount' => $mrCount,
-            'designations' => $designations,
+            'wcCount' => $wcCount,
+            'designationsPe' => $designationsPe,
+            'designationsWc' => $designationsWc,
             'skills' => $skills,
             'educationQlnPe' => $educationQlnPe,
             'educationQlnMr' => $educationQlnMr,
@@ -171,6 +192,95 @@ class EmployeeController extends Controller
             'list' => $employees->paginate($perPage),
         ], 200);
     }
+
+
+    public function wcEmployees(Request $request)
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-wc-employee'), 403, 'Access Denied');
+
+        $search = $request->get('search');
+        $offices = Office::whereHas('employees', function ($query) {
+            $query->where('employment_type', 'WC'); // ✅ Only PE employees
+        })
+            ->withCount(['employees as wc_count' => function ($query) {
+                $query->where('employment_type', 'WC'); // ✅ Count PE employees
+            }])->when($search, function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%{$search}%"); // ✅ search by office name
+            })->get();
+
+        return Inertia::render('Backend/Employees/WcEmployees', [
+            'offices' => $offices,
+            'search' => $search,
+        ]);
+    }
+
+    public function indexWcEmployees(Office $model) // shows PE type
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-wc-employee'), 403, 'Access Denied');
+
+        // Get distinct designation & education_qln for PE employees in this office
+        $designations = $model->employees()
+            ->where('employment_type', 'WC')
+            ->select('designation')
+            ->distinct()
+            ->orderBy('designation')
+            ->pluck('designation')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+        $educationQln = $model->employees()
+            ->where('employment_type', 'WC')
+            ->select('educational_qln')
+            ->distinct()
+            ->orderBy('educational_qln')
+            ->pluck('educational_qln')
+            ->map(fn($e) => ['label' => $e, 'value' => $e])
+            ->values();
+
+        return Inertia::render('Backend/Employees/Index/WcEmployees', [
+            'office' => $model,
+            'designations' => $designations,
+            'educationQln' => $educationQln,
+        ]);
+    }
+
+    public function jsonWcEmployees(Request $request, Office $model)
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-wc-employee'), 403, 'Access Denied');
+
+
+        $perPage = $request->get('rowsPerPage') ?? 5;
+        $filter = $request->get('filter', []);
+        $search = $filter['search'] ?? null; // ✅ extract from filter array
+
+
+        $employees = $model->employees() // ✅ Only employees of this office
+        ->with(['office', 'remunerationDetail'])
+            ->where('employment_type', 'WC')
+            ->when($search, function ($builder) use ($search) {
+                $builder->where(function ($query) use ($search) {
+                    $query->where('name', 'LIKE', "%$search%")
+                        ->orWhere('mobile', 'LIKE', "%$search%")
+                        ->orWhere('designation', 'LIKE', "%$search%")
+                        ->orWhere('date_of_birth', 'LIKE', "%$search%")
+                        ->orWhere('name_of_workplace', 'LIKE', "%$search%");
+                });
+            })->when($filter['designation'] ?? null, function ($query, $designation) {
+                $query->where('designation', $designation);
+            })->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
+                $query->where('educational_qln', $educationQln);
+            })
+            ->orderBy('name', 'asc');
+
+
+        return response()->json([
+            'list' => $employees->paginate($perPage),
+        ], 200);
+    }
+
 
     public function peEmployees(Request $request)
     {
@@ -591,7 +701,7 @@ class EmployeeController extends Controller
             'address' => 'nullable|string|max:255',
             'designation' => 'nullable|string|max:255',
             'post_assigned' => 'nullable|string|max:255',
-            'employment_type' => ['required', Rule::in(['MR', 'PE'])],
+            'employment_type' => ['required', Rule::in(['MR', 'PE','WC'])],
             'office' => 'required|exists:offices,id',
             'educational_qln' => 'required|string|max:255',
             'technical_qln' => 'nullable|string|max:255',
@@ -599,6 +709,7 @@ class EmployeeController extends Controller
             'post_per_qualification' => 'nullable|string|max:255',
             'engagement_card_no' => 'nullable|string|max:255',
             'date_of_engagement' => 'nullable|date',
+            'date_of_retirement' => 'nullable|date',
             'skill_category' => 'nullable|string|max:255',
             'skill_at_present' => 'nullable|string|max:255',
             'scheme' => 'nullable|exists:schemes,id',
@@ -625,6 +736,7 @@ class EmployeeController extends Controller
                 'post_per_qualification' => $validated['post_per_qualification'],
                 'engagement_card_no' => $validated['engagement_card_no'] ?? null,
                 'date_of_engagement' => $validated['date_of_engagement'],
+                'date_of_retirement' => $validated['date_of_retirement'],
                 'skill_category' => $validated['skill_category'],
                 'skill_at_present' => $validated['skill_at_present'],
                 'scheme_id' => $validated['scheme'] ?? null,
@@ -716,7 +828,7 @@ class EmployeeController extends Controller
             'address' => 'nullable|string|max:255',
             'designation' => 'nullable|string|max:255',
             'post_assigned' => 'nullable|string|max:255',
-            'employment_type' => ['required', Rule::in(['MR', 'PE', 'Deleted'])],
+            'employment_type' => ['required', Rule::in(['MR', 'PE','WC', 'Deleted'])],
             'office' => 'required|exists:offices,id',
             'educational_qln' => 'nullable|string|max:255',
             'technical_qln' => 'nullable|string|max:255',
@@ -724,6 +836,7 @@ class EmployeeController extends Controller
             'post_per_qualification' => 'nullable|string|max:255',
             'engagement_card_no' => 'nullable|string|max:255',
             'date_of_engagement' => 'nullable|date',
+            'date_of_retirement' => 'nullable|date',
             'skill_category' => 'nullable|string|max:255',
             'skill_at_present' => 'nullable|string|max:255',
             'scheme' => 'nullable|exists:schemes,id',
@@ -762,6 +875,7 @@ class EmployeeController extends Controller
                 'post_per_qualification' => $validated['post_per_qualification'],
                 'engagement_card_no' => $validated['engagement_card_no'],
                 'date_of_engagement' => $validated['date_of_engagement'],
+                'date_of_retirement'=> $validated['date_of_retirement'],
                 'skill_category' => $validated['skill_category'],
                 'skill_at_present' => $validated['skill_at_present'],
                 'scheme_id' => $validated['scheme'] ?? null,
@@ -856,6 +970,10 @@ class EmployeeController extends Controller
             ->whereNull('scheme_id')
             ->count();
 
+        $wcCount = Employee::whereIn('office_id', $officeIds)
+            ->where('employment_type', 'WC')
+            ->count();
+
         $peCount = Employee::whereIn('office_id', $officeIds)
             ->where('employment_type', 'PE')
             ->count();
@@ -866,12 +984,32 @@ class EmployeeController extends Controller
             ->count();
 
         // Distinct Designations
-        $designations = Employee::whereIn('office_id', $officeIds)
+        $designationsPe = Employee::whereIn('office_id', $officeIds)
             ->where('employment_type', 'PE')
             ->select('designation')
             ->distinct()
             ->orderBy('designation')
             ->pluck('designation')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+        // Distinct Designations
+        $designationsWc = Employee::whereIn('office_id', $officeIds)
+            ->where('employment_type', 'WC')
+            ->select('designation')
+            ->distinct()
+            ->orderBy('designation')
+            ->pluck('designation')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+        // Distinct Educational Qualifications
+        $educationQlnWc = Employee::whereIn('office_id', $officeIds)
+            ->where('employment_type', 'WC')
+            ->select('educational_qln')
+            ->distinct()
+            ->orderBy('educational_qln')
+            ->pluck('educational_qln')
             ->map(fn($d) => ['label' => $d, 'value' => $d])
             ->values();
 
@@ -897,7 +1035,7 @@ class EmployeeController extends Controller
             ->values();
 
 
-        // Get distinct designation & education_qln for PE employees in this office
+        // Get distinct designation & education_qln for MR employees in this office
         $skills = Employee::whereIn('office_id', $officeIds)
             ->where('employment_type', 'MR')
             ->whereNull('scheme_id')
@@ -912,9 +1050,12 @@ class EmployeeController extends Controller
         return inertia('Backend/Employees/IndexManager/AllEmployees', [
             'offices' => $offices,          // now plain array, safe for Vue
             'totalEmployees' => $totalEmployees,
+            'wcCount' => $wcCount,
             'peCount' => $peCount,
             'mrCount' => $mrCount,
-            'designations' => $designations,
+            'designationsWc' => $designationsWc,
+            'designationsPe' => $designationsPe,
+            'educationQlnWc' => $educationQlnWc,
             'educationQlnPe' => $educationQlnPe,
             'educationQlnMr' => $educationQlnMr,
             'skills' => $skills,
@@ -946,6 +1087,81 @@ class EmployeeController extends Controller
             ->when(($filter['skill'] ?? null), fn($q, $skill) => $q->where('skill_at_present', $skill))
             ->when($filter['designation'] ?? null, function ($query, $designation) {
                 $query->where('designation', $designation);
+            })->when($filter['educational_qln'] ?? null, function ($query, $educationQln) {
+                $query->where('educational_qln', $educationQln);
+            })
+            ->orderBy('name', 'asc');
+
+        return response()->json([
+            'list' => $employees->paginate($perPage),
+        ], 200);
+    }
+
+    public function managerWc()
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-wc-employee'), 403, 'Access Denied');
+
+        $user = auth()->user();
+
+        // Offices directly formatted for q-select
+        $offices = $user->offices()
+            ->get(['offices.name as label', 'offices.id as value'])
+            ->map(function ($office) {
+                return [
+                    'label' => $office->label,
+                    'value' => $office->value,
+                ];
+            });
+
+        // Get designations of PE employees from all offices user belongs to
+        $designations = Employee::whereIn('office_id', $offices->pluck('value'))
+            ->where('employment_type', 'WC')
+            ->select('designation')
+            ->distinct()
+            ->orderBy('designation')
+            ->pluck('designation')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+        $educationQln = Employee::whereIn('office_id', $offices->pluck('value'))
+            ->where('employment_type', 'WC')
+            ->select('educational_qln')
+            ->distinct()
+            ->orderBy('educational_qln')
+            ->pluck('educational_qln')
+            ->map(fn($d) => ['label' => $d, 'value' => $d])
+            ->values();
+
+        return inertia('Backend/Employees/IndexManager/WcEmployees', [
+            'offices' => $offices,
+            'designations' => $designations,
+            'educationQln' => $educationQln,
+        ]);
+    }
+
+    public function jsonMangerWc(Request $request)
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('view-wc-employee'), 403, 'Access Denied');
+
+        $perPage = $request->integer('rowsPerPage', 5);
+        $filter = $request->get('filter', []);
+        $search = $filter['search'] ?? null;
+        $officeIds = $filter['office'] ?? $user->offices()->pluck('offices.id')->all();
+
+        $employees = Employee::with(['office', 'remunerationDetail'])
+            ->whereIn('office_id', (array)$officeIds)
+            ->where('employment_type', 'WC')
+            ->when($search, fn($q) => $q->where(function ($sub) use ($search) {
+                $sub->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('mobile', 'LIKE', "%{$search}%")
+                    ->orWhere('designation', 'LIKE', "%{$search}%")
+                    ->orWhere('date_of_birth', 'LIKE', "%{$search}%")
+                    ->orWhere('name_of_workplace', 'LIKE', "%{$search}%");
+            }))
+            ->when($filter['designation'] ?? null, function ($query, $designation) {
+                $query->where('designation', $designation);
             })->when($filter['education_qln'] ?? null, function ($query, $educationQln) {
                 $query->where('educational_qln', $educationQln);
             })
@@ -955,6 +1171,7 @@ class EmployeeController extends Controller
             'list' => $employees->paginate($perPage),
         ], 200);
     }
+
 
     public function managerPe()
     {

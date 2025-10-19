@@ -9,6 +9,8 @@ use App\Exports\MusterRollEmployeesExport;
 use App\Exports\OfficeRemunerationSheet;
 use App\Exports\RemunerationExport;
 use App\Exports\SchemeEmployeesExport;
+use App\Exports\WorkChargeEmployeesExport;
+use App\Exports\WorkChargeSummaryExport;
 use App\Models\Office;
 use App\Models\Scheme;
 use Carbon\Carbon;
@@ -22,6 +24,15 @@ use App\Exports\ProvisionalEmployeesExport;
 class ExportController extends Controller
 {
     //
+    public function exportWorkChargeSummary(Request $request)
+    {
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('export-wc-summary'),403,'Access Denied');
+
+        $export = new WorkChargeSummaryExport();
+        return Excel::download($export, 'work_charge_summary.xlsx');
+
+    }
     public function exportProvisionalSummary(Request $request)
     {
         $user = $request->user();
@@ -40,6 +51,21 @@ class ExportController extends Controller
         $export = new MusterRollSummaryExport();
         return Excel::download($export, 'muster_roll_summary.xlsx');
 
+    }
+
+    public function exportWorkCharge(Request $request, Office $model){
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('export-wc'),403,'Access Denied');
+
+
+        if ($user->hasRole('Manager')) {
+            $model = $user->offices()->firstOrFail();
+        }
+
+        return Excel::download(
+            new WorkChargeEmployeesExport($model),
+            Str::slug($model->name, '_') . '_work_charge_employees.xlsx'
+        );
     }
 
     public function exportProvisional(Request $request, Office $model){

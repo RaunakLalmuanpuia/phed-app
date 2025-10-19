@@ -581,6 +581,7 @@ const module = reactive({
         label: 'Employees',
         children: [
             {route_name: 'employees.manager.all', label: 'All Employee', permission: 'view-allemployee'},
+            {route_name: 'employees.manager.wc', label: 'Work Charge Employee', permission: 'view-wc-employee'},
             {route_name: 'employees.manager.pe', label: 'Provisional Employee', permission: 'view-pe-employee'},
             {route_name: 'employees.manager.mr', label: 'Muster Roll Employee', permission: 'view-mr-employee'},
             {route_name: 'employees.manager.scheme', label: 'Scheme Employee', permission: 'view-scheme-employee'},
@@ -600,6 +601,7 @@ const module = reactive({
         label: 'Employees',
         children: [
             {route_name: 'employees.all', label: 'All Employee', permission: 'view-allemployee'},
+            {route_name: 'employees.wc', label: 'Work charge Employee', permission: 'view-wc-employee'},
             {route_name: 'employees.pe', label: 'Provisional Employee', permission: 'view-pe-employee'},
             {route_name: 'employees.mr', label: 'Muster Roll Employee', permission: 'view-mr-employee'},
             {route_name: 'employees.scheme', label: 'Scheme Employee', permission: 'view-scheme-employee'},
@@ -624,6 +626,8 @@ const module = reactive({
         children: [
             {route_name: 'mis.export', label: 'Export', permission: 'export-employee'},
             {route_name: 'mis.import', label: 'Import', permission: 'import-employee'},
+            {route_name: 'mis.import-work-charge', label: 'Import Work Charge Employee', permission: 'import-employee'},
+            {route_name: 'mis.create-wc-employee', label: 'Add WC Employee', permission: 'create-employee'},
             {route_name: 'mis.create-pe-employee', label: 'Add PE Employee', permission: 'create-employee'},
             {route_name: 'mis.create-mr-employee', label: 'Add MR Employee', permission: 'create-employee'},
             {route_name: 'mis.engagement-card', label: 'Engagement Card', permission: 'generate-engagement-card'},

@@ -9,6 +9,7 @@
                 </q-breadcrumbs>
             </div>
             <div class="q-gutter-sm">
+                <q-btn label="WC Summary" color="primary" @click="$inertia.get(route('summary.wc'))"/>
                 <q-btn label="PE Summary" color="primary" @click="$inertia.get(route('summary.pe'))" />
                 <q-btn label="MR Summary" color="primary" @click="$inertia.get(route('summary.mr'))" />
             </div>
@@ -99,7 +100,15 @@
                             <div>
                                 <div class="stitle">{{ office.name }}</div>
                                 <div class="text-caption text-grey-6 q-mt-xs">{{ office.type }}</div>
-                                <div class="grid grid-cols-2 gap-4 q-mt-sm">
+                                <div class="grid grid-cols-3 gap-4 q-mt-sm">
+
+
+                                    <div>
+
+                                        <div class="text-h6 text-weight-bold">{{ office.wc_count }}</div>
+                                        <div class="text-caption text-grey-7">WC</div>
+                                    </div>
+
                                     <div>
 
                                         <div class="text-h6 text-weight-bold">{{ office.pe_count }}</div>
@@ -110,6 +119,8 @@
                                         <div class="text-h6 text-weight-bold">{{ office.mr_count }}</div>
                                         <div class="text-caption text-grey-7">MR</div>
                                     </div>
+
+
 
                                 </div>
                             </div>
@@ -132,9 +143,44 @@ import BackendLayout from "@/Layouts/BackendLayout.vue";
 import {router} from '@inertiajs/vue3'
 defineOptions({layout:BackendLayout})
 
-const props=defineProps(['offices','search','totalEmployees','peCount','mrCount','deletedCount'])
+const props=defineProps(['offices','search','totalEmployees','wcCount','peCount','mrCount','deletedCount'])
 
 const cards = [
+    {
+        title: 'Total',
+        value: props.totalEmployees,
+        icon: 'person_search',
+        iconColor: 'light-blue-5',
+        bgColor: '#d6f3ff',
+    },
+    {
+        title: 'Work Charge',
+        value: props.wcCount,
+        icon: 'person',
+
+        iconColor: 'red-6',
+        bgColor: '#ffe1e1',
+    },
+    {
+        title: 'Provisional',
+        value: props.peCount,
+        icon: 'person_add',
+        iconColor: 'orange-5',
+        bgColor: '#ffe9d6',
+    },
+    {
+        title: 'Muster Roll',
+        value: props.mrCount,
+        icon: 'how_to_reg',
+        iconColor: 'indigo-6',
+        bgColor: '#d7d9ff',
+    },
+
+
+
+]
+
+const cards2 = [
     {
         title: 'Total',
         value: props.totalEmployees,
@@ -166,6 +212,7 @@ const cards = [
     },
 
 ]
+
 
 
 const state=reactive({
