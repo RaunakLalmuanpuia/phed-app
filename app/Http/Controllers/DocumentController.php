@@ -10,6 +10,7 @@ use App\Models\DocumentDeleteRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class DocumentController extends Controller
 {
@@ -255,6 +256,15 @@ class DocumentController extends Controller
 
         $document = $model->document;
 
+
+        // ✅ Use ValidationException for Inertia
+        if ($document->updated_at > $model->request_date) {
+            throw ValidationException::withMessages([
+                'general' => ['Cannot delete. A newer updated document exists for this document type. Please Reject']
+            ]);
+        }
+
+        // Delete document
         if ($document && Storage::disk('public')->exists($document->path)) {
             Storage::disk('public')->delete($document->path);
         }
@@ -266,9 +276,32 @@ class DocumentController extends Controller
             'approval_date' => now(),
         ]);
 
-
-        return redirect()->back()->with('success', 'Document deleted successfully.');
+        return back()->with('success', 'Document deleted successfully.');
     }
+
+
+
+//    public function approveDelete(Request $request, DocumentDeleteRequest $model)
+//    {
+//        $user = $request->user();
+//        abort_if(!$user->hasPermissionTo('approve-document-delete'), 403, 'Access Denied');
+//
+//        $document = $model->document;
+//
+//        if ($document && Storage::disk('public')->exists($document->path)) {
+//            Storage::disk('public')->delete($document->path);
+//        }
+//
+//        $document->delete();
+//
+//        $model->update([
+//            'approval_status' => 'approved',
+//            'approval_date' => now(),
+//        ]);
+//
+//
+//        return redirect()->back()->with('success', 'Document deleted successfully.');
+//    }
 
 
     public function rejectDelete(Request $request, DocumentDeleteRequest $model)

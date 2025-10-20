@@ -522,8 +522,16 @@ const approveDeleteRequest = (id) => {
         onStart: () => $q.loading.show(),
         onFinish: () => $q.loading.hide(),
         onSuccess: () => {
-            $q.notify({ type: 'positive', message: 'Delete request approved and document deleted.' });
+            $q.notify({
+                type: 'positive',
+                message: 'Delete request approved and document deleted.'
+            });
         },
+        onError: (errors) => {
+            Object.values(errors).forEach((error) => {
+                $q.notify({ type: 'negative', message: error });
+            });
+        }
     });
 };
 
