@@ -2,7 +2,7 @@
     <q-page class="container"  padding>
         <div class="row q-col-gutter-md">
 
-            <div v-if="!isAdmin" class="col-xs-12 col-sm-3">
+            <div v-if="!isAdmin && !isReviewer" class="col-xs-12 col-sm-3">
                 <div class="dealing-card q-pa-md count-warning cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.manager.all'))">
                     <div class="title-warning">Total Employees</div>
                     <div class="text-caption caption-sm">Current Count</div>
@@ -12,7 +12,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="!isAdmin" class="col-xs-12 col-sm-3">
+            <div v-if="!isAdmin && !isReviewer" class="col-xs-12 col-sm-3">
                 <div class="purple-card q-pa-md count-purple cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.manager.wc'))">
                     <div class="title-purple">Work Charge</div>
                     <div class="text-caption caption-sm">Employment Type</div>
@@ -23,7 +23,7 @@
                 </div>
             </div>
 
-            <div v-if="!isAdmin" class="col-xs-12 col-sm-3">
+            <div v-if="!isAdmin && !isReviewer" class="col-xs-12 col-sm-3">
                 <div class="verification-card q-pa-md count-blue cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.manager.pe'))">
                     <div class="title-blue">Provisional</div>
                     <div class="text-caption caption-sm">Employment Type</div>
@@ -33,7 +33,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="!isAdmin" class="col-xs-12 col-sm-3">
+            <div v-if="!isAdmin && !isReviewer" class="col-xs-12 col-sm-3">
                 <div class="approval-card q-pa-md count-green cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.manager.mr'))">
                     <div class="title-green">Muster Roll</div>
                     <div class="text-caption caption-sm">Employment Type</div>
@@ -43,7 +43,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="!isAdmin" class="col-xs-12 col-sm-3">
+            <div v-if="!isAdmin && !isReviewer" class="col-xs-12 col-sm-3">
                 <div class="scheme-card q-pa-md count-scheme cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.manager.scheme'))">
                     <div class="title-scheme">Scheme</div>
                     <div class="text-caption caption-sm">Employment Type</div>
@@ -54,7 +54,7 @@
                 </div>
             </div>
 
-            <div v-if="!isAdmin" class="col-xs-12 col-sm-3">
+            <div v-if="!isAdmin && !isReviewer" class="col-xs-12 col-sm-3">
                 <div class="deletion-card q-pa-md count-red cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.manager.deleted'))">
                     <div class="title-red">Deleted</div>
                     <div class="text-caption caption-sm">Employment Type</div>
