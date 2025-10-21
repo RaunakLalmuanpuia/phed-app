@@ -19,7 +19,7 @@ class MusterRollSummaryExport implements FromView, WithStyles
 
     public function __construct()
     {
-        $skillOrder = ['Unskilled', 'Semi-Skilled', 'Skilled-I', 'Skilled-II'];
+        $skillOrder = ['Skilled-I', 'Skilled-II', 'Semi-Skilled', 'Unskilled'];
 
         // Step 1: Get all unique skills
         $this->skills = Employee::where('employment_type', 'MR')
