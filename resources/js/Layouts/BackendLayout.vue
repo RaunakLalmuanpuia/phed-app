@@ -40,9 +40,9 @@
             <q-list class="bg-transparent full-height">
 
                 <div @click="$inertia.get(route('home'))"  class="column items-center q-gutter-md q-pa-lg bg-secondary text-white cursor-pointer">
-                    <q-img src="/images/phed_logo.png" width="46px"/>
+                    <q-img src="/images/phed_logo.png" width="52px"/>
                     <div style="line-height: 1" class="text-lg text-grey-7 text-black-medium text-center">
-                        PHED Department
+                        Public Health Engineering Department
                         <span class="text-sm text-grey-7">(Government of Mizoram)</span>
                     </div>
                 </div>
