@@ -736,7 +736,7 @@ class EmployeeController extends Controller
                 'post_per_qualification' => $validated['post_per_qualification'],
                 'engagement_card_no' => $validated['engagement_card_no'] ?? null,
                 'date_of_engagement' => $validated['date_of_engagement'],
-                'date_of_retirement' => $validated['date_of_retirement'],
+                'date_of_retirement' => $validated['date_of_retirement']??null,
                 'skill_category' => $validated['skill_category'],
                 'skill_at_present' => $validated['skill_at_present'],
                 'scheme_id' => $validated['scheme'] ?? null,
