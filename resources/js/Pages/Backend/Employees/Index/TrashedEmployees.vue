@@ -104,7 +104,15 @@
                             @click="restoreEmployee(props.row)"
                             aria-label="Restore Employee"
                         />
-
+                        <q-btn
+                            dense
+                            flat
+                            round
+                            color="red"
+                            icon="delete_forever"
+                            @click="permanentlyDeleteEmployee(props.row)"
+                            aria-label="Delete Permanently"
+                        />
                     </q-td>
                 </template>
             </q-table>
@@ -256,6 +264,40 @@ const restoreEmployee = (employee) => {
 }
 
 
+const permanentlyDeleteEmployee = (employee) => {
+    q.dialog({
+        title: 'Confirm Permanent Delete',
+        message: `Are you sure you want to permanently delete <b>${employee.name}</b>? This action cannot be undone.`,
+        html: true,
+        cancel: true,
+        persistent: true,
+        ok: {
+            label: 'Yes, Delete Permanently',
+            color: 'negative'
+        },
+    }).onOk(async () => {
+        try {
+            await axios.delete(route('employees.forceDelete', employee.id))
+
+            q.notify({
+                type: 'positive',
+                message: `Employee ${employee.name} permanently deleted`
+            })
+
+            // Refresh table after deletion
+            onRequest({
+                pagination: pagination.value,
+                filter: filters.value,
+                search: search.value
+            })
+        } catch (error) {
+            q.notify({
+                type: 'negative',
+                message: error.response?.data?.message || 'Failed to delete employee permanently'
+            })
+        }
+    })
+}
 const goBack = () => {
     window.history.back()
 }

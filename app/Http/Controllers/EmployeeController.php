@@ -933,6 +933,22 @@ class EmployeeController extends Controller
         return response()->json(['message' => 'Employee deleted successfully.']);
     }
 
+    public function destroyPermanently($id)
+    {
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('delete-employee'), 403, 'Access Denied');
+
+        // Find soft-deleted record only
+        $employee = Employee::onlyTrashed()->findOrFail($id);
+
+        // Permanently delete
+        $employee->forceDelete();
+
+        return response()->json(['message' => 'Employee permanently deleted.']);
+    }
+
+
+
     public function restore($model)
     {
         $user = auth()->user();
