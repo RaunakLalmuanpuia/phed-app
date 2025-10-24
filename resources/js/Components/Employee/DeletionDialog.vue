@@ -56,10 +56,11 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { useForm } from '@inertiajs/vue3'
+import { useForm, usePage } from '@inertiajs/vue3'
 import {useQuasar} from "quasar";
 const $q = useQuasar()
 
+const page = usePage();
 const props = defineProps({
   modelValue: Boolean,
   employee: Object,
@@ -79,18 +80,40 @@ const form = useForm({
   remark: '',
   supporting_document: null,
 })
-
 function submitForm() {
-  form.post(route('deletion.store', props.employee), {
-    preserveScroll: true,
-    onSuccess: () => {
-      show.value = false
-      form.reset()
-        $q.notify({
-            type: 'positive',
-            message: 'Employee Deleted successfully.'
-        })
-    }
-  })
+    form.post(route('deletion.store', props.employee), {
+        preserveScroll: true,
+        onSuccess: () => {
+            show.value = false
+            form.reset()
+
+            const msg = page.props.flash.success
+
+            if (msg === 'Employee moved to Trash.') {
+                $q.notify({
+                    type: 'negative',
+                    message: 'Employee Moved to trash.'
+                })
+            } else {
+                $q.notify({
+                    type: 'positive',
+                    message: 'Employee Deleted successfully.'
+                })
+            }
+        }
+    })
 }
+// function submitForm() {
+//   form.post(route('deletion.store', props.employee), {
+//     preserveScroll: true,
+//     onSuccess: () => {
+//       show.value = false
+//       form.reset()
+//         $q.notify({
+//             type: 'positive',
+//             message: 'Employee Deleted successfully.'
+//         })
+//     }
+//   })
+// }
 </script>

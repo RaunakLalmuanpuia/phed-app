@@ -1,13 +1,13 @@
 <script setup>
 import {computed} from "vue";
-import {useForm} from "@inertiajs/vue3";
+import {useForm, usePage} from "@inertiajs/vue3";
 import {useQuasar} from "quasar";
 
 import useUtils from "@/Compositions/useUtils";
 
 const {formatDate, formatDateTime} = useUtils();
 const $q = useQuasar();
-
+const page = usePage();
 const form = useForm({
 });
 
@@ -32,11 +32,20 @@ const approveRequest = (id) => {
         onFinish: () => {
             $q.loading.hide();
             form.reset();
-            $q.notify({
-                type: 'success',
-                message: 'Deletion Approved',
-                position: 'bottom',
-            });
+
+            const msg = page.props.flash.success
+
+            if (msg === 'Employee moved to Trash.') {
+                $q.notify({
+                    type: 'negative',
+                    message: 'Employee Moved to trash.'
+                })
+            } else {
+                $q.notify({
+                    type: 'positive',
+                    message: 'Employee Deleted successfully.'
+                })
+            }
         },
         onError: (errors) => {
             Object.values(errors).forEach((error) => {

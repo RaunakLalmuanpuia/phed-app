@@ -35,6 +35,15 @@ class DeletionController extends Controller
 
         DeletionDetail::create($validated);
 
+        // If employment_type is NOT "PE", delete the employee and redirect
+        if ($model->employment_type !== 'PE') {
+            // Delete employee
+            $model->delete();
+
+            return redirect()->route('employees.all')
+                ->with('success', 'Employee moved to Trash.');
+        }
+
         // Optionally update employment_type
         $model->update(['employment_type' => 'Deleted']);
 
@@ -122,10 +131,7 @@ class DeletionController extends Controller
             'approval_date' => now(),
         ]);
 
-        // Update employee
-        $employee->update([
-            'employment_type' => 'Deleted',
-        ]);
+
 
         // Create DeletionDetail from JSON
         $detail = DeletionDetail::create([
@@ -137,7 +143,21 @@ class DeletionController extends Controller
             'supporting_document' => $details['supporting_document'] ?? null,
         ]);
 
-        return redirect()->back()->with('success', 'Deletion request approved and employee marked as Deleted.');
+        // If employment_type is NOT "PE", delete the employee and redirect
+        if ($employee->employment_type !== 'PE') {
+            // Delete employee
+            $employee->delete();
+
+            return redirect()->route('employees.all')
+                ->with('success', 'Employee moved to Trash.');
+        }
+
+        // Update employee
+        $employee->update([
+            'employment_type' => 'Deleted',
+        ]);
+
+        return redirect()->back()->with('success', 'Deletion request approved.');
 
     }
 

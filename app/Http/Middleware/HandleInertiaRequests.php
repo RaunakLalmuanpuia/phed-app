@@ -44,6 +44,11 @@ class HandleInertiaRequests extends Middleware
             'roles'=>$request->user()?->getRoleNames() ?? [],
             'permissions'=>$request->user()?->getAllPermissions() ?? [],
             'flash_notification' => session()->get('flash-notification'),
+            // ✅ This line will share all flash messages (success, error, etc.)
+            'flash' => [
+                'success' => session('success'),
+                'error' => session('error'),
+            ],
         ];
     }
 }
