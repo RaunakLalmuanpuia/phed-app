@@ -115,9 +115,14 @@
                 <q-step name="2" title="Job Info" icon="work" :done="step > 2">
                     <div class="row q-col-gutter-sm">
                         <div class="col-12 col-sm-6">
-                            <q-input v-model="form.designation" label="Designation *" outlined dense
-                                     :error="!!form.errors?.designation" :error-message="form.errors?.designation"
-                                     :rules="[val => !!val || 'Designation is required']" />
+
+                            <q-select v-model="form.designation" :options="designations" label="Designation *" outlined dense
+                                      emit-value map-options :error="!!form.errors?.designation" :error-message="form.errors?.educational_qln"
+                                      :rules="[val => !!val || 'Designation is required']" />
+
+<!--                            <q-input v-model="form.designation" label="Designation *" outlined dense-->
+<!--                                     :error="!!form.errors?.designation" :error-message="form.errors?.designation"-->
+<!--                                     :rules="[val => !!val || 'Designation is required']" />-->
                         </div>
                         <div class="col-12 col-sm-6">
                             <q-select v-model="form.office" label="Office *" :options="offices" option-label="name" option-value="id"
@@ -274,7 +279,7 @@ import {ref} from 'vue'
 
 import useUtils from "@/Compositions/useUtils";
 
-const {  educationalQualifications, skills,formatDate } = useUtils();
+const {  educationalQualifications, designations, skills,formatDate } = useUtils();
 
 defineOptions({layout:BackendLayout})
 const props=defineProps(['documentTypes','offices']);

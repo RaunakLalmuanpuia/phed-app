@@ -53,6 +53,25 @@ export default function () {
         'Deleted',
     ];
 
+    const designations = [
+        'Asst.Mechanic',
+        'Carpenter',
+        'DEO',
+        'Driver',
+        'Electric Lineman',
+        'Electrician-II',
+        'Group-D',
+        'LDC',
+        'Plant Operator',
+        'Plumber',
+        'Pump Operator',
+        'SA',
+        'Sample Collector',
+        'Surveyor',
+        'Switchboard Operator',
+        'Welder',
+    ];
+
     const educationalQualifications = [
         'U/M',
         'HSLC',
@@ -82,6 +101,7 @@ export default function () {
 
     return {
         employment_types,
+        designations,
         educationalQualifications,
         skills,
         pay_matrix,
