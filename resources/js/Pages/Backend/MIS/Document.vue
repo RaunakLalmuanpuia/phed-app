@@ -535,6 +535,7 @@ const form = useForm({
     skill_at_present:"",
     documents:[],
     avatar:null,
+    delete_avatar: false,
 });
 
 
@@ -624,11 +625,10 @@ function handleFileChange(event) {
 }
 
 function resetPhoto() {
-    previewUrl.value = props.data?.avatar
-        ? `/storage/${props.data.avatar}`
-        : defaultUrl
+    previewUrl.value = defaultUrl
     form.avatar = null
     fileInput.value.value = null
+    form.delete_avatar = true
 }
 
 // ✅ Use reactive URL that changes on edit or file upload
@@ -692,6 +692,7 @@ const openDialog = (row) => {
             }
         });
     }
+
 
     if (row?.avatar) {
         previewUrl.value = `/storage/${row.avatar}` // Laravel public storage path
@@ -768,6 +769,12 @@ const submitForm = () => {
             formData.append(`documents[${typeId}]`, doc.file);
         }
     });
+
+    if (form.delete_avatar) {
+        formData.append('delete_avatar', 1)
+    }
+
+
     if (form.avatar && typeof form.avatar !== 'string') {
         formData.append('avatar', form.avatar)
     }

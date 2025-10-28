@@ -820,6 +820,7 @@ class EmployeeController extends Controller
 
         $validated = $request->validate([
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:5120', // 800KB limit
+            'delete_avatar' => 'nullable|boolean',
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'mobile' => ['required', 'string', 'max:20', Rule::unique('employees', 'mobile')->ignore($model->id)],
@@ -845,6 +846,15 @@ class EmployeeController extends Controller
         ]);
 
         $employee = DB::transaction(function () use ($validated, $request, $model) {
+
+            // ✅ Handle avatar deletion
+            if ($request->boolean('delete_avatar')) {
+                if ($model->avatar && Storage::disk('public')->exists($model->avatar)) {
+                    Storage::disk('public')->delete($model->avatar);
+                }
+                $model->avatar = null; // remove from DB
+            }
+
             if ($request->hasFile('avatar')) {
                 $file = $request->file('avatar');
 

@@ -435,6 +435,7 @@ const form=useForm({
     scheme: props.data?.scheme?.id ?? null,
     documents:[],
     avatar:null,
+    delete_avatar: false,
 })
 const fileInput = ref(null)
 const defaultUrl = 'https://storage.googleapis.com/a1aa/image/089155c9-d1c1-4945-5728-c9bdb3576171.jpg'
@@ -459,12 +460,13 @@ function handleFileChange(event) {
     }
 }
 
+
 function resetPhoto() {
-    previewUrl.value = props.data?.avatar
-        ? `/storage/${props.data.avatar}`
-        : defaultUrl
+    previewUrl.value =  defaultUrl
     form.avatar = null
     fileInput.value.value = null
+    form.delete_avatar = true
+
 }
 
 // ✅ Use reactive URL that changes on edit or file upload
@@ -572,6 +574,10 @@ const submit = () => {
             form.scheme = ''
         }
         formData.append('scheme', form.scheme?.id || form.scheme)
+
+        if (form.delete_avatar) {
+            formData.append('delete_avatar', 1)
+        }
 
         if (form.avatar && typeof form.avatar !== 'string') {
             formData.append('avatar', form.avatar)

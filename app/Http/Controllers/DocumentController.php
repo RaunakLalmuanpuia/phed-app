@@ -137,13 +137,24 @@ class DocumentController extends Controller
             'skill_category' => 'nullable|string|max:255',
             'skill_at_present' => 'nullable|string|max:255',
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:10240', // 800KB limit
+            'delete_avatar' => 'nullable|boolean',
             'documents' => 'nullable|array',
             'documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ]);
 
 
+        // ✅ Handle avatar deletion
+        if ($request->boolean('delete_avatar')) {
+            if ($model->avatar && Storage::disk('public')->exists($model->avatar)) {
+                Storage::disk('public')->delete($model->avatar);
+            }
+            $model->avatar = null; // remove from DB
+        }
+
+
         // ✅ Update employee basic details
         $model->update($validated);
+
 
 
         if ($request->hasFile('documents')) {
