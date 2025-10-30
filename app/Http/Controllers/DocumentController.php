@@ -140,6 +140,8 @@ class DocumentController extends Controller
             'delete_avatar' => 'nullable|boolean',
             'documents' => 'nullable|array',
             'documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'deleted_documents' => 'nullable|array',
+            'deleted_documents.*' => 'integer|exists:document_types,id',
         ]);
 
 
@@ -154,7 +156,21 @@ class DocumentController extends Controller
 
         // ✅ Update employee basic details
         $model->update($validated);
+        // ✅ Handle document deletion
+        if ($request->filled('deleted_documents')) {
+            foreach ($request->deleted_documents as $docTypeId) {
+                $document = $model->documents()
+                    ->where('document_type_id', $docTypeId)
+                    ->first();
 
+                if ($document) {
+                    if (Storage::disk('public')->exists($document->path)) {
+                        Storage::disk('public')->delete($document->path);
+                    }
+                    $document->delete();
+                }
+            }
+        }
 
 
         if ($request->hasFile('documents')) {

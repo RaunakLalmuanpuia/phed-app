@@ -468,6 +468,15 @@
                                                 @click="viewDocument(form.documents[type.id].url)"
                                                 class="q-ml-sm"
                                             />
+                                            <q-btn
+                                                round
+                                                dense
+                                                flat
+                                                icon="delete"
+                                                color="negative"
+                                                @click="deleteDocument(type.id)"
+                                                class="q-ml-sm"
+                                            />
                                         </template>
                                     </q-file>
 
@@ -534,6 +543,7 @@ const form = useForm({
     skill_category:"",
     skill_at_present:"",
     documents:[],
+    deletedDocuments:[],
     avatar:null,
     delete_avatar: false,
 });
@@ -634,7 +644,18 @@ function resetPhoto() {
 // ✅ Use reactive URL that changes on edit or file upload
 const previewUrl = ref('')
 
+const deleteDocument = (typeId) => {
+    if (form.documents[typeId]) {
+        // Add typeId to deletedDocuments if not already added
+        if (!form.deletedDocuments) form.deletedDocuments = [];
+        if (!form.deletedDocuments.includes(typeId)) {
+            form.deletedDocuments.push(typeId);
+        }
 
+        // Clear the document preview locally
+        form.documents[typeId] = { file: null, url: null };
+    }
+};
 const pagination = ref({
     sortBy: "name",
     descending: false,
@@ -762,6 +783,15 @@ const submitForm = () => {
     formData.append('date_of_retirement', form.date_of_retirement || '')
     formData.append('skill_category', form.skill_category || '')
     formData.append('skill_at_present', form.skill_at_present || '')
+
+    // Append deleted documents
+    if (form.deletedDocuments && form.deletedDocuments.length > 0) {
+        form.deletedDocuments.forEach(id => {
+            formData.append('deleted_documents[]', id);
+        });
+    }
+
+
 
     // Append only new files
     Object.entries(form.documents).forEach(([typeId, doc]) => {
