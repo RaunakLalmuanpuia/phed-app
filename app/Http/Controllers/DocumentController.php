@@ -186,8 +186,8 @@ class DocumentController extends Controller
                     $randomString = \Str::random(8);
                     $extension = $file->getClientOriginalExtension();
                     $generatedName = $documentType->name . '_' . $randomString . '.' . $extension;
-
                     $path = $file->storeAs('documents', $generatedName, 'public');
+//                    $path = $file->storeAs('documents', $generatedName, 'local');
 
                     $model->documents()->updateOrCreate(
                         ['document_type_id' => $typeId],
@@ -344,5 +344,32 @@ class DocumentController extends Controller
         return redirect()->back()->with('info', 'Document delete request rejected.');
     }
 
+
+    public function viewDocument($employeeId, $documentId)
+    {
+        $document = Document::where('employee_id', $employeeId)->findOrFail($documentId);
+
+        if (!Storage::disk('local')->exists($document->path)) {
+            abort(404, 'File not found');
+        }
+
+        $mime = Storage::disk('local')->mimeType($document->path);
+        $contents = Storage::disk('local')->get($document->path);
+
+        return response($contents, 200)->header('Content-Type', $mime);
+    }
+
+    //:href="route('employees.documents.view', { employee: data.id, document: doc.id })"
+    public function downloadDocument($employeeId, $documentId)
+    {
+        $document = Document::where('employee_id', $employeeId)->findOrFail($documentId);
+
+        if (!Storage::disk('local')->exists($document->path)) {
+            abort(404, 'File not found');
+        }
+
+        return Storage::disk('local')->download($document->path, $document->name);
+    }
+    //:href="route('employees.documents.download', { employee: data.id, document: doc.id })"
 
 }

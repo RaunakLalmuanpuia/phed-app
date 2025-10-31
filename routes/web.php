@@ -274,6 +274,13 @@ Route::group(['middleware'=>'auth','prefix' => 'document'], function () {
     Route::post('delete/{model}/approve', [DocumentController::class, 'approveDelete'])->name('document.approveDelete');
     Route::post('delete/{model}/reject', [DocumentController::class, 'rejectDelete'])->name('document.rejectDelete');
 
+    //View and Download Private Document
+    Route::get('/{employee}/{document}/view', [DocumentController::class, 'viewDocument'])
+        ->name('employees.documents.view');
+
+    Route::get('/{employee}/{document}/download', [DocumentController::class, 'downloadDocument'])
+        ->name('employees.documents.download');
+
 });
 
 
