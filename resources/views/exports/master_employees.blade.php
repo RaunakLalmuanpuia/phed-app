@@ -1,7 +1,7 @@
 <table>
     <thead>
     <tr>
-        <th colspan="23" style="text-align: center; font-weight: bold; font-size: 16px;">
+        <th colspan="25" style="text-align: center; font-weight: bold; font-size: 16px;">
             Master Employees List
         </th>
     </tr>
@@ -14,6 +14,8 @@
         <th>Employment Type</th>
         <th>Designation</th>
         <th>Post/Work Assigned</th>
+        <th>Educational Qln</th>
+        <th>Technical Qln</th>
         <th>Date of Initial Engagement</th>
         <th>Is Scheme</th>
         <th>Is Deleted</th>
@@ -56,6 +58,8 @@
             <td>{{ $employmentType }}</td>
             <td>{{ $employee->designation }}</td>
             <td>{{ $employee->post_assigned }}</td>
+            <td>{{ $employee->educational_qln }}</td>
+            <td>{{ $employee->technical_qln }}</td>
             <td>
                 {{ $employee->date_of_engagement ? \Carbon\Carbon::parse($employee->date_of_engagement)->format('d-m-Y') : '' }}
             </td>
