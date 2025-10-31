@@ -297,9 +297,12 @@
                                 <div v-if="currentRow?.employment_type === 'PE' || currentRow?.employment_type === 'WC'"  class="row q-mb-sm items-center">
                                     <div class="col-4 text-subtitle2 text-grey-8">Designation</div>
                                     <div class="col-8 text-body1">
-                                        <q-input v-model="form.designation" outlined dense
-                                                 :error="!!form.errors?.designation" :error-message="form.errors?.designation"
-                                                  />
+                                        <q-select v-model="form.designation" :options="designations" outlined dense
+                                                  emit-value map-options :error="!!form.errors?.designation" :error-message="form.errors?.designation"
+                                                  :rules="[val => !!val || 'Designation is required']" />
+<!--                                        <q-input v-model="form.designation" outlined dense-->
+<!--                                                 :error="!!form.errors?.designation" :error-message="form.errors?.designation"-->
+<!--                                                  />-->
 
                                     </div>
                                 </div>
@@ -519,7 +522,7 @@ defineOptions({ layout: BackendLayout });
 
 const props = defineProps(["office", 'documentTypes',"canUpdateDocument"]);
 
-const {educationalQualifications, skills,formatDate} = useUtils();
+const {educationalQualifications,designations, skills,formatDate} = useUtils();
 const q = useQuasar();
 
 // Form

@@ -117,7 +117,7 @@
                         <div class="col-12 col-sm-6">
 
                             <q-select v-model="form.designation" :options="designations" label="Designation *" outlined dense
-                                      emit-value map-options :error="!!form.errors?.designation" :error-message="form.errors?.educational_qln"
+                                      emit-value map-options :error="!!form.errors?.designation" :error-message="form.errors?.designation"
                                       :rules="[val => !!val || 'Designation is required']" />
 
 <!--                            <q-input v-model="form.designation" label="Designation *" outlined dense-->
