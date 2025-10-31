@@ -1,11 +1,12 @@
 <table>
     <thead>
     <tr>
-        <th colspan="25" style="text-align: center; font-weight: bold; font-size: 16px;">
+        <th colspan="26" style="text-align: center; font-weight: bold; font-size: 16px;">
             Master Employees List
         </th>
     </tr>
     <tr>
+        <th>Emp. Code</th>
         <th>Name</th>
         <th>Fathers/Mothers Name</th>
         <th>Date of Birth</th>
@@ -48,6 +49,7 @@
 
 
         <tr>
+            <td>{{ $employee->employee_code }}</td>
             <td>{{ $employee->name }}</td>
             <td>{{ $employee->parent_name }}</td>
             <td>
