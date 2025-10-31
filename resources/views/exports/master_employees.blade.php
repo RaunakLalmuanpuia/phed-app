@@ -1,7 +1,7 @@
 <table>
     <thead>
     <tr>
-        <th colspan="22" style="text-align: center; font-weight: bold; font-size: 16px;">
+        <th colspan="23" style="text-align: center; font-weight: bold; font-size: 16px;">
             Master Employees List
         </th>
     </tr>
@@ -14,6 +14,7 @@
         <th>Employment Type</th>
         <th>Designation</th>
         <th>Post/Work Assigned</th>
+        <th>Date of Initial Engagement</th>
         <th>Is Scheme</th>
         <th>Is Deleted</th>
         @foreach($documentTypes as $docType)
@@ -55,6 +56,9 @@
             <td>{{ $employmentType }}</td>
             <td>{{ $employee->designation }}</td>
             <td>{{ $employee->post_assigned }}</td>
+            <td>
+                {{ $employee->date_of_engagement ? \Carbon\Carbon::parse($employee->date_of_engagement)->format('d-m-Y') : '' }}
+            </td>
             <td>{{ $employee->scheme_id ? 'Yes' : 'No' }}</td>
             <td> {{ $employee->employment_type === 'Deleted' ? 'Yes' : 'No' }}</td>
             @foreach($documentTypes as $docType)

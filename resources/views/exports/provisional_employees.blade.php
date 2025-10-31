@@ -16,6 +16,7 @@
         <th>Educational Qln</th>
         <th>Technical Qln</th>
         <th>Name of Office/Workplace</th>
+        <th>Date of Initial Engagement</th>
         <th>Remuneration</th>
         <th>Medical All.</th>
         <th>Total</th>
@@ -38,6 +39,9 @@
             <td>{{ $employee->educational_qln }}</td>
             <td>{{ $employee->technical_qln }}</td>
             <td>{{ $employee->name_of_workplace }}</td>
+            <td>
+                {{ $employee->date_of_engagement ? \Carbon\Carbon::parse($employee->date_of_engagement)->format('d-m-Y') : '' }}
+            </td>
             <td>{{ optional($employee->remunerationDetail)->remuneration }}</td>
             <td>{{ optional($employee->remunerationDetail)->medical_amount }}</td>
             <td>{{ optional($employee->remunerationDetail)->total }}</td>
