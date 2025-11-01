@@ -627,6 +627,7 @@ const module = reactive({
             {route_name: 'mis.export', label: 'Export', permission: 'export-employee'},
             {route_name: 'mis.import', label: 'Import', permission: 'import-employee'},
             {route_name: 'mis.import-work-charge', label: 'Import Work Charge Employee', permission: 'import-employee'},
+            {route_name: 'mis.import-engagement', label: 'Import Date of Engagement', permission: 'import-employee'},
             {route_name: 'mis.create-wc-employee', label: 'Add WC Employee', permission: 'create-employee'},
             {route_name: 'mis.create-pe-employee', label: 'Add PE Employee', permission: 'create-employee'},
             {route_name: 'mis.create-mr-employee', label: 'Add MR Employee', permission: 'create-employee'},

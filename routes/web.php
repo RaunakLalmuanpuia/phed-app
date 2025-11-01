@@ -132,7 +132,10 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
 
 
         Route::get('import-work-charge', [MISController::class, 'importWorkCharge'])->middleware('can:import-employee')->name('mis.import-work-charge');
-        Route::post('import-employee', [MISController::class, 'importWorkChargeEmployee'])->middleware('can:import-employee')->name('mis.import-work-charge-employee');
+        Route::post('import-work-charge-employee', [MISController::class, 'importWorkChargeEmployee'])->middleware('can:import-employee')->name('mis.import-work-charge-employee');
+
+        Route::get('import-engagement', [MISController::class, 'importDateOfEngagement'])->middleware('can:import-employee')->name('mis.import-engagement');
+        Route::post('import-engagement-employee', [MISController::class, 'importDateOfEngagementEmployee'])->middleware('can:import-employee')->name('mis.import-engagement-employee');
 
         Route::get('export', [MISController::class, 'export'])->middleware('can:export-employee')->name('mis.export');
         Route::post('export-employee', [MISController::class, 'exportEmployee'])->middleware('can:export-employee')->name('mis.export-employee');

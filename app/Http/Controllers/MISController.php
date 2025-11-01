@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\EmployeeEngagementImport;
 use App\Imports\WorkchargeEmployeesImport;
 use App\Models\DocumentType;
 use App\Models\Employee;
@@ -117,6 +118,32 @@ class MISController extends Controller
         Excel::import(new WorkchargeEmployeesImport($request->office), $request->file('document'));
 
         return redirect()->back()->with('message', 'Work-Charge employee data imported successfully');
+    }
+
+    public function importDateOfEngagement(Request $request){
+
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('import-employee'),403,'Access Denied');
+
+
+
+        return Inertia::render('Backend/MIS/ImportEngagement', [
+            'canImport'=>$user->can('import-employee'),
+        ]);
+    }
+
+    public function importDateOfEngagementEmployee(Request $request)
+    {
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('import-employee'), 403, 'Access Denied');
+
+        $request->validate([
+            'document' => 'required|mimes:xlsx,csv',
+        ]);
+
+        Excel::import(new EmployeeEngagementImport(), $request->file('document'));
+
+        return back()->with('success', 'Employee engagement dates updated successfully!');
     }
 
     public function export(Request $request){
