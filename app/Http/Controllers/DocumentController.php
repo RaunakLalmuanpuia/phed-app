@@ -20,7 +20,8 @@ class DocumentController extends Controller
     {
         $user = $request->user();
 
-        abort_if(!$user->hasPermissionTo('request-document-edit'),403,'Access Denied');
+
+        abort_if(!$user->hasAnyPermission(['request-document-update-mr','request-document-update-pe','request-document-update-wc']),403,'Access Denied');
 
         $validated = $request->validate([
             'files' => ['required', 'array', 'min:1'],

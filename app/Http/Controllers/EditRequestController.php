@@ -15,6 +15,12 @@ class EditRequestController extends Controller
 
     public function request(Request $request, Employee $model)
     {
+
+        $user = $request->user();
+
+        abort_if(!$user->hasAnyPermission(['request-edit-mr','request-edit-pe','request-edit-wc']),403,'Access Denied');
+
+
         $validated = $request->validate([
             'requested_changes' => 'required|array',
             'documents' => 'nullable|array',

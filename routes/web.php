@@ -260,14 +260,16 @@ Route::group(['middleware'=>'auth','prefix' => 'employees'], function () {
 
 //Edit Request
 Route::group(['middleware'=>'auth','prefix' => 'edit'], function () {
-    Route::post('request/{model}', [EditRequestController::class, 'request'])->middleware('can:request-edit')->name('edit.request');
+    Route::post('request/{model}', [EditRequestController::class, 'request'])->name('edit.request'); // removed Permission check
+//    Route::post('request/{model}', [EditRequestController::class, 'request'])->middleware('can:request-edit')->name('edit.request');
     Route::post('approve/{model}', [EditRequestController::class, 'approve'])->middleware('can:approve-edit')->name('edit.approve');
     Route::post('reject/{model}', [EditRequestController::class, 'reject'])->middleware('can:approve-edit')->name('edit.reject');
 });
 
 //Document Edit Request
 Route::group(['middleware'=>'auth','prefix' => 'document'], function () {
-    Route::post('request/{model}', [DocumentController::class, 'request'])->middleware('can:request-document-edit')->name('document.request');
+    Route::post('request/{model}', [DocumentController::class, 'request'])->name('document.request'); // removed Permission check
+//    Route::post('request/{model}', [DocumentController::class, 'request'])->middleware('can:request-document-edit')->name('document.request');
     Route::post('approve/{model}', [DocumentController::class, 'approve'])->middleware('can:approve-document-edit')->name('document.approve');
     Route::post('reject/{model}', [DocumentController::class, 'reject'])->middleware('can:approve-document-edit')->name('document.reject');
     Route::post('update/{model}', [DocumentController::class, 'updateEmployeeDocument'])->middleware('can:update-document')->name('document.update');
