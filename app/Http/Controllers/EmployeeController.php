@@ -645,10 +645,19 @@ class EmployeeController extends Controller
             'canEditDelete' => $user->can('edit-delete'),
             'canDeleteDocument' => $user->can('delete-document'),
 
-            'canRequestEdit' => $user->can('request-edit'),
+            'canRequestEditMr' => $user->can('request-edit-mr'),
+            'canRequestDocumentEditMr' => $user->can('request-document-update-mr'),
+
+            'canRequestEditPe' => $user->can('request-edit-pe'),
+            'canRequestDocumentEditPe' => $user->can('request-document-update-pe'),
+
+            'canRequestEditWc' => $user->can('request-edit-wc'),
+            'canRequestDocumentEditWc' => $user->can('request-document-update-wc'),
+
+
             'canRequestDelete' => $user->can('request-delete'),
             'canRequestTransfer' => $user->can('request-transfer'),
-            'canRequestDocumentEdit' => $user->can('request-document-edit'),
+
 
             'canApproveEdit' => $user->can('approve-edit'),
             'canApproveDelete' => $user->can('approve-delete'),

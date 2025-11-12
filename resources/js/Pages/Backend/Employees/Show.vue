@@ -237,8 +237,23 @@
                                 :class="showDeletionAlert ? 'text-red' : ''"
                             />
 
+<!--                            <q-tab-->
+<!--                                v-if="canRequestEdit"-->
+<!--                                name="request_edit"-->
+<!--                                label="Request Edit"-->
+<!--                                icon="edit"-->
+<!--                                :alert="showEditAlert"-->
+<!--                                alert-icon="circle"-->
+<!--                                alert-color="red"-->
+<!--                                :class="showEditAlert ? 'text-red' : ''"-->
+<!--                            />-->
+
                             <q-tab
-                                v-if="canRequestEdit"
+                                v-if="
+                                    (data?.employment_type?.trim() === 'MR' && canRequestEditMr) ||
+                                    (data?.employment_type?.trim() === 'PE' && canRequestEditPe) ||
+                                    (data?.employment_type?.trim() === 'WC' && canRequestEditWc)
+                                  "
                                 name="request_edit"
                                 label="Request Edit"
                                 icon="edit"
@@ -264,11 +279,25 @@
                             />
                         </q-tabs>
 
+                        <Document
+                            v-if="tab === 'document'"
+                            :data="data"
+                            :documentTypes="documentTypes"
+                            :canDeleteDocument="canDeleteDocument"
+                            :canApproveDocumentEdit="canApproveDocumentEdit"
+                            :canRequestDocumentEdit="
+                                (data?.employment_type?.trim() === 'MR' && canRequestDocumentEditMr) ||
+                                (data?.employment_type?.trim() === 'PE' && canRequestDocumentEditPe) ||
+                                (data?.employment_type?.trim() === 'WC' && canRequestDocumentEditWc)
+                              "
+                            :canRequestDocumentDelete="canRequestDocumentDelete"
+                            :canApproveDocumentDelete="canApproveDocumentDelete"
+                        />
 
 
-                        <Document v-if="tab === 'document'" :data="data"  :documentTypes="documentTypes" :canDeleteDocument="canDeleteDocument"
-                                  :canApproveDocumentEdit="canApproveDocumentEdit" :canRequestDocumentEdit="canRequestDocumentEdit"
-                                    :canRequestDocumentDelete = 'canRequestDocumentDelete' :canApproveDocumentDelete="canApproveDocumentDelete"/>
+<!--                        <Document v-if="tab === 'document'" :data="data"  :documentTypes="documentTypes" :canDeleteDocument="canDeleteDocument"-->
+<!--                                  :canApproveDocumentEdit="canApproveDocumentEdit" :canRequestDocumentEdit="canRequestDocumentEdit"-->
+<!--                                    :canRequestDocumentDelete = 'canRequestDocumentDelete' :canApproveDocumentDelete="canApproveDocumentDelete"/>-->
 
                         <EditRequest v-if="tab === 'edit'" :data="data" />
                         <TransferRequest v-if="tab === 'transfer_request'" :data="data" :office="office" />
@@ -336,8 +365,10 @@ const {formatDate} = useUtils();
 defineOptions({layout:BackendLayout})
 
 const props=defineProps(['data','office','documentTypes','canCreate','canEdit','canDelete','canCreateRemuneration','canCreateTransfer','canDeleteDocument',
-    'canDeleteTransfer','canCreateEngagementCard', 'canDownloadEngagementCard','canDeleteEngagementCard','canRequestEdit','canRequestDelete','canRequestTransfer',
-    'canApproveEdit','canApproveTransfer','canApproveDelete','canEditDelete','canRequestDocumentEdit','canApproveDocumentEdit', 'canRequestDocumentDelete','canApproveDocumentDelete']);
+    'canDeleteTransfer','canCreateEngagementCard', 'canDownloadEngagementCard','canDeleteEngagementCard',
+    'canRequestEditMr','canRequestDocumentEditMr', 'canRequestEditPe','canRequestDocumentEditPe','canRequestEditWc','canRequestDocumentEditWc',
+    'canRequestDelete','canRequestTransfer',
+    'canApproveEdit','canApproveTransfer','canApproveDelete','canEditDelete','canApproveDocumentEdit', 'canRequestDocumentDelete','canApproveDocumentDelete']);
 
 const tab = ref('document')
 
