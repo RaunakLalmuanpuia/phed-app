@@ -163,6 +163,9 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
         Route::get('summary', [RemunerationController::class, 'remunerationSummary'])->middleware('can:view-remuneration')->name('remuneration.summary');
         Route::get('json-remuneration-summary', [RemunerationController::class, 'jsonRemunerationSummary'])->middleware('can:view-remuneration')->name('remuneration.json-summary');
 
+        Route::get('summary-post-wise', [RemunerationController::class, 'remunerationSummaryPostWise'])->middleware('can:view-remuneration')->name('remuneration.summary-post-wise');
+        Route::get('json-remuneration-summary-post-wise', [RemunerationController::class, 'jsonRemunerationSummaryPostWise'])->middleware('can:view-remuneration')->name('remuneration.json-summary-post-wise');
+
         Route::post('store/{model}', [RemunerationController::class, 'store'])->middleware('can:create-remuneration')->name('remuneration.store');
         Route::put('update/{model}', [RemunerationController::class, 'update'])->middleware('can:edit-remuneration')->name('remuneration.update');
         Route::post('bulk-update', [RemunerationController::class, 'bulkUpdate'])->middleware('can:bulk-update-remuneration')->name('remuneration.bulk-update');
@@ -355,6 +358,8 @@ Route::group(['middleware'=>'auth','prefix' => 'export'], function () {
     Route::get('master', [ExportController::class, 'exportMaster'])->middleware('can:export-master')->name('export.master');
 
     Route::get('remuneration-summary', [ExportController::class, 'exportRemunerationSummary'])->middleware('can:export-remuneration-summary')->name('export.remuneration-summary');
+
+    Route::get('remuneration-summary-post-wise', [ExportController::class, 'exportRemunerationSummaryPostWise'])->middleware('can:export-remuneration-summary')->name('export.remuneration-summary-post-wise');
 
     Route::get('office-remuneration', [ExportController::class, 'exportOfficeRemuneration'])->middleware('can:export-remuneration-summary')->name('export.office-remuneration');
 });

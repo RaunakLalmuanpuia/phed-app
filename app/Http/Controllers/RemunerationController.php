@@ -148,6 +148,70 @@ class RemunerationController extends Controller
         ]);
     }
 
+    public function remunerationSummaryPostWise(Request $request){
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('view-remuneration'),403,'Access Denied');
+
+        $office = Office::whereHas('employees', function($query) {
+            $query->where('employment_type', 'PE');
+        })->get();
+
+
+
+        return Inertia::render('Backend/Remunerations/SummaryPostWise', [
+            'office' => $office,
+            'canGenerateRemuneration'=>$user->can('generate-remuneration'),
+        ]);
+    }
+
+
+    public function jsonRemunerationSummaryPostWise(Request $request)
+    {
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('view-remuneration'),403,'Access Denied');
+
+        // Fetch all PE employees with remuneration
+        $employees = Employee::where('employment_type', 'PE')
+            ->with('remunerationDetail')
+            ->get();
+
+        // Group by designation
+        $grouped = $employees->groupBy('designation');
+
+        // Prepare rows
+        $rows = $grouped->map(function ($group, $designation) {
+
+            $employeeCount = $group->count();
+
+            $oneMonthWages = $group->sum(function ($emp) {
+                return optional($emp->remunerationDetail)->round_total ?? 0;
+            });
+
+            return [
+                'designation'    => $designation,
+                'employee_count' => $employeeCount,
+                'one_month'      => $oneMonthWages,
+                'three_months'   => $oneMonthWages * 3,
+                'six_months'     => $oneMonthWages * 6,
+                'one_year'       => $oneMonthWages * 12,
+            ];
+        })->values();
+
+        // Totals
+        $totals = [
+            'designation'    => 'TOTAL',
+            'employee_count' => $rows->sum('employee_count'),
+            'one_month'      => $rows->sum('one_month'),
+            'three_months'   => $rows->sum('three_months'),
+            'six_months'     => $rows->sum('six_months'),
+            'one_year'       => $rows->sum('one_year'),
+        ];
+
+        return response()->json([
+            'data'   => $rows,
+            'totals' => $totals,
+        ]);
+    }
 
     public function store(Request $request, Employee $model){
 

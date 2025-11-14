@@ -7,6 +7,7 @@ use App\Exports\DeletedEmployeesExport;
 use App\Exports\MasterEmployeesExport;
 use App\Exports\MusterRollEmployeesExport;
 use App\Exports\OfficeRemunerationSheet;
+use App\Exports\PostWiseRemunerationExport;
 use App\Exports\RemunerationExport;
 use App\Exports\SchemeEmployeesExport;
 use App\Exports\WorkChargeEmployeesExport;
@@ -128,6 +129,16 @@ class ExportController extends Controller
 
         $year =  Carbon::now()->year;
         return Excel::download(new RemunerationExport($year), "Remuneration-{$year}.xlsx");
+
+    }
+
+    public function exportRemunerationSummaryPostWise(Request $request){
+
+        $user = $request->user();
+        abort_if(!$user->hasPermissionTo('export-remuneration-summary'),403,'Access Denied');
+
+        $year =  Carbon::now()->year;
+        return Excel::download(new PostWiseRemunerationExport(), "Post_wise_Remuneration-{$year}.xlsx");
 
     }
 

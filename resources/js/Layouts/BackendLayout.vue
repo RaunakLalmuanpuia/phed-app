@@ -616,6 +616,7 @@ const module = reactive({
         label: 'Remuneration',
         children: [
             {route_name: 'remuneration.summary', label: 'Summary', permission: 'view-remuneration'},
+            {route_name: 'remuneration.summary-post-wise', label: 'Summary - Post', permission: 'view-remuneration'},
             {route_name: 'remuneration.detail', label: 'Details', permission: 'generate-remuneration'},
 
         ]
