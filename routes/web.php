@@ -169,6 +169,7 @@ Route::group(['prefix' => 'admin','middleware'=>'auth'], function () {
         Route::post('store/{model}', [RemunerationController::class, 'store'])->middleware('can:create-remuneration')->name('remuneration.store');
         Route::put('update/{model}', [RemunerationController::class, 'update'])->middleware('can:edit-remuneration')->name('remuneration.update');
         Route::post('bulk-update', [RemunerationController::class, 'bulkUpdate'])->middleware('can:bulk-update-remuneration')->name('remuneration.bulk-update');
+        Route::post('update-increment-date-filtered', [RemunerationController::class, 'updateIncrementDateForFilteredEmployees'])->middleware('can:bulk-update-remuneration')->name('remuneration.updateFilteredIncrementDate');
     });
 
 });

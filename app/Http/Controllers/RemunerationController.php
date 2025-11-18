@@ -276,4 +276,55 @@ class RemunerationController extends Controller
 
         return back()->with('success', 'Employees updated successfully!');
     }
+    // Updates increment date and remuneration for filtered employees
+    public function updateIncrementDateForFilteredEmployees(Request $request)
+    {
+        // Validate incoming filters
+        $validated = $request->validate([
+            'offices' => ['required'],
+            'incrementYear' => ['required', 'integer'],
+        ]);
+
+        $officeId = $validated['offices'];
+        $incrementYear = $validated['incrementYear'];
+
+        // Calculate next increment date: 1 January of (incrementYear + 1)
+        $newIncrementDate = now()->year($incrementYear + 1)->startOfYear();
+
+        // Fetch employees for the selected office and increment year
+        $employees = Employee::where('office_id', $officeId)
+            ->where('employment_type', 'PE')
+            ->whereHas('remunerationDetail', function ($q) use ($incrementYear) {
+                $q->whereYear('next_increment_date', $incrementYear);
+            })
+            ->with('remunerationDetail')
+            ->get();
+
+        // No matching employees? Return error
+        if ($employees->isEmpty()) {
+            return response()->json([
+                'message' => 'No employees found for the selected criteria.'
+            ], 404);
+        }
+
+        // Update remuneration and increment date for each employee
+        foreach ($employees as $emp) {
+            // Set current remuneration to total (next increment amount)
+            $emp->remunerationDetail->remuneration = $emp->remunerationDetail->total;
+
+            // Apply new increment date
+            $emp->remunerationDetail->next_increment_date = $newIncrementDate;
+
+            $emp->remunerationDetail->save(); // triggers model boot calculations
+        }
+
+        // Return success response
+        return response()->json([
+            'message' => 'Increment dates updated successfully!',
+            'updated_count' => $employees->count(),
+            'new_increment_date' => $newIncrementDate->format('Y-m-d'),
+        ]);
+    }
+
+
 }

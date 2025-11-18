@@ -99,6 +99,14 @@
 
             <template v-slot:top-right>
 
+                <q-btn
+                    v-if="canBulkUpdateRemuneration && rows.length > 0"
+                    class="q-mr-sm"
+                    label="Set New Increment Date"
+                    color="primary"
+                    @click="updateIncrementForFiltered"
+                />
+
                 <q-btn class="q-mr-sm"  icon="upload"  v-if="selectedEmployees.length > 0 && canBulkUpdateRemuneration" label="Update" color="primary"  @click="openBulkUpdateDialog" />
 
                 <q-input
@@ -116,12 +124,7 @@
                     </template>
                 </q-input>
 
-
             </template>
-
-
-
-
 
             <template v-slot:body-cell-office="props">
                 <q-td :props="props">
@@ -540,6 +543,70 @@ function submitBulkUpdate () {
 
 const goBack = () => {
     window.history.back()
+}
+
+// Confirms and updates increment date for filtered employees
+function updateIncrementForFiltered() {
+
+    // Basic validation before dialog
+    if (!filters.value.offices || !filters.value.incrementYear) {
+        return q.notify({
+            type: "negative",
+            message: "Please select Office(s) and Increment Year"
+        });
+    }
+
+    // Prepare next increment date for display (DD-MM-YYYY)
+    const year = parseInt(filters.value.incrementYear) + 1;
+    const newDate = `01-01-${year}`;
+
+    // Find the selected office name based on ID
+    const selectedOfficeId = Number(filters.value.offices);
+    const selectedOffice = props.office.find(o => o.id === selectedOfficeId);
+    const selectedOfficeName = selectedOffice ? selectedOffice.name : 'Unknown Office';
+
+    // Show confirmation dialog
+    q.dialog({
+        title: 'Confirm Update',
+        message: `
+            <div>
+                <p><strong>Selected Office:</strong> ${selectedOfficeName}</p>
+                <p><strong>Current Increment Year:</strong> ${filters.value.incrementYear}</p>
+                <p><strong>New Increment Date to Apply:</strong> ${newDate}</p>
+                <br>
+                <span style="color:#C62828"><strong>
+                    This will update all employees matching the filters. Each employee’s
+                    <strong>remuneration</strong> will be updated to their
+                    <strong>next increment amount</strong>, and the new increment date will be applied.
+                </strong></span>
+            </div>
+        `,
+        html: true,
+        ok: { label: 'Yes, Update', color: 'primary' },
+        cancel: { label: 'Cancel', flat: true }
+    }).onOk(() => {
+
+        // Make API request after user confirms
+        axios.post(route('remuneration.updateFilteredIncrementDate'), {
+            offices: filters.value.offices,
+            incrementYear: filters.value.incrementYear,
+        })
+            .then(res => {
+                q.notify({ type: "positive", message: res.data.message });
+
+                // Refresh table after update
+                if (empTable.value) {
+                    empTable.value.requestServerInteraction();
+                }
+            })
+            .catch(err => {
+                q.notify({
+                    type: "negative",
+                    message: err?.response?.data?.message
+                });
+            });
+
+    });
 }
 
 
