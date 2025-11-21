@@ -3,7 +3,7 @@
         <!-- Header -->
         <div class="flex items-center justify-between q-pa-md bg-white">
             <div>
-                <div class="stitle">Remuneration Details</div>
+                <div class="stitle">Provisional Employees Increment System</div>
                 <q-breadcrumbs class="text-dark">
                     <q-breadcrumbs-el
                         @click="$inertia.get(route('dashboard'))"
@@ -82,20 +82,33 @@
         <br />
 
         <!-- Data Table -->
-        <q-table
-            v-if="showTable"
-            ref="empTable"
-            title="Employees Remuneration"
-            :rows="rows"
-            :columns="columns"
-            row-key="id"
-            :loading="loading"
-            v-model:pagination="pagination"
-            :rows-per-page-options="[5, 10, 20, 50]"
-            @request="onRequest"
-            selection="multiple"
-            v-model:selected="selectedEmployees"
-        >
+<!--        <q-table-->
+<!--            v-if="showTable"-->
+<!--            ref="empTable"-->
+<!--            title="Employees Remuneration"-->
+<!--            :rows="rows"-->
+<!--            :columns="columns"-->
+<!--            row-key="id"-->
+<!--            :loading="loading"-->
+<!--            v-model:pagination="pagination"-->
+<!--            :rows-per-page-options="[5, 10, 20, 50]"-->
+<!--            @request="onRequest"-->
+<!--            selection="multiple"-->
+<!--            v-model:selected="selectedEmployees"-->
+<!--        >-->
+
+            <q-table
+                v-if="showTable"
+                ref="empTable"
+                title="Employees Remuneration"
+                :rows="rows"
+                :columns="columns"
+                row-key="id"
+                :loading="loading"
+                v-model:pagination="pagination"
+                :rows-per-page-options="[5, 10, 20, 50]"
+                @request="onRequest"
+            >
 
             <template v-slot:top-right>
 
