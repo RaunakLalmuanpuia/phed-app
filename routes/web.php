@@ -257,7 +257,8 @@ Route::group(['middleware'=>'auth','prefix' => 'employees'], function () {
     Route::get('edit/{model}', [EmployeeController::class, 'edit'])->middleware('can:edit-employee')->name('employee.edit');
     Route::post('update/{model}', [EmployeeController::class, 'update'])->middleware('can:edit-employee')->name('employee.update');
     Route::delete('/delete/{model}', [EmployeeController::class, 'destroy'])->middleware('can:delete-employee')->name('employee.destroy');
-    Route::put('/restore/{model}', [EmployeeController::class, 'restore'])->middleware('can:delete-employee')->name('employee.restore');
+    Route::put('/restore-delete/{model}', [EmployeeController::class, 'restore'])->middleware('can:delete-employee')->name('employee.restore');
+    Route::put('/restore/{model}', [EmployeeController::class, 'restoreDelete'])->middleware('can:delete-employee')->name('employee.restore-delete');
     Route::delete('/force-delete/{id}', [EmployeeController::class, 'destroyPermanently'])->middleware('can:delete-employee')->name('employees.forceDelete');
 });
 

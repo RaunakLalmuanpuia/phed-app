@@ -34,13 +34,7 @@
                                     :color="data?.employment_type?.trim() === 'Deleted' ? 'red-6' : 'grey-6'"
                                     text-color="white"
                                     class="stitle"
-                                    :label="data?.employment_type?.trim() === 'MR'
-                                        ? 'Muster Roll Employee'
-                                        : data?.employment_type?.trim() === 'PE'
-                                          ? 'Provisional Employee'
-                                          : data?.employment_type?.trim() === 'WC'
-                                              ? 'Work Charge Employee'
-                                          : 'Deleted Employee'"
+                                    :label="getEmployeeType(data)"
                                     style="padding: 8px;"
                                     rounded
                                 />
@@ -369,6 +363,29 @@ const props=defineProps(['data','office','documentTypes','canCreate','canEdit','
     'canRequestEditMr','canRequestDocumentEditMr', 'canRequestEditPe','canRequestDocumentEditPe','canRequestEditWc','canRequestDocumentEditWc',
     'canRequestDelete','canRequestTransfer',
     'canApproveEdit','canApproveTransfer','canApproveDelete','canEditDelete','canApproveDocumentEdit', 'canRequestDocumentDelete','canApproveDocumentDelete']);
+
+
+
+const getEmployeeType = (data) => {
+
+    if(data.employment_type ==='Deleted'){
+        return 'Deleted Employee';
+    }
+
+    // Workcharge → has designation AND date_of_retirement
+    if (data.designation && data.date_of_retirement) {
+        return 'Work Charge Employee';
+    }
+
+    // Provisional → has designation but no retirement date
+    if (data.designation && !data.date_of_retirement) {
+        return 'Provisional Employee';
+    }
+
+    // Muster Roll → no designation
+    return 'Muster Roll Employee';
+};
+
 
 const tab = ref('document')
 

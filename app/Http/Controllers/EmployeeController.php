@@ -967,7 +967,36 @@ class EmployeeController extends Controller
     }
 
 
+    public function restoreDelete(Employee $model){
+        $user = auth()->user();
+        abort_if(!$user->hasPermissionTo('delete-employee'), 403, 'Access Denied');
 
+        // Determine employment_type based on your logic
+        if (!empty($model->designation) && !empty($model->date_of_retirement)) {
+            $model->employment_type = 'WC';
+        }
+
+        elseif (!empty($model->designation) && empty($model->date_of_retirement)) {
+            $model->employment_type = 'PE';
+        }
+
+        else {
+            $model->employment_type = 'MR';
+        }
+
+
+        // 1️⃣ Delete related deletion requests
+//        $model->deletionRequests()->delete();
+
+        // 2️⃣ Delete related deletion detail
+        $model->deletionDetail()->delete();
+
+        // Save changes
+        $model->save();
+
+        return response()->json(['message' => 'Deleted Employee restored successfully.']);
+
+    }
     public function restore($model)
     {
         $user = auth()->user();
@@ -975,7 +1004,7 @@ class EmployeeController extends Controller
 
         $employee = Employee::onlyTrashed()->findOrFail($model); // ✅ include soft-deleted
         $employee->restore();
-        return response()->json(['message' => 'Employee restored successfully.']);
+        return response()->json(['message' => 'Employee restored successfully from Trash.']);
     }
     public function managerAll()
     {

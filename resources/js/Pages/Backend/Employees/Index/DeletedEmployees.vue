@@ -195,6 +195,16 @@
                             aria-label="Show user"
                         />
 
+                        <q-btn
+                            dense
+                            flat
+                            round
+                            color="green"
+                            icon="restore"
+                            @click="restoreDelete(props.row)"
+                            aria-label="Restore Employee"
+                        />
+
                     </q-td>
                 </template>
             </q-table>
@@ -233,6 +243,8 @@ const filters = ref({
 })
 
 const getEmployeeType = (row) => {
+
+
 
     // Workcharge → has designation AND date_of_retirement
     if (row.designation && row.date_of_retirement) {
@@ -383,6 +395,40 @@ const exportData = () => {
         });
 };
 
+const restoreDelete = (employee) => {
+    q.dialog({
+        title: 'Confirm Restore',
+        message: `Are you sure you want to restore <b>${employee.name}</b>?`,
+        html: true,
+        cancel: true,
+        persistent: true,
+        ok: {
+            label: 'Yes, Restore',
+            color: 'positive'
+        },
+    }).onOk(async () => {
+        try {
+            await axios.put(route('employee.restore-delete',employee))
+
+            q.notify({
+                type: 'positive',
+                message: `Employee ${employee.name} restored successfully`
+            })
+
+            // Refresh table after restore
+            onRequest({
+                pagination: pagination.value,
+                filter: filters.value,
+                search: search.value
+            })
+        } catch (error) {
+            q.notify({
+                type: 'negative',
+                message: error.response?.data?.message || 'Failed to restore employee'
+            })
+        }
+    })
+}
 
 </script>
 
