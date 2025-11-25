@@ -104,24 +104,23 @@
             v-model:pagination="pagination"
             :rows-per-page-options="[5, 10, 20, 50]"
             @request="onRequest"
-            selection="multiple"
-            v-model:selected="selectedEmployees"
+
         >
             <template v-slot:top-right>
                 <q-btn
                     class="q-mr-sm"
                     icon="picture_as_pdf"
-                    v-if="selectedEmployees.length > 0 && canCreateEngagementCard"
+                    v-if="canCreateEngagementCard"
                     label="Generate Cards"
                     color="primary"
-                    @click="openBulkGenerateDialog(selectedEmployees)"
+                    @click="openBulkGenerateDialog()"
                 />
 
 
                 <q-btn
                     class="q-mr-sm"
                     icon="download"
-                    v-if="selectedEmployees.length > 0 && canDownloadEngagementCard"
+                    v-if="canDownloadEngagementCard"
                     label="Download ZIP"
                     color="primary"
                     @click="downloadBulkPdf"
@@ -273,6 +272,10 @@
             <q-card>
                 <q-card-section class="q-pa-md">
                     <div class="text-h6 q-mb-md">Generate Bulk Cards</div>
+                    <div class="subtitle">Office :  {{
+                            props.office.find(o => o.id === filters.offices)?.name || ''
+                        }}</div>
+                    <div class="subtitle">Fiscal Year : {{filters.startYear}} - {{filters.endYear}} </div>
                     <q-form @submit.prevent="submitBulkForm">
                         <div class="row q-col-gutter-md">
                             <q-input
@@ -335,7 +338,7 @@
 
 <script setup>
 import BackendLayout from "@/Layouts/BackendLayout.vue";
-import { useQuasar } from "quasar";
+import {useQuasar} from "quasar";
 import { ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
 
@@ -465,7 +468,7 @@ const individualForm = useForm({
 
 // Bulk Form & Dialog
 const bulkForm = useForm({
-    employee_ids: [],    // <-- add this
+    office_id: "",    // <-- add this
     start_date: '',
     end_date: '',
     phed_file_no: '',
@@ -504,28 +507,28 @@ function submitIndividualForm() {
 // Bulk Form & Dialog
 const showBulkDialog = ref(false);
 
-function openBulkGenerateDialog(selected) {
-    if (!selected.length) {
-        return q.notify({ type: 'negative', message: 'Select employees first!' });
-    }
+function openBulkGenerateDialog() {
+
     bulkForm.reset();
-    bulkForm.employee_ids = selected.map(e => e.id); // now it will be tracked
+    bulkForm.office_id = filters.value.offices; // now it will be tracked
     showBulkDialog.value = true;
 }
 
 function submitBulkForm() {
     bulkForm.post(route('engagement-card.bulk-generate'), {
+        onStart:params => q.loading.show(),
         onSuccess: () => {
             q.notify({ type: 'positive', message: 'Bulk engagement cards generated.' });
             showBulkDialog.value = false;
             empTable.value?.requestServerInteraction();
-            selectedEmployees.value = [];
+            // selectedEmployees.value = [];
         },
         onError: (errors) => {
             Object.values(errors).forEach((error) => {
                 q.notify({ type: 'negative', message: error, position: 'bottom' });
             });
-        }
+        },
+        onFinish:params => q.loading.hide()
     });
 }
 
@@ -588,18 +591,17 @@ const downloadPdf = async (row) => {
 };
 
 const downloadBulkPdf = async () => {
-    if (selectedEmployees.value.length === 0) {
-        return q.notify({ type: 'negative', message: 'Select employees first!' });
-    }
 
     try {
-        const employee_ids = selectedEmployees.value.map(e => e.id);
-
+        const office_id = filters.value.offices;
+        q.loading.show({
+            message: 'Generating ZIP file... Please wait.',
+        })
         // Make API request to generate ZIP
         const response = await axios.post(
             route('engagement-card.bulk-download'),
             {
-                employee_ids,
+                office_id,
                 start_date: `${filters.value.startYear}-03-01`,
                 end_date: `${filters.value.endYear}-02-28`
             },
@@ -623,6 +625,8 @@ const downloadBulkPdf = async () => {
     } catch (error) {
         q.notify({ type: "negative", message: 'No Engagement card to Download' });
         console.error(error);
+    } finally {
+        q.loading.hide()
     }
 };
 

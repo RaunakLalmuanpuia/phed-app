@@ -184,8 +184,7 @@ class EngagementCardController extends Controller
     public function bulkGenerate(Request $request)
     {
         $request->validate([
-            'employee_ids'   => 'required|array',
-            'employee_ids.*' => 'exists:employees,id',
+            'office_id'   => 'required',
             'start_date'     => 'required|date',
             'end_date'       => 'required|date|after_or_equal:start_date',
             'phed_file_no'   => 'required|string',
@@ -194,8 +193,9 @@ class EngagementCardController extends Controller
             'approval_fin'   => 'required|string',
         ]);
 
-        $employees = Employee::with(['office','remunerationDetail'])
-            ->whereIn('id', $request->employee_ids)
+
+        $employees = Employee::where('office_id', $request->office_id)
+            ->where('employment_type', 'PE')->with(['office','remunerationDetail'])
             ->get();
 
         $fiscalYear = $this->getFiscalYear($request->start_date, $request->end_date);
@@ -384,8 +384,7 @@ class EngagementCardController extends Controller
     public function bulkDownload(Request $request)
     {
         $request->validate([
-            'employee_ids' => 'required|array',
-            'employee_ids.*' => 'exists:employees,id',
+            'office_id' => 'required',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
         ]);
@@ -403,7 +402,7 @@ class EngagementCardController extends Controller
                 // Only get cards for the requested fiscal year
                 $q->where('fiscal_year', $fiscalYear);
             }])
-                ->whereIn('id', $request->employee_ids)
+                ->where('office_id', $request->office_id)
                 ->get();
 
             foreach ($employees as $employee) {
