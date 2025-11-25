@@ -88,15 +88,12 @@
             v-model:pagination="pagination"
             :rows-per-page-options="[5, 10, 20, 50]"
             @request="onRequest"
-            selection="multiple"
-            v-model:selected="selectedEmployees"
         >
             <template v-slot:top-right>
 
                 <q-btn
                     class="q-mr-sm"
                     icon="download"
-                    v-if="selectedEmployees.length > 0"
                     label="Download ZIP"
                     color="primary"
                     @click="downloadBulkPdf"
@@ -294,18 +291,17 @@ const downloadPdf = async (row) => {
 };
 
 const downloadBulkPdf = async () => {
-    if (selectedEmployees.value.length === 0) {
-        return q.notify({ type: 'negative', message: 'Select employees first!' });
-    }
 
     try {
-        const employee_ids = selectedEmployees.value.map(e => e.id);
-
+        const office_id = props.offices[0]?.value;
+        q.loading.show({
+            message: 'Generating ZIP file... Please wait.',
+        })
         // Make API request to generate ZIP
         const response = await axios.post(
             route('engagement-card.bulk-download'),
             {
-                employee_ids,
+                office_id,
                 start_date: `${filters.value.startYear}-03-01`,
                 end_date: `${filters.value.endYear}-02-28`
             },
@@ -329,6 +325,8 @@ const downloadBulkPdf = async () => {
     } catch (error) {
         q.notify({ type: "negative", message: 'No Engagement card to Download' });
         console.error(error);
+    }finally {
+        q.loading.hide()
     }
 };
 
