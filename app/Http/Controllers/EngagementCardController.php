@@ -271,7 +271,93 @@ class EngagementCardController extends Controller
         return redirect()->back()->with('success', 'Bulk engagement cards saved/updated successfully.');
     }
 
+    public function allOfficeBulkGenerate(Request $request)
+    {
+        $request->validate([
+            'start_date'     => 'required|date',
+            'end_date'       => 'required|date|after_or_equal:start_date',
+            'phed_file_no'   => 'required|string',
+            'letter_date'    => 'required|date',
+            'approval_dpar'  => 'required|string',
+            'approval_fin'   => 'required|string',
+        ]);
 
+
+        $employees = Employee::where('employment_type', 'PE')->with(['office','remunerationDetail'])
+            ->get();
+
+        $fiscalYear = $this->getFiscalYear($request->start_date, $request->end_date);
+
+        foreach ($employees as $employee) {
+
+            // 🆕 Engagement card number logic
+            if ($employee->engagement_card_no) {
+                $card_no = $employee->engagement_card_no;
+            } else {
+                $existingPrefix = Employee::where('office_id', $employee->office_id)
+                    ->whereNotNull('engagement_card_no')
+                    ->pluck('engagement_card_no')
+                    ->map(function ($card) {
+                        return preg_match('/^([A-Z]+)-\d+$/', $card, $m) ? $m[1] : null;
+                    })
+                    ->filter()
+                    ->first();
+
+                $officePrefix = $existingPrefix ?? strtoupper(substr(optional($employee->office)->name ?? 'OFF', 0, 3));
+
+                $lastSuffix = Employee::where('office_id', $employee->office_id)
+                    ->whereNotNull('engagement_card_no')
+                    ->pluck('engagement_card_no')
+                    ->map(function ($card) use ($officePrefix) {
+                        return preg_match('/^' . $officePrefix . '-(\d+)$/', $card, $m) ? (int)$m[1] : 0;
+                    })
+                    ->max();
+
+                $nextSuffix = $lastSuffix ? $lastSuffix + 1 : 1;
+                $card_no = $officePrefix . '-' . $nextSuffix;
+
+                $employee->update(['engagement_card_no' => $card_no]);
+            }
+
+            // Prepare HTML content
+            $htmlContent = view('templates.engagement-card', [
+                'name'           => $employee->name,
+                'dob'            => Carbon::parse( $employee->date_of_birth)->format('d-m-Y'),
+                'parent_name'    => $employee->parent_name,
+                'address'        => $employee->address,
+                'post'           => $employee->designation,
+                'pay_matrix'     => $employee->remunerationDetail->pay_matrix ?? 'N/A',
+                'remuneration'   => number_format($employee->remunerationDetail->round_total ?? 0, 0, '.', ','),
+                'start_date'     => Carbon::parse($request->start_date)->format('d-m-Y'),
+                'end_date'       => Carbon::parse($request->end_date)->format('d-m-Y'),
+                'card_no'        => $card_no,
+                'date'           => Carbon::parse($request->letter_date)->format('d.m.Y'),
+                'phed_file_no'   => $request->phed_file_no,
+                'approval_dpar'  => $request->approval_dpar,
+                'approval_fin'   => $request->approval_fin,
+                'account_head_1' => '2215 - Water Supply & Sanitation',
+                'account_head_2' => '01 - Water Supply',
+                'account_head_3' => '001 - Direction & Administration',
+                'account_head_4' => '02 - Administration',
+                'account_head_5' => '02 - Estt. of Provisional Employees',
+                'account_head_6' => '02 - Wages',
+            ])->render();
+
+            // 🔄 Replace if exists, else create
+            $employee->engagementCard()
+                ->updateOrCreate(
+                    ['fiscal_year' => $fiscalYear], // match by fiscal year
+                    [
+                        'content'     => $htmlContent,
+                        'start_date'  => $request->start_date,
+                        'end_date'    => $request->end_date,
+                        'card_no'     => $card_no,
+                    ]
+                );
+        }
+
+        return redirect()->back()->with('success', 'Bulk engagement cards saved/updated successfully.');
+    }
 //    public function bulkGenerate(Request $request)
 //    {
 //        $request->validate([

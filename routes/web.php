@@ -329,7 +329,8 @@ Route::group(['middleware'=>'auth','prefix'=>'notification'], function () {
 Route::group(['middleware'=>'auth','prefix' => 'engagement-card'], function () {
     Route::post('update/{model}', [EngagementCardController::class, 'update'])->middleware('can:store-engagement-card')->name('engagement-card.update');
     Route::post('generate', [EngagementCardController::class, 'generate'])->middleware('can:generate-engagement-card')->name('engagement-card.generate');
-    Route::post('/bulk-generate', [EngagementCardController::class, 'bulkGenerate'])->name('engagement-card.bulk-generate');
+    Route::post('/bulk-generate', [EngagementCardController::class, 'bulkGenerate'])->middleware('can:generate-engagement-card')->name('engagement-card.bulk-generate');
+    Route::post('/all-office-bulk-generate', [EngagementCardController::class, 'allOfficeBulkGenerate'])->middleware('can:generate-engagement-card')->name('engagement-card.all-office-bulk-generate');
     Route::get('/download/{model}', [EngagementCardController::class, 'download'])->middleware('can:download-engagement-card')->name('engagement-card.download');
     Route::post('/engagement-card/bulk-download', [EngagementCardController::class, 'bulkDownload'])->name('engagement-card.bulk-download');
     Route::delete('{model}', [EngagementCardController::class, 'destroy'])->middleware('can:delete-engagement-card')->name('engagement-card.destroy');

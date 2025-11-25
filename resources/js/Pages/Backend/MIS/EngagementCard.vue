@@ -14,6 +14,9 @@
                     <q-breadcrumbs-el class="cursor-pointer" label="Go Back" @click="goBack"/>
                 </q-breadcrumbs>
             </div>
+            <div class="q-gutter-sm">
+                <q-btn  v-if="canCreateEngagementCard" label="All OFFICE CARD GENERATION" color="primary"   @click="showAllOfficeDialog = true" />
+            </div>
         </div>
 
         <br />
@@ -259,7 +262,7 @@
                             />
                         </div>
                         <q-card-actions align="right">
-                            <q-btn flat label="Cancel" color="negative" v-close-popup />
+                            <q-btn flat label="Cancel" color="negative" v-close-popup  @click="individualForm.reset()" />
                             <q-btn flat label="Generate" color="primary" type="submit" />
                         </q-card-actions>
                     </q-form>
@@ -326,7 +329,85 @@
                         </div>
 
                         <q-card-actions align="right">
-                            <q-btn flat label="Cancel" color="negative" v-close-popup />
+                            <q-btn flat label="Cancel" color="negative" v-close-popup @click="bulkForm.reset()" />
+                            <q-btn flat label="Generate" color="primary" type="submit" />
+                        </q-card-actions>
+                    </q-form>
+                </q-card-section>
+            </q-card>
+        </q-dialog>
+
+        <!-- All Office Bulk Dialog -->
+        <q-dialog v-model="showAllOfficeDialog">
+            <q-card>
+                <q-card-section class="q-pa-md">
+                    <div class="text-h6 q-mb-md">Generate All Office Cards</div>
+                    <div class="subtitle">Office : All</div>
+                    <div class="subtitle">
+                        Fiscal Year :
+                        {{
+                            allOfficeBulkForm.start_date
+                                ? new Date(allOfficeBulkForm.start_date).getFullYear()
+                                : ''
+                        }}
+                        -
+                        {{
+                            allOfficeBulkForm.end_date
+                                ? new Date(allOfficeBulkForm.end_date).getFullYear()
+                                : ''
+                        }}
+                    </div>
+                    <q-form @submit.prevent="submitAllOfficeBulkForm">
+                        <div class="row q-col-gutter-md">
+                            <q-input
+                                filled
+                                v-model="allOfficeBulkForm.start_date"
+                                label="Start Date"
+                                type="date"
+                                class="col-6"
+                                :error="allOfficeBulkForm.errors.start_date"
+                            />
+                            <q-input
+                                filled
+                                v-model="allOfficeBulkForm.end_date"
+                                label="End Date"
+                                type="date"
+                                class="col-6"
+                                :error="allOfficeBulkForm.errors.end_date"
+                            />
+                            <q-input
+                                filled
+                                v-model="allOfficeBulkForm.phed_file_no"
+                                label="PHED File Number"
+                                class="col-8"
+                                :error="allOfficeBulkForm.errors.phed_file_no"
+                            />
+                            <q-input
+                                filled
+                                v-model="allOfficeBulkForm.letter_date"
+                                label="Letter Date"
+                                type="date"
+                                class="col-4"
+                                :error="allOfficeBulkForm.errors.letter_date"
+                            />
+                            <q-input
+                                filled
+                                v-model="allOfficeBulkForm.approval_dpar"
+                                label="Approval DP&AR"
+                                class="col-12"
+                                :error="allOfficeBulkForm.errors.approval_dpar"
+                            />
+                            <q-input
+                                filled
+                                v-model="allOfficeBulkForm.approval_fin"
+                                label="Approval Finance"
+                                class="col-12"
+                                :error="allOfficeBulkForm.errors.approval_fin"
+                            />
+                        </div>
+
+                        <q-card-actions align="right">
+                            <q-btn flat label="Cancel" color="negative" v-close-popup @click="allOfficeBulkForm.reset()" />
                             <q-btn flat label="Generate" color="primary" type="submit" />
                         </q-card-actions>
                     </q-form>
@@ -455,6 +536,7 @@ function onRequest(props) {
 // Individual Form & Dialog
 const showIndividualDialog = ref(false);
 const individualDialogId = ref(null);
+const showAllOfficeDialog = ref(false);
 const individualForm = useForm({
     employee_id:'',
     start_date: '',
@@ -468,7 +550,7 @@ const individualForm = useForm({
 
 // Bulk Form & Dialog
 const bulkForm = useForm({
-    office_id: "",    // <-- add this
+    office_id: "",
     start_date: '',
     end_date: '',
     phed_file_no: '',
@@ -476,6 +558,18 @@ const bulkForm = useForm({
     approval_dpar: '',
     approval_fin: '',
 });
+
+// Bulk Form & Dialog
+const allOfficeBulkForm = useForm({
+
+    start_date: '',
+    end_date: '',
+    phed_file_no: '',
+    letter_date:'',
+    approval_dpar: '',
+    approval_fin: '',
+});
+
 function openIndividualDialog(employeeId) {
     individualDialogId.value = employeeId;
     individualForm.reset();
@@ -532,6 +626,25 @@ function submitBulkForm() {
     });
 }
 
+
+function submitAllOfficeBulkForm() {
+    allOfficeBulkForm.post(route('engagement-card.all-office-bulk-generate'), {
+        onStart:params => q.loading.show({
+            message: 'Generating for all offices... Please wait.',
+        }),
+        onSuccess: () => {
+            q.notify({ type: 'positive', message: 'Bulk engagement cards generated for all office.' });
+            showAllOfficeDialog.value = false;
+            allOfficeBulkForm.reset();
+        },
+        onError: (errors) => {
+            Object.values(errors).forEach((error) => {
+                q.notify({ type: 'negative', message: error, position: 'bottom' });
+            });
+        },
+        onFinish:params => q.loading.hide()
+    });
+}
 function deleteEngagementCard(props) {
     q.dialog({
         title: 'Confirm Deletion',
