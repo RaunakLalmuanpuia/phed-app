@@ -31,7 +31,16 @@
                      ]"
               />
             <q-input v-model="form.seniority_list" label="Seniority List" dense outlined type="number" />
-            <q-input v-model="form.year" label="Year" dense outlined type="number" />
+              <q-select
+                  v-model="form.year"
+                  label="Year"
+                  outlined
+                  class="q-mt-sm"
+                  :options="yearOptions"
+                  emit-value
+                  map-options
+
+              />
             <q-input v-model="form.remark" label="Remark" type="textarea" dense outlined />
 
               <q-file v-model="form.supporting_document" label="Supporting Document"  dense outlined required
@@ -76,10 +85,19 @@ watch(show, val => emit('update:modelValue', val))
 const form = useForm({
   seniority_list:'',
   reason: '',
-  year: new Date().getFullYear(),
+  year: "",
   remark: '',
   supporting_document: null,
 })
+
+const startYear = 2020;
+const endYear = 2040;
+
+const yearOptions = Array.from(
+    { length: endYear - startYear + 1 },
+    (_, i) => startYear + i
+);
+
 function submitForm() {
     form.post(route('deletion.store', props.employee), {
         preserveScroll: true,

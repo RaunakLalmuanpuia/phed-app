@@ -13,10 +13,18 @@ const $q = useQuasar();
 const form = useForm({
     reason: "",
     seniority_list: "",
-    year: new Date().getFullYear(),
+    year: "",
     remark: "",
     supporting_document: null,
 });
+
+const startYear = 2020;
+const endYear = 2040;
+
+const yearOptions = Array.from(
+    { length: endYear - startYear + 1 },
+    (_, i) => startYear + i
+);
 
 const latestRequestPending = computed(() =>
     props.data.deletion_requests?.slice(-1)[0]?.approval_status === 'pending'
@@ -243,13 +251,24 @@ function submitRequest() {
                     outlined
                     class="q-mt-sm"
                 />
-                <q-input
+
+                <q-select
                     v-model="form.year"
                     label="Year"
-                    type="number"
                     outlined
                     class="q-mt-sm"
+                    :options="yearOptions"
+                    emit-value
+                    map-options
+
                 />
+<!--                <q-input-->
+<!--                    v-model="form.year"-->
+<!--                    label="Year"-->
+<!--                    type="number"-->
+<!--                    outlined-->
+<!--                    class="q-mt-sm"-->
+<!--                />-->
                 <q-input
                     v-model="form.remark"
                     label="Remark"

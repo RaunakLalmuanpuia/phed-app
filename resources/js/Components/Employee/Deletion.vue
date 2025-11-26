@@ -11,11 +11,18 @@ const showDialog = ref(false)
 const form = useForm({
   reason: props.deletion.reason || '',
   seniority_list: props.deletion.seniority_list || '',
-  year: props.deletion.year || new Date().getFullYear(),
+  year: props.deletion.year || " ",
   remark: props.deletion.remark || '',
   supporting_document: null,
 })
 
+const startYear = 2020;
+const endYear = 2040;
+
+const yearOptions = Array.from(
+    { length: endYear - startYear + 1 },
+    (_, i) => startYear + i
+);
 const submit = () => {
   form.post(route('deletion.update', props.deletion), {
     preserveScroll: true,
@@ -118,7 +125,16 @@ const viewDocument = (url) => {
                      ]"
             />
           <q-input v-model="form.seniority_list" label="Seniority List" outlined dense />
-          <q-input v-model="form.year" label="Year" outlined dense type="number" />
+            <q-select
+                v-model="form.year"
+                label="Year"
+                outlined
+                class="q-mt-sm"
+                :options="yearOptions"
+                emit-value
+                map-options
+
+            />
           <q-input v-model="form.remark" label="Remark" outlined dense type="textarea" />
 
           <q-file
