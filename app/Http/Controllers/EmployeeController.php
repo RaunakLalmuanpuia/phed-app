@@ -613,6 +613,11 @@ class EmployeeController extends Controller
                     $q->where('id', $officeId);
                 });
             })
+            ->when($filter['year'] ?? null, function (Builder $query, $year) {
+                $query->whereHas('deletionDetail', function (Builder $q) use ($year) {
+                    $q->where('year', $year);
+                });
+            })
             ->when($filter['reason'] ?? null, function (Builder $query, $reason) {
                 $query->whereHas('deletionDetail', function (Builder $q) use ($reason) {
                     $q->where('reason', $reason);

@@ -50,8 +50,7 @@
                                     'Resigned',
                                     'Dismissed',
                                     'Regularised',
-                                    'Others',
-                                    'Overage (Retired)'
+                                    'Others (Specify the reasons to Remarks)'
                                   ]"
                                     label="Select Reason"
                                     class="col-12 col-sm-4"
@@ -61,6 +60,19 @@
                                     @update:model-value="handleSearch"
                                 >
                                 </q-select>
+
+                                <q-select
+                                    class="col-12 col-sm-4"
+                                    outlined
+                                    dense
+                                    clearable
+                                    label="Year"
+                                    v-model="filters.year"
+                                    :options="yearOptions"
+                                    emit-value
+                                    map-options
+                                    @update:model-value="handleSearch"
+                                />
                             </div>
                         </q-card-section>
 
@@ -240,8 +252,16 @@ const columns = [
 const filters = ref({
     office: null,
     reason : null,
+    year: new Date().getFullYear(),
 })
 
+const startYear = 2020;
+const endYear = 2040;
+
+const yearOptions = Array.from(
+    { length: endYear - startYear + 1 },
+    (_, i) => startYear + i
+);
 const getEmployeeType = (row) => {
 
 
