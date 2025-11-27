@@ -1,13 +1,22 @@
 <template>
     <q-page class="container"  padding>
-        <div class="row q-col-gutter-md">
+        <div v-if="!isAdmin && !isReviewer" class="flex items-center justify-between q-pa-md bg-white">
+            <div>
+                <div class="stitle" style="font-size: 32px; font-weight: 600;">Employees Database Management System</div>
+                <div class="subtitle" style=" font-size: 24px;">Public Health Engineering Department : Government of Mizoram</div>
+            </div>
+        </div>
 
+        <br/>
+        <br/>
+
+        <div class="row q-col-gutter-md">
             <div v-if="!isAdmin && !isReviewer" class="col-xs-12 col-sm-3">
                 <div class="dealing-card q-pa-md count-warning cursor-pointer hover:opacity-80" @click="$inertia.get(route('employees.manager.all'))">
                     <div class="title-warning">Total Employees</div>
                     <div class="text-caption caption-sm">Current Count</div>
                     <div class="flex items-center">
-                        <div class="count-dealing">{{ totalEmployees }}</div>
+                        <div class="count-dealing">{{ officeCount.totalEmployees }}</div>
                         <div class="caption q-ml-md">Employees</div>
                     </div>
                 </div>
@@ -17,7 +26,7 @@
                     <div class="title-purple">Work Charge</div>
                     <div class="text-caption caption-sm">Employment Type</div>
                     <div class="flex items-center">
-                        <div class="count-purple">{{ wcCount }}</div>
+                        <div class="count-purple">{{ officeCount.wcCount }}</div>
                         <div class="caption q-ml-md">Employees</div>
                     </div>
                 </div>
@@ -28,7 +37,7 @@
                     <div class="title-blue">Provisional</div>
                     <div class="text-caption caption-sm">Employment Type</div>
                     <div class="flex items-center">
-                        <div class="count-blue">{{ peCount }}</div>
+                        <div class="count-blue">{{ officeCount.peCount }}</div>
                         <div class="caption q-ml-md">Employees</div>
                     </div>
                 </div>
@@ -38,7 +47,7 @@
                     <div class="title-green">Muster Roll</div>
                     <div class="text-caption caption-sm">Employment Type</div>
                     <div class="flex items-center">
-                        <div class="count-green">{{ mrCount }}</div>
+                        <div class="count-green">{{ officeCount.mrCount }}</div>
                         <div class="caption q-ml-md">Employees</div>
                     </div>
                 </div>
@@ -48,7 +57,7 @@
                     <div class="title-scheme">Scheme</div>
                     <div class="text-caption caption-sm">Employment Type</div>
                     <div class="flex items-center">
-                        <div class="count-scheme">{{ schemeCount }}</div>
+                        <div class="count-scheme">{{ officeCount.schemeCount }}</div>
                         <div class="caption q-ml-md">Employees</div>
                     </div>
                 </div>
@@ -59,7 +68,7 @@
                     <div class="title-red">Deleted</div>
                     <div class="text-caption caption-sm">Employment Type</div>
                     <div class="flex items-center">
-                        <div class="count-red">{{ deletedCount }}</div>
+                        <div class="count-red">{{ officeCount.deletedCount }}</div>
                         <div class="caption q-ml-md">Employees</div>
                     </div>
                 </div>
@@ -177,13 +186,10 @@
             </div>
 
 
-
-
-
-
-            <div class="col-xs-12 col-sm-12">
+            <div  v-if="isAdmin || isReviewer" class="col-xs-12 col-sm-12">
                 <OfficeStat />
             </div>
+
         </div>
     </q-page>
 
@@ -192,13 +198,12 @@
 <script setup>
 import BackendLayout from "../../Layouts/BackendLayout.vue";
 import OfficeStat from "../../Components/Common/OfficeStat.vue";
-// import OfficeStat from "../../../Components/Common/OfficeStat.vue";
 import {ref, reactive, computed} from 'vue'
-import { BarChart, PieChart } from 'vue-chart-3'
+
 import {usePage} from "@inertiajs/vue3";
 
 defineOptions({layout:BackendLayout})
-const props=defineProps(['totalEmployees','wcCount','peCount','mrCount','schemeCount','deletedCount','notifications'])
+const props=defineProps(['totalEmployees','wcCount','peCount','mrCount','schemeCount','deletedCount','notifications','officeCount'])
 
 // Dummy data for employee skill categories
 const skillCategoryData = {
@@ -388,6 +393,9 @@ const isReviewer = computed(() => !!usePage().props.roles?.find(item => item ===
     text-align: left;
     color: #ed1224;
 }
+
+
+
 
 
 .title-scheme{

@@ -21,6 +21,15 @@ class DashboardController extends Controller
         $schemeCount = Employee::where('employment_type', '!=', 'Deleted')->whereNotNull('scheme_id')->count();
         $deletedCount = Employee::where('employment_type', 'Deleted')->count();
 
+        $officeCount = [
+            'totalEmployees' => 0,
+            'wcCount' => 0,
+            'peCount' => 0,
+            'mrCount' => 0,
+            'schemeCount'=>0,
+            'deletedCount'=>0
+        ];
+
         $notifications = [
             'editRequests' => 0,
             'transferRequests' => 0,
@@ -56,6 +65,16 @@ class DashboardController extends Controller
                 ->count();
         }
 
+        if ($user->hasRole(['Manager', 'Viewer'])) {
+            $officeIds = $user->offices->pluck('id');
+
+            $officeCount['totalEmployees'] = Employee::whereIn('office_id', $officeIds)->where('employment_type', '!=', 'Deleted')->count();
+            $officeCount['wcCount']  = Employee::whereIn('office_id', $officeIds)->where('employment_type', 'WC')->count();
+            $officeCount['peCount']  = Employee::whereIn('office_id', $officeIds)->where('employment_type', 'PE')->count();
+            $officeCount['mrCount']  = Employee::whereIn('office_id', $officeIds)->where('employment_type', 'MR')->whereNull('scheme_id')->count();
+            $officeCount['schemeCount']  = Employee::whereIn('office_id', $officeIds)->where('employment_type', '!=', 'Deleted')->whereNotNull('scheme_id')->count();
+            $officeCount['deletedCount']  = Employee::whereIn('office_id', $officeIds)->where('employment_type', 'Deleted')->count();
+        }
 
         return inertia('Backend/Dashboard', [
             'totalEmployees' => $totalEmployees,
@@ -65,6 +84,7 @@ class DashboardController extends Controller
             'schemeCount' => $schemeCount,
             'deletedCount' => $deletedCount,
             'notifications' => $notifications,
+            'officeCount' => $officeCount
         ]);
     }
     //

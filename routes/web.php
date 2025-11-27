@@ -62,8 +62,8 @@ Route::delete('logout', [AuthController::class, 'destroy'])->name('login.destroy
 //Dashboard Controller
 Route::group(['middleware' => 'auth', 'prefix' => 'dashboard'], function () {
     Route::get('',[DashboardController::class,'index'])->name('dashboard');
-//    Route::get('admin',[DashboardController::class,'admin'])->name('dashboard.admin');
-//    Route::get('manager',[DashboardController::class,'manager'])->name('dashboard.manager');
+    Route::get('admin',[DashboardController::class,'admin'])->name('dashboard.admin');
+    Route::get('manager',[DashboardController::class,'manager'])->name('dashboard.manager');
     Route::get('stats/office', [DashboardController::class, 'officeStatistics'])->name('dashboard.office-statistics');
 });
 
