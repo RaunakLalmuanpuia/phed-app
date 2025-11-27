@@ -6,9 +6,7 @@
                 <div class="subtitle" style=" font-size: 24px;">Public Health Engineering Department : Government of Mizoram</div>
             </div>
         </div>
-
-        <br/>
-        <br/>
+        <br v-if="!isAdmin && !isReviewer" />
 
         <div class="row q-col-gutter-md">
             <div v-if="!isAdmin && !isReviewer" class="col-xs-12 col-sm-3">
