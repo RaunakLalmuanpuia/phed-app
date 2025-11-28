@@ -10,7 +10,7 @@
                 </q-breadcrumbs>
             </div>
             <div class="q-gutter-sm">
-                <q-btn label="WC Summary" color="primary" @click="$inertia.get(route('summary.wc'))" />
+                <q-btn label="WC Summary" color="primary" @click="$inertia.get(route('summary.office-wc'))" />
             </div>
         </div>
         <br/>

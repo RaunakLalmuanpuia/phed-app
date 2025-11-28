@@ -15,7 +15,7 @@
 
             <div class="q-gutter-sm">
 
-                <q-btn label="MR Summary" color="primary" @click="$inertia.get(route('summary.mr'))"/>
+                <q-btn label="MR Summary" color="primary" @click="$inertia.get(route('summary.office-mr'))"/>
             </div>
         </div>
         <br>

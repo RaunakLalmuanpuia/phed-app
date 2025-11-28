@@ -342,6 +342,9 @@ Route::group(['middleware'=>'auth','prefix' => 'summary'], function () {
     Route::get('provisional', [SummaryController::class, 'provisionalSummary'])->middleware('can:view-pe-summary')->name('summary.pe');
     Route::get('muster-roll', [SummaryController::class, 'musterRollSummary'])->middleware('can:view-mr-summary')->name('summary.mr');
 
+    Route::get('work-charge-office', [SummaryController::class, 'officeWorkChargeSummary'])->middleware('can:view-wc-summary')->name('summary.office-wc');
+    Route::get('muster-roll-office', [SummaryController::class, 'officeMusterRollSummary'])->middleware('can:view-mr-summary')->name('summary.office-mr');
+    Route::get('provisional-office', [SummaryController::class, 'officeProvisionalSummary'])->middleware('can:view-pe-summary')->name('summary.office-pe');
 });
 
 //Export
